@@ -87,7 +87,7 @@ the result is also sort-stable.  A final merging of the duplicates with the sort
 work-space, and the main sorted array using *shift_merge_in_place* completes the
 resultant stable, wholly in-place sort.
 
-**TODO** - Add re-entract *_r* versions of all interfaces
+**TODO** - Add re-entrent *_r* versions of all interfaces
 
 
 # Building and Testing
