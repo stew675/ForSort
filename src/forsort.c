@@ -81,6 +81,8 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <limits.h>
+#include "forsort.h"
+
 
 //				TUNING KNOBS!
 //
@@ -138,9 +140,10 @@
 
 // WSTRIES is the maximum number of attempts that the stable_sort() front-end
 // will try to attempt to achieve a suitably sized workspace to pass to the
-// in-place merge sort. In practise I've never seen the algorithm take more
-// than 7 or 8 tries, but we'll set this to 10 to act as a short circuit
-#define	WSTRIES			50
+// in-place merge sort.  The interesting thing though is that the uniques
+// extraction system can wind up sorting the entire input in degenerate cases,
+// and it will do it very quickly too!
+#define	WSTRIES			510
 
 // Set the following to 1 to enable low-stack mode, whereby we will not use
 // shift_merge_in_place(), and ONLY use split_merge_in_place algorithm.  This
@@ -156,25 +159,91 @@
 #define	COMMON_ARGS	es, swaptype, is_lt
 #define	COMMON_PARAMS	const size_t es, int swaptype, int (*is_lt)(const void *, const void *)
 
-#include "forsort.h"
+// Construct a 128-bit type
+typedef struct {
+	uint64_t	a;
+	uint64_t	b;
+} xb16_t;
+
+enum swap_type_t {
+	SWAP_WORDS_128 = 0,
+	SWAP_WORDS_64,
+	SWAP_WORDS_32,
+	SWAP_BYTES
+};
+
+
+static enum swap_type_t
+get_swap_type (void *const pbase, size_t size)
+{
+	if (((size & (sizeof (uint32_t) - 1)) == 0) && ((uintptr_t) pbase) % __alignof__ (uint32_t) == 0) {
+		if (size == sizeof (uint32_t)) {
+			return SWAP_WORDS_32;
+		} else if (size == sizeof (uint64_t) && ((uintptr_t) pbase) % __alignof__ (uint64_t) == 0) {
+			return SWAP_WORDS_64;
+		} else if (size == sizeof (xb16_t) && ((uintptr_t) pbase) % __alignof__ (xb16_t) == 0) {
+			return SWAP_WORDS_128;
+		}
+	}
+	return SWAP_BYTES;
+} // get_swap_type
+
+
+#if 0
+// A relatively quick integer square root estimator.  Borrowed
+// from here: https://stackoverflow.com/a/31120562/16534062
+static size_t
+isqrt(size_t val) {
+	size_t temp, g=0, b = 0x8000, bshft = 15;
+	do {
+		if (val >= (temp = (((g << 1) + b) << bshft--))) {
+			g += b;
+			val -= temp;
+		}
+	} while (b >>= 1);
+	return g;
+} // isqrt
+#endif
+
+
+static inline size_t
+ceil_log_base_16(size_t n)
+{
+	size_t	result = 0;
+
+	for ( ; n ; n >>= 4, result++);
+
+	return (result + !result);	// Don't return a 0
+} // ceil_log_base_16
+
 
 extern void print_array(void *a, size_t n);
 
 
 #define ES 16
+#define	VAR xb16_t
 #include "forsort-macro.h"
+#undef VAR
 #undef ES
 
 #define ES 8
+#define	VAR uint64_t
 #include "forsort-macro.h"
+#undef VAR
 #undef ES
 
 #define ES 4
+#define	VAR uint32_t
 #include "forsort-macro.h"
+#undef VAR
 #undef ES
 
 #define ES es
+#define	VAR char
+#define UNTYPED
 #include "forsort-macro.h"
+#undef UNTYPED
+#undef VAR
 #undef ES
 
 

@@ -6,11 +6,8 @@
 #define NAME(x) MAKE_STR(x, ES)
 #define CALL(x) NAME(x)
 
-#ifndef FOR_GLOBAL_VARS
-#define FOR_GLOBAL_VARS
-
-
-#define	USE_BRANCHLESS
+#ifndef FOR_GLOBAL_DEFS
+#define FOR_GLOBAL_DEFS
 
 enum {
 	LEAP_LEFT = 0,
@@ -25,29 +22,21 @@ enum {
 
 // Experimentally 13 appears to be the best binary insertion cutoff
 #define	BINARY_INSERTION_MIN	13
-//#define	BINARY_INSERTION_MIN	12
 
 // Experimentally, 7 appears best as the sprint activation value
 #define	SPRINT_ACTIVATE 	7
 #define	SPRINT_EXIT_PENALTY	2
-#endif
 
-//-------------------------------------------------------------------//
-//----------------- START OF SWAP SPECIFIC DEFINES ------------------//
-//-------------------------------------------------------------------//
+#endif	// FOR_GLOBAL_DEFS
 
-#ifndef	FOR_SWAP_H
-#define FOR_SWAP_H
 
-#include <stdint.h>
-#include <string.h>
+//---------------------------------------------------------------------------//
+//----------------- START OF SPECIFIC ELEMENT SIZE DEFINES ------------------//
+//---------------------------------------------------------------------------//
 
-enum swap_type_t {
-	SWAP_WORDS_128 = 0,
-	SWAP_WORDS_64,
-	SWAP_WORDS_32,
-	SWAP_BYTES
-};
+#ifdef UNTYPED
+
+// Generic unaligned/odd-byte size handling
 
 static inline void
 memswap(void * restrict p1, void * restrict p2, size_t n)
@@ -69,127 +58,42 @@ memswap(void * restrict p1, void * restrict p2, size_t n)
 	}
 } // memswap
 
-typedef struct {
-	uint64_t	a;
-	uint64_t	b;
-} xb16_t;
+#define	SWAP(_xa_, _xb_)	memswap((_xa_), (_xb_), es)
 
-#define	swap_es(a, b)	memswap((a), (b), es)
+static void
+NAME(insertion_sort)(char *pa, const size_t n, COMMON_PARAMS)
+{
+	char	*pe = pa + (n * es);
 
-// All these double-assignment swaps are a hair faster than when using a single
+	for (char *ta = pa + es; ta != pe; ta += es)
+		for (char *tb = ta; tb != pa && IS_LT(tb, tb - es); tb -= es)
+			SWAP(tb, tb - es);
+} // insertion_sort_es
+
+#else
+
+// Type specific object size handling
+
+// This double-assignment swap seems a hair faster than when using a single
 // temporary variable.  I suspect that the gcc optimizer is able to re-use the
 // registers containing values from before for certain sequences.
 // My other suspicion is that memory->register and register->memory is simply
 // just faster than memory->memory swaps
 
-#define	swap_16(a, b)					\
-	{						\
-		xb16_t xa = *(xb16_t *)(a);		\
-		xb16_t xb = *(xb16_t *)(b);		\
-		*(xb16_t *)(a) = xb;			\
-		*(xb16_t *)(b) = xa;			\
+#define	SWAP(_xa_, _xb_)			\
+	{					\
+		VAR xa = *(VAR *)(_xa_);	\
+		VAR xb = *(VAR *)(_xb_);	\
+		*(VAR *)(_xb_) = xa;		\
+		*(VAR *)(_xa_) = xb;		\
 	}
 
-#define	swap_8(a, b)					\
-	{						\
-		uint64_t xa = *(uint64_t *)(a);		\
-		uint64_t xb = *(uint64_t *)(b);		\
-		*(uint64_t *)(b) = xa;			\
-		*(uint64_t *)(a) = xb;			\
-	}
-
-#define	swap_4(a, b)					\
-	{						\
-		uint32_t xa = *(uint32_t *)(a);		\
-		uint32_t xb = *(uint32_t *)(b);		\
-		*(uint32_t *)(b) = xa;			\
-		*(uint32_t *)(a) = xb;			\
-	}
-
-static enum swap_type_t
-get_swap_type (void *const pbase, size_t size)
-{
-	if (((size & (sizeof (uint32_t) - 1)) == 0) && ((uintptr_t) pbase) % __alignof__ (uint32_t) == 0) {
-		if (size == sizeof (uint32_t)) {
-			return SWAP_WORDS_32;
-		} else if (size == sizeof (uint64_t) && ((uintptr_t) pbase) % __alignof__ (uint64_t) == 0) {
-			return SWAP_WORDS_64;
-		} else if (size == sizeof (xb16_t) && ((uintptr_t) pbase) % __alignof__ (xb16_t) == 0) {
-			return SWAP_WORDS_128;
-		}
-	}
-	return SWAP_BYTES;
-} // get_swap_type
-
-
-// A relatively quick integer square root estimator.  Borrowed
-// from here: https://stackoverflow.com/a/31120562/16534062
-static size_t
-isqrt(size_t val) {
-	size_t temp, g=0, b = 0x8000, bshft = 15;
-	do {
-		if (val >= (temp = (((g << 1) + b) << bshft--))) {
-			g += b;
-			val -= temp;
-		}
-	} while (b >>= 1);
-	return g;
-} // isqrt
-
-
-static inline size_t
-ceil_log_base_16(size_t n)
-{
-	size_t	result = 0;
-
-	for ( ; n ; n >>= 4, result++);
-
-	return result;
-} // ceil_log_base_16
-
-#endif
-
-//---------------------------------------------------------------------------//
-//----------------- START OF SPECIFIC ELEMENT SIZE DEFINES ------------------//
-//---------------------------------------------------------------------------//
-
-#if (ES == 4)
-
-#define	SWAP(x, y)	swap_4((x), (y))
-
-static void
-NAME(insertion_sort)(char *pa, const size_t n, COMMON_PARAMS)
-{
-	uint32_t *ta = (uint32_t *)pa;
-	uint32_t *pe = ta + n;
-	uint32_t t[1];
-
-	for (ta++; ta != pe; ta++) {
-		if (IS_LT(ta, ta - 1)) {
-			uint32_t *tb = ta;
-
-			*t = *tb;
-			do {
-				*tb = *(tb - 1);
-			} while ((--tb != (uint32_t *)pa) && IS_LT(t, tb - 1));
-			*tb = *t;
-		}
-	}
-} // insertion_sort_4
-
-#elif (ES == 8)
-
-#define	SWAP(x, y)	swap_8((x), (y))
-
-// This is a two-step insertion sort that starts off with a regular
-// insertion sort, and then switches to a binary insertion sort
-// after the first BINARY_INSERTION_MIN items
 static void
 NAME(insertion_sort)(char *a, const size_t n, COMMON_PARAMS)
 {
-	uint64_t *pa = (uint64_t *)a;
-	uint64_t *ta = pa + 1;
-	uint64_t *pe = pa + n;
+	VAR *pa = (VAR *)a;
+	VAR *ta = pa + 1;
+	VAR *pe = pa + n;
 
 	if (n > BINARY_INSERTION_MIN)
 		pe = pa + BINARY_INSERTION_MIN;
@@ -197,7 +101,7 @@ NAME(insertion_sort)(char *a, const size_t n, COMMON_PARAMS)
 	// Regular insertion sort for first BINARY_INSERTION_MIN items
 	for ( ; ta != pe; ta++) {
 		if (IS_LT(ta, ta - 1)) {
-			uint64_t t[1] = {*ta}, *tb = ta;
+			VAR t[1] = {*ta}, *tb = ta;
 			do {
 				*tb = *(tb - 1);
 			} while ((--tb != pa) && IS_LT(t, tb - 1));
@@ -213,9 +117,9 @@ NAME(insertion_sort)(char *a, const size_t n, COMMON_PARAMS)
 	for (pe = pa + n; ta != pe; ta++) {
 		if (IS_LT(ta, ta - 1)) {
 			// Find where to insert it
-			uint32_t min = 0, max = (ta - pa) - 1;
-			uint32_t pos = max >> 1;
-			uint64_t *tb = pa + pos, t = *ta;
+			size_t min = 0, max = (ta - pa) - 1;
+			size_t pos = max >> 1;
+			VAR *tb = pa + pos, *tc = ta, t = *ta;
 
 			while (min < max) {
 				// The following 3 lines implement
@@ -231,54 +135,17 @@ NAME(insertion_sort)(char *a, const size_t n, COMMON_PARAMS)
 				pos = (min + max) >> 1;
 				tb = pa + pos;
 			}
-			for (size_t num = (ta - tb), *tc = ta; num--; tc--)
+			for (size_t num = (ta - tb); num--; tc--)
 				*tc = *(tc - 1);
 			*tb = t;
 		}
 	}
-} // insertion_sort_8
-
-#elif (ES == 16)
-
-#define	SWAP(x, y)	swap_16((x), (y))
-
-static void
-NAME(insertion_sort)(char *pa, const size_t n, COMMON_PARAMS)
-{
-	xb16_t *ta = (xb16_t *)pa;
-	xb16_t *pe = ta + n;
-	xb16_t t[1];
-
-	for (ta++; ta != pe; ta++) {
-		if (IS_LT(ta, ta - 1)) {
-			xb16_t *tb = ta;
-
-			*t = *tb;
-			do {
-				*tb = *(tb - 1);
-			} while ((--tb != (xb16_t *)pa) && IS_LT(t, tb - 1));
-			*tb = *t;
-		}
-	}
-} // insertion_sort_16
-
-#else
-
-#define	SWAP(x, y)	swap_es((x), (y))
-
-static void
-NAME(insertion_sort)(char *pa, const size_t n, COMMON_PARAMS)
-{
-	char	*pe = pa + (n * es);
-
-	for (char *ta = pa + es; ta != pe; ta += es)
-		for (char *tb = ta; tb != pa && IS_LT(tb, tb - es); tb -= es)
-			SWAP(tb, tb - es);
-} // insertion_sort_es
+} // insertion_sort
 
 #endif
 
 //_____________________________________________________________________________
+
 
 // Debug sort check testing
 static void
@@ -822,7 +689,6 @@ NAME(merge_left)(char *a, size_t na, char *b, size_t nb,
 			//	a_run = 0;
 			//	b_run++;
 			// }
-
 			char	*which[2] = {(pw - ES), (pa - ES)};
 			int	result = !!(IS_LT(pw - ES, pa - ES));
 			pb = pb - ES;
@@ -1006,7 +872,7 @@ NAME(merge_using_workspace)(char *a, size_t na, char *b, size_t nb,
 		assert(na > 0);
 		assert((a + (na * ES)) < pe);	// Catch underflow
 	}
-#if 1
+
 	// Skip last part of B if the opportunity arises
 	char	*sp = pe - ES;
 	char	*tb = b - ES;
@@ -1039,7 +905,7 @@ NAME(merge_using_workspace)(char *a, size_t na, char *b, size_t nb,
 		assert(nb > 0);
 		assert((b + (nb * ES)) <= pe);	// Catch underflow
 	}
-#endif
+
 	// Use merge-left if nb is smaller than na
 	// Fall-back to shift-merge if our work-space would overflow
 	if (nb < na)
@@ -1049,12 +915,83 @@ NAME(merge_using_workspace)(char *a, size_t na, char *b, size_t nb,
 } // merge_using_workspace
 
 
+// This function's job to merge two arrays together, given whatever
+// workspace it gets.  It'll always make it work....eventually!
+static void
+NAME(merge_workspace_constrained) (char *pa, size_t na, char *pb, size_t nb,
+			  char *ws, const size_t nw, COMMON_PARAMS)
+{
+	char	*pe = pb + (nb * es);
+
+	while (na > nw) {
+		char	*rp, *sp;	// Rotate + Split pointers
+
+		// RP now tracks the point of block rotation
+		// PB now points at the end of the part of A
+		// that fits into the available workspace 
+		rp = pb;
+		pb = pa + nw * ES;
+			
+		// Find where in the B array we can split to rotate the
+		// remainder of A into.  Use binary search for speed
+		do {
+			size_t	min = 0, max = nb;
+			size_t	pos = max >> 1;
+
+			sp = rp + (pos * ES);
+
+			while (min < max) {
+				if (IS_LT(sp, pb - ES))
+					min = pos + 1;
+				else
+					max = pos;
+
+				pos = (min + max) >> 1;
+				sp = rp + (pos * ES);
+			}
+		} while(0);
+
+		// Rotate the part of A that doesn't fit into the workspace
+		// with everything in B that is less than where we split A at
+		CALL(block_rotate)(pb, rp, sp, COMMON_ARGS);
+
+		// Adjust the rotation pointer after the rotate and fix up sizes
+		rp = pb + (sp - rp);
+		na = nw;
+		nb = (rp - pb) / ES;
+
+		// We now have 4 arrays.
+		// - PA->PB  is the part of A the same size as our workspace.
+		// - PB->RP  is the portion of the original B array that is
+		//           less than where we split A at
+		// - RP->SP  is the remainder of A that was larger than the
+		//           workspace
+		// - SP->PE  is the rest of B that is >= where we split A at
+
+		// Now merge A with B - the rotation can make nb be 0, so check
+		if (nb > 0) {
+			CALL(merge_using_workspace)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
+//			CALL(test_sorted)(pa, na + nb, COMMON_ARGS);
+		}
+
+		// Now set PA and PB, to be RP and SP respectively, and loop
+		pa = rp;
+		pb = sp;
+		na = (sp - rp) / ES;
+		nb = (pe - sp) / ES;
+	}
+	assert(na > 0);		// It should never be possible that na == 0
+
+	// The rotations can make nb be 0, so check it!
+	if (nb > 0)
+		CALL(merge_using_workspace)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
+} // merge_workspace_constrained
+
+
 static void
 NAME(sort_using_workspace)(char *pa, size_t n, char * const ws,
 			   const size_t nw, COMMON_PARAMS)
 {
-	char	*rp, *sp;	// Rotate + Split points
-
 	// Handle small array size inputs with insertion sort
 	if ((n <= INSERT_SORT_MAX) || (n <= 8))
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
@@ -1064,18 +1001,12 @@ NAME(sort_using_workspace)(char *pa, size_t n, char * const ws,
 
 	// The standard merge-sort algorithm is mathematically best
 	// when splitting the work up completely evenly (50:50 split)
-	// In practise though, in a world of CPU's with caches, an
-	// even split can slow things down a little.  It's often
-	// beneficial to skew the split slightly, as this improves
-	// data localisation.
-	// The ratio is controlled by the MERGE_SKEW #define
-	// stew675 - I am yet to understand why, but simply using
-	// n/3 appears to trigger a sort of algorithmic "sweet spot"
-	// on some architectures.
+	// In practise though, in a world of CPU's with caches, there
+	// may exist a more optimal split due to data localisation.
+	// This ratio is controlled by the MERGE_SKEW #define
 	size_t	na = (n * MERGE_SKEW) / 100;
 	size_t	nb = n - na;
 
-	char	*pe = pa + (n * es);
 	char	*pb = pa + (na * ES);
 
 	// First sort A
@@ -1084,68 +1015,8 @@ NAME(sort_using_workspace)(char *pa, size_t n, char * const ws,
 	// Now sort B
 	CALL(sort_using_workspace)(pb, nb, ws, nw, COMMON_ARGS);
 
-try_again:
-	// Handle trivial case where na <= nw
-	if (na <= nw) {
-		assert(na > 0);		// It should never be possible that na == 0
-		// Be aware that the rotation can make nb be 0
-		if (nb > 0) {
-			CALL(merge_using_workspace)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
-//			CALL(test_sorted)(pa, na + nb, COMMON_ARGS);
-		}
-		return;
-	}
-
-	rp = pb;		// RP now tracks the point of block rotation
-	pb = pa + nw * ES;	// PB now points at the end of the part of A
-				// that fits into the available workspace 
-		
-	// Find where in (old) B we can split to rotate the remainder of A into
-	do {
-		size_t	min = 0, max = nb;
-		size_t	pos = max >> 1;
-
-		sp = rp + (pos * ES);
-
-		while (min < max) {
-			if (IS_LT(sp, pb - ES))
-			 	min = pos + 1;
-			else
-			 	max = pos;
-
-			pos = (min + max) >> 1;
-			sp = rp + (pos * ES);
-		}
-	} while(0);
-
-	// Rotate the part of A that doesn't fit into the workspace
-	// with everything in (old) B that is less than where we split A at
-	CALL(block_rotate)(pb, rp, sp, COMMON_ARGS);
-
-	// Adjust the rotation pointer after the rotate and fix up sizes
-	rp = pb + (sp - rp);
-	na = nw;
-	nb = (rp - pb) / ES;
-
-	// We now have 4 arrays.
-	// - PA->PB  is the part of A the same size as our workspace.
-	// - PB->RP  is the portion of the original B array that is less than
-	//            where we split A at
-	// - RP->SP  is the remainder of A that was larger than the workspace
-	// - SP->PE  is the rest of B that is >= where we split A at
-
-	// Now merge A with B - Be aware that the rotation can make nb be 0
-	if (nb > 0) {
-		CALL(merge_using_workspace)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
-//		CALL(test_sorted)(pa, na + nb, COMMON_ARGS);
-	}
-
-	// Now set PA and PB, to be RP and SP respectively, and loop
-	pa = rp;
-	pb = sp;
-	na = (sp - rp) / ES;
-	nb = (pe - sp) / ES;
-	goto try_again;
+	// Use the constrained workspace algorithm to merge the array pair
+	CALL(merge_workspace_constrained)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
 } // sort_using_workspace
 
 
@@ -1302,6 +1173,10 @@ NAME(extract_uniques)(char * const a, const size_t n, char *hints, COMMON_PARAMS
 } // extract_uniques
 
 
+// I'm not going to say that the following is perfect.  Far from it.  But it
+// does an okay-ish job of merging many blocks together in a fashion that
+// favors forming larger blocks to the right-side.  This helps to speed up
+// the in-place merging algorithm, so for all its clunkiness, it does work.
 static void
 NAME(merge_duplicates)(char **dups, size_t numd, char *ws, size_t nw,
 		       bool ws_sorted, COMMON_PARAMS)
@@ -1356,6 +1231,7 @@ NAME(merge_duplicates)(char **dups, size_t numd, char *ws, size_t nw,
 	if (numd == 0)
 		return;
 
+	// Merge the workspace with the last duplicates entry
 	CALL(shift_merge_in_place)(dups[numd - 1], ws, pr, COMMON_ARGS);
 	dups[numd] = pr;
 
@@ -1363,7 +1239,7 @@ NAME(merge_duplicates)(char **dups, size_t numd, char *ws, size_t nw,
 	do {
 		md = 0;
 		for (int times = 3; times && (numd > 1); times--) {
-			// Force merge the last two in place
+			// Force merge the last two in place 3 times
 			char	*d1 = dups[numd - 2];
 			char	*d2 = dups[numd - 1];
 			char	*d3 = pr;
@@ -1424,10 +1300,12 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 	if (n <= 200)
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
-	// We start with a workspace candidate size that is 1.03x whatever
-	// the STABLE_WSRATIO is asking for.  This allows for up to a 3%
-	// duplicate ratio on the first attempt before we try harder
-	na = (n / 60) + STABLE_WSRATIO;
+	// We start with a workspace candidate size that is intentionally
+	// small, as we need to use the slower basic_sort() algorithm to
+	// kick start the process.  The idea here is to then use the
+	// initial unique values that we extract to drive use of the
+	// merge-sort algorithm, to help us find more uniques faster!
+	na = (n >> 6) + STABLE_WSRATIO;
 	nr = n - na;
 	pr = pa + (na * ES);	// Pointer to rest
 
@@ -1437,6 +1315,7 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 	// First sort our candidate work-space chunk
 	CALL(basic_top_down_sort)(pa, na, COMMON_ARGS);
 
+	// Now pull out our first set of unique values
 	ws = CALL(extract_uniques)(pa, na, NULL, COMMON_ARGS);
 	if (ws > pa)
 		dups[numd++] = pa;
@@ -1449,18 +1328,21 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 
 	// If we couldn't find enough work-space we'll try up to num_tries
 	// more.  Despite this seeming excessive, with each try we're still
-	// sorting more of the array any way, so it sort of balances out.
-	// It works out that we give up at above a 99.4% duplicate rate
+	// sorting more of the array any way, so it balances out in the end.
 	for (int tries = WSTRIES; (tries > 0) && (nw < wstarget); tries--) {
-		char	*nws = pr;
+		// It can be real fun to activate the following printf and
+		// watch the unique extractor do its thing with increasingly
+		// degenerate inputs.  It's possible for stable_sort() to
+		// completely sort the input in this extraction phase alone!
 #if 0
 		printf("Not enough workspace. Wanted: %ld  Got: %ld  "
-		       "Duplicates: %ld,  Tries Remaining = %d\n",
-		       wstarget, nw, (ws - pa) / es, tries);
+		       "Duplicates: %ld,  Tries Remaining = %d, nr = %lu\n",
+		       wstarget, nw, (ws - pa) / es, tries, nr);
 #endif
 		// Estimate how much of the remaining that we need to grab
 		// to get enough uniques to satsify our minimum.  First work
 		// out what the current ratio of uniques is
+		char	*nws = pr;		// New workspace candidates
 		size_t	nd = (ws - pa) / ES;	// Num Duplicates
 		double	ratio = nw;
 		ratio /= (nw + nd);		// Ratio of uniques
@@ -1468,18 +1350,23 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 		grab = grab / ratio;		// Estimate of how much to grab
 		grab = (grab * 9) >> 3;		// Add a fudge factor
 
-		// Don't grab less than 2.5%. This is to avoid creeping up to
+		// Don't grab less than 1/32th. This is to avoid creeping up to
 		// the target too slowly as we get close to it
-		if (grab < (nr / 40))
-			grab = nr / 40;
+		if (grab < (nr >> 5))
+			grab = nr >> 5;
 
 		// Don't grab more than we can efficiently sort
 		if (grab > (nw * STABLE_WSRATIO))
 			grab = nw * STABLE_WSRATIO;
 
-		// Don't grab more than a quarter of what's remaining
-		if (grab > (nr >> 2))
-			grab = nr >> 2;
+		// Don't grab more than 1/8th of what's remaining.  We only
+		// want to be doing this for as long as we absolutely need to be
+		if (grab > (nr >> 3))
+			grab = nr >> 3;
+
+		// If it's trivial amounts left, just leave!
+		if (grab < 100)
+			break;
 
 		nr -= grab;
 		pr = pr + (grab * ES);
@@ -1513,10 +1400,10 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 
 	// Here we will bypass the wstarget so long as nw > nr/64.  The work
 	// space based merge algorithm will still outpace the in-place merge
-	// even when given that reduced amount.  wstarget acts more as an ideal
+	// even when given that reduced amount.  wstarget acted more as an ideal
 	if ((nw < wstarget) && (nw < (nr >> 6))) {
 		// Give up and fall back to good old basic_sort().  If the input
-		// data is THAT degenerate, then basic_sort is fast anyway
+		// data is THAT degenerate, then basic_sort is very fast anyway
 		CALL(basic_top_down_sort)(pr, nr, COMMON_ARGS);
 	} else {
 		// Sort the remainder using the workspace we extracted
