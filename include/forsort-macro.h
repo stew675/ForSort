@@ -1,3 +1,10 @@
+//				FORSORT
+//
+// Author: Stew Forster (stew675@gmail.com)	Copyright (C) 2021-2025
+//
+// This is my implementation of what I believe to be an O(nlogn) in-place
+// adaptive merge-sort style algorithm.
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
 
