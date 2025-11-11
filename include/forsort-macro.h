@@ -9,6 +9,9 @@
 #ifndef FOR_GLOBAL_DEFS
 #define FOR_GLOBAL_DEFS
 
+// Uncomment to turn on debugging output for the uniques extraction and merging system
+//#define	DEBUG_UNIQUE_PROCESSING
+
 enum {
 	LEAP_LEFT = 0,
 	LEAP_RIGHT,
@@ -1031,9 +1034,11 @@ NAME(merge_sort_in_place)(char * const pa, const size_t n, char * const ws,
 	if ((n <= INSERT_SORT_MAX) || (n <= 8))
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
+	// If we were handed a workspace, then just use that
 	if (ws && (nw > 0))
 		return CALL(sort_using_workspace)(pa, n, ws, nw, COMMON_ARGS);
 
+	// Otherwise we need to create our own workspace from the data given
 	// 9 appears to be close to optimal, but anything from 3-20 works
 	size_t	na = n / WSRATIO;
 
@@ -1193,22 +1198,25 @@ NAME(merge_duplicates)(char **dups, size_t numd, char *ws, size_t nw,
 		for (size_t n = 0; n < numd; ) {
 			char	*d1 = dups[n++];
 			size_t	nd1 = (dups[n] - d1) / ES;
-			if ((n < start) || (n == numd) || (nd1 > nw)) {
+			if ((n < start) || (n == numd) || (nd1 > (nw * WSRATIO))) {
 				mdups[md++] = d1;
 				continue;
 			}
 
 			char	*d2 = dups[n++];
 			size_t	nd2 = (dups[n] - d2) / ES;
-			if (nd2 > nw) {
+			if (nd2 > (nw * WSRATIO)) {
 				mdups[md++] = d1;
 				mdups[md++] = d2;
 				continue;
 			}
 
 			// We have a pair we can merge
-//			printf("Merging 1: nd1=%lu, nd2=%lu\n", nd1, nd2);
-			CALL(merge_using_workspace)(d1, nd1, d2, nd2, ws, nw, COMMON_ARGS);
+#ifdef	DEBUG_UNIQUE_PROCESSING
+			printf("Merging 1: nd1=%lu, nd2=%lu\n", nd1, nd2);
+#endif
+			CALL(merge_workspace_constrained)(d1, nd1, d2, nd2,
+							  ws, nw, COMMON_ARGS);
 			ws_sorted = false;
 			mdups[md++] = d1;
 		}
@@ -1243,9 +1251,11 @@ NAME(merge_duplicates)(char **dups, size_t numd, char *ws, size_t nw,
 			char	*d1 = dups[numd - 2];
 			char	*d2 = dups[numd - 1];
 			char	*d3 = pr;
-//			size_t	nd1 = (d2 - d1) / ES;
-//			size_t	nd2 = (d3 - d2) / ES;
-//			printf("Force Merging: nd1=%lu, nd2=%lu\n", nd1, nd2);
+#ifdef	DEBUG_UNIQUE_PROCESSING
+			size_t	nd1 = (d2 - d1) / ES;
+			size_t	nd2 = (d3 - d2) / ES;
+			printf("Force Merging: nd1=%lu, nd2=%lu\n", nd1, nd2);
+#endif
 			CALL(shift_merge_in_place)(d1, d2, d3, COMMON_ARGS);
 			numd--;
 			dups[numd] = pr;
@@ -1269,7 +1279,9 @@ NAME(merge_duplicates)(char **dups, size_t numd, char *ws, size_t nw,
 			}
 
 			// We have a pair we can merge
-//			printf("Merging 2: nd1=%lu, nd2=%lu\n", nd1, nd2);
+#ifdef	DEBUG_UNIQUE_PROCESSING
+			printf("Merging 2: nd1=%lu, nd2=%lu\n", nd1, nd2);
+#endif
 			CALL(shift_merge_in_place)(d1, d2, d3, COMMON_ARGS);
 			mdups[md++] = d1;
 		}
@@ -1334,7 +1346,7 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 		// watch the unique extractor do its thing with increasingly
 		// degenerate inputs.  It's possible for stable_sort() to
 		// completely sort the input in this extraction phase alone!
-#if 0
+#ifdef	DEBUG_UNIQUE_PROCESSING
 		printf("Not enough workspace. Wanted: %ld  Got: %ld  "
 		       "Duplicates: %ld,  Tries Remaining = %d, nr = %lu\n",
 		       wstarget, nw, (ws - pa) / es, tries, nr);
