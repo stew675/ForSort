@@ -9,18 +9,18 @@ Copyright (C) 2021-2025
 
 # Introduction
 
-forsought
-    (verb) - the simple past and past participle of forseek
+**forsought**
+    *(verb)* - the simple past and past participle of forseek
 
-forseek 
-    (verb) - To seek thoroughly (for); seek out.
+**forseek** 
+    *(verb)* - To seek thoroughly (for); seek out.
 
 The name ForSort is a word-play on the archaic word forsaught, being the past tense
 of seeing in advance, which is in turn a joking reference to its speed, because it
 "saw" the sorted result before you realised. :p
 
 Its C programming interface is very similar to GLibC QSort, but with a twist that
-the comparison routing only need to report if the first value is strictly less than the second.
+the comparison routine only need to report if the first value is strictly less than the second.
 
 ```
 int is_less_than(const void *p1, const void *p2);
