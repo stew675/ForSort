@@ -1,0 +1,8 @@
+ts
+*.o
+obj
+gmon.out
+*.swp
+*.gcov
+*.gcda
+*.gcno
