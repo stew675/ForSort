@@ -7,6 +7,88 @@ Author: Stew Forster (stew675@gmail.com)
 
 Copyright (C) 2021-2025
 
+# Introduction
+
+forsought
+    (verb) - the simple past and past participle of forseek
+
+forseek 
+    (verb) - To seek thoroughly (for); seek out.
+
+The name ForSort is a word-play on the archaic word forsaught, being the past tense
+of seeing in advance, which is in turn a joking reference to its speed, because it
+"saw" the sorted result before you realised. :p
+
+Its C programming interface is very similar to GLibC QSort, but with a twist that
+the comparison routing only need to report if the first value is strictly less than the second.
+
+```
+int is_less_than(const void *p1, const void *p2);
+
+
+void forsort_basic(void base[n * size], size_t n, size_t size,
+                  typeof(int (const void [size], const void [size])) *is_less_than);
+
+void forsort_inplace(void base[n * size], size_t n, size_t size,
+                  typeof(int (const void [size], const void [size])) *is_less_than,
+                  void *work_space, size_t work_size);
+
+void forsort_stable(void base[n * size], size_t n, size_t size,
+                  typeof(int (const void [size], const void [size])) *is_less_than);
+```
+
+**forsort_basic** is the simplest algorithm.  It is a basic top-down stable, in-place,
+merge sort that uses the *shift_merge_in_place()* function to merge arrays together.
+It is provided primarily as a means of testing the base functionality that the other
+two algorithms rely upon to achieve their in-place behaviour.
+
+**forsort_inplace** is a moderately advanced adaptive merge-sort implementation that
+bears a lot of similarities to how TimSort merges blocks, but it also adds on a
+block rotation mechanism that allows it to efficiently sort arrays even with highly
+constrained work-space sizes.  It can take an optional *work_space* buffer argument, and
+if provided, it will use that work-space for merging.  When operating in this manner
+the algorithm is sort-stable. *work_size* is the size of the workspace in bytes.
+
+If no work space buffer is provided, the algorithm will use a portion of the array
+to be sorted as its work-space.  The algorithm is fully in-place though, and so it
+will not overwrite any data present, merely swapping items back and forth to sort
+the rest of the array.  When the rest of the array is sorted, the algorithm recursively
+sorts the work-space until it too is sorted.  **forsort_inplace** uses the stable
+merging behaviour of *shift_merge_in_place()* function (that **forsort_basic** uses)
+to sort the work-space without requiring any additional buffers.
+
+When operating in this manner the algorithm is not sort-stable **UNLESS** all the
+items in the first tenth of the array to be sorted all have unique sort "keys".
+
+Understanding **forsort_inplace** is then an excellent segue into what **forsort_stable**
+adds to the whole shebang.
+
+**forsort_stable** builds on top of *forsort_inplace* by introducing a mechanism
+to quickly extract unique sort keys out of the array to be sorted, in a sort-stable
+and in-place manner.  It repeatedly scans an increasing amount of the input array
+until it finds enough unique keys to be used as a work-space to pass to **forsort_inplace**
+in order to sort the rest of the input.
+
+Items with duplicate keys are sorted and "slid" to the start of the main array while
+items with unique keys are built up just to the right of the the duplicates.  If the
+algorithm cannot find sufficient keys, then it keeps repeating until either it does
+find enough keys, or until it ends up sorting the entire input!
+
+This unique key extraction is very quick and runs significantly faster than the
+main merge-sort algorithm when there are very few unique keys to extract.  It does
+run slower when there are many unique keys though, but by then it will have built
+a large enough work-space to pass to **forsort_inplace**.
+
+With a work-space of unique keys extracted, **forsort_inplace** is used to sort the
+remainder. When the main input is sorted, the work-space is re-used to quickly
+merge up all the blocks of duplicates, and when that is complete, the work-space
+itself is passed to **forsort_inplace** to be sorted.  Since it is all unique items,
+the result is also sort-stable.  A final merging of the duplicates with the sorted
+work-space, and the main sorted array using *shift_merge_in_place* completes the
+resultant stable, wholly in-place sort.
+
+**TODO** - Add re-entract *_r* versions of all interfaces
+
 
 # Building and Testing
 
@@ -58,22 +140,22 @@ will test the Stable ForSort algorithm, with a random seed value of 5, a disorde
 factor of 5%, with the data set then reversed.
 
 
-# Speed
+# Speed and Comparisons Efficiency
 
 ForSort is fast.  Here's a comparison of the time taken to sort 10,000,000
 random items on an AMD 9800X3D CPU
 
 ```
         ALGORITHM                    TIME       COMPARES (M)
-GLibC Qsort                         1.103s        220.067
-Bentley/McIlroy QuickSort           0.938s        237.131
-ForSort Basic*                      1.488s        374.199
-ForSort In-Place Stable             0.581s        238.844
-ForSort No Workspace Unstable       0.555s        228.655
 ForSort Workspace Stable**          0.530s        224.526
+ForSort No Workspace Unstable       0.555s        228.655
+ForSort In-Place Stable             0.581s        238.844
 GrailSort In-Place                  0.836s        236.936
-TimSort                             1.041s        213.811
+Bentley/McIlroy QuickSort           0.938s        237.131
 WikiSort                            0.994s        266.882
+GLibC Qsort                         1.103s        220.067
+TimSort                             1.041s        213.811
+ForSort Basic*                      1.488s        374.199
 
 *  This is the raw ForSort merge algorithm implemented in its most basic manner
    It is sort-stable and in-place, but isn't using any techniques to speed it up.
@@ -88,47 +170,48 @@ Here's the speeds when given data that has been disordered by 25% (ie. 1 in 4 it
 
 ```
         ALGORITHM                    TIME       COMPARES (M)
+ForSort Workspace Stable            0.423s        146.613
+ForSort No Workspace Unstable       0.434s        154.652
+ForSort In-Place Stable             0.452s        155.582
+TimSort                             0.585s        139.026
+WikiSort                            0.639s        249.697
+GrailSort In-Place                  0.666s        232.446
 GLibC Qsort                         0.689s        218.019
 Bentley/McIlroy QuickSort           0.702s        228.052
 ForSort Basic                       0.859s        223.881
-ForSort In-Place Stable             0.452s        155.582
-ForSort No Workspace Unstable       0.434s        154.652
-ForSort Workspace Stable            0.423s        146.613
-GrailSort In-Place                  0.666s        232.446
-TimSort                             0.585s        139.026
-WikiSort                            0.639s        249.697
 ```
 
 Here's the speeds when given data that has been disordered by 5% (ie. 1 in 20 items are out of order)
 
 ```
         ALGORITHM                    TIME       COMPARES (M)
-GLibC Qsort                         0.412s        199.491
+ForSort Workspace Stable            0.193s         63.733
+ForSort No Workspace Unstable       0.208s         70.062
+TimSort                             0.217s         59.739
+ForSort In-Place Stable             0.222s         72.413
+WikiSort                            0.372s        204.729
 Bentley/McIlroy QuickSort           0.354s        214.906
 ForSort Basic                       0.370s        131.408
-ForSort In-Place Stable             0.222s         72.413
-ForSort No Workspace Unstable       0.208s         70.062
-ForSort Workspace Stable            0.193s         63.733
+GLibC Qsort                         0.412s        199.491
 GrailSort In-Place                  0.461s        201.531
-TimSort                             0.217s         59.739
-WikiSort                            0.372s        204.729
 ```
 
-And here are the results for 1% disordering (1 in 100 items out of order).  Here's where
-TimSort can pull a small lead due to the way it processes the input data.  The In-Place
+And here are the results for 1% disordering (1 in 100 items out of order).
+
+Here TimSort pulls a small lead due to the way it processes the input data.  The In-Place
 Stable ForSort is still very close though
 
 ```
         ALGORITHM                    TIME       COMPARES (M)
-GLibC Qsort                         0.336s        178.719
-Bentley/McIlroy QuickSort           0.298s        212.017
-ForSort Basic                       0.211s         93.412
-ForSort In-Place Stable             0.126s         39.936
-ForSort No Workspace Unstable       0.114s         36.419
-ForSort Workspace Stable            0.110s         35.013
-GrailSort In-Place                  0.354s        167.276
 TimSort                             0.092s         29.032
+ForSort Workspace Stable            0.110s         35.013
+ForSort No Workspace Unstable       0.114s         36.419
+ForSort In-Place Stable             0.126s         39.936
+ForSort Basic                       0.211s         93.412
 WikiSort                            0.251s        161.786
+Bentley/McIlroy QuickSort           0.298s        212.017
+GLibC Qsort                         0.336s        178.719
+GrailSort In-Place                  0.354s        167.276
 ```
 
 What about reversed data ordering (still with potential duplicates)?  ForSort
@@ -136,32 +219,32 @@ doesn't make any explicit checks for fully reversed ordering, but it still runs 
 
 ```
         ALGORITHM                    TIME       COMPARES (M)
+ForSort No Workspace Unstable       0.132s         57.187
+TimSort                             0.134s         39.874
+ForSort Workspace Stable            0.136s         60.684
+ForSort In-Place Stable             0.146s         60.038
+ForSort Basic                       0.148s         53.161
+WikiSort                            0.159s         63.018
+GrailSort In-Place                  0.214s         84.024
 GLibC Qsort                         0.311s        120.241
 Bentley/McIlroy QuickSort           0.405s        264.937
-ForSort Basic                       0.148s         53.161
-ForSort In-Place Stable             0.146s         60.038
-ForSort No Workspace Unstable       0.132s         57.187
-ForSort Workspace Stable            0.136s         60.684
-GrailSort In-Place                  0.214s         84.024
-TimSort                             0.134s         39.874
-WikiSort                            0.159s         63.018
 ```
 
 ...and finally when using wholly sorted data, to demonstrate adaptability.
 The Stable In-Place algorithm still needs to extract and prepare a working
-space, even though it never uses it, which incurs a ~25% overhead here.
+space, even though it never uses it, which incurs an overhead here.
 
 ```
         ALGORITHM                    TIME       COMPARES (M)
+TimSort                             0.009s          9.999
+ForSort Workspace Stable            0.013s         10.000
+ForSort No Workspace Unstable       0.014s         10.001
+ForSort Basic                       0.017s          9.999
+WikiSort                            0.023s         20.128
+ForSort In-Place Stable             0.024s         12.480
+GrailSort In-Place                  0.183s         79.283
 GLibC Qsort                         0.212s        114.434
 Bentley/McIlroy QuickSort           0.259s        209.620
-ForSort Basic                       0.017s          9.999
-ForSort In-Place Stable             0.024s         12.480
-ForSort No Workspace Unstable       0.014s         10.001
-ForSort Workspace Stable            0.013s         10.000
-GrailSort In-Place                  0.183s         79.283
-TimSort                             0.009s          9.999
-WikiSort                            0.023s         20.128
 ```
 
 # Discussion
@@ -190,52 +273,55 @@ it hasn't been widely adopted, and the world has more or less coalesced
 around Block Sort and its variants like GrailSort, and so on.  Powermerge's
 biggest issue is that the recursion stack depth is unbounded, and it's
 rather easy to construct degenerate scenarios where the call stack will
-overflow in short order.  That algorithm is implemented by shift_merge_in_place()
+overflow in short order.  That algorithm is implemented by
+*shift_merge_in_place()*.
 
 I worked to solve those issues, but the code grew in complexity, and then
 started to slow down to point of losing all its benefits.  While messing
-about with solutions, I created what I call split_merge_in_place().  To date
-I've not found an algorithm that implements exactly what it does, but it
-does have a number of strong similarities to what BlockSort does.
+about with solutions, I created what I call *split_merge_in_place()*.  To
+date I've not found an algorithm that implements exactly what it does, but
+it does have a number of strong similarities to what BlockSort does.
 
-Unlike shift_merge_in_place(), the split_merge_in_place() algorithm doesn't
-bury itself in the details of
-finding the precise optimal place to split a block being merged, but rather
-uses a simple division algorithm to choose where to split.  In essence it
+Unlike *shift_merge_in_place()*, the *split_merge_in_place()* algorithm
+doesn't bury itself in the details of finding the precise optimal place to
+split a block being merged, but rather uses a simple division algorithm to
+choose where to split.
+In essence it
 takes a "divide and conquer" approach to the problem of merging two arrays
 together in place, and deposits fixed sized chunks, saves where that chunk
 is on a work stack, and then continues depositing chunks.  When all chunks
 are placed, it goes back and splits each one up again in turn into smaller
 chunks, and continues.
 
-In doing so, it achieves a stack requirement of just 15*log16(N) split points,
+In doing so, it achieves a stack requirement of just `15*log16(N)` split points,
 where N is the size of the left side array being merged.  The size of the
-right-side array doesn't matter to the split_merge_in_place algorithm.  This stack
-growth is very slow.  A stack size of 120 can account for over 10^12 items,
+right-side array doesn't matter to the *split_merge_in_place* algorithm.
+This stack growth is very slow.
+A stack size of 120 can account for over 2^32 items,
 and a stack size of 240 can track 2^64 items.
 
-This makes it an O(logN) space complexity algorithm, but there are a good
-number of of O(1) algorithms that allocate a much larger amount of static
-memory than ForSort ever will, and those algorithms still call themselves
-O(1).  The devil is, as always, in the details.
+This makes it an **O(logN)** space complexity algorithm, but there are a good
+number of of **O(1)** algorithms that allocate a much larger amount of static
+memory than *ForSort* ever will, and those algorithms still call themselves
+**O(1)**.  The devil is, as always, in the details.
 
-split_merge_in_place() is about 30% slower than shift_merge_in_place() in
-practise though, but it makes for an excellent fallback to the faster
-shift_merge_in_place() algorithm for when that algorithm gets lost in the
+*split_merge_in_place()* is about 30% slower than *shift_merge_in_place()*
+in practise though, but it makes for an excellent fallback to the faster
+*shift_merge_in_place()* algorithm for when that algorithm gets lost in the
 weeds of chopping up chunks and runs its work stack out of memory.
 
 I then read about how GrailSort and BlockSort use unique items as a work
 space, which is what allows those algorithms to achieve sort stability.  I
 didn't look too deeply into how either of those algorithms extract unique
 items, preferring the challenge of coming up with my own solution to that
-problem.  extract\_uniques() is my solution that also takes a divide and
+problem.  *extract_uniques()* is my solution that also takes a divide and
 conquer approach to split an array of items into uniques and duplicates,
 and then uses a variant of the Gries-Mills Block Swap algorithm to quickly
 move runs of duplicates into place:
 
-Ref: https://en.wikipedia.org/wiki/Block_swap_algorithms
+*Ref: https://en.wikipedia.org/wiki/Block_swap_algorithms*
 
-extract\_uniques() moves all duplicates, which are kept in sorted order, to
+*extract_uniques()* moves all duplicates, which are kept in sorted order, to
 the left side of the main array, which creates a sorted block that can be
 merged in at the end.  When enough unique items are gathered, they are then
 used as the scratch work-space to invoke the adaptive merge sort in place
