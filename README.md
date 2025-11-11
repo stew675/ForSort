@@ -37,12 +37,12 @@ void forsort_stable(void base[n * size], size_t n, size_t size,
                   typeof(int (const void [size], const void [size])) *is_less_than);
 ```
 
-**forsort_basic** is the simplest algorithm.  It is a basic top-down stable, in-place,
+**forsort_basic()** - is the simplest algorithm.  It is a basic top-down stable, in-place,
 merge sort that uses the *shift_merge_in_place()* function to merge arrays together.
 It is provided primarily as a means of testing the base functionality that the other
 two algorithms rely upon to achieve their in-place behaviour.
 
-**forsort_inplace** is a moderately advanced adaptive merge-sort implementation that
+**forsort_inplace()** - is a moderately advanced adaptive merge-sort implementation that
 bears a lot of similarities to how TimSort merges blocks, but it also adds on a
 block rotation mechanism that allows it to efficiently sort arrays even with highly
 constrained work-space sizes.  It can take an optional *work_space* buffer argument, and
@@ -63,7 +63,7 @@ items in the first tenth of the array to be sorted all have unique sort "keys".
 Understanding **forsort_inplace** is then an excellent segue into what **forsort_stable**
 adds to the whole shebang.
 
-**forsort_stable** builds on top of *forsort_inplace* by introducing a mechanism
+**forsort_stable()** - builds on top of *forsort_inplace* by introducing a mechanism
 to quickly extract unique sort keys out of the array to be sorted, in a sort-stable
 and in-place manner.  It repeatedly scans an increasing amount of the input array
 until it finds enough unique keys to be used as a work-space to pass to **forsort_inplace**
