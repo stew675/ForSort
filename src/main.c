@@ -532,8 +532,6 @@ main(int argc, char *argv[])
 		fprintf(stderr, "alloc failed - out of memory\n");
 		exit(-1);
 	}
-	memset(a, 0, n * sizeof(*a));
-
 	// Now populate the array according to the command line options
 	printf("\nPopulating array of size: %lu\n\n", n);
 	printf("Data value range is 0..%u (inclusive)\n", data_set_limit - 1);
@@ -571,50 +569,66 @@ main(int argc, char *argv[])
 		}
 	}
 
-	fillset(a, n);
-	if (verbose) {
-		print_array(a, n);
-	}
+	double	total_time = 0;
+	size_t	total_c = 0;
+	size_t	num_runs = 0;
 
 	// Let's finally do this thing!
-	struct timespec start, end;
-	uint64_t startc = 0, endc = 0;
-	printf("\nStarting %s\n", sortname);
-	clock_gettime(CLOCK_MONOTONIC, &start);
-	startc = get_cycles();
+	for ( ; (total_time < 60) || (num_runs < 10); num_runs++) {
+		num_runs++;
+		memset(a, 0, n * sizeof(*a));
+		srandom((uint32_t)num_runs);
+		fillset(a, n);
 
-	switch (sorttype) {
-	case GLIBC_QSORT:
-		qsort(a, n, sizeof(*a), compare_uint32);
-		break;
-	case BENTLEY_QSORT:
-		nqsort(a, n, sizeof(*a), compare_uint32);
-		break;
-	case WIKI_SORT:
-		WikiSort(a, n, wiki_compare);	// Wiki-Sort only accepts 64-bit items
-		break;
-	case TIM_SORT:
-		timsort(a, n, sizeof(*a), compare_uint32);
-		break;
-	case GRAIL_SORT:
-		grailSortInPlace(a, n, sizeof(*a), compare_uint32);
-		break;
-	case FORSORT_BASIC:
-		forsort_basic(a, n, sizeof(*a), is_less_than_uint32);
-		break;
-	case FORSORT_INPLACE:
-		forsort_inplace(a, n, sizeof(*a), is_less_than_uint32, workspace, worksize);
-		break;
-	case FORSORT_STABLE:
-		forsort_stable(a, n, sizeof(*a), is_less_than_uint32);
-		break;
-	default:
-		printf("ERROR: Unknown sort type\n");
-		exit(1);
+		if ((n == 0) && verbose) {
+			print_array(a, n);
+		}
+
+		struct timespec start, end;
+		uint64_t startc = 0, endc = 0;
+		if (num_runs == 0)
+			printf("\nTesting %s for 60s of total sorting time and a minimum of 10 runs\n", sortname);
+		clock_gettime(CLOCK_MONOTONIC, &start);
+		startc = get_cycles();
+
+		switch (sorttype) {
+		case GLIBC_QSORT:
+			qsort(a, n, sizeof(*a), compare_uint32);
+			break;
+		case BENTLEY_QSORT:
+			nqsort(a, n, sizeof(*a), compare_uint32);
+			break;
+		case WIKI_SORT:
+			WikiSort(a, n, wiki_compare);	// Wiki-Sort only accepts 64-bit items
+			break;
+		case TIM_SORT:
+			timsort(a, n, sizeof(*a), compare_uint32);
+			break;
+		case GRAIL_SORT:
+			grailSortInPlace(a, n, sizeof(*a), compare_uint32);
+			break;
+		case FORSORT_BASIC:
+			forsort_basic(a, n, sizeof(*a), is_less_than_uint32);
+			break;
+		case FORSORT_INPLACE:
+			forsort_inplace(a, n, sizeof(*a), is_less_than_uint32, workspace, worksize);
+			break;
+		case FORSORT_STABLE:
+			forsort_stable(a, n, sizeof(*a), is_less_than_uint32);
+			break;
+		default:
+			printf("ERROR: Unknown sort type\n");
+			exit(1);
+		}
+
+		endc = get_cycles();
+		clock_gettime(CLOCK_MONOTONIC, &end);
+
+		double tim = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+		total_time += tim;
+		total_c += (endc - startc);
 	}
-
-	endc = get_cycles();
-	clock_gettime(CLOCK_MONOTONIC, &end);
 
 	if (workspace) {
 		free(workspace);
@@ -633,17 +647,19 @@ main(int argc, char *argv[])
 	test_stability(a, n);
 
 	// Stats time!
-	double tim = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+//	double tim = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
 	printf("\n");
-	printf("Time taken to sort   : %.9fs\n", tim);
-	printf("Number of Compares   : %lu\n", numcmps);
-	printf("Number of CPU Cycles : %lu\n", (endc - startc));
+	printf("Total number of runs : %lu\n", num_runs);
+	printf("Time taken to sort   : %.9fs\n", total_time / num_runs);
+	printf("Number of Compares   : %lu\n", numcmps/ num_runs);
+	printf("Number of CPU Cycles : %lu\n", total_c / num_runs);
 	printf("Data Is Sorted       : %s\n", correct ? "TRUE" : "FALSE");
 #if USE32BIT
 	printf("Sort is Stable       : %s\n", "UNKNOWN");
 #else
 	printf("Sort is Stable       : %s\n", stable ? "TRUE" : "FALSE");
 #endif
+	printf("ns per item          : %.3fns\n", ((total_time / num_runs) * 1000000000) / n);
 	printf(" ");
 	printf(" ");
 	printf("\n");
