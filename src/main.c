@@ -18,7 +18,7 @@
 
 static	int	disorder_factor = 100;
 static	int	data_set_ops = 0;
-static	int	quick_test = 0;
+static	int	quick_test = 1;
 static	uint32_t data_set_limit = UINT32_MAX;
 static	uint32_t random_seed = 1;
 static	bool	verbose = false;
@@ -164,10 +164,10 @@ usage(char *prog, char *msg)
 	fprintf(stderr, "\t-l <num>    Data set keys/values limited in range from 0..(num-1)\n");
 	fprintf(stderr, "\t-l n	If the letter 'n' is specified, use the number of elements as the key range\n");
 	fprintf(stderr, "\t-o	  Use a fully ordered data set (Shorthand for setting disorder factor to 0)\n");
-	fprintf(stderr, "\t-q	  Run a quick test of 1 run only, as opposed to 60s\n");
 	fprintf(stderr, "\t-r	  Reverse the data set order after generating it\n");
 	fprintf(stderr, "\t-u	  Data set keys/values must all be unique\n");
 	fprintf(stderr, "\t-v	  Verbose.  Display the data set before sorting it\n");
+	fprintf(stderr, "\t-x	  Run a extended test for 30s or a minimum of 10 runs\n");
 	fprintf(stderr, "\t-w <num>    Optional workspace size (in elements) to pass to the sorting algorithm\n");
 	fprintf(stderr, "\nAvailable Sort Types:\n");
 	fprintf(stderr, "   fb   - Basic Forsort In-Place                 (Stable)\n");
@@ -284,8 +284,8 @@ parse_control_opt(char *argv[])
 		data_set_limit = limit;
 		return 2;	// We grabbed 2 options
 	}
-	if (!strcmp(argv[0], "-q")) {
-		quick_test = 1;
+	if (!strcmp(argv[0], "-x")) {
+		quick_test = 0;
 		return 1;
 	}
 	if (!strcmp(argv[0], "-o")) {
@@ -584,7 +584,7 @@ main(int argc, char *argv[])
 	size_t	num_runs = 0;
 
 	// Let's finally do this thing!
-	for ( ; (total_time < 60) || (num_runs < 10); num_runs++) {
+	while ((total_time < 30) || (num_runs < 10)) {
 		memset(a, 0, n * sizeof(*a));
 		srandom((uint32_t)num_runs);
 		fillset(a, n);
@@ -596,8 +596,16 @@ main(int argc, char *argv[])
 		struct timespec start, end;
 		uint64_t startc = 0, endc = 0;
 
-		if (num_runs == 0)
-			printf("\nTesting %s for 60s of total sorting time and a minimum of 10 runs\n", sortname);
+		if (num_runs == 0) {
+			if (quick_test) {
+				printf("\nTesting %s for 1 run\n", sortname);
+			} else {
+				printf("\nExtended Testing of %s\n\n", sortname);
+				printf("Test will run for a minimum of 30s total sorting time\n");
+				printf("and a minimum of 10 runs. Whichever takes longer\n");
+				printf("Test preparation time is not included in the 30s\n");
+			}
+		}
 
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		startc = get_cycles();
@@ -640,6 +648,7 @@ main(int argc, char *argv[])
 		total_time += tim;
 		total_c += (endc - startc);
 
+		num_runs++;
 		if (quick_test)
 			break;
 	}
@@ -663,17 +672,17 @@ main(int argc, char *argv[])
 	// Stats time!
 //	double tim = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
 	printf("\n");
-	printf("Total number of runs : %lu\n", num_runs);
-	printf("Time taken to sort   : %.9fs\n", total_time / num_runs);
-	printf("Number of Compares   : %lu\n", numcmps/ num_runs);
-	printf("Number of CPU Cycles : %lu\n", total_c / num_runs);
-	printf("Data Is Sorted       : %s\n", correct ? "TRUE" : "FALSE");
+	printf("Total number of runs     : %lu\n", num_runs);
+	printf("Avg Time taken to sort   : %.9fs\n", total_time / num_runs);
+	printf("Avg Number of Compares   : %lu\n", numcmps/ num_runs);
+	printf("Avg Number of CPU Cycles : %lu\n", total_c / num_runs);
+	printf("Data Is Sorted           : %s\n", correct ? "TRUE" : "FALSE");
 #if USE32BIT
-	printf("Sort is Stable       : %s\n", "UNKNOWN");
+	printf("Sort is Stable           : %s\n", "UNKNOWN");
 #else
-	printf("Sort is Stable       : %s\n", stable ? "TRUE" : "FALSE");
+	printf("Sort is Stable           : %s\n", stable ? "TRUE" : "FALSE");
 #endif
-	printf("ns per item          : %.3fns\n", ((total_time / num_runs) * 1000000000) / n);
+	printf("Avg ns per item          : %.3fns\n", ((total_time / num_runs) * 1000000000) / n);
 	printf(" ");
 	printf(" ");
 	printf("\n");
