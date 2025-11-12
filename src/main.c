@@ -155,20 +155,22 @@ static void
 usage(char *prog, char *msg)
 {
 	fprintf(stderr, "\nError: %s\n", msg);
-	fprintf(stderr, "\nUsage: %s [options] <sorttype< <num>\n", prog);
-	fprintf(stderr, "\n[options] is zero or more of the following options\n");
-	fprintf(stderr, "\t-a seed     A random number generator seed value to use (default=1)\n");
-	fprintf(stderr, "\t	    A value of 0 will use a randomly generated seed\n");
-	fprintf(stderr, "\t-d <0..100> Disorder the generated set by the percentage given (default=100)\n");
-	fprintf(stderr, "\t-f	  Data set keys/values range from 0..UINT32_MAX (default)\n");
-	fprintf(stderr, "\t-l <num>    Data set keys/values limited in range from 0..(num-1)\n");
-	fprintf(stderr, "\t-l n	If the letter 'n' is specified, use the number of elements as the key range\n");
-	fprintf(stderr, "\t-o	  Use a fully ordered data set (Shorthand for setting disorder factor to 0)\n");
-	fprintf(stderr, "\t-r	  Reverse the data set order after generating it\n");
-	fprintf(stderr, "\t-u	  Data set keys/values must all be unique\n");
-	fprintf(stderr, "\t-v	  Verbose.  Display the data set before sorting it\n");
-	fprintf(stderr, "\t-x	  Run a extended test for 30s or a minimum of 10 runs\n");
-	fprintf(stderr, "\t-w <num>    Optional workspace size (in elements) to pass to the sorting algorithm\n");
+	fprintf(stderr, "\nUsage: %s [options] <sorttype> <num>\n", prog);
+	fprintf(stderr, "\n<num> is number of items you want sorted\n\n");
+	fprintf(stderr, "[options] are zero or more of the following options\n");
+	fprintf(stderr, "  -a seed       A random number generator seed value to use (default=1)\n");
+	fprintf(stderr, "                A value of 0 will use a randomly generated seed\n");
+	fprintf(stderr, "  -d <0..100>   Disorder the generated set by the percentage given (default=100)\n");
+	fprintf(stderr, "  -f            Data set keys/values range from 0..UINT32_MAX (default)\n");
+	fprintf(stderr, "  -l <num>      Data set keys/values limited in range from 0..(num-1)\n");
+	fprintf(stderr, "  -l n          If the letter 'n' is specified, use the number of elements as the key range\n");
+	fprintf(stderr, "  -o            Use a fully ordered data set (Shorthand for setting disorder factor to 0)\n");
+	fprintf(stderr, "  -r            Reverse the data set order after generating it\n");
+	fprintf(stderr, "  -u            Data set keys/values must all be unique\n");
+	fprintf(stderr, "  -v            Verbose.  Display the data set before sorting it\n");
+	fprintf(stderr, "  -x            Run a extended test for 30s or a minimum of 10 runs\n");
+	fprintf(stderr, "  -w <num>      Optional workspace size (in elements) to pass to the sorting algorithm\n");
+	fprintf(stderr, "                A value of 1 asks the sort to allocate its own workspace (if it supports doing so)\n");
 	fprintf(stderr, "\nAvailable Sort Types:\n");
 	fprintf(stderr, "   fb   - Basic Forsort In-Place                 (Stable)\n");
 	fprintf(stderr, "   fi   - Adaptive Forsort In-Place              (Unstable)\n");
