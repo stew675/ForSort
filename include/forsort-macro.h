@@ -1345,9 +1345,9 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 	printf("size of stable state processing structure = %lu bytes\n",
 			sizeof(struct stable_state));
 #endif
-	// 200 items appears to be about the cross-over
+	// 80 items appears to be about the cross-over
 	// That 2-stage binary insertion sort holds up pretty well!
-	if (n <= 200)
+	if (n < 80)
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
 	// We start with a workspace candidate size that is intentionally
