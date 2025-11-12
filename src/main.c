@@ -18,6 +18,7 @@
 
 static	int	disorder_factor = 100;
 static	int	data_set_ops = 0;
+static	int	quick_test = 0;
 static	uint32_t data_set_limit = UINT32_MAX;
 static	uint32_t random_seed = 1;
 static	bool	verbose = false;
@@ -163,6 +164,7 @@ usage(char *prog, char *msg)
 	fprintf(stderr, "\t-l <num>    Data set keys/values limited in range from 0..(num-1)\n");
 	fprintf(stderr, "\t-l n	If the letter 'n' is specified, use the number of elements as the key range\n");
 	fprintf(stderr, "\t-o	  Use a fully ordered data set (Shorthand for setting disorder factor to 0)\n");
+	fprintf(stderr, "\t-q	  Run a quick test of 1 run only, as opposed to 60s\n");
 	fprintf(stderr, "\t-r	  Reverse the data set order after generating it\n");
 	fprintf(stderr, "\t-u	  Data set keys/values must all be unique\n");
 	fprintf(stderr, "\t-v	  Verbose.  Display the data set before sorting it\n");
@@ -281,6 +283,10 @@ parse_control_opt(char *argv[])
 		}
 		data_set_limit = limit;
 		return 2;	// We grabbed 2 options
+	}
+	if (!strcmp(argv[0], "-q")) {
+		quick_test = 1;
+		return 1;
 	}
 	if (!strcmp(argv[0], "-o")) {
 		disorder_factor = 0;
@@ -559,11 +565,15 @@ main(int argc, char *argv[])
 
 	if (worksize > 0) {
 		if (supports_workspace) {
-			printf("Providing a pre-allocated scratch workspace of %ld items in size\n", worksize);
+			if (worksize == 1) {
+				printf("Algorithm is free to choose its own work-space size\n");
+			} else {
+				printf("Providing a pre-allocated scratch workspace of %ld items in size\n", worksize);
 
-			worksize *= sizeof(*a);
-			if(worksize > 0)
-				workspace = (char *)malloc(worksize);
+				worksize *= sizeof(*a);
+				if(worksize > 0)
+					workspace = (char *)malloc(worksize);
+			}
 		} else {
 			printf("Ignoring workspace option as the selected sort does not support it\n");
 		}
@@ -628,6 +638,9 @@ main(int argc, char *argv[])
 
 		total_time += tim;
 		total_c += (endc - startc);
+
+		if (quick_test)
+			break;
 	}
 
 	if (workspace) {

@@ -289,7 +289,17 @@ forsort_inplace(void *a, const size_t n, const size_t es,
 	void *workspace, size_t worksize)
 {
 	int     swaptype = get_swap_type(a, es);
-	
+	int	dynamic = 0;
+
+	if ((workspace == NULL) && (worksize == 1))
+		dynamic = 1;
+
+	if (dynamic) {
+		// Allocate a workspace that is 1/4 of the total array size
+		worksize = (n * es) / 4;
+		workspace = malloc(worksize);
+	}
+
 	if (swaptype == SWAP_WORDS_64) {
 		merge_sort_in_place_8(a, n, workspace, worksize / es, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_32) {
@@ -299,4 +309,7 @@ forsort_inplace(void *a, const size_t n, const size_t es,
 	} else {
 		merge_sort_in_place_es(a, n, workspace, worksize / es, COMMON_ARGS);
 	}
+
+	if (dynamic && (workspace != NULL))
+		free(workspace);
 } // forsort_inplace
