@@ -1470,6 +1470,11 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 		// This avoid an overly degenerate merging scenario later
 		if (nr < (n >> 4))
 			break;
+
+		// Short-circuit the search if we have even just barely enough!
+		if ((nr < ((n * 3)>>2)) && (nw >= (nr >> 7)))
+			break;
+
 		wstarget = nr / STABLE_WSRATIO;
 	}
 
@@ -1478,7 +1483,7 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 	// Here we will bypass the wstarget so long as nw > nr/64.  The work
 	// space based merge algorithm will still outpace the in-place merge
 	// even when given that reduced amount.  wstarget acted more as an ideal
-	if ((nw < wstarget) && (nw < (nr >> 6))) {
+	if ((nw < wstarget) && (nw < (nr >> 7))) {
 		// Give up and fall back to good old basic_sort().  If the input
 		// data is THAT degenerate, then basic_sort is very fast anyway
 		CALL(basic_top_down_sort)(pr, nr, COMMON_ARGS);
