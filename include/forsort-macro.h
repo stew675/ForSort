@@ -1480,7 +1480,7 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 
 	// Now sort the remaining unsorted data
 
-	// Here we will bypass the wstarget so long as nw > nr/64.  The work
+	// Here we will bypass the wstarget so long as nw > nr/128.  The work
 	// space based merge algorithm will still outpace the in-place merge
 	// even when given that reduced amount.  wstarget acted more as an ideal
 	if ((nw < wstarget) && (nw < (nr >> 7))) {
