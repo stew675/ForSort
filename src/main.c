@@ -585,7 +585,6 @@ main(int argc, char *argv[])
 
 	// Let's finally do this thing!
 	for ( ; (total_time < 60) || (num_runs < 10); num_runs++) {
-		num_runs++;
 		memset(a, 0, n * sizeof(*a));
 		srandom((uint32_t)num_runs);
 		fillset(a, n);
@@ -596,8 +595,10 @@ main(int argc, char *argv[])
 
 		struct timespec start, end;
 		uint64_t startc = 0, endc = 0;
+
 		if (num_runs == 0)
 			printf("\nTesting %s for 60s of total sorting time and a minimum of 10 runs\n", sortname);
+
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		startc = get_cycles();
 
