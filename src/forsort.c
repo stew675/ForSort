@@ -295,8 +295,8 @@ forsort_inplace(void *a, const size_t n, const size_t es,
 		dynamic = 1;
 
 	if (dynamic) {
-		// Allocate a workspace that is 1/4 of the total array size
-		worksize = (n * es) / 4;
+		// Allocate a workspace that is 1/8 of the total array size
+		worksize = (n * es) / 8;
 		workspace = malloc(worksize);
 	}
 
