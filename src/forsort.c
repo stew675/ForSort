@@ -143,7 +143,7 @@
 // in-place merge sort.  The interesting thing though is that the uniques
 // extraction system can wind up sorting the entire input in degenerate cases,
 // and it will do it very quickly too!
-#define	WSTRIES			510
+#define	WSTRIES			24
 
 // Set the following to 1 to enable low-stack mode, whereby we will not use
 // shift_merge_in_place(), and ONLY use split_merge_in_place algorithm.  This

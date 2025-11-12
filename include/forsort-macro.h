@@ -37,6 +37,24 @@ enum {
 #define	SPRINT_ACTIVATE 	7
 #define	SPRINT_EXIT_PENALTY	2
 
+// With a MAX_DUPS value of 32, if the data set is so degenerate as to fill up
+// the duplicates table, then dropping out and sorting is trivially fast
+#define	MAX_DUPS 32
+// A structure to manage the state of the stable sort algorithm
+struct stable_state {
+	// All sizes are in numbers of entries, not bytes
+	char	*merged_dups[MAX_DUPS];		// Merged up duplicates
+	size_t	num_merged;			// No. of merged duplicate entries
+	char	*free_dups[MAX_DUPS];		// Unmerged duplicates
+	size_t	num_free;			// No. of unmerged duplicate entries
+	char	*work_space;			// Work Space
+	size_t	work_size;			// Size of work space
+	bool	work_sorted;			// If work-space is sorted or not
+	char	*rest;				// Rest of the main array
+	size_t	rest_size;			// Size of the rest
+	char	*pe;				// End of main array
+};
+
 #endif	// FOR_GLOBAL_DEFS
 
 
@@ -1185,119 +1203,197 @@ NAME(extract_uniques)(char * const a, const size_t n, char *hints, COMMON_PARAMS
 } // extract_uniques
 
 
-// I'm not going to say that the following is perfect.  Far from it.  But it
-// does an okay-ish job of merging many blocks together in a fashion that
-// favors forming larger blocks to the right-side.  This helps to speed up
-// the in-place merging algorithm, so for all its clunkiness, it does work.
-static void
-NAME(merge_duplicates)(char **dups, size_t numd, char *ws, size_t nw,
-		       bool ws_sorted, COMMON_PARAMS)
+// Merges up the list of merged duplicate chunks and returns a pointer to it
+// This works a little differently to coalesce_free_duplicates.  Here we
+// merge up pairs of items, rather than as a single chain
+static char *
+NAME(coalesce_merged_duplicates)(struct stable_state *state, COMMON_PARAMS)
 {
-	char	*pr = ws + nw * ES;
-	char	*mdups[numd];
-	size_t	md = 0, start = numd;
+	char	*ws = state->work_space;
+	size_t	nw = state->work_size;
+	size_t	num_merged = state->num_merged;
 
-	// Merge up everything we can, using the work-space
-	while (numd > 1) {
-		md = 0;
-		dups[numd] = ws;
+	if (num_merged == 0)
+		return state->free_dups[0];
 
-		for (size_t n = 0; n < numd; ) {
-			char	*d1 = dups[n++];
-			size_t	nd1 = (dups[n] - d1) / ES;
-			if ((n < start) || (n == numd) || (nd1 > (nw * WSRATIO))) {
-				mdups[md++] = d1;
-				continue;
-			}
+	// We gots some mergin' to do!!
 
-			char	*d2 = dups[n++];
-			size_t	nd2 = (dups[n] - d2) / ES;
-			if (nd2 > (nw * WSRATIO)) {
-				mdups[md++] = d1;
-				mdups[md++] = d2;
-				continue;
-			}
+	// Merge any coalesced free duplicates with our last entry
+	// The finisher function will have already merged all these and
+	// left this pointer here for us to work with
+	// The work-space always marks the end of the free duplicates chunk
+	if (state->num_free) {
+		char *last = state->merged_dups[num_merged - 1];
 
-			// We have a pair we can merge
-#ifdef	DEBUG_UNIQUE_PROCESSING
-			printf("Merging 1: nd1=%lu, nd2=%lu\n", nd1, nd2);
-#endif
-			CALL(merge_workspace_constrained)(d1, nd1, d2, nd2,
-							  ws, nw, COMMON_ARGS);
-			ws_sorted = false;
-			mdups[md++] = d1;
-		}
-
-		// Copy the pointers back
-		for (size_t n = 0; n < md; n++)
-			dups[n] = mdups[n];
-		numd = md;
-		if (start < 1)
-			break;
-		if (start)
-			start--;
+		// We're not going to be fancy about this one.  Just use shift_merge()
+		CALL(shift_merge_in_place)(last, state->free_dups[0], ws, COMMON_ARGS);
+		state->free_dups[0] = NULL;
+		state->num_free = 0;
 	}
 
-	// We can't use the work-space any more so sort it
-	if (!ws_sorted)
-		CALL(merge_sort_in_place)(ws, nw, NULL, 0, COMMON_ARGS);
+	// Now pair-wise merge the merged entries
+	while (num_merged > 1) {
+		size_t mpos = 0, pos = 0;;
 
-	// If there were no duplicates, then we're done here
-	if (numd == 0)
+		while (pos < num_merged) {
+			char	*first, *second;
+			
+			// Grab our first entry.
+			if ((pos + 1) == num_merged) {
+				// We have a dangling final entry.  Use the prior
+				// merging result instead as our first chunk
+				assert(mpos > 0);
+				first = state->merged_dups[--mpos];
+			} else {
+				// Just grab the next entry
+				first = state->merged_dups[pos++];
+			}
+
+			// Grabbing the second entry is less complicated
+			second = state->merged_dups[pos++];
+
+			// Work out where the end of the second entry is
+			char	*end_second = ws;
+			if (pos < num_merged)
+				end_second = state->merged_dups[pos];
+
+			size_t	nf = (second - first) / ES;	// Number of entries in first chunk
+			if (nf > (nw * WSRATIO)) {
+				// Use shift_merge_in_place
+				CALL(shift_merge_in_place)(first, second, end_second, COMMON_ARGS);
+			} else {
+				// Do a faster work-space based merge
+				size_t	ns = (end_second - second) / ES;  // Number of entries in second chunk
+				CALL(merge_workspace_constrained)(first, nf, second, ns, ws, nw, COMMON_ARGS);
+				state->work_sorted = false;
+			}
+
+			// Write the merged pair pointer back to the merged list
+			state->merged_dups[mpos++] = first;
+		}
+		num_merged = mpos;
+	}
+	state->num_merged = 1;
+	return state->merged_dups[0];
+} // coalesce_merged_duplicates
+
+
+// Merges up the list of free duplicate chunks and returns a pointer to it
+static char *
+NAME(coalesce_free_duplicates)(struct stable_state *state, COMMON_PARAMS)
+{
+	if (state->num_free < 1)
+		return NULL;
+
+	// We gots some merging to do
+	char	*ws = state->work_space;
+	size_t	nw = state->work_size;
+
+	size_t	nf = state->num_free - 1;
+	char	*last = state->free_dups[nf];
+	size_t	nlast = (ws - last) / ES;
+
+	// Because we're merging from the right of the duplicate list, the start
+	// of the work-space always marks the end of the last duplicate chunk
+	while (nf > 0) {
+		nf--;
+		char	*prev = state->free_dups[nf];
+		size_t	nprev = (last - prev) / ES;
+
+		if (nprev > (nw * WSRATIO)) {
+			// Use shift_merge_in_place
+			CALL(shift_merge_in_place)(prev, last, ws, COMMON_ARGS);
+		} else {
+			// Do a faster work-space merge
+			CALL(merge_workspace_constrained)(prev, nprev, last, nlast, ws, nw, COMMON_ARGS);
+			state->work_sorted = false;
+		}
+		last = prev;
+		nlast += nprev;
+	}
+	state->num_free = 0;
+	state->free_dups[0] = NULL;
+	return last;	// We've now coalesced the duplicates on the sublist
+} // coalesce_free_duplicates
+
+// Maintains the set of duplicate entries.  When a duplicate entry is added
+// to the free list, it checks against the length of the merged list.
+// When the number of frees exceeds the merged length, then all the frees
+// are merged and added to the merged list.  This means that the merged
+// list eventually contains the mergings of 1, then 2, then 3, and so on
+// of duplicate blocks, creating a series of entries where each is larger
+// than the entry to the left of it.  This makes the mergings more efficient
+// later on when the lot are pulled together.
+// This two stage system also means that for 2 * MAX_DUPS entries of space,
+// we can actually maintain ((MAX_DUPS * MAX_DUPS) + MAX_DUPS) / 2 worth
+// of duplicate entries.  This means we can collate a lot for a small overhead
+static void
+NAME(add_duplicate)(struct stable_state *state, char *new_dup, COMMON_PARAMS)
+{
+	state->free_dups[state->num_free++] = new_dup;
+	if (state->num_free <= state->num_merged)
 		return;
 
-	// Merge the workspace with the last duplicates entry
-	CALL(shift_merge_in_place)(dups[numd - 1], ws, pr, COMMON_ARGS);
-	dups[numd] = pr;
+	// We need to merge up the free duplicates and add them to the
+	// merged list
+	char *merged_frees = CALL(coalesce_free_duplicates)(state, COMMON_ARGS);
+	state->merged_dups[state->num_merged++] = merged_frees;
+} // add_duplicate
 
-	// Now we finish up by pairing all the duplicates using merge in place
-	do {
-		md = 0;
-		for (int times = 3; times && (numd > 1); times--) {
-			// Force merge the last two in place 3 times
-			char	*d1 = dups[numd - 2];
-			char	*d2 = dups[numd - 1];
-			char	*d3 = pr;
+
+static void
+NAME(stable_sort_finisher)(struct stable_state *state, COMMON_PARAMS)
+{
+	char	*ws = state->work_space;
+	size_t	nw = state->work_size;
+
+//#ifdef	DEBUG_UNIQUE_PROCESSING
+	printf("Num Merged = %lu, Num Free = %lu\n", state->num_merged, state->num_free);
+//#endif
+	// First, let's merge up any dangling free duplicate chunks
+	char *merged_frees = CALL(coalesce_free_duplicates)(state, COMMON_ARGS);
+
+	// Set the first free dup entry to what is going to be the end of
+	// the last entry of the set of merged duplicates entries
+	if (merged_frees) {
+		state->free_dups[0] = merged_frees;
+		state->num_free = 1;
+	}
+
+	// Then merge together all the prior merged duplicates
+	char *merged_merged = CALL(coalesce_merged_duplicates)(state, COMMON_ARGS);
+
+	// Sort the work-space if required
+	if (state->work_sorted == false)
+		CALL(merge_sort_in_place)(ws, nw, NULL, 0, COMMON_ARGS);
+
+	// Now we have the following chunks
+	// merged_merged - A potentially very lerge chunk of sorted duplicates
+	// work_space - Our work-space of unique values, possibly unsorted
+	// rest - The sorted rest of the input
+
+	size_t	nm = 0;
+	char	*pr = state->rest;
+	char	*pe = state->pe;
+
+	if (merged_merged)
+		nm = (ws - merged_merged) / ES;
+
 #ifdef	DEBUG_UNIQUE_PROCESSING
-			size_t	nd1 = (d2 - d1) / ES;
-			size_t	nd2 = (d3 - d2) / ES;
-			printf("Force Merging: nd1=%lu, nd2=%lu\n", nd1, nd2);
+	printf("merged_merged = %p, ws = %p, pr = %p\n", merged_merged, ws, pr);
+	printf("nm = %lu, nw = %lu, nr = %lu\n", nm, nw, state->rest_size);
 #endif
-			CALL(shift_merge_in_place)(d1, d2, d3, COMMON_ARGS);
-			numd--;
-			dups[numd] = pr;
-		}
 
-		for (size_t n = 0; n < numd; ) {
-			char	*d1 = dups[n++];
-			size_t	nd1 = (dups[n] - d1) / ES;
-			if (n == numd) {
-				mdups[md++] = d1;
-				continue;
-			}
-
-			char	*d2 = dups[n++];
-			char	*d3 = dups[n];
-			size_t	nd2 = (d3 - d2) / ES;
-			if (nd2 < nd1) {
-				mdups[md++] = d1;
-				n--;
-				continue;
-			}
-
-			// We have a pair we can merge
-#ifdef	DEBUG_UNIQUE_PROCESSING
-			printf("Merging 2: nd1=%lu, nd2=%lu\n", nd1, nd2);
-#endif
-			CALL(shift_merge_in_place)(d1, d2, d3, COMMON_ARGS);
-			mdups[md++] = d1;
-		}
-		// Copy the pointers back
-		for (size_t n = 0; n < md; n++)
-			dups[n] = mdups[n];
-		numd = md;
-	} while (numd > 1);
-} // merge_duplicates
+	if ((nm < nw) && (nm > 0)) {
+		CALL(shift_merge_in_place)(merged_merged, ws, pr, COMMON_ARGS);
+		CALL(shift_merge_in_place)(merged_merged, pr, pe, COMMON_ARGS);
+	} else {
+		CALL(shift_merge_in_place)(ws, pr, pe, COMMON_ARGS);
+		if (nm > 0)
+			CALL(shift_merge_in_place)(merged_merged, ws, pe, COMMON_ARGS);
+	}
+	// and....we're done!
+} // stable_sort_finisher
 
 
 // This essentially operates as a "front end" to the main shift-merge-sort
@@ -1310,9 +1406,9 @@ NAME(merge_duplicates)(char **dups, size_t numd, char *ws, size_t nw,
 static void
 NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 {
-	char	*pe = pa + (n * ES);
-	char	*ws, *pr, *dups[WSTRIES + 2] = {0};
-	size_t	na, nr, nw, numd = 0;
+	struct stable_state state_real = {0}, *state = &state_real;
+	char	*pe = pa + (n * ES), *ws, *pr;
+	size_t	nr, nw;
 
 	// 200 items appears to be about the cross-over
 	// That 2-stage binary insertion sort holds up pretty well!
@@ -1324,44 +1420,55 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 	// kick start the process.  The idea here is to then use the
 	// initial unique values that we extract to drive use of the
 	// merge-sort algorithm, to help us find more uniques faster!
-	na = (n >> 6) + STABLE_WSRATIO;
-	nr = n - na;
-	pr = pa + (na * ES);	// Pointer to rest
+	nw = (n >> 6) + STABLE_WSRATIO;
+	nr = n - nw;
+	pr = pa + (nw * ES);	// Pointer to rest
 
 	// Determine how much workspace we're aiming for
 	size_t	wstarget = nr / STABLE_WSRATIO;
 
 	// First sort our candidate work-space chunk
-	CALL(basic_top_down_sort)(pa, na, COMMON_ARGS);
+	CALL(basic_top_down_sort)(pa, nw, COMMON_ARGS);
 
 	// Now pull out our first set of unique values
-	ws = CALL(extract_uniques)(pa, na, NULL, COMMON_ARGS);
-	if (ws > pa)
-		dups[numd++] = pa;
+	ws = CALL(extract_uniques)(pa, nw, NULL, COMMON_ARGS);
+
+	// Recalculate size of work_space after duplicates were extracted
 	nw = (pr - ws) / ES;
-	na = na - nw;
+
+	// Initialise state structure
+	state->work_space = ws;
+	state->work_size = nw;
+	state->work_sorted = true;
+	state->rest = pr;
+	state->rest_size = nr;
+	state->pe = pe;
 
 	// PA->WS is pointing at (sorted) non-uniques
 	// WS->PR is a set of uniques we can use as workspace
 	// PR->PE is everything else that we still need to sort
 
-	// If we couldn't find enough work-space we'll try up to num_tries
-	// more.  Despite this seeming excessive, with each try we're still
-	// sorting more of the array any way, so it balances out in the end.
-	for (int tries = WSTRIES; (tries > 0) && (nw < wstarget); tries--) {
-		// It can be real fun to activate the following printf and
-		// watch the unique extractor do its thing with increasingly
+	// If there were duplicates (PA->WS), then add them to the list
+	if (ws > pa)
+		CALL(add_duplicate)(state, pa, COMMON_ARGS);
+
+	// If we couldn't find enough work-space we'll keep trying until our
+	// duplicate management system fill up. Despite this seeming excessive,
+	// with each try we're still sorting more of the array any way, so in
+	// the end it all balances out.  Swings and roundabouts :)
+	while ((nw < wstarget) && (state->num_merged < MAX_DUPS)) {
+		// It can be fun to activate the following printf and watch
+		// the unique extractor do its thing with increasingly
 		// degenerate inputs.  It's possible for stable_sort() to
 		// completely sort the input in this extraction phase alone!
 #ifdef	DEBUG_UNIQUE_PROCESSING
 		printf("Not enough workspace. Wanted: %ld  Got: %ld  "
-		       "Duplicates: %ld,  Tries Remaining = %d, nr = %lu\n",
-		       wstarget, nw, (ws - pa) / es, tries, nr);
+		       "Duplicates: %ld, Remaining Items = %lu\n",
+		       wstarget, nw, (ws - pa) / es, nr);
 #endif
 		// Estimate how much of the remaining that we need to grab
 		// to get enough uniques to satsify our minimum.  First work
 		// out what the current ratio of uniques is
-		char	*nws = pr;		// New workspace candidates
 		size_t	nd = (ws - pa) / ES;	// Num Duplicates
 		double	ratio = nw;
 		ratio /= (nw + nd);		// Ratio of uniques
@@ -1383,12 +1490,14 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 		if (grab > (nr >> 3))
 			grab = nr >> 3;
 
-		// If it's trivial amounts left, just leave!
-		if (grab < 100)
-			break;
-
+		// Section off the new workspace candidates from the rest
+		char	*nws = pr;	// New workspace candidates
 		nr -= grab;
 		pr = pr + (grab * ES);
+
+		// Update state with new rest of array changes
+		state->rest = pr;
+		state->rest_size = nr;
 
 		// Determine how much work-space to use for sorting.  Doing so
 		// means we need to sort less of it afterwards, and saves time
@@ -1399,23 +1508,33 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 
 		// Our current work-space is now jumbled, so sort that too
 		CALL(merge_sort_in_place)(ws, tnw, NULL, 0, COMMON_ARGS);
+		state->work_sorted = true;
 
 		// Merge current workspace with the new set
 		CALL(shift_merge_in_place)(ws, nws, pr, COMMON_ARGS);
 
 		// We may have picked up new duplicates.  Separate them out
-		nws = CALL(extract_uniques)(ws, nw + grab, NULL, COMMON_ARGS);
-
-		// Append any duplicates to the list of duplicates.  We'll
-		// merge them together later, and then merge them back in
-		if (nws > ws)
-			dups[numd++] = ws;
-		ws = nws;
+		nws = ws;
+		ws = CALL(extract_uniques)(ws, nw + grab, NULL, COMMON_ARGS);
 		nw = (pr - ws) / ES;
+
+		// Update state with work-space changes
+		state->work_space = ws;
+		state->work_size = nw;
+
+		// Append any new duplicates to the list of duplicates.
+		if (ws > nws)
+			CALL(add_duplicate)(state, nws, COMMON_ARGS);
+
+		// Recalculate the new work-space size target.  If it's just
+		// trivial amounts of unsorted data left, then just leave!
+		// This avoid an overly degenerate merging scenario later
+		if (nr < (n >> 3))
+			break;
 		wstarget = nr / STABLE_WSRATIO;
 	}
 
-	bool	ws_sorted = true;
+	// Now sort the remaining unsorted data
 
 	// Here we will bypass the wstarget so long as nw > nr/64.  The work
 	// space based merge algorithm will still outpace the in-place merge
@@ -1427,14 +1546,11 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 	} else {
 		// Sort the remainder using the workspace we extracted
 		CALL(merge_sort_in_place)(pr, nr, ws, nw, COMMON_ARGS);
-		ws_sorted = false;
+		state->work_sorted = false;
 	}
 
-	// Now merge up all the duplicates using the work-space
-	CALL(merge_duplicates)(dups, numd, ws, nw, ws_sorted, COMMON_ARGS);
-
-	// Now merge the lot together
-	CALL(shift_merge_in_place)(pa, pr, pe, COMMON_ARGS);
+	// Now do the final merge up!
+	CALL(stable_sort_finisher)(state, COMMON_ARGS);
 } // stable_sort
 
 #undef SWAP
