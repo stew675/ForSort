@@ -16,6 +16,22 @@
 #ifndef FOR_GLOBAL_DEFS
 #define FOR_GLOBAL_DEFS
 
+static size_t
+get_split_stack_size(size_t n)
+{
+	if (n < 3)
+		return 2;
+
+	size_t sz = msb64(n);
+
+	// Stack size needs to be l(2) / l(1.25), which is ~3.1063 times the
+	// index of the most significant bit. 28/9 is 3.111.., and so it's a
+	// nice integer approximation.
+	sz = ((sz * 28) / 9) + 1;
+
+	return sz;
+} // get_split_stack_size
+
 // Uncomment to turn on debugging output for the uniques extraction and merging system
 //#define	DEBUG_UNIQUE_PROCESSING
 
@@ -226,6 +242,80 @@ NAME(block_swap)(VAR *a, VAR *b, size_t n, COMMON_PARAMS)
 } // block_swap
 
 
+// This in-place split merge algorithm started off life as a variant of ShiftMerge
+// below, but I was looking for a way to solve the multiple degenerate scenarios
+// where unbounded stack recursion could occur.  In the end, I couldn't fully
+// solve some of those without making the code complex and branch inefficient
+// and so split_merge_in_place() was born.  On purely random data, this method
+// slightly outperforms shift_merge_in_place() below, but on anything remotely
+// structured shift_merge() will quickly overtake this function, and this is
+// why split_merge() acts as a fall-back.  When shift_merge() gets bogged down.
+// then it's split_merge's time to shine!
+static void
+NAME(split_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
+{
+	assert(pb > pa);
+	assert(pe > pb);
+
+	// Check if we need to do anything at all
+	if (!IS_LT(pb, pb - ES))
+		return;
+
+	// The stack_size is * 2 due to two pointers per stack entry.  Even
+	// if we're asked to merge 2^64 items, the stack will be just 3.2KB
+	size_t	bs, ns = (pb - pa) / ES;
+	size_t	stack_size = get_split_stack_size(ns) * 2;
+	_Alignas(64) VAR *_stack[stack_size];
+	VAR	**stack = _stack, *rp, *spa;
+
+split_again:
+	bs = pb - pa;		// Determine the size of A
+
+	// Just insert merge single items. We already know that *PB < *PA
+	if (bs == ES) {
+		do {
+			SWAP(pa, pb);
+			pa = pb;
+			pb += ES;
+		} while ((pb != pe) && IS_LT(pb, pa));
+		goto split_pop;
+	}
+
+	// Split off 1/5th of the items.  Ensure that this formula can never
+	// return a 0. We're guaranteed to have at least 2 items though
+	// The imbalanced split here improves algorithmic performance.
+	ns = (((bs / ES) + 3) / 5) * ES;
+
+	// Advance the PA->PB block up as far as we can
+	for (rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
+		CALL(block_swap)(pa, pb, bs / ES, COMMON_ARGS);
+		pa += bs;
+		pb += bs;
+	}
+
+	// Split the A block into two, and keep trying with the remainder
+	spa = pa + ns;
+	if (IS_LT(pb, pb - ES)) {
+		// Push a new split point to the work stack
+		*stack++ = pa;
+		*stack++ = spa;
+
+		pa = spa;
+		goto split_again;
+	}
+
+split_pop:
+	while (stack != _stack) {
+		pb = *--stack;
+		pa = *--stack;
+
+		if (IS_LT(pb, pb - ES))
+			goto split_again;
+	}
+#undef	SPLIT_SIZE
+} // split_merge_in_place
+
+
 // Merges two sorted sub-arrays together using insertion sort
 // This is horribly inefficient for all but the smallest arrays
 static void
@@ -242,81 +332,6 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb,
 		}
 	} while ((pb != pa) && IS_LT(pb, pb - ES));
 } // insertion_merge_in_place
-
-
-// This in-place split merge algorithm started off life as a variant of ShiftMerge
-// below, but I was looking for a way to solve the multiple degenerate scenarios
-// where unbounded stack recursion could occur.  In the end, I couldn't fully
-// solve some of those without making the code complex and branch inefficient
-// and so split_merge_in_place() was born
-static void
-NAME(split_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
-{
-	assert(pb > pa);
-	assert(pe > pb);
-
-	// Check if we need to do anything at all
-	if (!IS_LT(pb, pb - ES))
-		return;
-
-	// The work stack needs to track up to 15 * log16(N) splits. Since there
-	// are 2 pointers per stack "entry", the stack size equals 30 * log16(N)
-	size_t	stack_size = 15 * (ceil_log_base_16((pb - pa) / ES) * 2);
-	_Alignas(64) VAR *_stack[stack_size];
-	VAR	**stack = _stack, *rp, *spa;
-
-	// Determine our initial split size.  Ensure a minimum of 1 element
-	// The following macro is why the stack growth is 16*log16(N)
-#define	SPLIT_SIZE		(((((pb - pa) / ES) + 15) >> 4) * ES)
-	size_t	bs, split_size = SPLIT_SIZE;
-
-split_again:
-	bs = pb - pa;		// Determine the byte-wise size of A
-
-	// Just insert merge single items. We already know that *PB < *PA
-	if (bs == ES) {
-		do {
-			SWAP(pa, pb);  pa = pb;  pb += ES;
-		} while ((pb != pe) && IS_LT(pb, pa));
-		goto split_pop;
-	}
-
-	// Advance the PA->PB block up as far as we can
-	for (rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, bs / ES, COMMON_ARGS);
-		pa += bs;
-		pb += bs;
-	}
-
-	// Split the A block into two, and keep trying with remainder
-	// The imbalanced split here improves algorithmic performance.
-	rp = pb - ES;
-	spa = pa + split_size;
-	if (IS_LT(pb, rp)) {
-		// Keep our split point within limits
-		VAR	*which[2] = {spa, rp};
-		spa = which[!!(spa > rp)];
-
-		// Push a new split point to the work stack
-		*stack++ = pa;
-		*stack++ = spa;
-
-		pa = spa;
-		goto split_again;
-	}
-
-split_pop:
-	while (stack != _stack) {
-		pb = *--stack;
-		pa = *--stack;
-
-		if (IS_LT(pb, pb - ES)) {
-			split_size = SPLIT_SIZE;
-			goto split_again;
-		}
-	}
-#undef	SPLIT_SIZE
-} // split_merge_in_place
 
 
 // This is what everything is based on, and I call it shift_merge_in_place()
@@ -336,7 +351,7 @@ NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	assert(pe > pb);
 
 #if LOW_STACK
-	return CALL(split_merge_in_place)(ws, nws, pr, COMMON_ARGS);
+	return CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 #endif
 
 #define	SHIFT_STACK_PUSH(s1, s2, s3) 	\
@@ -346,9 +361,8 @@ NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	{ s3 = *--stack; s2 = *--stack; s1 = *--stack; }
 
 	// The work stack holds 3 pointers per "position" and so the multiplier
-	// here must be an even multiple of 3.  20 positions per log_base16 of
-	// the size of the array being merged should be more than enough
-	size_t	stack_size = 20 * (ceil_log_base_16((pb - pa) / ES) * 3);
+	// here must be an even multiple of 3.
+	size_t	stack_size = get_split_stack_size((pb - pa) / ES) * 6;
 	_Alignas(64) VAR *_stack[stack_size];
 	VAR	**stack = _stack, **maxstack = stack + stack_size;
 	VAR	*rp, *sp;	// Roaming-Pointer, and Split Pointer
@@ -405,6 +419,7 @@ shift_again:
 	if (unlikely(rp > pe)) {
 		if (pb == pe)
 			goto shift_pop;
+
 		// Adjust the block size to account for the end limit
 		bs = pe - pb;
 	}
@@ -529,7 +544,7 @@ static void
 NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
 #if LOW_STACK
-	return CALL(basic_bottom_up_sort)(pa, na, COMMON_ARGS);
+	return CALL(basic_bottom_up_sort)(pa, n, COMMON_ARGS);
 #endif
 	// Handle small array size inputs with insertion sort
 	// Ensure there's no way na and nb could be zero

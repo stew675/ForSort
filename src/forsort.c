@@ -119,9 +119,9 @@
 // is observed to perform about 5-10% better than a 1:1 ratio.  Since the
 // stable merge-in-place algorithm relies heavily on this basic sort to form
 // its initial working sets, it's best that this skew ratio is managed
-// independently from the main merge-sort skew.  Experimentally, a 19:81
+// independently from the main merge-sort skew.  Experimentally, a 20:80
 // split appears to offer the best overall performance.
-#define	BASIC_SKEW		19
+#define	BASIC_SKEW		20
 
 // WSRATIO defines the split ratio when choosing how much of the array to
 // use as a makeshift workspace when no workspace is provided
@@ -189,6 +189,29 @@ get_swap_type (void *const pbase, size_t size)
 } // get_swap_type
 
 
+// The get index of the most significant bit of a 64 bit value
+static int
+msb64(uint64_t v)
+{
+	static const uint64_t dbm64 = (uint64_t)0x03f79d71b4cb0a89;
+	static const uint8_t dbi64[64] = {
+		 0, 47,  1, 56, 48, 27,  2, 60, 57, 49, 41, 37, 28, 16,  3, 61,
+		54, 58, 35, 52, 50, 42, 21, 44, 38, 32, 29, 23, 17, 11,  4, 62,
+		46, 55, 26, 59, 40, 36, 15, 53, 34, 51, 20, 43, 31, 22, 10, 45,
+		25, 39, 14, 33, 19, 30,  9, 24, 13, 18,  8, 12,  7,  6,  5, 63
+	};
+
+	if (!v)
+		return -1;
+	v |= v >> 1;
+	v |= v >> 2;
+	v |= v >> 4;
+	v |= v >> 8;
+	v |= v >> 16;
+	v |= v >> 32;
+	return dbi64[(v * dbm64) >> 58];
+}
+
 #if 0
 // A relatively quick integer square root estimator.  Borrowed
 // from here: https://stackoverflow.com/a/31120562/16534062
@@ -203,7 +226,6 @@ isqrt(size_t val) {
 	} while (b >>= 1);
 	return g;
 } // isqrt
-#endif
 
 
 static inline size_t
@@ -215,7 +237,7 @@ ceil_log_base_16(size_t n)
 
 	return (result + !result);	// Don't return a 0
 } // ceil_log_base_16
-
+#endif
 
 extern void print_array(void *a, size_t n);
 
