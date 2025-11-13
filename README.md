@@ -146,8 +146,18 @@ ForSort is fast.  Here's a comparison of the time taken to sort 10,000,000
 random items on a stock AMD 9800X3D CPU
 
 ```
+SET SIZE         SIZE IN BYTES
+100                  0.8KB
+1000                 7.8KB
+10000               78.1KB
+100000             781.3KB
+1000000              7.6MB
+10000000            76.3MB
+100000000          762.9MB
+
+
         ALGORITHM                    TIME (us)      COMPARES      ns/item
-ForSort Workspace Stable**
+ForSort Workspace Stable[2]
 100                                      2.291           653       22.909
 1000                                    27.052          9707       27.052
 10000                                  329.862        131803       32.986
@@ -165,14 +175,14 @@ ForSort No Workspace Unstable
 10000000                            558282.486     228692890       55.828
 100000000                          6378674.653    2589479599       63.787
 
-ForSort In-Place Stable
-100               0.8KB                  2.807           840       28.075
-1000              7.8KB                 34.406         10871       34.406
-10000            78.1KB                391.139        141504       39.114
-100000          781.3KB               4624.911       1727402       46.249
-1000000           7.6MB              52184.073      20575940       52.184
-10000000         76.3MB             588740.639     239222227       58.874
-100000000       762.9MB            6800782.635    2695845640       68.008
+ForSort In-Place Stable[3]
+100                                      2.807           840       28.075
+1000                                    34.406         10871       34.406
+10000                                  391.139        141504       39.114
+100000                                4624.911       1727402       46.249
+1000000                              52184.073      20575940       52.184
+10000000                            588740.639     239222227       58.874
+100000000                          6800782.635    2695845640       68.008
 
 GrailSort In-Place
 100                                      3.307           737       33.070
@@ -183,9 +193,23 @@ GrailSort In-Place
 10000000                            855741.627     236963320       85.574
 100000000                          9875848.604    2654994928       98.758
 
-Bentley/McIlroy QuickSort           0.938s        237.131
+Bentley/McIlroy QuickSort[4]
+100                                      2.806           645       28.058
+1000                                    41.885         10086       41.885
+10000                                  550.891        137010       55.089
+100000                                6916.392       1731463       69.164
+1000000                              81977.499      20939385       81.997
+10000000                            954227.635     245055932       95.423
+100000000                         10684189.113    2815097308      106.842
 
-WikiSort                            0.994s        266.882
+WikiSort
+100                                      2.498           617       24.976
+1000                                    37.136          9510       37.136
+10000                                  565.754        143339       56.575
+100000                                6976.635       1828539       69.766
+1000000                              82802.634      22370423       82.803
+10000000                           1001843.271     266856384      100.184
+100000000                         11670357.929    3064025483      116.704
 
 TimSort
 100                                      2.793           537       27.925
@@ -196,15 +220,31 @@ TimSort
 10000000                           1043981.163     213810995      104.398
 100000000                         11970582.053    2435410172      119.706
 
-GLibC Qsort                         1.103s        220.067
+GLibC Qsort
+100                                      3.251           540       32.506
+1000                                    48.424          8703       48.424
+10000                                  647.427        120413       64.743
+100000                                7627.884       1536078       76.279
+1000000                              90712.621      18672439       90.714
+10000000                           1080529.754     220068878      108.053
+100000000                         12415113.613    2532644915      124.151
 
-ForSort Basic*                      1.488s        374.199
+ForSort Basic[1]
+100                                      3.134           832       31.342
+1000                                    56.056         14329       56.056
+10000                                  798.514        202673       79.851
+100000                               10380.701       2605785      103.807
+1000000                             126564.877      31763249      126.565
+10000000                           1498201.608     374313526      149.820
+100000000                         17555403.126    4308330381      175.554
 
-*   This is the raw ForSort merge algorithm implemented in its most basic manner
-    It is sort-stable and in-place, but isn't using any techniques to speed it up.
-**  This is the Unstable Algorithm, but given a workspace of 12.5% (ie. 1/8th) of
-    the size of the data to be sorted, which makes the algorithm be Sort Stable.
-*** Forsort In-Place Stable uses Insertion Sort Only up to 200 items
+NOTES:
+[1]   This is the raw ForSort merge algorithm implemented in its most basic manner
+      It is sort-stable and in-place, but isn't using any techniques to speed it up.
+[2]    This is the Unstable Algorithm, but given a workspace of 12.5% (ie. 1/8th) of
+      the size of the data to be sorted, which makes the algorithm be Sort Stable.
+[3]   Forsort In-Place Stable uses Insertion Sort Only up to 79 items
+[4]   Bentley required gcc for best results, all other algorithms were fastest with clang
 ```
 
 What about on mostly sorted data sets?
