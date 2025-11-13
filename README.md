@@ -143,24 +143,65 @@ factor of 5%, with the data set then reversed.
 # Speed and Comparisons Efficiency
 
 ForSort is fast.  Here's a comparison of the time taken to sort 10,000,000
-random items on an AMD 9800X3D CPU
+random items on a stock AMD 9800X3D CPU
 
 ```
-        ALGORITHM                    TIME       COMPARES (M)
-ForSort Workspace Stable**          0.530s        224.526
-ForSort No Workspace Unstable       0.555s        228.655
-ForSort In-Place Stable             0.581s        238.844
+        ALGORITHM                    TIME (us)      COMPARES      ns/item
+ForSort Workspace Stable**
+100                                      2.291           653       22.909
+1000                                    27.052          9707       27.052
+10000                                  329.862        131803       32.986
+100000                                4051.666       1613995       40.517
+1000000                              46621.897      19269046       46.622
+10000000                            528303.381     224527023       52.830
+100000000                          6093108.276    2522421876       60.931
+
+ForSort No Workspace Unstable
+100                                      2.381           679       23.806
+100                                     30.843         10168       30.843
+10000000                            558282.486     228692890       55.828
+100000000                          6378674.653    2589479599       63.787
+
+ForSort In-Place Stable
+100               0.8KB                  2.807           840       28.075
+1000              7.8KB                 34.406         10871       34.406
+10000            78.1KB                391.139        141504       39.114
+100000          781.3KB               4624.911       1727402       46.249
+1000000           7.6MB              52184.073      20575940       52.184
+10000000         76.3MB             588740.639     239222227       58.874
+100000000       762.9MB            6800782.635    2695845640       68.008
+
 GrailSort In-Place                  0.836s        236.936
+100                                      3.307           737       33.070
+1000                                    41.818         10506       41.818
+10000                                  519.894        138630       51.989
+100000                                6188.937       1692312       61.889
+1000000                              71349.709      20161613       71.350
+10000000                            855741.627     236963320       85.574
+100000000                          9875848.604    2654994928       98.758
+
 Bentley/McIlroy QuickSort           0.938s        237.131
+
 WikiSort                            0.994s        266.882
+
+TimSort
+100                                      2.793           537       27.925
+1000                                    43.526          8680       43.526
+10000                                  588.039        120355       58.804
+100000                                7318.092       1531074       73.181
+1000000                              88016.397      18299349       88.016
+10000000                           1043981.163     213810995      104.398
+100000000                         11970582.053    2435410172      119.706
+
 GLibC Qsort                         1.103s        220.067
-TimSort                             1.041s        213.811
+
 ForSort Basic*                      1.488s        374.199
 
-*  This is the raw ForSort merge algorithm implemented in its most basic manner
-   It is sort-stable and in-place, but isn't using any techniques to speed it up.
-** This is the Unstable Algorithm, but given a workspace of 25% of the size of the
-   data to be sorted, which makes the algorithm be Sort Stable.
+*   This is the raw ForSort merge algorithm implemented in its most basic manner
+    It is sort-stable and in-place, but isn't using any techniques to speed it up.
+**  This is the Unstable Algorithm, but given a workspace of 12.5% (ie. 1/8th) of
+    the size of the data to be sorted, which makes the algorithm be Sort Stable.
+*** Forsort In-Place Stable uses Insertion Sort Only up to 200 items
 ```
 
 What about on mostly sorted data sets?
