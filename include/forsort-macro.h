@@ -16,22 +16,6 @@
 #ifndef FOR_GLOBAL_DEFS
 #define FOR_GLOBAL_DEFS
 
-static size_t
-get_split_stack_size(size_t n)
-{
-	if (n < 3)
-		return 2;
-
-	size_t sz = msb64(n);
-
-	// Stack size needs to be l(2) / l(1.25), which is ~3.1063 times the
-	// index of the most significant bit. 28/9 is 3.111.., and so it's a
-	// nice integer approximation.
-	sz = ((sz * 28) / 9) + 1;
-
-	return sz;
-} // get_split_stack_size
-
 // Uncomment to turn on debugging output for the uniques extraction and merging system
 //#define	DEBUG_UNIQUE_PROCESSING
 
@@ -241,6 +225,24 @@ NAME(block_swap)(VAR *a, VAR *b, size_t n, COMMON_PARAMS)
 	}
 } // block_swap
 
+#ifndef GET_SPLIT_STACK_SIZE
+#define GET_SPLIT_STACK_SIZE
+static size_t
+get_split_stack_size(size_t n)
+{
+	if (n < 3)
+		return 2;
+
+	size_t sz = msb64(n);
+
+	// Stack size needs to be l(2) / l(1.25), which is ~3.1063 times the
+	// index of the most significant bit. 28/9 is 3.111.., and so it's a
+	// nice integer approximation.
+	sz = ((sz * 28) / 9) + 1;
+
+	return sz;
+} // get_split_stack_size
+#endif
 
 // This in-place split merge algorithm started off life as a variant of ShiftMerge
 // below, but I was looking for a way to solve the multiple degenerate scenarios
@@ -377,6 +379,7 @@ shift_again:
 	// resilient, algorithm that handles degenerate scenarios without issue
 	// If the stack is large enough, this should almost never ever happen
 	if (unlikely(stack == maxstack)) {
+		printf("Stack Overflow\n");
 		CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 		goto shift_pop;
 	}
@@ -420,8 +423,25 @@ shift_again:
 		if (pb == pe)
 			goto shift_pop;
 
+#if 0
+		if (!is_lt(pb, pb - ES))
+			goto shift_pop;
+		while (!is_lt(pe - ES, pb - ES))
+			pe -= ES;
+		for (rp = pb; (rp < pe) && is_lt(rp, pa); rp += ES);
+		CALL(block_rotate)(pa, pb, pe, COMMON_ARGS);
+		if (rp == pe)
+			goto shift_pop;
+		pa = pa + (rp - pb);
+		pb = rp;
+#endif
+
 		// Adjust the block size to account for the end limit
 		bs = pe - pb;
+		if (bs > (pb - pa)) {
+			printf("True\n");
+			bs = (pb - pa);
+		}
 	}
 
 	// Find spot within PA->PB to split it at.  This means finding
