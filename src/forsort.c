@@ -254,13 +254,13 @@ forsort_basic(void *a, const size_t n, const size_t es,
 	int     swaptype = get_swap_type(a, es);
 	
 	if (swaptype == SWAP_WORDS_64) {
-		basic_top_down_sort_8(a, n, COMMON_ARGS);
+		basic_top_down_sort_8((char *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_32) {
-		basic_top_down_sort_4(a, n, COMMON_ARGS);
+		basic_top_down_sort_4((char *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_128) {
-		basic_top_down_sort_16(a, n, COMMON_ARGS);
+		basic_top_down_sort_16((char *)a, n, COMMON_ARGS);
 	} else {
-		basic_top_down_sort_es(a, n, COMMON_ARGS);
+		basic_top_down_sort_es((char *)a, n, COMMON_ARGS);
 	}
 } // forsort_basic
 	
@@ -272,13 +272,13 @@ forsort_stable(void *a, const size_t n, const size_t es,
 	int     swaptype = get_swap_type(a, es);
 		
 	if (swaptype == SWAP_WORDS_64) {
-		stable_sort_8(a, n, COMMON_ARGS);
+		stable_sort_8((char *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_32) {
-		stable_sort_4(a, n, COMMON_ARGS);
+		stable_sort_4((char *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_128) {
-		stable_sort_16(a, n, COMMON_ARGS);
+		stable_sort_16((char *)a, n, COMMON_ARGS);
 	} else {
-		stable_sort_es(a, n, COMMON_ARGS);
+		stable_sort_es((char *)a, n, COMMON_ARGS);
 	}
 } // forsort_simple     
 			
@@ -301,13 +301,13 @@ forsort_inplace(void *a, const size_t n, const size_t es,
 	}
 
 	if (swaptype == SWAP_WORDS_64) {
-		merge_sort_in_place_8(a, n, workspace, worksize / es, COMMON_ARGS);
+		merge_sort_in_place_8((char *)a, n, (char *)workspace, worksize / es, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_32) {
-		merge_sort_in_place_4(a, n, workspace, worksize / es, COMMON_ARGS);
+		merge_sort_in_place_4((char *)a, n, (char *)workspace, worksize / es, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_128) {
-		merge_sort_in_place_16(a, n, workspace, worksize / es, COMMON_ARGS);
+		merge_sort_in_place_16((char *)a, n, (char *)workspace, worksize / es, COMMON_ARGS);
 	} else {
-		merge_sort_in_place_es(a, n, workspace, worksize / es, COMMON_ARGS);
+		merge_sort_in_place_es((char *)a, n, (char *)workspace, worksize / es, COMMON_ARGS);
 	}
 
 	if (dynamic && (workspace != NULL))

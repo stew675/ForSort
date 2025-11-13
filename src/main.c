@@ -61,7 +61,7 @@ enum {
 };
 
 static	int	sorttype = SORT_UNKNOWN;
-static	char	*sortname = NULL;
+static	const char	*sortname = NULL;
 
 static int __attribute__((noinline))
 wiki_compare(struct item p1, struct item p2)
@@ -152,7 +152,7 @@ get_cycles()
 }
 
 static void
-usage(char *prog, char *msg)
+usage(char *prog, const char *msg)
 {
 	fprintf(stderr, "\nError: %s\n", msg);
 	fprintf(stderr, "\nUsage: %s [options] <sorttype> <num>\n", prog);
