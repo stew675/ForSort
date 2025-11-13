@@ -6,3 +6,5 @@ gmon.out
 *.gcov
 *.gcda
 *.gcno
+c++
+tt
