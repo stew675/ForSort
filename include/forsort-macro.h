@@ -821,23 +821,25 @@ NAME(merge_right)(char *a, size_t na, char *b, size_t nb,
 			sprint -= !!(sprint > 2);
 
 			// Stuff from A/workspace is sprinting
-			char	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
-			a_run = (tw - w) / ES;
 			if (a_run) {
+				char	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
+				a_run = (tw - w) / ES;
 				for (size_t num = a_run; num--; w += ES, a += ES)
 					SWAP(a, w);
 				if (w >= pw)
 					break;
+				b_run += !b_run;
 			}
 
 			// Stuff from B is sprinting
-			char	*tb = CALL(sprint_left)(b, pe, w, LEAP_RIGHT, COMMON_ARGS);
-			b_run = (tb - b) / ES;
 			if (b_run) {
+				char	*tb = CALL(sprint_left)(b, pe, w, LEAP_RIGHT, COMMON_ARGS);
+				b_run = (tb - b) / ES;
 				for (size_t num = b_run; num--; b += ES, a += ES)
 					SWAP(a, b);
 				if (b >= pe)
 					break;
+				a_run += !a_run;
 			}
 		} while ((a_run >= SPRINT_ACTIVATE) || (b_run >= SPRINT_ACTIVATE));
 
@@ -1108,8 +1110,7 @@ NAME(extract_unique_sub)(char * const a, char * const pe, char *ph, COMMON_PARAM
 		if (IS_LT(pa - ES, pa))
 			continue;
 
-		// The item before our position is a duplicate
-		// Mark it, and then find the end of the run
+		// The item before our position is a duplicate.  Mark it.
 		char *dp = pa - ES;
 
 		// Now find the end of the run of duplicates
