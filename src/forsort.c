@@ -219,20 +219,19 @@ ceil_log_base_16(size_t n)
 
 extern void print_array(void *a, size_t n);
 
-
-#define ES 16
+#define ES 1
 #define	VAR xb16_t
 #include "forsort-macro.h"
 #undef VAR
 #undef ES
 
-#define ES 8
+#define ES 1
 #define	VAR uint64_t
 #include "forsort-macro.h"
 #undef VAR
 #undef ES
 
-#define ES 4
+#define ES 1
 #define	VAR uint32_t
 #include "forsort-macro.h"
 #undef VAR
@@ -246,7 +245,6 @@ extern void print_array(void *a, size_t n);
 #undef VAR
 #undef ES
 
-
 void	    
 forsort_basic(void *a, const size_t n, const size_t es,
 	int (*is_lt)(const void *, const void *))
@@ -254,13 +252,13 @@ forsort_basic(void *a, const size_t n, const size_t es,
 	int     swaptype = get_swap_type(a, es);
 	
 	if (swaptype == SWAP_WORDS_64) {
-		basic_top_down_sort_8((char *)a, n, COMMON_ARGS);
+		basic_top_down_sort_uint64_t((uint64_t *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_32) {
-		basic_top_down_sort_4((char *)a, n, COMMON_ARGS);
+		basic_top_down_sort_uint32_t((uint32_t *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_128) {
-		basic_top_down_sort_16((char *)a, n, COMMON_ARGS);
+		basic_top_down_sort_xb16_t((xb16_t *)a, n, COMMON_ARGS);
 	} else {
-		basic_top_down_sort_es((char *)a, n, COMMON_ARGS);
+		basic_top_down_sort_char((char *)a, n, COMMON_ARGS);
 	}
 } // forsort_basic
 	
@@ -272,13 +270,13 @@ forsort_stable(void *a, const size_t n, const size_t es,
 	int     swaptype = get_swap_type(a, es);
 		
 	if (swaptype == SWAP_WORDS_64) {
-		stable_sort_8((char *)a, n, COMMON_ARGS);
+		stable_sort_uint64_t((uint64_t *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_32) {
-		stable_sort_4((char *)a, n, COMMON_ARGS);
+		stable_sort_uint32_t((uint32_t *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_128) {
-		stable_sort_16((char *)a, n, COMMON_ARGS);
+		stable_sort_xb16_t((xb16_t *)a, n, COMMON_ARGS);
 	} else {
-		stable_sort_es((char *)a, n, COMMON_ARGS);
+		stable_sort_char((char *)a, n, COMMON_ARGS);
 	}
 } // forsort_simple     
 			
@@ -301,13 +299,13 @@ forsort_inplace(void *a, const size_t n, const size_t es,
 	}
 
 	if (swaptype == SWAP_WORDS_64) {
-		merge_sort_in_place_8((char *)a, n, (char *)workspace, worksize / es, COMMON_ARGS);
+		merge_sort_in_place_uint64_t((uint64_t *)a, n, (uint64_t *)workspace, worksize / es, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_32) {
-		merge_sort_in_place_4((char *)a, n, (char *)workspace, worksize / es, COMMON_ARGS);
+		merge_sort_in_place_uint32_t((uint32_t *)a, n, (uint32_t *)workspace, worksize / es, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_128) {
-		merge_sort_in_place_16((char *)a, n, (char *)workspace, worksize / es, COMMON_ARGS);
+		merge_sort_in_place_xb16_t((xb16_t *)a, n, (xb16_t *)workspace, worksize / es, COMMON_ARGS);
 	} else {
-		merge_sort_in_place_es((char *)a, n, (char *)workspace, worksize / es, COMMON_ARGS);
+		merge_sort_in_place_char((char *)a, n, (char *)workspace, worksize / es, COMMON_ARGS);
 	}
 
 	if (dynamic && (workspace != NULL))

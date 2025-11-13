@@ -10,7 +10,7 @@
 
 #define CONCAT(x, y) x ## _ ## y
 #define MAKE_STR(x, y) CONCAT(x,y)
-#define NAME(x) MAKE_STR(x, ES)
+#define NAME(x) MAKE_STR(x, VAR)
 #define CALL(x) NAME(x)
 
 #ifndef FOR_GLOBAL_DEFS
@@ -40,22 +40,23 @@ enum {
 // With a MAX_DUPS value of 26, if the data set is so degenerate as to fill up
 // the duplicates table, then dropping out and sorting is trivially fast
 #define	MAX_DUPS 26
+#endif	// FOR_GLOBAL_DEFS
+
+
 // A structure to manage the state of the stable sort algorithm
-struct stable_state {
+struct NAME(stable_state) {
 	// All sizes are in numbers of entries, not bytes
-	char	*merged_dups[MAX_DUPS + 1];	// Merged up duplicates
+	VAR	*merged_dups[MAX_DUPS + 1];	// Merged up duplicates
 	size_t	num_merged;			// No. of merged duplicate entries
-	char	*free_dups[MAX_DUPS];		// Unmerged duplicates
+	VAR	*free_dups[MAX_DUPS];		// Unmerged duplicates
 	size_t	num_free;			// No. of unmerged duplicate entries
-	char	*work_space;			// Work Space
+	VAR	*work_space;			// Work Space
 	size_t	work_size;			// Size of work space
 	bool	work_sorted;			// If work-space is sorted or not
-	char	*rest;				// Rest of the main array
+	VAR	*rest;				// Rest of the main array
 	size_t	rest_size;			// Size of the rest
-	char	*pe;				// End of main array
+	VAR	*pe;				// End of main array
 };
-
-#endif	// FOR_GLOBAL_DEFS
 
 
 //---------------------------------------------------------------------------//
@@ -71,7 +72,7 @@ memswap(void * restrict p1, void * restrict p2, size_t n)
 {
 	enum { SWAP_GENERIC_SIZE = 32 };
 
-	unsigned char tmp[SWAP_GENERIC_SIZE];
+	unsigned VAR tmp[SWAP_GENERIC_SIZE];
 
 	while (n > SWAP_GENERIC_SIZE) {
 		mempcpy(tmp, p1, SWAP_GENERIC_SIZE);
@@ -80,23 +81,23 @@ memswap(void * restrict p1, void * restrict p2, size_t n)
 		n -= SWAP_GENERIC_SIZE;
 	}
 	while (n > 0) {
-		unsigned char t = ((unsigned char *)p1)[--n];
-		((unsigned char *)p1)[n] = ((unsigned char *)p2)[n];
-		((unsigned char *)p2)[n] = t;
+		unsigned VAR t = ((unsigned VAR *)p1)[--n];
+		((unsigned VAR *)p1)[n] = ((unsigned VAR *)p2)[n];
+		((unsigned VAR *)p2)[n] = t;
 	}
 } // memswap
 
-#define	SWAP(_xa_, _xb_)	memswap((_xa_), (_xb_), es)
+#define	SWAP(_xa_, _xb_)	memswap((_xa_), (_xb_), ES)
 
 static void
-NAME(insertion_sort)(char *pa, const size_t n, COMMON_PARAMS)
+NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
-	char	*pe = pa + (n * es);
+	VAR	*pe = pa + (n * ES);
 
-	for (char *ta = pa + es; ta != pe; ta += es)
-		for (char *tb = ta; tb != pa && IS_LT(tb, tb - es); tb -= es)
-			SWAP(tb, tb - es);
-} // insertion_sort_es
+	for (VAR *ta = pa + ES; ta != pe; ta += ES)
+		for (VAR *tb = ta; tb != pa && IS_LT(tb, tb - ES); tb -= ES)
+			SWAP(tb, tb - ES);
+} // insertion_sort_char
 
 #else
 
@@ -117,10 +118,10 @@ NAME(insertion_sort)(char *pa, const size_t n, COMMON_PARAMS)
 	}
 
 static void
-NAME(insertion_sort)(char *a, const size_t n, COMMON_PARAMS)
+NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 {
 	VAR *pa = (VAR *)a;
-	VAR *ta = pa + 1;
+	VAR *ta = pa + ES;
 	VAR *pe = pa + n;
 
 	if (n > BINARY_INSERTION_MIN)
@@ -128,11 +129,11 @@ NAME(insertion_sort)(char *a, const size_t n, COMMON_PARAMS)
 
 	// Regular insertion sort for first BINARY_INSERTION_MIN items
 	for ( ; ta != pe; ta++) {
-		if (IS_LT(ta, ta - 1)) {
-			VAR t[1] = {*ta}, *tb = ta;
+		if (IS_LT(ta, ta - ES)) {
+			VAR t[ES] = {*ta}, *tb = ta;
 			do {
-				*tb = *(tb - 1);
-			} while ((--tb != pa) && IS_LT(t, tb - 1));
+				*tb = *(tb - ES);
+			} while ((--tb != pa) && IS_LT(t, tb - ES));
 			*tb = *t;
 		}
 	}
@@ -143,11 +144,11 @@ NAME(insertion_sort)(char *a, const size_t n, COMMON_PARAMS)
 	// Now use binary insertion sort to place the elements
 	// from the second set into the first
 	for (pe = pa + n; ta != pe; ta++) {
-		if (IS_LT(ta, ta - 1)) {
+		if (IS_LT(ta, ta - ES)) {
 			// Find where to insert it
-			size_t min = 0, max = (ta - pa) - 1;
+			size_t min = 0, max = (ta - pa) - ES;
 			size_t pos = max >> 1;
-			VAR *tb = pa + pos, *tc = ta, t = *ta;
+			VAR *tb = pa + (pos * ES), *tc = ta, t = *ta;
 
 			while (min < max) {
 				// The following 3 lines implement
@@ -161,10 +162,10 @@ NAME(insertion_sort)(char *a, const size_t n, COMMON_PARAMS)
 				min = (min * result) + ((pos + 1) * !result);
 
 				pos = (min + max) >> 1;
-				tb = pa + pos;
+				tb = pa + (pos * ES);
 			}
 			for (size_t num = (ta - tb); num--; tc--)
-				*tc = *(tc - 1);
+				*tc = *(tc - ES);
 			*tb = t;
 		}
 	}
@@ -177,10 +178,10 @@ NAME(insertion_sort)(char *a, const size_t n, COMMON_PARAMS)
 
 // Debug sort check testing
 static void
-NAME(test_sorted)(char *pa, size_t n, COMMON_PARAMS)
+NAME(test_sorted)(VAR *pa, size_t n, COMMON_PARAMS)
 {
-	char	*pe = pa + (n * ES);
-	for (char *sp = pa + ES; sp < pe; sp += ES)
+	VAR	*pe = pa + (n * ES);
+	for (VAR *sp = pa + ES; sp < pe; sp += ES)
 		if (IS_LT(sp, sp - ES)) {
 			print_array(pa, n);
 			printf("Section isn't sorted\n");
@@ -193,19 +194,19 @@ NAME(test_sorted)(char *pa, size_t n, COMMON_PARAMS)
 // Basically my version of the well known Block Rotate() functionality
 // that avoids the use of explicit, or implicit, division or multiplication
 static void
-NAME(block_rotate)(char *a, char *b, char *e, COMMON_PARAMS)
+NAME(block_rotate)(VAR *a, VAR *b, VAR *e, COMMON_PARAMS)
 {
 	size_t	gapa = b - a, gapb = e - b;
 	while (gapa && gapb) {
 		if (gapa < gapb) {
 			// s = source, d = destination
 			// (Not that source and dest make sense when swapping)
-			for (char *s = a, *d = a + gapb; d != e; s += ES, d += ES)
+			for (VAR *s = a, *d = a + gapb; d != e; s += ES, d += ES)
 				SWAP(s, d);
 			e -= gapa;
 			gapb = e - b;
 		} else {
-			for (char *s = b, *d = a; s != e; s += ES, d += ES)
+			for (VAR *s = b, *d = a; s != e; s += ES, d += ES)
 				SWAP(s, d);
 			a += gapb;
 			gapa = b - a;
@@ -215,7 +216,7 @@ NAME(block_rotate)(char *a, char *b, char *e, COMMON_PARAMS)
 
 
 static void __attribute__((noinline))
-NAME(block_swap)(char *a, char *b, size_t n, COMMON_PARAMS)
+NAME(block_swap)(VAR *a, VAR *b, size_t n, COMMON_PARAMS)
 {
 	while (n--) {
 		SWAP(a, b);
@@ -228,10 +229,10 @@ NAME(block_swap)(char *a, char *b, size_t n, COMMON_PARAMS)
 // Merges two sorted sub-arrays together using insertion sort
 // This is horribly inefficient for all but the smallest arrays
 static void
-NAME(insertion_merge_in_place)(char * restrict pa, char * restrict pb,
-			 char * restrict pe, COMMON_PARAMS)
+NAME(insertion_merge_in_place)(VAR * pa, VAR * pb,
+			 VAR * pe, COMMON_PARAMS)
 {
-	char	*tb = pe;
+	VAR	*tb = pe;
 
 	do {
 		pe = tb - ES; tb = pb - ES; pb = tb;
@@ -249,7 +250,7 @@ NAME(insertion_merge_in_place)(char * restrict pa, char * restrict pb,
 // solve some of those without making the code complex and branch inefficient
 // and so split_merge_in_place() was born
 static void
-NAME(split_merge_in_place)(char *pa, char *pb, char *pe, COMMON_PARAMS)
+NAME(split_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
 	assert(pb > pa);
 	assert(pe > pb);
@@ -261,8 +262,8 @@ NAME(split_merge_in_place)(char *pa, char *pb, char *pe, COMMON_PARAMS)
 	// The work stack needs to track up to 15 * log16(N) splits. Since there
 	// are 2 pointers per stack "entry", the stack size equals 30 * log16(N)
 	size_t	stack_size = 15 * (ceil_log_base_16((pb - pa) / ES) * 2);
-	_Alignas(64) char *_stack[stack_size];
-	char	**stack = _stack, *rp, *spa;
+	_Alignas(64) VAR *_stack[stack_size];
+	VAR	**stack = _stack, *rp, *spa;
 
 	// Determine our initial split size.  Ensure a minimum of 1 element
 	// The following macro is why the stack growth is 16*log16(N)
@@ -293,7 +294,7 @@ split_again:
 	spa = pa + split_size;
 	if (IS_LT(pb, rp)) {
 		// Keep our split point within limits
-		char	*which[2] = {spa, rp};
+		VAR	*which[2] = {spa, rp};
 		spa = which[!!(spa > rp)];
 
 		// Push a new split point to the work stack
@@ -329,7 +330,7 @@ split_pop:
 //
 // Assumes NA and NB are greater than zero
 static void
-NAME(shift_merge_in_place)(char *pa, char *pb, char *pe, COMMON_PARAMS)
+NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
 	assert(pb > pa);
 	assert(pe > pb);
@@ -348,9 +349,9 @@ NAME(shift_merge_in_place)(char *pa, char *pb, char *pe, COMMON_PARAMS)
 	// here must be an even multiple of 3.  20 positions per log_base16 of
 	// the size of the array being merged should be more than enough
 	size_t	stack_size = 20 * (ceil_log_base_16((pb - pa) / ES) * 3);
-	_Alignas(64) char *_stack[stack_size];
-	char	**stack = _stack, **maxstack = stack + stack_size;
-	char	*rp, *sp;	// Roaming-Pointer, and Split Pointer
+	_Alignas(64) VAR *_stack[stack_size];
+	VAR	**stack = _stack, **maxstack = stack + stack_size;
+	VAR	*rp, *sp;	// Roaming-Pointer, and Split Pointer
 	size_t	bs;		// Byte-wise block size of pa->pb
 
 	// For whoever calls us, check if we need to do anything at all
@@ -442,7 +443,7 @@ shift_again:
 
 	// Do a single shift at the split point
 	// The compiler optimiser REALLY doesn't like us calling block_swap here
-	for (char *ta = sp, *tb = pb; ta != pb; ta += ES, tb += ES)
+	for (VAR *ta = sp, *tb = pb; ta != pb; ta += ES, tb += ES)
 		SWAP(ta, tb);
 
 	// PB->RP is the top part of A that was split, and  RP->PE is the rest
@@ -477,22 +478,22 @@ shift_pop:
 
 // Classic bottom-up merge sort
 static void
-NAME(basic_bottom_up_sort)(char *pa, const size_t n, COMMON_PARAMS)
+NAME(basic_bottom_up_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
 	// Handle small array size inputs with insertion sort
 	if (n < (INSERT_SORT_MAX * 2))
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
-	char	*pe = pa + (n * ES);
+	VAR	*pe = pa + (n * ES);
 
 	do {
 		size_t	bound = n - (n % INSERT_SORT_MAX);
-		char	*bpe = pa + (bound * ES);
+		VAR	*bpe = pa + (bound * ES);
 
 		// First just do insert sorts on all with size INSERT_SORT_MAX
-		for (char *pos = pa; pos != bpe; pos += (INSERT_SORT_MAX * ES)) {
-			char	*stop = pos + (INSERT_SORT_MAX * ES);
-			for (char *ta = pos + ES, *tb; ta != stop; ta += ES)
+		for (VAR *pos = pa; pos != bpe; pos += (INSERT_SORT_MAX * ES)) {
+			VAR	*stop = pos + (INSERT_SORT_MAX * ES);
+			for (VAR *ta = pos + ES, *tb; ta != stop; ta += ES)
 				for (tb = ta; tb != pos && IS_LT(tb, tb - ES); tb -= ES)
 					SWAP(tb, tb - ES);
 		}
@@ -503,10 +504,10 @@ NAME(basic_bottom_up_sort)(char *pa, const size_t n, COMMON_PARAMS)
 	} while (0);
 
 	for (size_t size = INSERT_SORT_MAX; size < n; size += size) {
-		char	*stop = pa + ((n - size) * ES);
-		for (char *pos1 = pa; pos1 < stop; pos1 += (size * ES * 2)) {
-			char *pos2 = pos1 + (size * ES);
-			char *pos3 = pos1 + (size * ES * 2);
+		VAR	*stop = pa + ((n - size) * ES);
+		for (VAR *pos1 = pa; pos1 < stop; pos1 += (size * ES * 2)) {
+			VAR *pos2 = pos1 + (size * ES);
+			VAR *pos3 = pos1 + (size * ES * 2);
 
 			if (pos3 > pe)
 				pos3 = pe;
@@ -525,7 +526,7 @@ NAME(basic_bottom_up_sort)(char *pa, const size_t n, COMMON_PARAMS)
 // either shift_merge or split_merge, it is actually sort-stable, and the
 // stable_sort() function uses this to help find a set of unique items.
 static void
-NAME(basic_top_down_sort)(char *pa, const size_t n, COMMON_PARAMS)
+NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
 #if LOW_STACK
 	return CALL(basic_bottom_up_sort)(pa, na, COMMON_ARGS);
@@ -537,8 +538,8 @@ NAME(basic_top_down_sort)(char *pa, const size_t n, COMMON_PARAMS)
 
 	size_t	na = (n * BASIC_SKEW) / 100;
 	size_t	nb = n - na;
-	char	*pb = pa + (na * ES);
-	char	*pe = pa + (n * ES);
+	VAR	*pb = pa + (na * ES);
+	VAR	*pe = pa + (n * ES);
 
 	CALL(basic_top_down_sort)(pa, na, COMMON_ARGS);
 	CALL(basic_top_down_sort)(pb, nb, COMMON_ARGS);
@@ -555,12 +556,12 @@ NAME(basic_top_down_sort)(char *pa, const size_t n, COMMON_PARAMS)
 //
 // We're looking for leftmost element within pa->pe that is greater than, or
 // equal to, what pt is pointing at
-static char *
-NAME(sprint_left)(char *pa, char *pe, char *pt, int direction, COMMON_PARAMS)
+static VAR *
+NAME(sprint_left)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 {
 	size_t	max = (pe - pa) / ES;
 	size_t	min = 0, pos;
-	char	*sp;
+	VAR	*sp;
 
 	if (direction == LEAP_LEFT) {
 		// First leap-frog our way to find our search range
@@ -619,12 +620,12 @@ NAME(sprint_left)(char *pa, char *pe, char *pt, int direction, COMMON_PARAMS)
 
 // We're looking for rightmost element within pa->pe that is 
 // less than, or equal, to what pt is pointing at
-static char *
-NAME(sprint_right)(char *pa, char *pe, char *pt, int direction, COMMON_PARAMS)
+static VAR *
+NAME(sprint_right)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 {
 	size_t	max = (pe - pa) / ES;
 	size_t	min = 0, pos = 0;
-	char	*sp;
+	VAR	*sp;
 
 	if (direction == LEAP_RIGHT) {
 		// First leap-frog our way to find the search range
@@ -682,16 +683,16 @@ NAME(sprint_right)(char *pa, char *pe, char *pt, int direction, COMMON_PARAMS)
 
 
 static void
-NAME(merge_left)(char *a, size_t na, char *b, size_t nb,
-			  char *w, const size_t nw, COMMON_PARAMS)
+NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
+			  VAR *w, const size_t nw, COMMON_PARAMS)
 {
-	char	*pe = b + (nb * ES), *pw = w;
-	char	*pb = pe, *pa = b;
+	VAR	*pe = b + (nb * ES), *pw = w;
+	VAR	*pb = pe, *pa = b;
 
 	assert(nb <= nw);
 
 	// Now copy everything remaining from B to W
-	for (char *tb = b; nb--; pw += ES, tb += ES)
+	for (VAR *tb = b; nb--; pw += ES, tb += ES)
 		SWAP(pw, tb);
 
 	// We already know the result of the first compare
@@ -717,7 +718,7 @@ NAME(merge_left)(char *a, size_t na, char *b, size_t nb,
 			//	a_run = 0;
 			//	b_run++;
 			// }
-			char	*which[2] = {(pw - ES), (pa - ES)};
+			VAR	*which[2] = {(pw - ES), (pa - ES)};
 			int	result = !!(IS_LT(pw - ES, pa - ES));
 			pb = pb - ES;
 			SWAP(pb, which[result]);
@@ -733,7 +734,7 @@ NAME(merge_left)(char *a, size_t na, char *b, size_t nb,
 
 			// Stuff from A is sprinting
 			if (a_run) {
-				char *ta = CALL(sprint_right)(a, pa, pw - ES, LEAP_LEFT, COMMON_ARGS);
+				VAR *ta = CALL(sprint_right)(a, pa, pw - ES, LEAP_LEFT, COMMON_ARGS);
 				a_run = (pa - ta) / ES;
 				for (size_t num = a_run; num--; ) {
 					pa -= ES;  pb -= ES;
@@ -746,7 +747,7 @@ NAME(merge_left)(char *a, size_t na, char *b, size_t nb,
 
 			// Stuff from B/Workspace is sprinting
 			if (b_run) {
-				char *tw = CALL(sprint_left)(w, pw, pa - ES, LEAP_LEFT, COMMON_ARGS);
+				VAR *tw = CALL(sprint_left)(w, pw, pa - ES, LEAP_LEFT, COMMON_ARGS);
 				b_run = (pw - tw) / ES;
 				for (size_t num = b_run; num--; ) {
 					pw -= ES;  pb -= ES;
@@ -772,16 +773,16 @@ NAME(merge_left)(char *a, size_t na, char *b, size_t nb,
 
 
 static void
-NAME(merge_right)(char *a, size_t na, char *b, size_t nb,
-			  char *w, const size_t nw, COMMON_PARAMS)
+NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
+			  VAR *w, const size_t nw, COMMON_PARAMS)
 {
-	char	*pe = b + (nb * ES);
-	char	*pw = w;
+	VAR	*pe = b + (nb * ES);
+	VAR	*pw = w;
 
 	assert(na <= nw);
 
 	// Now copy everything in A to W
-	for (char *ta = a; na--; pw += ES, ta += ES)
+	for (VAR *ta = a; na--; pw += ES, ta += ES)
 		SWAP(pw, ta);
 
 	// We already know that the first B is smaller, so swap it now
@@ -806,7 +807,7 @@ NAME(merge_right)(char *a, size_t na, char *b, size_t nb,
 			//	a_run++;
 			//	b_run = 0;
 			// }
-			char	*which[2] = {w, b};
+			VAR	*which[2] = {w, b};
 			int	result = !!(IS_LT(b, w));
 			SWAP(a, which[result]);
 			b += result * ES;
@@ -821,7 +822,7 @@ NAME(merge_right)(char *a, size_t na, char *b, size_t nb,
 			sprint -= !!(sprint > 2);
 
 			// Stuff from A/workspace is sprinting
-			char	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
+			VAR	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
 			a_run = (tw - w) / ES;
 			if (a_run) {
 				for (size_t num = a_run; num--; w += ES, a += ES)
@@ -831,7 +832,7 @@ NAME(merge_right)(char *a, size_t na, char *b, size_t nb,
 			}
 
 			// Stuff from B is sprinting
-			char	*tb = CALL(sprint_left)(b, pe, w, LEAP_RIGHT, COMMON_ARGS);
+			VAR	*tb = CALL(sprint_left)(b, pe, w, LEAP_RIGHT, COMMON_ARGS);
 			b_run = (tb - b) / ES;
 			if (b_run) {
 				for (size_t num = b_run; num--; b += ES, a += ES)
@@ -857,8 +858,8 @@ NAME(merge_right)(char *a, size_t na, char *b, size_t nb,
 // Prepares A and B for merging via merge_left or merge_right
 // Assumes both NA and NB are > zero on entry
 static void
-NAME(merge_using_workspace)(char *a, size_t na, char *b, size_t nb,
-			  char *w, const size_t nw, COMMON_PARAMS)
+NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
+			  VAR *w, const size_t nw, COMMON_PARAMS)
 {
 	assert(na > 0);
 	assert(nb > 0);
@@ -867,14 +868,14 @@ NAME(merge_using_workspace)(char *a, size_t na, char *b, size_t nb,
 	if (!IS_LT(b, b - ES))
 		return;
 
-	char	*pe = b + (nb * ES);
+	VAR	*pe = b + (nb * ES);
 
 	// Skip initial part of A if the opportunity arises
 	if (!IS_LT(b, a)) {
 		if (na > 10) {
 			size_t	min = 1, max = na;
 			size_t	pos = max >> 1;
-			char	*sp = a + (pos * ES);
+			VAR	*sp = a + (pos * ES);
 
 			while (min < max) {
 				// The following 3 lines implement this logic
@@ -902,8 +903,8 @@ NAME(merge_using_workspace)(char *a, size_t na, char *b, size_t nb,
 	}
 
 	// Skip last part of B if the opportunity arises
-	char	*sp = pe - ES;
-	char	*tb = b - ES;
+	VAR	*sp = pe - ES;
+	VAR	*tb = b - ES;
 	if (!IS_LT(sp, tb)) {
 		if (nb > 10) {
 			size_t  min = 0, max = nb;
@@ -946,13 +947,13 @@ NAME(merge_using_workspace)(char *a, size_t na, char *b, size_t nb,
 // This function's job to merge two arrays together, given whatever
 // workspace it gets.  It'll always make it work....eventually!
 static void
-NAME(merge_workspace_constrained) (char *pa, size_t na, char *pb, size_t nb,
-			  char *ws, const size_t nw, COMMON_PARAMS)
+NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
+			  VAR *ws, const size_t nw, COMMON_PARAMS)
 {
-	char	*pe = pb + (nb * es);
+	VAR	*pe = pb + (nb * ES);
 
 	while (na > nw) {
-		char	*rp, *sp;	// Rotate + Split pointers
+		VAR	*rp, *sp;	// Rotate + Split pointers
 
 		// RP now tracks the point of block rotation
 		// PB now points at the end of the part of A
@@ -1017,7 +1018,7 @@ NAME(merge_workspace_constrained) (char *pa, size_t na, char *pb, size_t nb,
 
 
 static void
-NAME(sort_using_workspace)(char *pa, size_t n, char * const ws,
+NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 			   const size_t nw, COMMON_PARAMS)
 {
 	// Handle small array size inputs with insertion sort
@@ -1035,7 +1036,7 @@ NAME(sort_using_workspace)(char *pa, size_t n, char * const ws,
 	size_t	na = (n * MERGE_SKEW) / 100;
 	size_t	nb = n - na;
 
-	char	*pb = pa + (na * ES);
+	VAR	*pb = pa + (na * ES);
 
 	// First sort A
 	CALL(sort_using_workspace)(pa, na, ws, nw, COMMON_ARGS);
@@ -1052,7 +1053,7 @@ NAME(sort_using_workspace)(char *pa, size_t n, char * const ws,
 // It logically follows that if this is given unique items to sort
 // then the result will naturally yield a sort-stable result
 static void
-NAME(merge_sort_in_place)(char * const pa, const size_t n, char * const ws,
+NAME(merge_sort_in_place)(VAR * const pa, const size_t n, VAR * const ws,
 	      const size_t nw, COMMON_PARAMS)
 {
 	// Handle small array size inputs with insertion sort
@@ -1071,8 +1072,8 @@ NAME(merge_sort_in_place)(char * const pa, const size_t n, char * const ws,
 	if (na < 4)
 		na = 4;
 
-	char	*pe = pa + (n * ES);
-	char	*pb = pa + (na * ES);
+	VAR	*pe = pa + (n * ES);
+	VAR	*pb = pa + (na * ES);
 	size_t	nb = n - na;
 
 	// Sort B using A as the workspace
@@ -1094,22 +1095,22 @@ NAME(merge_sort_in_place)(char * const pa, const size_t n, char * const ws,
 // at the start (left-side) of the array (A)
 //  A -> PU = Duplicates
 // PU -> PE = Unique items
-static char *
-NAME(extract_unique_sub)(char * const a, char * const pe, char *ph, COMMON_PARAMS)
+static VAR *
+NAME(extract_unique_sub)(VAR * const a, VAR * const pe, VAR *ph, COMMON_PARAMS)
 {
-	char	*pu = a;	// Points to list of unique items
+	VAR	*pu = a;	// Points to list of unique items
 
 	// Sanitize our hints pointer
 	if (ph == NULL)
 		ph = pe;
 
 	// Process everything up to the hints pointer
-	for (char *pa = a + ES; pa < ph; pa += ES) {
+	for (VAR *pa = a + ES; pa < ph; pa += ES) {
 		if (IS_LT(pa - ES, pa))
 			continue;
 
 		// The item before our position is a duplicate.  Mark it.
-		char *dp = pa - ES;
+		VAR *dp = pa - ES;
 
 		// Now find the end of the run of duplicates
 		for (pa += ES; (pa < ph) && !IS_LT(pa - ES, pa); pa += ES);
@@ -1151,10 +1152,10 @@ NAME(extract_unique_sub)(char * const a, char * const pe, char *ph, COMMON_PARAM
 //
 // Assumptions:
 // - The list we're passed is already sorted
-static char *
-NAME(extract_uniques)(char * const a, const size_t n, char *hints, COMMON_PARAMS)
+static VAR *
+NAME(extract_uniques)(VAR * const a, const size_t n, VAR *hints, COMMON_PARAMS)
 {
-	char	*pe = a + (n * ES);
+	VAR	*pe = a + (n * ES);
 
 	// I'm not sure what a good value should be here, but 40 seems okay
 	if (n < 40)
@@ -1165,11 +1166,11 @@ NAME(extract_uniques)(char * const a, const size_t n, char *hints, COMMON_PARAMS
 
 	// Divide and conquer!  This algorithm appears to operate in close
 	// to an O(n) time complexity, albeit with a moderately high K factor
-	char	*pa = a;
+	VAR	*pa = a;
 	size_t	na = (n + 3) >> 2;	// Looks to be about right
-	char	*pb = pa + (na * ES);
+	VAR	*pb = pa + (na * ES);
 
-	char	*ps = pb;	// Records original intended split point
+	VAR	*ps = pb;	// Records original intended split point
 
 	// First find where to split at, which basically means, find the
 	// end of any duplicate run that we may find ourselves in
@@ -1188,8 +1189,8 @@ NAME(extract_uniques)(char * const a, const size_t n, char *hints, COMMON_PARAMS
 		hints = pe;
 
 	// Note that there is ALWAYS at least one unique to be found
-	char	*apu = CALL(extract_uniques)(pa, na, ps, COMMON_ARGS);
-	char	*bpu = CALL(extract_uniques)(pb, nb, hints, COMMON_ARGS);
+	VAR	*apu = CALL(extract_uniques)(pa, na, ps, COMMON_ARGS);
+	VAR	*bpu = CALL(extract_uniques)(pb, nb, hints, COMMON_ARGS);
 
 	// Coalesce non-uniques together
 	if (bpu > pb) {
@@ -1204,8 +1205,8 @@ NAME(extract_uniques)(char * const a, const size_t n, char *hints, COMMON_PARAMS
 
 // Takes a list of pointers to blocks, and merges them together using a 1:2
 // merge ratio.  pe points after the end of the last block on the list
-static char *
-NAME(merge_duplicates)(struct stable_state *state, char **list, size_t n, char *pe, COMMON_PARAMS)
+static VAR *
+NAME(merge_duplicates)(struct NAME(stable_state) *state, VAR **list, size_t n, VAR *pe, COMMON_PARAMS)
 {
 	if (n == 1)
 		return list[0];
@@ -1213,13 +1214,13 @@ NAME(merge_duplicates)(struct stable_state *state, char **list, size_t n, char *
 	size_t	n1 = (n + 1) / 3;
 	size_t	n2 = n - n1;
 
-	char	*m1 = CALL(merge_duplicates)(state, list, n1, list[n1], COMMON_ARGS);
-	char	*m2 = CALL(merge_duplicates)(state, list + n1, n2, pe, COMMON_ARGS);
+	VAR	*m1 = CALL(merge_duplicates)(state, list, n1, list[n1], COMMON_ARGS);
+	VAR	*m2 = CALL(merge_duplicates)(state, list + n1, n2, pe, COMMON_ARGS);
 
 	size_t	nm1 = (m2 - m1) / ES;	// Number of items in m1
 	size_t	nm2 = (pe - m2) / ES;	// Number of items in m2
 
-	char	*ws = state->work_space;
+	VAR	*ws = state->work_space;
 	size_t	nw = state->work_size;
 
 #ifdef	DEBUG_UNIQUE_PROCESSING
@@ -1244,18 +1245,18 @@ NAME(merge_duplicates)(struct stable_state *state, char **list, size_t n, char *
 // we can actually maintain MAX_DUPS^2 worth of duplicate entries.  This then
 // means we can collate a lot of duplicates for a small (fixed) overhead
 static void
-NAME(add_duplicate)(struct stable_state *state, char *new_dup, COMMON_PARAMS)
+NAME(add_duplicate)(struct NAME(stable_state) *state, VAR *new_dup, COMMON_PARAMS)
 {
 	state->free_dups[state->num_free++] = new_dup;
 	if (state->num_free < MAX_DUPS)
 		return;
 
-	char	**list = state->free_dups;
+	VAR	**list = state->free_dups;
 	size_t	n = state->num_free;
-	char	*ws = state->work_space;
+	VAR	*ws = state->work_space;
 
 	// Merge up the free duplicates
-	char	*mf = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
+	VAR	*mf = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
 
 	state->merged_dups[state->num_merged++] = mf;
 	state->free_dups[0] = NULL;
@@ -1264,9 +1265,9 @@ NAME(add_duplicate)(struct stable_state *state, char *new_dup, COMMON_PARAMS)
 
 
 static void
-NAME(stable_sort_finisher)(struct stable_state *state, COMMON_PARAMS)
+NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 {
-	char	*ws = state->work_space;
+	VAR	*ws = state->work_space;
 	size_t	nw = state->work_size;
 
 #ifdef	DEBUG_UNIQUE_PROCESSING
@@ -1274,9 +1275,9 @@ NAME(stable_sort_finisher)(struct stable_state *state, COMMON_PARAMS)
 #endif
 	// Merge up the free duplicates
 	if (state->num_free > 0) {
-		char	**list = state->free_dups;
+		VAR	**list = state->free_dups;
 		size_t	n = state->num_free;
-		char	*mf = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
+		VAR	*mf = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
 
 		// merged_dups has a bonus spot just for this occasion
 		state->merged_dups[state->num_merged++] = mf;
@@ -1285,9 +1286,9 @@ NAME(stable_sort_finisher)(struct stable_state *state, COMMON_PARAMS)
 	}
 
 	// Merge up the merged duplicates
-	char	*md = NULL;
+	VAR	*md = NULL;
 	if (state->num_merged > 0) {
-		char	**list = state->merged_dups;
+		VAR	**list = state->merged_dups;
 		size_t	n = state->num_merged;
 
 		md = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
@@ -1302,8 +1303,8 @@ NAME(stable_sort_finisher)(struct stable_state *state, COMMON_PARAMS)
 	// work_space - Our work-space of unique values, which is sorted
 	// rest - The sorted rest of the input
 
-	char	*pr = state->rest;
-	char	*pe = state->pe;
+	VAR	*pr = state->rest;
+	VAR	*pe = state->pe;
 	size_t	nm = 0;
 
 	if (md)
@@ -1334,15 +1335,15 @@ NAME(stable_sort_finisher)(struct stable_state *state, COMMON_PARAMS)
 // sorted set of duplicates that were disqualified.  There exists certain
 // inputs where we can sort the entire set just through doing this alone!
 static void
-NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
+NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
-	struct stable_state state_real = {0}, *state = &state_real;
-	char	*pe = pa + (n * ES), *ws, *pr;
+	struct NAME(stable_state )state_real = {0}, *state = &state_real;
+	VAR	*pe = pa + (n * ES), *ws, *pr;
 	size_t	nr, nw;
 
 #ifdef	DEBUG_UNIQUE_PROCESSING
 	printf("size of stable state processing structure = %lu bytes\n",
-			sizeof(struct stable_state));
+			sizeof(struct NAME(stable_state)));
 #endif
 	// 80 items appears to be about the cross-over
 	// That 2-stage binary insertion sort holds up pretty well!
@@ -1402,7 +1403,7 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 #ifdef	DEBUG_UNIQUE_PROCESSING
 		printf("Not enough workspace. Wanted: %ld  Got: %ld  "
 		       "Duplicates: %ld, Remaining Items = %lu\n",
-		       wstarget, nw, (ws - pa) / es, nr);
+		       wstarget, nw, (ws - pa) / ES, nr);
 #endif
 		// Estimate how much of the remaining that we need to grab
 		// to get enough uniques to satsify our minimum.  First work
@@ -1429,7 +1430,7 @@ NAME(stable_sort)(char * const pa, const size_t n, COMMON_PARAMS)
 			grab = nr >> 3;
 
 		// Section off the new workspace candidates from the rest
-		char	*nws = pr;	// New workspace candidates
+		VAR	*nws = pr;	// New workspace candidates
 		nr -= grab;
 		pr = pr + (grab * ES);
 
