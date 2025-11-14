@@ -336,65 +336,60 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb,
 } // insertion_merge_in_place
 
 
+// Returns the first item in the range start->end that is
+// is greater than but NOT equal to the test item
 static inline VAR *
-NAME(binary_search_left)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
+NAME(binary_search_gt_ne)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
 {
 	assert(end >= start);
-	if ((end - start) > (ES * 9)) {
-		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
-		end = start + (pos * ES);
-		while (min < max) {
-#if 1
-			if (IS_LT(end, test)) {
-				min = pos + 1;
-			} else {
-				max = pos;
-			}
-#else
-			int res = !!IS_LT(end, test);
-			min = (res * (pos + 1)) + (!res * min);
-			max = (res * max) + (!res * pos);
-#endif
-			pos = (min + max) >> 1;
-			end = start + (pos * ES);
-		}
+
+	if ((end - start) <= (ES << 3)) {
+		while ((end > start) && IS_LT(test, end - ES)) end -= ES;
+		return end;
 	} else {
-		while ((end > start) && !IS_LT(end - ES, test))
-				end -= ES;
-	}
-	return end;
-} // binary_search_left
-
-
-static inline VAR *
-NAME(binary_search_right)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
-{
-	assert(end >= start);
-	if ((end - start) > (ES * 9)) {
 		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
-		VAR	*scan = start + (pos * ES);
+
+		VAR *scan = start + pos * ES;
 		while (min < max) {
-#if 1
 			if (IS_LT(test, scan)) {
 				max = pos;
 			} else {
 				min = pos + 1;
 			}
-#else
-			int res = !!IS_LT(test, scan);
-			max = (res * pos) + (!res * max);
-			min = (res * min) + (!res * (pos + 1));
-#endif
 			pos = (min + max) >> 1;
 			scan = start + (pos * ES);
 		}
-		start = scan;
-	} else {
-		while ((start < end) && !IS_LT(test, start))
-			start += ES;
+		return scan;
 	}
-	return start;
-} // binary_search_right
+} // binary_search_gt_ne
+
+
+// Returns the first item in the range start->end that is greater
+// than or equal to the test item
+static inline VAR *
+NAME(binary_search_gt_eq)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
+{
+	assert(end >= start);
+
+	if ((end - start) <= (ES << 3)) {
+		while ((start < end) && IS_LT(start, test)) start += ES;
+		return start;
+	} else {
+		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
+		VAR *scan = start + pos * ES;
+
+		while (min < max) {
+			if (IS_LT(scan, test)) {
+				min = pos + 1;
+			} else {
+				max = pos;
+			}
+			pos = (min + max) >> 1;
+			scan = start + (pos * ES);
+		}
+		return scan;
+	}
+} // binary_search_gt_eq
 
 
 // This is what everything is based on, and I call it shift_merge_in_place()
@@ -441,7 +436,7 @@ shift_again:
 	// If the stack is large enough, this should almost never ever happen
 	if (unlikely(stack == maxstack)) {
 		printf("Stack Overflow\n");
-		printf("pa = 0, pb = %lu, pe =%lu\n", pb - pa, pe - pb); 
+		printf("pa = 0, pb = %lu, pe = %lu\n", pb - pa, pe - pb); 
 		CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 		goto shift_pop;
 	}
@@ -487,18 +482,18 @@ shift_again:
 
 #if 1
 		// Bring PE in such that all elements in B > A are cordoned off
-		pe = CALL(binary_search_left)(pb, pe, pb - ES, COMMON_ARGS);
+		pe = CALL(binary_search_gt_eq)(pb, pe, pb - ES, COMMON_ARGS);
 		if (pe == pb)
 			goto shift_pop;
 
 		// Find all elements in A less than B, and cordon those off
-		pa = CALL(binary_search_right)(pa, pb, pb, COMMON_ARGS);
+		pa = CALL(binary_search_gt_ne)(pa, pb, pb, COMMON_ARGS);
 		if (pa == pb)
 			goto shift_pop;
 
 		// Find all elements at the start of B, less than
 		// the start of A, and rotate them out of the way
-		rp = CALL(binary_search_right)(pb, pe, pa, COMMON_ARGS);
+		rp = CALL(binary_search_gt_eq)(pb, pe, pa, COMMON_ARGS);
 		if (rp > pb) {
 			CALL(block_rotate)(pa, pb, rp, COMMON_ARGS);
 			if (rp == pe)
@@ -506,22 +501,18 @@ shift_again:
 			pa = pa + (rp - pb);
 			pb = rp;
 		}
-#if 0
+
 		// Now find all elements at the end of A, greater than
 		// the end of B, and rotate them out of the way
 		// Need to skip over any equal elements too
-//		sp = CALL(binary_search_left)(pa, pb, pe - ES, COMMON_ARGS);
-//		while ((sp < pb) && !IS_LT(pe - ES, sp)) sp += ES;
-
-		for (sp = pb; (sp > pa) && IS_LT(pe - ES, sp - ES); sp -= ES);
+		sp = CALL(binary_search_gt_ne)(pa, pb, pe - ES, COMMON_ARGS);
 		if (sp < pb) {
 			CALL(block_rotate)(sp, pb, pe, COMMON_ARGS);
 			if (sp == pa)
 				goto shift_pop;
-//			pe -= (pb - sp);
+			pe -= (pb - sp);
 			pb = sp;
 		}
-#endif
 #endif
 		// Adjust the block size to account for the end limit
 		// Let's do it the branchless way for fun! :)
