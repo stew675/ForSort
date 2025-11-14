@@ -1517,7 +1517,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	// kick start the process.  The idea here is to then use the
 	// initial unique values that we extract to drive use of the
 	// merge-sort algorithm, to help us find more uniques faster!
-	nw = (n >> 6) + STABLE_WSRATIO;
+	nw = (n >> 7) + STABLE_WSRATIO;
 	nr = n - nw;
 	pr = pa + (nw * ES);	// Pointer to rest
 
