@@ -19,6 +19,9 @@
 // Uncomment to turn on debugging output for the uniques extraction and merging system
 //#define	DEBUG_UNIQUE_PROCESSING
 
+// Uncomment to turn on general debugging output
+// #define	DEBUG
+
 enum {
 	LEAP_LEFT = 0,
 	LEAP_RIGHT,
@@ -41,7 +44,6 @@ enum {
 // the duplicates table, then dropping out and sorting is trivially fast
 #define	MAX_DUPS 26
 #endif	// FOR_GLOBAL_DEFS
-
 
 // A structure to manage the state of the stable sort algorithm
 struct NAME(stable_state) {
@@ -336,60 +338,129 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb,
 } // insertion_merge_in_place
 
 
-// Returns the first item in the range start->end that is
-// is greater than but NOT equal to the test item
-static VAR * __attribute__((noinline))
-NAME(binary_search_gt_ne)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
+#define	SHIFT_STACK_PUSH(s1, s2, s3) 	\
+	{ *stack++ = s1; *stack++ = s2; *stack++ = s3; }
+
+#define	SHIFT_STACK_POP(s1, s2, s3) \
+	{ s3 = *--stack; s2 = *--stack; s1 = *--stack; }
+
+// This is just the reverse of shift_merge_in_place().  I'll leave
+// less comments in this function as a result
+static void
+NAME(reverse_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
-	assert(end >= start);
+	assert(pb > pa);
+	assert(pe > pb);
 
-	if ((end - start) <= (ES << 3)) {
-		while ((end > start) && IS_LT(test, end - ES)) end -= ES;
-		return end;
-	} else {
-		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
+	// Check if we need to do anything at all before proceeding
+	if (!IS_LT(pb, pb - ES))
+		return;
 
-		end = start + pos * ES;
-		while (min < max) {
-			if (IS_LT(test, end)) {
-				max = pos;
-			} else {
-				min = pos + 1;
-			}
-			pos = (min + max) >> 1;
-			end = start + (pos * ES);
-		}
-		return end;
+	size_t	stack_size = get_split_stack_size((pe - pb) / ES) * 3;
+	_Alignas(64) VAR *_stack[stack_size];
+	VAR	**stack = _stack, **maxstack = stack + stack_size;
+	VAR	*rp, *sp;
+	size_t	bs;
+
+reverse_again:
+	// reverse_merge_in_place() won't re-reverse the direction back to
+	// shift_merge_in_place.  This is to prevent potential stack overflows
+	// Instead it will just persist, and if it runs out of stack, it'll
+	// fall back to the fully stack bounded split_merge_in_place().  I've
+	// never seen it happen, but that doesn't meant it cannot
+	if (unlikely(stack == maxstack)) {
+#ifdef	DEBUG
+		printf("Stack Overflow 2\n");
+		printf("pa = 0, pb = %lu, pe = %lu\n", pb - pa, pe - pb); 
+#endif
+		CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+		goto reverse_pos;
 	}
-} // binary_search_gt_ne
 
+	bs = pe - pb;
 
-// Returns the first item in the range start->end that is greater
-// than or equal to the test item
-static VAR * __attribute__((noinline))
-NAME(binary_search_gt_eq)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
-{
-	assert(end >= start);
-
-	if ((end - start) <= (ES << 3)) {
-		while ((start < end) && IS_LT(start, test)) start += ES;
-		return start;
-	} else {
-		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
-
-		end = start + pos * ES;
-		while (min < max) {
-			if (IS_LT(end, test)) {
-				min = pos + 1;
-			} else {
-				max = pos;
-			}
-			pos = (min + max) >> 1;
-			end = start + (pos * ES);
-		}
-		return end;
+	// Just insert merge single items. We already know that *PB < *PA
+	if (bs == ES) {
+		do {	// Bubble Down
+			SWAP(pb, pb - ES);  pb -= ES;
+		} while ((pb != pa) && IS_LT(pb, pb - ES));
+		goto reverse_pos;
+	} else if ((pa + ES) == pb) {
+		do {	// Bubble Up
+			SWAP(pa, pb);  pa = pb;  pb = pb + ES;
+		} while (pb != pe && IS_LT(pb, pa));
+		goto reverse_pos;
 	}
-} // binary_search_gt_eq
+
+	// Insertion MIP is slightly faster for very small sorted array pairs
+	if ((pe - pa) < (ES << 3)) {
+		CALL(insertion_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+		goto reverse_pos;
+	}
+
+	// Shift entirety of PB->PE down as far as we can
+	for (sp = pb - bs; sp >= pa && IS_LT(pe - ES, sp); sp -= bs) {
+		CALL(block_swap)(sp, pb, bs / ES, COMMON_ARGS);
+		pb -= bs;  pe -= bs;
+	}
+
+	// Handle scenario where our block cannot fit within what remains
+	if (sp < pa) {
+		if (pb == pa)
+			goto reverse_pos;
+		else
+			bs = pb - pa;
+	}
+
+	// Find spot within PB->PE to split it at.
+	if (bs >= (ES << 3)) {	// Binary search on larger sets
+		size_t	min = 0, max = bs / ES, pos = max >> 1;
+
+		sp = pb - (pos * ES);
+		rp = pb + (pos * ES);
+
+		while (min < max) {
+			int res = !!(IS_LT(rp, sp - ES));
+			min = (!res * min) + (res * (pos + res));
+			max = (res * max) + (!res * pos);
+
+			pos = (min + max) >> 1;
+			sp = pb - (pos * ES);
+			rp = pb + (pos * ES);
+		}
+	} else {	// Linear scan is faster for smaller sets
+		sp = pb - bs;	rp = pb + bs;
+		for ( ; (sp != pb) && !IS_LT(rp - ES, sp); sp += ES, rp -= ES);
+	}
+
+	// If nothing to swap, we're done here
+	if (pb == sp)
+		goto reverse_pos;
+
+	// Do a single shift at the split point
+	for (VAR *ta = sp, *tb = pb; ta != pb; ta += ES, tb += ES)
+		SWAP(ta, tb);
+
+	// See forward_merge_in_place() for an explanation of the following
+	// This here is just the reverse direction of that same thing.
+	bs = (sp > pa) && IS_LT(sp, sp - ES);
+	if (IS_LT(rp, rp - ES)) {
+		if (bs)
+			SHIFT_STACK_PUSH(pa, sp, pb);
+		pa = pb;
+		pb = rp;
+		goto reverse_again;
+	} else if (bs) {
+		pe = pb;
+		pb = sp;
+		goto reverse_again;
+	}
+reverse_pos:
+	if (stack != _stack) {
+		SHIFT_STACK_POP(pa, pb, pe);
+		goto reverse_again;
+	}
+} // reverse_merge_in_place
 
 
 // This is what everything is based on, and I call it shift_merge_in_place()
@@ -408,15 +479,9 @@ NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	assert(pb > pa);
 	assert(pe > pb);
 
-#if LOW_STACK
-	return CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
-#endif
-
-#define	SHIFT_STACK_PUSH(s1, s2, s3) 	\
-	{ *stack++ = s1; *stack++ = s2; *stack++ = s3; }
-
-#define	SHIFT_STACK_POP(s1, s2, s3) \
-	{ s3 = *--stack; s2 = *--stack; s1 = *--stack; }
+	// Check if we need to do anything at all before proceeding
+	if (!IS_LT(pb, pb - ES))
+		return;
 
 	// The work stack holds 3 pointers per "position" and so the multiplier
 	// here must be an even multiple of 3.
@@ -426,17 +491,22 @@ NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	VAR	*rp, *sp;	// Roaming-Pointer, and Split Pointer
 	size_t	bs;		// Byte-wise block size of pa->pb
 
-	// For whoever calls us, check if we need to do anything at all
-	if (!IS_LT(pb, pb - ES))
-		goto shift_pop;
-
 shift_again:
+	// If it looks like we're working on merging a much larger array
+	// into a smaller one, then reverse the direction
+	if ((pb - pa) > ((pe - pb) << 2)) {
+		CALL(reverse_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+		goto shift_pop;
+	}
+
 	// If our stack is about to over-flow, move to use the slower, but more
 	// resilient, algorithm that handles degenerate scenarios without issue
 	// If the stack is large enough, this should almost never ever happen
 	if (unlikely(stack == maxstack)) {
-		printf("Stack Overflow\n");
+#ifdef	DEBUG
+		printf("Stack Overflow 1\n");
 		printf("pa = 0, pb = %lu, pe = %lu\n", pb - pa, pe - pb); 
+#endif
 		CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 		goto shift_pop;
 	}
@@ -445,13 +515,13 @@ shift_again:
 
 	// Just insert merge single items. We already know that *PB < *PA
 	if (bs == ES) {
-		do {
+		do {	// Bubble Up
 			SWAP(pa, pb);
 			pa = pb;  pb = pb + ES;
 		} while (pb != pe && IS_LT(pb, pa));
 		goto shift_pop;
 	} else if ((pb + ES) == pe) {
-		do {
+		do {	// Bubble Down
 			SWAP(pb, pb - ES);
 			pb -= ES;
 		} while ((pb != pa) && IS_LT(pb, pb - ES));
@@ -475,67 +545,23 @@ shift_again:
 	// Split the block up, and keep trying with the remainders
 
 	// Handle scenario where our block cannot fit within what remains
-	// This is a LOT of fiddly work, but it's worth it in the end
 	if (rp > pe) {
 		if (pb == pe)
 			goto shift_pop;
-
-#if 0
-		// Bring PE in such that all elements in B > A are cordoned off
-		pe = CALL(binary_search_gt_eq)(pb, pe, pb - ES, COMMON_ARGS);
-		if (pe == pb)
-			goto shift_pop;
-
-		// Find all elements in A less than B, and cordon those off
-		pa = CALL(binary_search_gt_ne)(pa, pb, pb, COMMON_ARGS);
-		if (pa == pb)
-			goto shift_pop;
-
-		// Find all elements at the start of B, less than
-		// the start of A, and rotate them out of the way
-		rp = CALL(binary_search_gt_eq)(pb, pe, pa, COMMON_ARGS);
-		if (rp > pb) {
-			CALL(block_rotate)(pa, pb, rp, COMMON_ARGS);
-			if (rp == pe)
-				goto shift_pop;
-			pa = pa + (rp - pb);
-			pb = rp;
-		}
-
-		// Now find all elements at the end of A, greater than
-		// the end of B, and rotate them out of the way
-		// Need to skip over any equal elements too
-		sp = CALL(binary_search_gt_ne)(pa, pb, pe - ES, COMMON_ARGS);
-		if (sp < pb) {
-			CALL(block_rotate)(sp, pb, pe, COMMON_ARGS);
-			if (sp == pa)
-				goto shift_pop;
-			pe -= (pb - sp);
-			pb = sp;
-		}
-#endif
-		// Adjust the block size to account for the end limit
-		// Let's do it the branchless way for fun! :)
-		bs = (pb - pa) < (pe - pb);
-		bs = (bs * (pb - pa)) + (!bs * (pe - pb));
+		else
+			bs = (pe - pb);
 	}
 
 	// Find spot within PA->PB to split it at.  This means finding
 	// the first point in PB->PE that is smaller than the matching
 	// point within PA->PB, centered around the PB pivot
 	if (bs >= (ES << 3)) {	// Binary search on larger sets
-		size_t	min = 0, max = bs / ES;
-		size_t	pos = max >> 1;
+		size_t	min = 0, max = bs / ES, pos = max >> 1;
 
 		sp = pb - (pos * ES);
 		rp = pb + (pos * ES);
 
 		while (min < max) {
-			// The following 3 lines implement this logic
-			// if (IS_LT(rp, sp - ES))
-			// 	min = pos + 1;
-			// else
-			// 	max = pos;
 			int res = !!(IS_LT(rp, sp - ES));
 			min = (!res * min) + (res * (pos + res));
 			max = (res * max) + (!res * pos);
@@ -549,42 +575,46 @@ shift_again:
 		for ( ; (sp != pb) && !IS_LT(rp - ES, sp); sp += ES, rp -= ES);
 	}
 
-	if (!(bs = pb - sp))	  // Determine the byte-wise size of the split
-		goto shift_pop;  // If nothing to swap, we're done here
+	if (sp == pb)
+		goto shift_pop;  // Nothing to swap. We're done here
 
 	// Do a single shift at the split point
 	// The compiler optimiser REALLY doesn't like us calling block_swap here
 	for (VAR *ta = sp, *tb = pb; ta != pb; ta += ES, tb += ES)
 		SWAP(ta, tb);
 
-	// PB->RP is the top part of A that was split, and  RP->PE is the rest
-	// of the array we're merging into.
-
-	// PA->SP is the part we left behind, and SP->PB is the part of the target
-	// array that was swapped in at the split point. PB forms a hard upper
-	// limit on the search space for this merge, so it's used as the new PE
+	// We now have 4 arrays
+	// - PA->SP - The initial part of A that is less than the split point in B
+	// - SP->PB - The initial part of B swapped with the part of A larger than it
+	// - PB->RP - The top part of A that is greater than anything in PA->PB
+	// - RP->PE - Everything else remaining in B that's larger than PA->PB
 
 	// Oddly enough, the following line helps compiler optimization on gcc
 	bs = ((rp != pe) && IS_LT(rp, rp - ES));
 	if (IS_LT(sp, sp - ES)) {
 		if (bs)
 			SHIFT_STACK_PUSH(pb, rp, pe);
+		// PB forms a hard upper limit on PA->SP->PB, so it is
+		// used as the new PE when merging PA->SP->PB together
 		pe = pb;
 		pb = sp;
 		goto shift_again;
 	} else if (bs) {
+		// Here we continue to merge PB->RP into RP->PE.  PB becomes
+		// our new PA, since PB->RP is everything left from A that is
+		// still yet to be merged. RP therefore becomes our new PB
 		pa = pb;
 		pb = rp;
 		goto shift_again;
 	}
 shift_pop:
-	while (stack != _stack) {
+	if (stack != _stack) {
 		SHIFT_STACK_POP(pa, pb, pe);
 		goto shift_again;
 	}
+} // shift_merge_in_place
 #undef	SHIFT_STACK_PUSH
 #undef	SHIFT_STACK_POP
-} // shift_merge_in_place
 
 
 // Classic bottom-up merge sort
@@ -623,8 +653,13 @@ NAME(basic_bottom_up_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 			if (pos3 > pe)
 				pos3 = pe;
 
-			if (pos2 < pe)
+			if (pos2 < pe) {
+#if LOW_STACK
+				CALL(split_merge_in_place)(pos1, pos2, pos3, COMMON_ARGS);
+#else
 				CALL(shift_merge_in_place)(pos1, pos2, pos3, COMMON_ARGS);
+#endif
+			}
 		}
 	}
 } // basic_bottom_up_sort
@@ -1194,7 +1229,11 @@ NAME(merge_sort_in_place)(VAR * const pa, const size_t n, VAR * const ws,
 	CALL(merge_sort_in_place)(pa, na, NULL, 0, COMMON_ARGS);
 
 	// Now merge them together
+#if LOW_STACK
+	CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+#else
 	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+#endif
 } // merge_sort_in_place
 
 
@@ -1338,8 +1377,12 @@ NAME(merge_duplicates)(struct NAME(stable_state) *state, VAR **list, size_t n, V
 	printf("Merging %lu with %lu\n", nm1, nm2);
 #endif
 	if (nm1 > (nw * WSRATIO)) {
-		// Use shift_merge_in_place
+		// Use in-place merging
+#if LOW_STACK
+		CALL(split_merge_in_place)(m1, m2, pe, COMMON_ARGS);
+#else
 		CALL(shift_merge_in_place)(m1, m2, pe, COMMON_ARGS);
+#endif
 	} else {
 		// Do a faster work-space based merge
 		CALL(merge_workspace_constrained)(m1, nm1, m2, nm2, ws, nw, COMMON_ARGS);
@@ -1426,6 +1469,16 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 	printf("nm = %lu, nw = %lu, nr = %lu\n", nm, nw, state->rest_size);
 #endif
 
+#if LOW_STACK
+	if ((nm > 0) && (nm < nw)) {
+		CALL(split_merge_in_place)(md, ws, pr, COMMON_ARGS);
+		CALL(split_merge_in_place)(md, pr, pe, COMMON_ARGS);
+	} else {
+		CALL(split_merge_in_place)(ws, pr, pe, COMMON_ARGS);
+		if (nm > 0)
+			CALL(split_merge_in_place)(md, ws, pe, COMMON_ARGS);
+	}
+#else
 	if ((nm > 0) && (nm < nw)) {
 		CALL(shift_merge_in_place)(md, ws, pr, COMMON_ARGS);
 		CALL(shift_merge_in_place)(md, pr, pe, COMMON_ARGS);
@@ -1434,6 +1487,7 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 		if (nm > 0)
 			CALL(shift_merge_in_place)(md, ws, pe, COMMON_ARGS);
 	}
+#endif
 	// and....we're done!
 } // stable_sort_finisher
 
@@ -1561,7 +1615,11 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		state->work_sorted = true;
 
 		// Merge current workspace with the new set
+#if LOW_STACK
+		CALL(split_merge_in_place)(ws, nws, pr, COMMON_ARGS);
+#else
 		CALL(shift_merge_in_place)(ws, nws, pr, COMMON_ARGS);
+#endif
 
 		// We may have picked up new duplicates.  Separate them out
 		nws = ws;

@@ -1,0 +1,95 @@
+// Returns the first item in the range start->end that is
+// is greater than but NOT equal to the test item
+static VAR * __attribute__((noinline))
+NAME(binary_search_gt_ne)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
+{
+	assert(end >= start);
+
+	if ((end - start) <= (ES << 3)) {
+		while ((end > start) && IS_LT(test, end - ES)) end -= ES;
+		return end;
+	} else {
+		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
+
+		end = start + pos * ES;
+		while (min < max) {
+			if (IS_LT(test, end)) {
+				max = pos;
+			} else {
+				min = pos + 1;
+			}
+			pos = (min + max) >> 1;
+			end = start + (pos * ES);
+		}
+		return end;
+	}
+} // binary_search_gt_ne
+
+
+// Returns the first item in the range start->end that is greater
+// than or equal to the test item
+static VAR * __attribute__((noinline))
+NAME(binary_search_gt_eq)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
+{
+	assert(end >= start);
+
+	if ((end - start) <= (ES << 3)) {
+		while ((start < end) && IS_LT(start, test)) start += ES;
+		return start;
+	} else {
+		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
+
+		end = start + pos * ES;
+		while (min < max) {
+			if (IS_LT(end, test)) {
+				min = pos + 1;
+			} else {
+				max = pos;
+			}
+			pos = (min + max) >> 1;
+			end = start + (pos * ES);
+		}
+		return end;
+	}
+} // binary_search_gt_eq
+
+
+#if 0
+		// Bring PE in such that all elements in B > A are cordoned off
+		pe = CALL(binary_search_gt_eq)(pb, pe, pb - ES, COMMON_ARGS);
+		if (pe == pb)
+			goto shift_pop;
+
+		// Find all elements in A less than B, and cordon those off
+		pa = CALL(binary_search_gt_ne)(pa, pb, pb, COMMON_ARGS);
+		if (pa == pb)
+			goto shift_pop;
+
+		// Find all elements at the start of B, less than
+		// the start of A, and rotate them out of the way
+		rp = CALL(binary_search_gt_eq)(pb, pe, pa, COMMON_ARGS);
+		if (rp > pb) {
+			CALL(block_rotate)(pa, pb, rp, COMMON_ARGS);
+			if (rp == pe)
+				goto shift_pop;
+			pa = pa + (rp - pb);
+			pb = rp;
+		}
+
+		// Now find all elements at the end of A, greater than
+		// the end of B, and rotate them out of the way
+		// Need to skip over any equal elements too
+		sp = CALL(binary_search_gt_ne)(pa, pb, pe - ES, COMMON_ARGS);
+		if (sp < pb) {
+			CALL(block_rotate)(sp, pb, pe, COMMON_ARGS);
+			if (sp == pa)
+				goto shift_pop;
+			pe -= (pb - sp);
+			pb = sp;
+		}
+
+		// Adjust the block size to account for the end limit
+		// Let's do it the branchless way just for fun! :)
+		bs = (pb - pa) < (pe - pb);
+		bs = (bs * (pb - pa)) + (!bs * (pe - pb));
+#endif
