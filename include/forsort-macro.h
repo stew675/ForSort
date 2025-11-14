@@ -336,6 +336,51 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb,
 } // insertion_merge_in_place
 
 
+static VAR *
+NAME(binary_search_left)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
+{
+	if ((end - start) > (ES << 3)) {
+		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
+		end = start + (pos * ES);
+		while (min < max) {
+			if (IS_LT(end, test))
+				min = pos + 1;
+			else
+				max = pos;
+			pos = (min + max) >> 1;
+			end = start + (pos * ES);
+		}
+	} else {
+		while ((end > start) && !IS_LT(end - ES, test))
+				end -= ES;
+	}
+	return end;
+} // binary_search_left
+
+
+static VAR *
+NAME(binary_search_right)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
+{
+	if ((end - start) > (ES << 3)) {
+		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
+		VAR	*scan = start + (pos * ES);
+		while (min < max) {
+			if (IS_LT(test, scan))
+				max = pos;
+			else
+				min = pos + 1;
+			pos = (min + max) >> 1;
+			scan = start + (pos * ES);
+		}
+		start = scan;
+	} else {
+		while ((start < end) && !IS_LT(test, start))
+			start += ES;
+	}
+	return start;
+} // binary_search_right
+
+
 // This is what everything is based on, and I call it shift_merge_in_place()
 //
 // At its heart, the following algorithm is a variation on PowerMerge that
@@ -380,6 +425,7 @@ shift_again:
 	// If the stack is large enough, this should almost never ever happen
 	if (unlikely(stack == maxstack)) {
 		printf("Stack Overflow\n");
+		printf("pa = 0, pb = %lu, pe =%lu\n", pb - pa, pe - pb); 
 		CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 		goto shift_pop;
 	}
@@ -418,30 +464,49 @@ shift_again:
 	// Split the block up, and keep trying with the remainders
 
 	// Handle scenario where our block cannot fit within what remains
-	// This occurs about 3% of the time, hence the use of unlikely
-	if (unlikely(rp > pe)) {
+	// This is a LOT of fiddly work, but it's worth it in the end
+	if (rp > pe) {
 		if (pb == pe)
 			goto shift_pop;
 
-#if 0
-		if (!is_lt(pb, pb - ES))
+		// Bring PE in such that all elements in B > A are cordoned off
+		pe = CALL(binary_search_left)(pb, pe, pb - ES, COMMON_ARGS);
+		if (pe == pb)
 			goto shift_pop;
-		while (!is_lt(pe - ES, pb - ES))
-			pe -= ES;
-		for (rp = pb; (rp < pe) && is_lt(rp, pa); rp += ES);
-		CALL(block_rotate)(pa, pb, pe, COMMON_ARGS);
-		if (rp == pe)
+
+		// Find all elements in A less than B, and cordon those off
+		pa = CALL(binary_search_right)(pa, pb, pb, COMMON_ARGS);
+		if (pa == pb)
 			goto shift_pop;
-		pa = pa + (rp - pb);
-		pb = rp;
-#endif
+
+		// Find all elements at the start of B, less than
+		// the start of A, and rotate them out of the way
+		rp = CALL(binary_search_right)(pb, pe, pa, COMMON_ARGS);
+		if (rp > pb) {
+			CALL(block_rotate)(pa, pb, rp, COMMON_ARGS);
+			if (rp == pe)
+				goto shift_pop;
+			pa = pa + (rp - pb);
+			pb = rp;
+		}
+
+		// Now find all elements at the end of A, greater than
+		// the end of B, and rotate them out of the way
+		// Need to skip over any equal elements too
+		sp = CALL(binary_search_left)(pa, pb, pe - ES, COMMON_ARGS);
+		while ((sp < pb) && !IS_LT(pe - ES, sp)) sp += ES;
+		if (sp < pb) {
+			CALL(block_rotate)(sp, pb, pe, COMMON_ARGS);
+			if (sp == pa)
+				goto shift_pop;
+			pe -= (pb - sp);
+			pb = sp;
+		}
 
 		// Adjust the block size to account for the end limit
-		bs = pe - pb;
-		if (bs > (pb - pa)) {
-			printf("True\n");
-			bs = (pb - pa);
-		}
+		// Let's do it the branchless way for fun! :)
+		bs = (pb - pa) < (pe - pb);
+		bs = (bs * (pb - pa)) + (!bs * (pe - pb));
 	}
 
 	// Find spot within PA->PB to split it at.  This means finding
