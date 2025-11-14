@@ -50,7 +50,7 @@ enum {
 // A structure to manage the state of the stable sort algorithm
 struct NAME(stable_state) {
 	// All sizes are in numbers of entries, not bytes
-	VAR	*merged_dups[MAX_DUPS + 1];	// Merged up duplicates
+	VAR	*merged_dups[MAX_DUPS];		// Merged up duplicates
 	size_t	num_merged;			// No. of merged duplicate entries
 	VAR	*free_dups[MAX_DUPS];		// Unmerged duplicates
 	size_t	num_free;			// No. of unmerged duplicate entries
@@ -1430,7 +1430,10 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 		size_t	n = state->num_free;
 		VAR	*mf = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
 
-		// merged_dups has a bonus spot just for this occasion
+		// If merged dups is full, there will never be any unmerged frees
+		// If there are unmerged frees, then merged dups won't be full.
+		// Therefore, the following operation is perfectly bounded
+		assert(state->num_merged != MAX_DUPS);
 		state->merged_dups[state->num_merged++] = mf;
 		state->free_dups[0] = NULL;
 		state->num_free = 0;
