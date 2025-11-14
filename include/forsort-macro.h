@@ -336,17 +336,25 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb,
 } // insertion_merge_in_place
 
 
-static VAR *
+static inline VAR *
 NAME(binary_search_left)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
 {
-	if ((end - start) > (ES << 3)) {
+	assert(end >= start);
+	if ((end - start) > (ES * 9)) {
 		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
 		end = start + (pos * ES);
 		while (min < max) {
-			if (IS_LT(end, test))
+#if 1
+			if (IS_LT(end, test)) {
 				min = pos + 1;
-			else
+			} else {
 				max = pos;
+			}
+#else
+			int res = !!IS_LT(end, test);
+			min = (res * (pos + 1)) + (!res * min);
+			max = (res * max) + (!res * pos);
+#endif
 			pos = (min + max) >> 1;
 			end = start + (pos * ES);
 		}
@@ -358,17 +366,25 @@ NAME(binary_search_left)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
 } // binary_search_left
 
 
-static VAR *
+static inline VAR *
 NAME(binary_search_right)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
 {
-	if ((end - start) > (ES << 3)) {
+	assert(end >= start);
+	if ((end - start) > (ES * 9)) {
 		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
 		VAR	*scan = start + (pos * ES);
 		while (min < max) {
-			if (IS_LT(test, scan))
+#if 1
+			if (IS_LT(test, scan)) {
 				max = pos;
-			else
+			} else {
 				min = pos + 1;
+			}
+#else
+			int res = !!IS_LT(test, scan);
+			max = (res * pos) + (!res * max);
+			min = (res * min) + (!res * (pos + 1));
+#endif
 			pos = (min + max) >> 1;
 			scan = start + (pos * ES);
 		}
@@ -469,6 +485,7 @@ shift_again:
 		if (pb == pe)
 			goto shift_pop;
 
+#if 1
 		// Bring PE in such that all elements in B > A are cordoned off
 		pe = CALL(binary_search_left)(pb, pe, pb - ES, COMMON_ARGS);
 		if (pe == pb)
@@ -489,20 +506,23 @@ shift_again:
 			pa = pa + (rp - pb);
 			pb = rp;
 		}
-
+#if 0
 		// Now find all elements at the end of A, greater than
 		// the end of B, and rotate them out of the way
 		// Need to skip over any equal elements too
-		sp = CALL(binary_search_left)(pa, pb, pe - ES, COMMON_ARGS);
-		while ((sp < pb) && !IS_LT(pe - ES, sp)) sp += ES;
+//		sp = CALL(binary_search_left)(pa, pb, pe - ES, COMMON_ARGS);
+//		while ((sp < pb) && !IS_LT(pe - ES, sp)) sp += ES;
+
+		for (sp = pb; (sp > pa) && IS_LT(pe - ES, sp - ES); sp -= ES);
 		if (sp < pb) {
 			CALL(block_rotate)(sp, pb, pe, COMMON_ARGS);
 			if (sp == pa)
 				goto shift_pop;
-			pe -= (pb - sp);
+//			pe -= (pb - sp);
 			pb = sp;
 		}
-
+#endif
+#endif
 		// Adjust the block size to account for the end limit
 		// Let's do it the branchless way for fun! :)
 		bs = (pb - pa) < (pe - pb);
@@ -512,7 +532,7 @@ shift_again:
 	// Find spot within PA->PB to split it at.  This means finding
 	// the first point in PB->PE that is smaller than the matching
 	// point within PA->PB, centered around the PB pivot
-	if (bs > (ES << 3)) {	// Binary search on larger sets
+	if (bs >= (ES << 3)) {	// Binary search on larger sets
 		size_t	min = 0, max = bs / ES;
 		size_t	pos = max >> 1;
 
