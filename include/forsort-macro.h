@@ -338,7 +338,7 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb,
 
 // Returns the first item in the range start->end that is
 // is greater than but NOT equal to the test item
-static inline VAR *
+static VAR * __attribute__((noinline))
 NAME(binary_search_gt_ne)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
 {
 	assert(end >= start);
@@ -349,24 +349,24 @@ NAME(binary_search_gt_ne)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
 	} else {
 		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
 
-		VAR *scan = start + pos * ES;
+		end = start + pos * ES;
 		while (min < max) {
-			if (IS_LT(test, scan)) {
+			if (IS_LT(test, end)) {
 				max = pos;
 			} else {
 				min = pos + 1;
 			}
 			pos = (min + max) >> 1;
-			scan = start + (pos * ES);
+			end = start + (pos * ES);
 		}
-		return scan;
+		return end;
 	}
 } // binary_search_gt_ne
 
 
 // Returns the first item in the range start->end that is greater
 // than or equal to the test item
-static inline VAR *
+static VAR * __attribute__((noinline))
 NAME(binary_search_gt_eq)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
 {
 	assert(end >= start);
@@ -376,18 +376,18 @@ NAME(binary_search_gt_eq)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
 		return start;
 	} else {
 		size_t min = 0, max = (end - start) / ES, pos = max >> 1;
-		VAR *scan = start + pos * ES;
 
+		end = start + pos * ES;
 		while (min < max) {
-			if (IS_LT(scan, test)) {
+			if (IS_LT(end, test)) {
 				min = pos + 1;
 			} else {
 				max = pos;
 			}
 			pos = (min + max) >> 1;
-			scan = start + (pos * ES);
+			end = start + (pos * ES);
 		}
-		return scan;
+		return end;
 	}
 } // binary_search_gt_eq
 
@@ -480,7 +480,7 @@ shift_again:
 		if (pb == pe)
 			goto shift_pop;
 
-#if 1
+#if 0
 		// Bring PE in such that all elements in B > A are cordoned off
 		pe = CALL(binary_search_gt_eq)(pb, pe, pb - ES, COMMON_ARGS);
 		if (pe == pb)
