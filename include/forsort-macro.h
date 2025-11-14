@@ -260,8 +260,7 @@ get_split_stack_size(size_t n)
 static void
 NAME(split_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
-	assert(pb > pa);
-	assert(pe > pb);
+	assert((pb > pa) && (pe > pb));
 
 	// Check if we need to do anything at all
 	if (!IS_LT(pb, pb - ES))
@@ -269,16 +268,13 @@ NAME(split_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 
 	// The stack_size is * 2 due to two pointers per stack entry.  Even
 	// if we're asked to merge 2^64 items, the stack will be just 3.2KB
-	size_t	bs, ns = NITEM(pb - pa);
-	size_t	stack_size = get_split_stack_size(ns) * 2;
+	size_t	bs, stack_size = get_split_stack_size(NITEM(pb - pa)) * 2;
 	_Alignas(64) VAR *_stack[stack_size];
 	VAR	**stack = _stack, *rp, *spa;
 
 split_again:
-	bs = pb - pa;		// Determine the size of A
-
-	// Just insert merge single items. We already know that *PB < *PA
-	if (bs == ES) {
+	// Just bubble single items into place. We already know that *PB < *PA
+	if ((bs = (pb - pa)) == ES) {
 		do {
 			SWAP(pa, pb);
 			pa = pb;
@@ -287,10 +283,11 @@ split_again:
 		goto split_pop;
 	}
 
-	// Split off 1/5th of the items.  Ensure that this formula can never
-	// return a 0. We're guaranteed to have at least 2 items though
+	// Calculate our split size ahead of time.  Ensure that this formula
+	// never returns 0.  Due to single item bubbling, we're guaranteed
+	// to have at least two items.  Split off 1/5th of the items.
 	// The imbalanced split here improves algorithmic performance.
-	ns = ((NITEM(bs) + 3) / 5) * ES;
+	size_t split_size = ((NITEM(bs) + 3) / 5) * ES;
 
 	// Advance the PA->PB block up as far as we can
 	for (rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
@@ -300,12 +297,11 @@ split_again:
 	}
 
 	// Split the A block into two, and keep trying with the remainder
-	spa = pa + ns;
+	spa = pa + split_size;
 	if (IS_LT(pb, pb - ES)) {
 		// Push a new split point to the work stack
 		*stack++ = pa;
 		*stack++ = spa;
-
 		pa = spa;
 		goto split_again;
 	}
@@ -318,7 +314,6 @@ split_pop:
 		if (IS_LT(pb, pb - ES))
 			goto split_again;
 	}
-#undef	SPLIT_SIZE
 } // split_merge_in_place
 
 
@@ -351,8 +346,7 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb,
 static void
 NAME(reverse_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
-	assert(pb > pa);
-	assert(pe > pb);
+	assert((pb > pa) && (pe > pb));
 
 	// Check if we need to do anything at all before proceeding
 	if (!IS_LT(pb, pb - ES))
@@ -478,8 +472,7 @@ reverse_pos:
 static void
 NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
-	assert(pb > pa);
-	assert(pe > pb);
+	assert((pb > pa) && (pe > pb));
 
 	// Check if we need to do anything at all before proceeding
 	if (!IS_LT(pb, pb - ES))
