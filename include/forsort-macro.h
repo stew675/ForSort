@@ -492,13 +492,6 @@ NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	size_t	bs;		// Byte-wise block size of pa->pb
 
 shift_again:
-	// If it looks like we're working on merging a much larger array
-	// into a smaller one, then reverse the direction
-	if ((pb - pa) > ((pe - pb) << 2)) {
-		CALL(reverse_merge_in_place)(pa, pb, pe, COMMON_ARGS);
-		goto shift_pop;
-	}
-
 	// If our stack is about to over-flow, move to use the slower, but more
 	// resilient, algorithm that handles degenerate scenarios without issue
 	// If the stack is large enough, this should almost never ever happen
@@ -548,8 +541,15 @@ shift_again:
 	if (rp > pe) {
 		if (pb == pe)
 			goto shift_pop;
-		else
-			bs = (pe - pb);
+
+		// If it looks like we're working on merging a much larger array
+		// into a smaller one, then reverse the direction
+		if ((pb - pa) > ((pe - pb) << 2)) {
+			CALL(reverse_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+			goto shift_pop;
+		}
+
+		bs = (pe - pb);
 	}
 
 	// Find spot within PA->PB to split it at.  This means finding
