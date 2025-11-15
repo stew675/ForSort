@@ -243,7 +243,7 @@ extern void print_array(void *a, size_t n);
 
 #define ES 1
 #define	NITEM(_x_)		(_x_)
-#define	VAR xb16_t
+#define	VAR	xb16_t
 #include "forsort-macro.h"
 #undef VAR
 #undef NITEM
@@ -251,7 +251,7 @@ extern void print_array(void *a, size_t n);
 
 #define ES 1
 #define	NITEM(_x_)		(_x_)
-#define	VAR uint64_t
+#define	VAR	uint64_t
 #include "forsort-macro.h"
 #undef VAR
 #undef NITEM
@@ -259,7 +259,7 @@ extern void print_array(void *a, size_t n);
 
 #define ES 1
 #define	NITEM(_x_)		(_x_)
-#define	VAR uint32_t
+#define	VAR	uint32_t
 #include "forsort-macro.h"
 #undef VAR
 #undef NITEM
@@ -267,7 +267,7 @@ extern void print_array(void *a, size_t n);
 
 #define ES es
 #define	NITEM(_x_)		((_x_) / es)
-#define	VAR char
+#define	VAR	char
 #define UNTYPED
 #include "forsort-macro.h"
 #undef UNTYPED

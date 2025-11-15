@@ -34,7 +34,7 @@ enum {
 #define unlikely(x)     __builtin_expect(!!(x), 0)
 
 // Experimentally 13 appears to be the best binary insertion cutoff
-#define	BINARY_INSERTION_MIN	13
+#define	BINARY_INSERTION_MIN	7
 
 // Experimentally, 7 appears best as the sprint activation value
 #define	SPRINT_ACTIVATE 	7
@@ -125,7 +125,7 @@ static void
 NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 {
 	VAR *pa = (VAR *)a;
-	VAR *ta = pa + ES;
+	VAR *ta = pa + 1;
 	VAR *pe = pa + n;
 
 	if (n > BINARY_INSERTION_MIN)
@@ -133,11 +133,11 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 
 	// Regular insertion sort for first BINARY_INSERTION_MIN items
 	for ( ; ta != pe; ta++) {
-		if (IS_LT(ta, ta - ES)) {
-			VAR t[ES] = {*ta}, *tb = ta;
+		if (IS_LT(ta, ta - 1)) {
+			VAR t[1] = {*ta}, *tb = ta;
 			do {
-				*tb = *(tb - ES);
-			} while ((--tb != pa) && IS_LT(t, tb - ES));
+				*tb = *(tb - 1);
+			} while ((--tb != pa) && IS_LT(t, tb - 1));
 			*tb = *t;
 		}
 	}
@@ -148,11 +148,10 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 	// Now use binary insertion sort to place the elements
 	// from the second set into the first
 	for (pe = pa + n; ta != pe; ta++) {
-		if (IS_LT(ta, ta - ES)) {
+		if (IS_LT(ta, ta - 1)) {
 			// Find where to insert it
-			size_t min = 0, max = (ta - pa) - ES;
-			size_t pos = max >> 1;
-			VAR *tb = pa + (pos * ES), *tc = ta, t = *ta;
+			size_t min = 0, max = (ta - pa) - 1, pos = max >> 1;
+			VAR *tb = ta - 1, *tc = ta, t = *ta;
 
 			while (min < max) {
 				// The following 3 lines implement
@@ -161,16 +160,16 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 				// 	max = pos;
 				// else
 				// 	min = pos + 1;
-				int result = !!(IS_LT(ta, tb));
+				int result = !!(IS_LT(ta, pa + pos));
 				max = (max * !result) + (pos * result);
 				min = (min * result) + ((pos + 1) * !result);
 
 				pos = (min + max) >> 1;
-				tb = pa + (pos * ES);
 			}
-			for (size_t num = (ta - tb); num--; tc--)
-				*tc = *(tc - ES);
-			*tb = t;
+			pos = (ta - pa) - pos;
+			while(pos--)
+				*tc-- = *tb--;
+			*tc = t;
 		}
 	}
 } // insertion_sort

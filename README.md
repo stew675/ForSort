@@ -230,13 +230,13 @@ GLibC Qsort
 100000000                         12415113.613    2532644915      124.151
 
 ForSort Basic[1]
-100                                      3.134           832       31.342
-1000                                    56.056         14329       56.056
-10000                                  798.514        202673       79.851
-100000                               10380.701       2605785      103.807
-1000000                             126564.877      31763249      126.565
-10000000                           1498201.608     374313526      149.820
-100000000                         17555403.126    4308330381      175.554
+100                                      3.095           831       30.951
+1000                                    55.536         14318       55.536
+10000                                  792.412        202587       79.241
+100000                               10269.709       2605201      102.697
+1000000                             125631.840      31752654      125.632
+10000000                           1488480.454     374154539      148.848
+100000000                         17357319.107    4306022673      173.573
 
 NOTES:
 [1]   This is the raw ForSort merge algorithm implemented in its most basic manner
@@ -253,31 +253,36 @@ What about on mostly sorted data sets?
 Here's the speeds when given data that has been disordered by 25% (ie. 1 in 4 items are out of order)
 
 ```
-        ALGORITHM                    TIME       COMPARES (M)
-ForSort Workspace Stable            0.423s        146.613
-ForSort No Workspace Unstable       0.434s        154.652
-ForSort In-Place Stable             0.452s        155.582
-TimSort                             0.585s        139.026
-WikiSort                            0.639s        249.697
-GrailSort In-Place                  0.666s        232.446
-GLibC Qsort                         0.689s        218.019
-Bentley/McIlroy QuickSort           0.702s        228.052
-ForSort Basic                       0.859s        223.881
+        ALGORITHM                    TIME         COMPARES (M)
+ForSort Workspace Stable            0.423s           146.613
+ForSort No Workspace Unstable       0.434s           154.652
+ForSort In-Place Stable             0.452s           155.582
+TimSort                             0.585s           139.026
+WikiSort                            0.639s           249.697
+GrailSort In-Place                  0.666s           232.446
+GLibC Qsort                         0.689s           218.019
+Bentley/McIlroy QuickSort           0.702s           228.052
+
+ForSort Basic                       0.859s           223.881
+10000000                            857181.552     220369198       85.718
 ```
 
 Here's the speeds when given data that has been disordered by 5% (ie. 1 in 20 items are out of order)
 
 ```
-        ALGORITHM                    TIME       COMPARES (M)
-ForSort Workspace Stable            0.193s         63.733
-ForSort No Workspace Unstable       0.208s         70.062
-TimSort                             0.217s         59.739
-ForSort In-Place Stable             0.222s         72.413
-WikiSort                            0.372s        204.729
-Bentley/McIlroy QuickSort           0.354s        214.906
-ForSort Basic                       0.370s        131.408
-GLibC Qsort                         0.412s        199.491
-GrailSort In-Place                  0.461s        201.531
+        ALGORITHM                    TIME         COMPARES (M)
+ForSort Workspace Stable            0.193s            63.733
+ForSort No Workspace Unstable       0.208s            70.062
+TimSort                             0.217s            59.739
+ForSort In-Place Stable             0.222s            72.413
+Bentley/McIlroy QuickSort           0.354s           214.906
+WikiSort                            0.372s           204.729
+
+ForSort Basic                       0.370s           131.408
+10000000                            352204.604     113886084       35.220
+
+GLibC Qsort                         0.412s           199.491
+GrailSort In-Place                  0.461s           201.531
 ```
 
 And here are the results for 1% disordering (1 in 100 items out of order).
@@ -286,32 +291,38 @@ Here TimSort pulls a small lead due to the way it processes the input data.  The
 Stable ForSort is still very close though
 
 ```
-        ALGORITHM                    TIME       COMPARES (M)
-TimSort                             0.092s         29.032
-ForSort Workspace Stable            0.110s         35.013
-ForSort No Workspace Unstable       0.114s         36.419
-ForSort In-Place Stable             0.126s         39.936
-ForSort Basic                       0.211s         93.412
-WikiSort                            0.251s        161.786
-Bentley/McIlroy QuickSort           0.298s        212.017
-GLibC Qsort                         0.336s        178.719
-GrailSort In-Place                  0.354s        167.276
+        ALGORITHM                    TIME          COMPARES (M)
+TimSort                             0.092s            29.032
+ForSort Workspace Stable            0.110s            35.013
+ForSort No Workspace Unstable       0.114s            36.419
+ForSort In-Place Stable             0.126s            39.936
+
+ForSort Basic                       0.211s            93.412
+10000000                            187116.178      72301760       18.712
+
+WikiSort                            0.251s           161.786
+Bentley/McIlroy QuickSort           0.298s           212.017
+GLibC Qsort                         0.336s           178.719
+GrailSort In-Place                  0.354s           167.276
 ```
 
 What about reversed data ordering (still with potential duplicates)?  ForSort
 doesn't make any explicit checks for fully reversed ordering, but it still runs quickly.
 
 ```
-        ALGORITHM                    TIME       COMPARES (M)
-ForSort No Workspace Unstable       0.132s         57.187
-TimSort                             0.134s         39.874
-ForSort Workspace Stable            0.136s         60.684
-ForSort In-Place Stable             0.146s         60.038
-ForSort Basic                       0.148s         53.161
-WikiSort                            0.159s         63.018
-GrailSort In-Place                  0.214s         84.024
-GLibC Qsort                         0.311s        120.241
-Bentley/McIlroy QuickSort           0.405s        264.937
+        ALGORITHM                    TIME         COMPARES (M)
+ForSort No Workspace Unstable       0.132s            57.187
+TimSort                             0.134s            39.874
+ForSort Workspace Stable            0.136s            60.684
+ForSort In-Place Stable             0.146s            60.038
+
+ForSort Basic                       0.148s            53.161
+10000000                            134479.679      60232686       13.448
+
+WikiSort                            0.159s            63.018
+GrailSort In-Place                  0.214s            84.024
+GLibC Qsort                         0.311s           120.241
+Bentley/McIlroy QuickSort           0.405s           264.937
 ```
 
 ...and finally when using wholly sorted data, to demonstrate adaptability.
@@ -319,16 +330,25 @@ The Stable In-Place algorithm still needs to extract and prepare a working
 space, even though it never uses it, which incurs an overhead here.
 
 ```
-        ALGORITHM                    TIME       COMPARES (M)
-TimSort                             0.009s          9.999
-ForSort Workspace Stable            0.013s         10.000
-ForSort No Workspace Unstable       0.014s         10.001
-ForSort Basic                       0.017s          9.999
-WikiSort                            0.023s         20.128
-ForSort In-Place Stable             0.024s         12.480
-GrailSort In-Place                  0.183s         79.283
-GLibC Qsort                         0.212s        114.434
-Bentley/McIlroy QuickSort           0.259s        209.620
+        ALGORITHM                    TIME         COMPARES (M)
+TimSort                             0.009s             9.999
+
+ForSort Workspace Stable            0.013s            10.000
+10000000                             13403.350      10000112        1.340
+
+ForSort No Workspace Unstable       0.014s            10.001
+10000000                             13732.529      10000620        1.373
+
+ForSort In-Place Stable             0.024s            12.480
+10000000                             15762.093      11157478        1.576
+
+ForSort Basic                       0.017s             9.999
+10000000                             15995.262       9999999        1.600
+
+WikiSort                            0.023s            20.128
+GrailSort In-Place                  0.183s            79.283
+GLibC Qsort                         0.212s           114.434
+Bentley/McIlroy QuickSort           0.259s           209.620
 ```
 
 # Discussion
