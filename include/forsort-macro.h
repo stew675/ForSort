@@ -123,7 +123,7 @@ static void
 NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 {
 	VAR *pa = (VAR *)a;
-	VAR *ta = pa + ES;
+	VAR *ta = pa + 1;
 	VAR *pe = pa + n;
 
 	if (n > BINARY_INSERTION_MIN)
@@ -131,11 +131,11 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 
 	// Regular insertion sort for first BINARY_INSERTION_MIN items
 	for ( ; ta != pe; ta++) {
-		if (IS_LT(ta, ta - ES)) {
-			VAR t[ES] = {*ta}, *tb = ta;
+		if (IS_LT(ta, ta - 1)) {
+			VAR t[1] = {*ta}, *tb = ta;
 			do {
-				*tb = *(tb - ES);
-			} while ((--tb != pa) && IS_LT(t, tb - ES));
+				*tb = *(tb - 1);
+			} while ((--tb != pa) && IS_LT(t, tb - 1));
 			*tb = *t;
 		}
 	}
@@ -146,11 +146,11 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 	// Now use binary insertion sort to place the elements
 	// from the second set into the first
 	for (pe = pa + n; ta != pe; ta++) {
-		if (IS_LT(ta, ta - ES)) {
+		if (IS_LT(ta, ta - 1)) {
 			// Find where to insert it
-			size_t min = 0, max = (ta - pa) - ES;
+			size_t min = 0, max = (ta - pa) - 1;
 			size_t pos = max >> 1;
-			VAR *tb = pa + (pos * ES), *tc = ta, t = *ta;
+			VAR *tb = pa + (pos * 1), *tc = ta, t = *ta;
 
 			while (min < max) {
 				// The following 3 lines implement
@@ -164,10 +164,10 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 				min = (min * result) + ((pos + 1) * !result);
 
 				pos = (min + max) >> 1;
-				tb = pa + (pos * ES);
+				tb = pa + (pos * 1);
 			}
 			for (size_t num = (ta - tb); num--; tc--)
-				*tc = *(tc - ES);
+				*tc = *(tc - 1);
 			*tb = t;
 		}
 	}
