@@ -41,15 +41,17 @@ enum {
 #define	SPRINT_ACTIVATE 	7
 #define	SPRINT_EXIT_PENALTY	2
 
-// With a MAX_DUPS value of 26, if the data set is so degenerate as to fill up
+// Since the merge_duplicates algorithm uses a 1:2 split ratio, it's best to
+// have MAX_DUPS be an even power of 3, so a value of 27 is perfect here.
+// With a MAX_DUPS value of 27, if the data set is so degenerate as to fill up
 // the duplicates table, then dropping out and sorting is trivially fast
-#define	MAX_DUPS 26
+#define	MAX_DUPS 27
 #endif	// FOR_GLOBAL_DEFS
 
 // A structure to manage the state of the stable sort algorithm
 struct NAME(stable_state) {
 	// All sizes are in numbers of entries, not bytes
-	VAR	*merged_dups[MAX_DUPS + 1];	// Merged up duplicates
+	VAR	*merged_dups[MAX_DUPS];		// Merged up duplicates
 	size_t	num_merged;			// No. of merged duplicate entries
 	VAR	*free_dups[MAX_DUPS];		// Unmerged duplicates
 	size_t	num_free;			// No. of unmerged duplicate entries
@@ -276,8 +278,7 @@ get_split_stack_size(size_t n)
 static void
 NAME(split_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
-	assert(pb > pa);
-	assert(pe > pb);
+	assert((pb > pa) && (pe > pb));
 
 	// Check if we need to do anything at all
 	if (!IS_LT(pb, pb - ES))
@@ -285,16 +286,13 @@ NAME(split_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 
 	// The stack_size is * 2 due to two pointers per stack entry.  Even
 	// if we're asked to merge 2^64 items, the stack will be just 3.2KB
-	size_t	bs, ns = (pb - pa) / ES;
-	size_t	stack_size = get_split_stack_size(ns) * 2;
+	size_t	bs, stack_size = get_split_stack_size(NITEM(pb - pa)) * 2;
 	_Alignas(64) VAR *_stack[stack_size];
 	VAR	**stack = _stack, *rp, *spa;
 
 split_again:
-	bs = pb - pa;		// Determine the size of A
-
-	// Just insert merge single items. We already know that *PB < *PA
-	if (bs == ES) {
+	// Just bubble single items into place. We already know that *PB < *PA
+	if ((bs = (pb - pa)) == ES) {
 		do {
 			SWAP(pa, pb);
 			pa = pb;
@@ -303,25 +301,25 @@ split_again:
 		goto split_pop;
 	}
 
-	// Split off 1/5th of the items.  Ensure that this formula can never
-	// return a 0. We're guaranteed to have at least 2 items though
+	// Calculate our split size ahead of time.  Ensure that this formula
+	// never returns 0.  Due to single item bubbling, we're guaranteed
+	// to have at least two items.  Split off 1/5th of the items.
 	// The imbalanced split here improves algorithmic performance.
-	ns = (((bs / ES) + 3) / 5) * ES;
+	size_t split_size = ((NITEM(bs) + 3) / 5) * ES;
 
 	// Advance the PA->PB block up as far as we can
 	for (rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, bs / ES, COMMON_ARGS);
+		CALL(block_swap)(pa, pb, NITEM(bs), COMMON_ARGS);
 		pa += bs;
 		pb += bs;
 	}
 
 	// Split the A block into two, and keep trying with the remainder
-	spa = pa + ns;
+	spa = pa + split_size;
 	if (IS_LT(pb, pb - ES)) {
 		// Push a new split point to the work stack
 		*stack++ = pa;
 		*stack++ = spa;
-
 		pa = spa;
 		goto split_again;
 	}
@@ -334,7 +332,6 @@ split_pop:
 		if (IS_LT(pb, pb - ES))
 			goto split_again;
 	}
-#undef	SPLIT_SIZE
 } // split_merge_in_place
 
 
@@ -367,38 +364,21 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb,
 static void
 NAME(reverse_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
-	assert(pb > pa);
-	assert(pe > pb);
+	assert((pb > pa) && (pe > pb));
 
 	// Check if we need to do anything at all before proceeding
 	if (!IS_LT(pb, pb - ES))
 		return;
 
-	size_t	stack_size = get_split_stack_size((pe - pb) / ES) * 3;
+	size_t	stack_size = get_split_stack_size(NITEM(pe - pb)) * 3;
 	_Alignas(64) VAR *_stack[stack_size];
 	VAR	**stack = _stack, **maxstack = stack + stack_size;
 	VAR	*rp, *sp;
 	size_t	bs;
 
 reverse_again:
-	// reverse_merge_in_place() won't re-reverse the direction back to
-	// shift_merge_in_place.  This is to prevent potential stack overflows
-	// Instead it will just persist, and if it runs out of stack, it'll
-	// fall back to the fully stack bounded split_merge_in_place().  I've
-	// never seen it happen, but that doesn't meant it cannot
-	if (unlikely(stack == maxstack)) {
-#ifdef	DEBUG
-		printf("Stack Overflow 2\n");
-		printf("pa = 0, pb = %lu, pe = %lu\n", pb - pa, pe - pb); 
-#endif
-		CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
-		goto reverse_pos;
-	}
-
-	bs = pe - pb;
-
 	// Just insert merge single items. We already know that *PB < *PA
-	if (bs == ES) {
+	if ((bs = (pe - pb)) == ES) {
 		do {	// Bubble Down
 			SWAP(pb, pb - ES);  pb -= ES;
 		} while ((pb != pa) && IS_LT(pb, pb - ES));
@@ -418,7 +398,7 @@ reverse_again:
 
 	// Shift entirety of PB->PE down as far as we can
 	for (sp = pb - bs; sp >= pa && IS_LT(pe - ES, sp); sp -= bs) {
-		CALL(block_swap)(sp, pb, bs / ES, COMMON_ARGS);
+		CALL(block_swap)(sp, pb, NITEM(bs), COMMON_ARGS);
 		pb -= bs;  pe -= bs;
 	}
 
@@ -426,13 +406,20 @@ reverse_again:
 	if (sp < pa) {
 		if (pb == pa)
 			goto reverse_pos;
-		else
-			bs = pb - pa;
+
+		// reverse_merge_in_place() won't re-reverse the direction
+		// back to shift_merge_in_place.  This is to prevent
+		// potential stack overflows.  Instead it will just persist,
+		// and if it runs out of stack, it'll fall back to the
+		// fully stack bounded split_merge_in_place().  I've never
+		// seen it happen, but that doesn't meant it cannot
+
+		bs = pb - pa;
 	}
 
 	// Find spot within PB->PE to split it at.
 	if (bs >= (ES << 3)) {	// Binary search on larger sets
-		size_t	min = 0, max = bs / ES, pos = max >> 1;
+		size_t	min = 0, max = NITEM(bs), pos = max >> 1;
 
 		sp = pb - (pos * ES);
 		rp = pb + (pos * ES);
@@ -463,8 +450,17 @@ reverse_again:
 	// This here is just the reverse direction of that same thing.
 	bs = (sp > pa) && IS_LT(sp, sp - ES);
 	if (IS_LT(rp, rp - ES)) {
-		if (bs)
+		if (bs) {
+			// If our stack is about to over-flow, move to use the
+			// slower, but resilient algorithm that handles degenerate
+			// scenarios without issue.
 			SHIFT_STACK_PUSH(pa, sp, pb);
+			if (unlikely(stack == maxstack)) {
+				CALL(split_merge_in_place)(pb, rp, pe, COMMON_ARGS);
+				goto reverse_pos;
+			}
+		}
+
 		pa = pb;
 		pb = rp;
 		goto reverse_again;
@@ -494,8 +490,7 @@ reverse_pos:
 static void
 NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
-	assert(pb > pa);
-	assert(pe > pb);
+	assert((pb > pa) && (pe > pb));
 
 	// Check if we need to do anything at all before proceeding
 	if (!IS_LT(pb, pb - ES))
@@ -503,33 +498,19 @@ NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 
 	// The work stack holds 3 pointers per "position" and so the multiplier
 	// here must be an even multiple of 3.
-	size_t	stack_size = get_split_stack_size((pb - pa) / ES) * 6;
+	size_t	stack_size = get_split_stack_size(NITEM(pb - pa)) * 6;
 	_Alignas(64) VAR *_stack[stack_size];
 	VAR	**stack = _stack, **maxstack = stack + stack_size;
 	VAR	*rp, *sp;	// Roaming-Pointer, and Split Pointer
 	size_t	bs;		// Byte-wise block size of pa->pb
 
 shift_again:
-	// If our stack is about to over-flow, move to use the slower, but more
-	// resilient, algorithm that handles degenerate scenarios without issue
-	// If the stack is large enough, this should almost never ever happen
-	if (unlikely(stack == maxstack)) {
-#ifdef	DEBUG
-		printf("Stack Overflow 1\n");
-		printf("pa = 0, pb = %lu, pe = %lu\n", pb - pa, pe - pb); 
-#endif
-		CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
-		goto shift_pop;
-	}
-
-	bs = pb - pa;
-
 	// Just insert merge single items. We already know that *PB < *PA
-	if (bs == ES) {
+	if ((bs = (pb - pa)) == ES) {
 		do {	// Bubble Up
 			SWAP(pa, pb);
 			pa = pb;  pb = pb + ES;
-		} while (pb != pe && IS_LT(pb, pa));
+		} while ((pb != pe) && IS_LT(pb, pa));
 		goto shift_pop;
 	} else if ((pb + ES) == pe) {
 		do {	// Bubble Down
@@ -547,7 +528,7 @@ shift_again:
 
 	// Shift entirety of PA->PB up as far as we can
 	for (rp = pb + bs; rp <= pe && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, bs / ES, COMMON_ARGS);
+		CALL(block_swap)(pa, pb, NITEM(bs), COMMON_ARGS);
 		pa += bs;
 		pb += bs;
 	}
@@ -574,7 +555,7 @@ shift_again:
 	// the first point in PB->PE that is smaller than the matching
 	// point within PA->PB, centered around the PB pivot
 	if (bs >= (ES << 3)) {	// Binary search on larger sets
-		size_t	min = 0, max = bs / ES, pos = max >> 1;
+		size_t	min = 0, max = NITEM(bs), pos = max >> 1;
 
 		sp = pb - (pos * ES);
 		rp = pb + (pos * ES);
@@ -610,12 +591,21 @@ shift_again:
 	// Oddly enough, the following line helps compiler optimization on gcc
 	bs = ((rp != pe) && IS_LT(rp, rp - ES));
 	if (IS_LT(sp, sp - ES)) {
-		if (bs)
+		if (bs) {
+			// If our stack is about to over-flow, move to use the
+			// slower, but resilient algorithm that handles degenerate
+			// scenarios without issue.
 			SHIFT_STACK_PUSH(pb, rp, pe);
+			if (unlikely(stack == maxstack)) {
+				CALL(split_merge_in_place)(pa, sp, pb, COMMON_ARGS);
+				goto shift_pop;
+			}
+		}
 		// PB forms a hard upper limit on PA->SP->PB, so it is
 		// used as the new PE when merging PA->SP->PB together
 		pe = pb;
 		pb = sp;
+
 		goto shift_again;
 	} else if (bs) {
 		// Here we continue to merge PB->RP into RP->PE.  PB becomes
@@ -723,7 +713,7 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 static VAR *
 NAME(sprint_left)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 {
-	size_t	max = (pe - pa) / ES;
+	size_t	max = NITEM(pe - pa);
 	size_t	min = 0, pos;
 	VAR	*sp;
 
@@ -787,7 +777,7 @@ NAME(sprint_left)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 static VAR *
 NAME(sprint_right)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 {
-	size_t	max = (pe - pa) / ES;
+	size_t	max = NITEM(pe - pa);
 	size_t	min = 0, pos = 0;
 	VAR	*sp;
 
@@ -899,7 +889,7 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 			// Stuff from A is sprinting
 			if (a_run) {
 				VAR *ta = CALL(sprint_right)(a, pa, pw - ES, LEAP_LEFT, COMMON_ARGS);
-				a_run = (pa - ta) / ES;
+				a_run = NITEM(pa - ta);
 				for (size_t num = a_run; num--; ) {
 					pa -= ES;  pb -= ES;
 					SWAP(pa, pb);
@@ -912,7 +902,7 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 			// Stuff from B/Workspace is sprinting
 			if (b_run) {
 				VAR *tw = CALL(sprint_left)(w, pw, pa - ES, LEAP_LEFT, COMMON_ARGS);
-				b_run = (pw - tw) / ES;
+				b_run = NITEM(pw - tw);
 				for (size_t num = b_run; num--; ) {
 					pw -= ES;  pb -= ES;
 					SWAP(pw, pb);
@@ -987,7 +977,7 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 
 			// Stuff from A/workspace is sprinting
 			VAR	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
-			a_run = (tw - w) / ES;
+			a_run = NITEM(tw - w);
 			if (a_run) {
 				for (size_t num = a_run; num--; w += ES, a += ES)
 					SWAP(a, w);
@@ -997,7 +987,7 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 
 			// Stuff from B is sprinting
 			VAR	*tb = CALL(sprint_left)(b, pe, w, LEAP_RIGHT, COMMON_ARGS);
-			b_run = (tb - b) / ES;
+			b_run = NITEM(tb - b);
 			if (b_run) {
 				for (size_t num = b_run; num--; b += ES, a += ES)
 					SWAP(a, b);
@@ -1151,7 +1141,7 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 		// Adjust the rotation pointer after the rotate and fix up sizes
 		rp = pb + (sp - rp);
 		na = nw;
-		nb = (rp - pb) / ES;
+		nb = NITEM(rp - pb);
 
 		// We now have 4 arrays.
 		// - PA->PB  is the part of A the same size as our workspace.
@@ -1170,8 +1160,8 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 		// Now set PA and PB, to be RP and SP respectively, and loop
 		pa = rp;
 		pb = sp;
-		na = (sp - rp) / ES;
-		nb = (pe - sp) / ES;
+		na = NITEM(sp - rp);
+		nb = NITEM(pe - sp);
 	}
 	assert(na > 0);		// It should never be possible that na == 0
 
@@ -1350,7 +1340,7 @@ NAME(extract_uniques)(VAR * const a, const size_t n, VAR *hints, COMMON_PARAMS)
 		return CALL(extract_unique_sub)(a, pe, ps, COMMON_ARGS);
 
 	// Recalculate our size
-	na = (pb - pa) / ES;
+	na = NITEM(pb - pa);
 	size_t	nb = n - na;
 
 	if (hints < pb)
@@ -1385,8 +1375,8 @@ NAME(merge_duplicates)(struct NAME(stable_state) *state, VAR **list, size_t n, V
 	VAR	*m1 = CALL(merge_duplicates)(state, list, n1, list[n1], COMMON_ARGS);
 	VAR	*m2 = CALL(merge_duplicates)(state, list + n1, n2, pe, COMMON_ARGS);
 
-	size_t	nm1 = (m2 - m1) / ES;	// Number of items in m1
-	size_t	nm2 = (pe - m2) / ES;	// Number of items in m2
+	size_t	nm1 = NITEM(m2 - m1);	// Number of items in m1
+	size_t	nm2 = NITEM(pe - m2);	// Number of items in m2
 
 	VAR	*ws = state->work_space;
 	size_t	nw = state->work_size;
@@ -1451,7 +1441,10 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 		size_t	n = state->num_free;
 		VAR	*mf = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
 
-		// merged_dups has a bonus spot just for this occasion
+		// If merged dups is full, there will never be any unmerged frees
+		// If there are unmerged frees, then merged dups won't be full.
+		// Therefore, the following operation is perfectly bounded
+		assert(state->num_merged != MAX_DUPS);
 		state->merged_dups[state->num_merged++] = mf;
 		state->free_dups[0] = NULL;
 		state->num_free = 0;
@@ -1480,7 +1473,7 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 	size_t	nm = 0;
 
 	if (md)
-		nm = (ws - md) / ES;
+		nm = NITEM(ws - md);
 
 #ifdef	DEBUG_UNIQUE_PROCESSING
 	printf("md = %p, ws = %p, pr = %p\n", md, ws, pr);
@@ -1538,7 +1531,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	// kick start the process.  The idea here is to then use the
 	// initial unique values that we extract to drive use of the
 	// merge-sort algorithm, to help us find more uniques faster!
-	nw = (n >> 6) + STABLE_WSRATIO;
+	nw = (n >> 7) + STABLE_WSRATIO;
 	nr = n - nw;
 	pr = pa + (nw * ES);	// Pointer to rest
 
@@ -1552,7 +1545,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	ws = CALL(extract_uniques)(pa, nw, NULL, COMMON_ARGS);
 
 	// Recalculate size of work_space after duplicates were extracted
-	nw = (pr - ws) / ES;
+	nw = NITEM(pr - ws);
 
 	// Initialise state structure
 	state->work_space = ws;
@@ -1586,12 +1579,12 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 #ifdef	DEBUG_UNIQUE_PROCESSING
 		printf("Not enough workspace. Wanted: %ld  Got: %ld  "
 		       "Duplicates: %ld, Remaining Items = %lu\n",
-		       wstarget, nw, (ws - pa) / ES, nr);
+		       wstarget, nw, NITEM(ws - pa), nr);
 #endif
 		// Estimate how much of the remaining that we need to grab
 		// to get enough uniques to satsify our minimum.  First work
 		// out what the current ratio of uniques is
-		size_t	nd = (ws - pa) / ES;	// Num Duplicates
+		size_t	nd = NITEM(ws - pa);	// Num Duplicates
 		double	ratio = nw;
 		ratio /= (nw + nd);		// Ratio of uniques
 		size_t	grab = wstarget - nw;	// How much we're short by
@@ -1642,7 +1635,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		// We may have picked up new duplicates.  Separate them out
 		nws = ws;
 		ws = CALL(extract_uniques)(ws, nw + grab, NULL, COMMON_ARGS);
-		nw = (pr - ws) / ES;
+		nw = NITEM(pr - ws);
 
 		// Update state with work-space changes
 		state->work_space = ws;
