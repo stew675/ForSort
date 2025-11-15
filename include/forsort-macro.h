@@ -34,7 +34,8 @@ enum {
 #define unlikely(x)     __builtin_expect(!!(x), 0)
 
 // Experimentally 13 appears to be the best binary insertion cutoff
-#define	BINARY_INSERTION_MIN	13
+//#define	BINARY_INSERTION_MIN	13
+#define	BINARY_INSERTION_MIN	3
 
 // Experimentally, 7 appears best as the sprint activation value
 #define	SPRINT_ACTIVATE 	7
@@ -147,10 +148,27 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 	// from the second set into the first
 	for (pe = pa + n; ta != pe; ta++) {
 		if (IS_LT(ta, ta - 1)) {
+#if 0
+			VAR	t = *ta, *tb = ta - 1, *tc = ta;
+			size_t	max = tb - pa, pos = 0;
+			size_t	step = 1 << msb64(max);
+			printf("max = %lu, step = %lu\n", max, step);
+print_array(pa, max + 1);
+			while(step) {
+				pos += step;
+				int res = (pos > max) || IS_LT(ta, pa + pos);
+				pos -= (res * step);
+				step <<= 1;
+			}
+			printf("pos = %lu\n", pos);
+			pos = (ta - pa) - pos;
+			while (pos--)
+				*tc-- = *tb--;
+			*tc = t;
+#else
 			// Find where to insert it
-			size_t min = 0, max = (ta - pa) - 1;
-			size_t pos = max >> 1;
-			VAR *tb = pa + (pos * 1), *tc = ta, t = *ta;
+			VAR	t = *ta, *tb = ta - 1, *tc = ta;
+			size_t max = tb - pa, min = 0, pos = max >> 1;
 
 			while (min < max) {
 				// The following 3 lines implement
@@ -159,16 +177,16 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 				// 	max = pos;
 				// else
 				// 	min = pos + 1;
-				int result = !!(IS_LT(ta, tb));
-				max = (max * !result) + (pos * result);
-				min = (min * result) + ((pos + 1) * !result);
-
+				int res = !!(IS_LT(ta, pa + pos));
+				max = (max * !res) + (pos * res);
+				min = (min * res) + ((pos + 1) * !res);
 				pos = (min + max) >> 1;
-				tb = pa + (pos * 1);
 			}
-			for (size_t num = (ta - tb); num--; tc--)
-				*tc = *(tc - 1);
-			*tb = t;
+			pos = (ta - pa) - pos;
+			while (pos--)
+				*tc-- = *tb--;
+			*tc = t;
+#endif
 		}
 	}
 } // insertion_sort
