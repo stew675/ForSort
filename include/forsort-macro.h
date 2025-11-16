@@ -678,6 +678,17 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 } // basic_top_down_sort
 
 
+static inline void
+NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
+{
+	do {
+		SWAP(start, end);
+		start += ES;
+		end -= ES;
+	} while (start < end);
+} // reverse_block
+
+
 // Because basic sort is so heavily reliant upon insertion sort, and because
 // insertion sort's worst case is reversed input, this is the one time that
 // Forsort explicitly does something to handle reversed inputs
@@ -700,11 +711,7 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 
 			reversals += (prev - start) / ES;
 
-			do {
-				SWAP(start, prev);
-				start += ES;
-				prev -= ES;
-			} while (start < prev);
+			CALL(reverse_block)(start, prev, es);
 		}
 		prev = curr;
 		curr += ES;
