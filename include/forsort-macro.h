@@ -609,7 +609,7 @@ static void
 NAME(basic_bottom_up_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
 	// Handle small array size inputs with insertion sort
-	if (n < (INSERT_SORT_MAX * 2))
+	if (n < BASIC_SORT_MAX)
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
 	VAR	*pe = pa + (n * ES);
@@ -661,9 +661,6 @@ NAME(basic_bottom_up_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 static void
 NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
-#if LOW_STACK
-	return CALL(basic_bottom_up_sort)(pa, n, COMMON_ARGS);
-#endif
 	// Handle small array size inputs with insertion sort
 	// Ensure there's no way na and nb could be zero
 	if ((n <= BASIC_INSERT_MAX) || (n <= 8))
@@ -679,6 +676,39 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 
 	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 } // basic_top_down_sort
+
+
+// Because basic sort is so heavily reliant upon insertion sort, and because
+// insertion sort's worst case is reversed input, this is the one time that
+// Forsort explicitly does something to handle reversed inputs
+static void
+NAME(dereverse)(VAR *pa, const size_t n, COMMON_PARAMS)
+{
+#if 0
+	VAR	*pe = pa + (n * ES), *ta = pa + ES;
+
+	while (ta < pe) {
+		VAR	*tb = ta;
+		while ((tb != pe) && IS_LT(tb, tb - ES))
+			tb += ES;
+		if (tb > ta) {
+		}
+		ta = tb + ES;
+	}
+#endif
+} // dereverse
+
+
+static void
+NAME(basic_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
+{
+	// CALL(dereverse)(pa, n, COMMON_ARGS);
+#if LOW_STACK
+	CALL(basic_bottom_up_sort)(pa, n, COMMON_ARGS);
+#else
+	CALL(basic_top_down_sort)(pa, n, COMMON_ARGS);
+#endif
+} // basic_sort
 
 
 // Giving credit where it's due.  All this sprint-left/right, merge-left/right
@@ -1503,7 +1533,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	// 80 items appears to be about the cross-over
 	// That 2-stage binary insertion sort holds up pretty well!
 	if (n <= 160)
-		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
+		return CALL(basic_sort)(pa, n, COMMON_ARGS);
 
 	// We start with a workspace candidate size that is intentionally
 	// small, as we need to use the slower basic_sort() algorithm to
@@ -1518,7 +1548,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	size_t	wstarget = nr / STABLE_WSRATIO;
 
 	// First sort our candidate work-space chunk
-	CALL(basic_top_down_sort)(pa, nw, COMMON_ARGS);
+	CALL(basic_sort)(pa, nw, COMMON_ARGS);
 
 	// Now pull out our first set of unique values
 	ws = CALL(extract_uniques)(pa, nw, NULL, COMMON_ARGS);
@@ -1645,7 +1675,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	if ((nw < wstarget) && (nw < (nr >> 7))) {
 		// Give up and fall back to good old basic_sort().  If the input
 		// data is THAT degenerate, then basic_sort is very fast anyway
-		CALL(basic_top_down_sort)(pr, nr, COMMON_ARGS);
+		CALL(basic_sort)(pr, nr, COMMON_ARGS);
 	} else {
 		// Sort the remainder using the workspace we extracted
 		CALL(merge_sort_in_place)(pr, nr, ws, nw, COMMON_ARGS);
