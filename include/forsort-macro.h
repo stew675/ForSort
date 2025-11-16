@@ -681,11 +681,18 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 static inline void
 NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 {
-	do {
+	size_t	num_swaps = ((NITEM(end - start) + 1) / 2);
+
+//	while (start < end) {
+	while (num_swaps) {
+//		assert(start < end);
+		num_swaps--;
 		SWAP(start, end);
 		start += ES;
 		end -= ES;
-	} while (start < end);
+	}
+//	assert((start == end) || ((end + ES) == start));
+//	printf("gap = %lu, n = %lu\n", gap, n);
 } // reverse_block
 
 
