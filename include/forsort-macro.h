@@ -1502,7 +1502,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 #endif
 	// 80 items appears to be about the cross-over
 	// That 2-stage binary insertion sort holds up pretty well!
-	if (n < 80)
+	if (n <= 160)
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
 	// We start with a workspace candidate size that is intentionally
