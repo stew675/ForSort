@@ -146,20 +146,6 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 	// from the second set into the first
 	for (pe = pa + n; ta != pe; ta++) {
 		if (IS_LT(ta, ta - 1)) {
-#if 0
-			VAR	t = *ta, *tb = ta - 1, *tc = ta;
-			size_t	pos = 0, max = tb - pa;
-
-			for (size_t test, step = 1 << msb64(max); step; step >>= 1) {
-				test = pos + step;
-				uint32_t res = (test-- <= max) && !IS_LT(ta, pa + test);
-				pos += step * res;
-			}
-//			pos = (ta - pa) - pos;
-//			while (pos--)
-//				*tc-- = *tb--;
-//			*tc = t;
-#else
 			// Find where to insert it
 			VAR	t = *ta, *tb = ta - 1, *tc = ta;
 			uint32_t max = tb - pa, min = 0, pos = max >> 1;
@@ -177,7 +163,6 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 
 				pos = (min + max) >> 1;
 			}
-#endif
 			pos = (ta - pa) - pos;
 			while (pos--)
 				*tc-- = *tb--;
