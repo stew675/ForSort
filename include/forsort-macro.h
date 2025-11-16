@@ -125,19 +125,22 @@ NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 static void
 NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 {
-	VAR *pa = (VAR *)a, *ta;
+	VAR *pa = (VAR *)a, *ta = pa + 1;
 	VAR *pe = pa + MIN(n, BINARY_INSERTION_MIN);
 
+	if (unlikely(n < 2))
+		return;
+
 	// Regular insertion sort for first BINARY_INSERTION_MIN items
-	for (ta = pa + 1; ta < pe; ta++) {
+	do {
 		if (IS_LT(ta, ta - 1)) {
-			VAR t[1] = {*ta}, *tb = ta;
+			VAR t[1] = {*ta}, *tb = ta - 1, *tc = ta;
 			do {
-				*tb = *(tb - 1);
-			} while ((--tb != pa) && IS_LT(t, tb - 1));
-			*tb = *t;
+				*tc-- = *tb--;
+			} while ((tc != pa) && IS_LT(t, tb));
+			*tc = *t;
 		}
-	}
+	} while (++ta != pe);
 
 	if (n <= BINARY_INSERTION_MIN)
 		return;
@@ -147,26 +150,24 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 	for (pe = pa + n; ta != pe; ta++) {
 		if (IS_LT(ta, ta - 1)) {
 			// Find where to insert it
-			VAR	t = *ta, *tb = ta - 1, *tc = ta;
+			VAR	t = *ta, *tb = ta - 1, *tc = ta, *where = pa;
 			uint32_t max = tb - pa, min = 0, pos = max >> 1;
 
-			while (min < max) {
+			do {
 				// The following 3 lines implement
 				// this logic in a branchless manner
 				// if (IS_LT(ta, tb))
 				// 	max = pos;
 				// else
 				// 	min = pos + 1;
-				uint32_t res = IS_LT(ta, pa + pos) - 1;
+				uint32_t res = IS_LT(ta, where + pos) - 1;
 				max = (pos++ & ~res) | (max & res);
 				min = (min & ~res) | (pos & res);
-
 				pos = (min + max) >> 1;
-			}
-			pos = (ta - pa) - pos;
-			while (pos--)
-				*tc-- = *tb--;
-			*tc = t;
+			} while (min < max);
+
+			for (where += pos; tc != where; *tc-- = *tb--);
+			*where = t;
 		}
 	}
 } // insertion_sort
@@ -665,7 +666,7 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 #endif
 	// Handle small array size inputs with insertion sort
 	// Ensure there's no way na and nb could be zero
-	if ((n <= INSERT_SORT_MAX) || (n <= 8))
+	if ((n <= BASIC_INSERT_MAX) || (n <= 8))
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
 	size_t	na = (n * BASIC_SKEW) / 100;
