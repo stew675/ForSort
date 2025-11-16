@@ -27,6 +27,7 @@ enum {
 	LEAP_RIGHT,
 };
 
+#define	MIN(_x_, _y_)  (((_x_) < (_y_)) ? (_x_) : (_y_))
 #define	IS_LT	is_lt
 
 // Sparingly used to guide compiling optimization
@@ -34,8 +35,7 @@ enum {
 #define unlikely(x)     __builtin_expect(!!(x), 0)
 
 // Experimentally 13 appears to be the best binary insertion cutoff
-//#define	BINARY_INSERTION_MIN	13
-#define	BINARY_INSERTION_MIN	3
+#define	BINARY_INSERTION_MIN	13
 
 // Experimentally, 7 appears best as the sprint activation value
 #define	SPRINT_ACTIVATE 	7
@@ -125,15 +125,11 @@ NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 static void
 NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 {
-	VAR *pa = (VAR *)a;
-	VAR *ta = pa + 1;
-	VAR *pe = pa + n;
-
-	if (n > BINARY_INSERTION_MIN)
-		pe = pa + BINARY_INSERTION_MIN;
+	VAR *pa = (VAR *)a, *ta;
+	VAR *pe = pa + MIN(n, BINARY_INSERTION_MIN);
 
 	// Regular insertion sort for first BINARY_INSERTION_MIN items
-	for ( ; ta != pe; ta++) {
+	for (ta = pa + 1; ta < pe; ta++) {
 		if (IS_LT(ta, ta - 1)) {
 			VAR t[1] = {*ta}, *tb = ta;
 			do {
@@ -152,17 +148,14 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 		if (IS_LT(ta, ta - 1)) {
 #if 0
 			VAR	t = *ta, *tb = ta - 1, *tc = ta;
-			size_t	max = tb - pa, pos = 0;
-			size_t	step = 1 << msb64(max);
-			printf("max = %lu, step = %lu\n", max, step);
-print_array(pa, max + 1);
-			while(step) {
-				pos += step;
-				int res = (pos > max) || IS_LT(ta, pa + pos);
-				pos -= (res * step);
-				step <<= 1;
+			size_t	pos = 0, max = tb - pa;
+
+			for (size_t step = 1 << msb64(max); step; step >>= 1) {
+				int res = ((pos + step) < max) && !IS_LT(ta, pa + (pos + step));
+				pos += step * res;
 			}
-			printf("pos = %lu\n", pos);
+			print_array(pa, (ta - pa) + 1);
+			printf("*pa = %u\n, pos = %lu, *pos = %u", *(uint32_t *)ta, pos, *(uint32_t *)(pa + pos));
 			pos = (ta - pa) - pos;
 			while (pos--)
 				*tc-- = *tb--;
@@ -179,9 +172,9 @@ print_array(pa, max + 1);
 				// 	max = pos;
 				// else
 				// 	min = pos + 1;
-				int res = !!(IS_LT(ta, pa + pos));
-				max = (max * !res) + (pos * res);
-				min = (min * res) + ((pos + 1) * !res);
+				int res = !(IS_LT(ta, pa + pos));
+				max = (max * res) + (pos++ * !res);
+				min = (min * !res) + (pos * res);
 				pos = (min + max) >> 1;
 			}
 			pos = (ta - pa) - pos;
