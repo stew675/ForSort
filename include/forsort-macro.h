@@ -682,29 +682,32 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 // insertion sort's worst case is reversed input, this is the one time that
 // Forsort explicitly does something to handle reversed inputs
 static size_t
-NAME(dereverse)(VAR *pa, const size_t n, COMMON_PARAMS)
+NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
-	VAR	*pe = pa + (n * ES), *ta = pa + ES;
+	VAR	*end = pa + (n * ES);
+	VAR	*curr = pa + ES;
+	VAR	*prev = pa;
 	size_t	reversals = 0;
 
-	while (ta < pe) {
-		if (IS_LT(ta, ta - ES)) {
-			VAR	*tb = ta - ES;
-			VAR	*tc = ta + ES;
+	while (curr < end) {
+		if (IS_LT(curr, prev)) {
+			VAR	*start = prev;
 
-			while ((tc != pe) && IS_LT(tc, tc - ES))
-				tc += ES;
-
-			reversals += (tc - tb) / ES;
-			ta = tc;
-			tc -= ES;
 			do {
-				SWAP(tb, tc);
-				tb += ES;
-				tc -= ES;
-			} while (tb < tc);
+				prev = curr;
+				curr += ES;
+			} while ((curr < end) && IS_LT(curr, prev));
+
+			reversals += (prev - start) / ES;
+
+			do {
+				SWAP(start, prev);
+				start += ES;
+				prev -= ES;
+			} while (start < prev);
 		}
-		ta += ES;
+		prev = curr;
+		curr += ES;
 	}
 	return reversals;
 } // dereverse
