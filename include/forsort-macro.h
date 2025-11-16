@@ -695,7 +695,7 @@ NAME(dereverse)(VAR *pa, const size_t n, COMMON_PARAMS)
 			while ((tc != pe) && IS_LT(tc, tc - ES))
 				tc += ES;
 
-			reversals += (tc - tb) / (ES * 2);
+			reversals += (tc - tb) / ES;
 			ta = tc;
 			tc -= ES;
 			do {
@@ -710,16 +710,19 @@ NAME(dereverse)(VAR *pa, const size_t n, COMMON_PARAMS)
 } // dereverse
 
 
-static void
+static size_t
 NAME(basic_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
-	if (CALL(dereverse)(pa, n, COMMON_ARGS) == 0)
-		return;
+	size_t reversals = CALL(dereverse)(pa, n, COMMON_ARGS);
+
+	if (!reversals)		// Already sorted
+		return 0;
 #if LOW_STACK
 	CALL(basic_bottom_up_sort)(pa, n, COMMON_ARGS);
 #else
 	CALL(basic_top_down_sort)(pa, n, COMMON_ARGS);
 #endif
+	return reversals;
 } // basic_sort
 
 
@@ -1544,8 +1547,10 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 #endif
 	// 80 items appears to be about the cross-over
 	// That 2-stage binary insertion sort holds up pretty well!
-	if (n <= 160)
-		return CALL(basic_sort)(pa, n, COMMON_ARGS);
+	if (n <= 99) {
+		CALL(basic_sort)(pa, n, COMMON_ARGS);
+		return;
+	}
 
 	// We start with a workspace candidate size that is intentionally
 	// small, as we need to use the slower basic_sort() algorithm to
@@ -1560,7 +1565,16 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	size_t	wstarget = nr / STABLE_WSRATIO;
 
 	// First sort our candidate work-space chunk
-	CALL(basic_sort)(pa, nw, COMMON_ARGS);
+	size_t reversals = CALL(basic_sort)(pa, nw, COMMON_ARGS);
+
+	// Check if it looks like the input may benefit from a reversal
+	if ((nw - reversals) <= (nw >> 8)) {
+#ifdef	DEBUG_UNIQUE_PROCESSING
+		printf("stable_sort() - Input is likely reversed: nw = %lu,"
+		       "reversals = %lu\n", nw, reversals);
+#endif
+		CALL(dereverse)(pr, nr, COMMON_ARGS);
+	}
 
 	// Now pull out our first set of unique values
 	ws = CALL(extract_uniques)(pa, nw, NULL, COMMON_ARGS);
