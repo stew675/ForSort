@@ -609,18 +609,18 @@ static void
 NAME(basic_bottom_up_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
 	// Handle small array size inputs with insertion sort
-	if (n < BASIC_SORT_MAX)
+	if (n < BASIC_INSERT_MAX)
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
 	VAR	*pe = pa + (n * ES);
 
 	do {
-		size_t	bound = n - (n % INSERT_SORT_MAX);
+		size_t	bound = n - (n % BASIC_INSERT_MAX);
 		VAR	*bpe = pa + (bound * ES);
 
-		// First just do insert sorts on all with size INSERT_SORT_MAX
-		for (VAR *pos = pa; pos != bpe; pos += (INSERT_SORT_MAX * ES)) {
-			VAR	*stop = pos + (INSERT_SORT_MAX * ES);
+		// First just do insert sorts on all with size BASIC_INSERT_MAX
+		for (VAR *pos = pa; pos != bpe; pos += (BASIC_INSERT_MAX * ES)) {
+			VAR	*stop = pos + (BASIC_INSERT_MAX * ES);
 			for (VAR *ta = pos + ES, *tb; ta != stop; ta += ES)
 				for (tb = ta; tb != pos && IS_LT(tb, tb - ES); tb -= ES)
 					SWAP(tb, tb - ES);
@@ -631,7 +631,7 @@ NAME(basic_bottom_up_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 			CALL(insertion_sort)(bpe, n - bound, COMMON_ARGS);
 	} while (0);
 
-	for (size_t size = INSERT_SORT_MAX; size < n; size += size) {
+	for (size_t size = BASIC_INSERT_MAX; size < n; size += size) {
 		VAR	*stop = pa + ((n - size) * ES);
 		for (VAR *pos1 = pa; pos1 < stop; pos1 += (size * ES * 2)) {
 			VAR *pos2 = pos1 + (size * ES);
@@ -681,28 +681,40 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 // Because basic sort is so heavily reliant upon insertion sort, and because
 // insertion sort's worst case is reversed input, this is the one time that
 // Forsort explicitly does something to handle reversed inputs
-static void
+static size_t
 NAME(dereverse)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
-#if 0
 	VAR	*pe = pa + (n * ES), *ta = pa + ES;
+	size_t	reversals = 0;
 
 	while (ta < pe) {
-		VAR	*tb = ta;
-		while ((tb != pe) && IS_LT(tb, tb - ES))
-			tb += ES;
-		if (tb > ta) {
+		if (IS_LT(ta, ta - ES)) {
+			VAR	*tb = ta - ES;
+			VAR	*tc = ta + ES;
+
+			while ((tc != pe) && IS_LT(tc, tc - ES))
+				tc += ES;
+
+			reversals += (tc - tb) / (ES * 2);
+			ta = tc;
+			tc -= ES;
+			do {
+				SWAP(tb, tc);
+				tb += ES;
+				tc -= ES;
+			} while (tb < tc);
 		}
-		ta = tb + ES;
+		ta += ES;
 	}
-#endif
+	return reversals;
 } // dereverse
 
 
 static void
 NAME(basic_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
-	// CALL(dereverse)(pa, n, COMMON_ARGS);
+	if (CALL(dereverse)(pa, n, COMMON_ARGS) == 0)
+		return;
 #if LOW_STACK
 	CALL(basic_bottom_up_sort)(pa, n, COMMON_ARGS);
 #else

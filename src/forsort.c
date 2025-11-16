@@ -93,7 +93,7 @@
 // algorithm will run a bit slower if you do so.
 #define	INSERT_SORT_MAX		16
 
-#define	BASIC_INSERT_MAX	32
+#define	BASIC_INSERT_MAX	48
 
 // For shift_merge_in_place(), 1 work stack position holds 3 pointers (24
 // bytes on 64-bit machines). A stack size of 80 requires a hair under 4K on
@@ -302,13 +302,13 @@ forsort_basic(void *a, const size_t n, const size_t es,
 	int     swaptype = get_swap_type(a, es);
 	
 	if (swaptype == SWAP_WORDS_64) {
-		basic_top_down_sort_uint64_t((uint64_t *)a, n, COMMON_ARGS);
+		basic_sort_uint64_t((uint64_t *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_32) {
-		basic_top_down_sort_uint32_t((uint32_t *)a, n, COMMON_ARGS);
+		basic_sort_uint32_t((uint32_t *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_128) {
-		basic_top_down_sort_xb16_t((xb16_t *)a, n, COMMON_ARGS);
+		basic_sort_xb16_t((xb16_t *)a, n, COMMON_ARGS);
 	} else {
-		basic_top_down_sort_char((char *)a, n, COMMON_ARGS);
+		basic_sort_char((char *)a, n, COMMON_ARGS);
 	}
 } // forsort_basic
 	
