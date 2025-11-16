@@ -150,19 +150,15 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 			VAR	t = *ta, *tb = ta - 1, *tc = ta;
 			size_t	pos = 0, max = tb - pa;
 
-			for (size_t step = 1 << msb64(max); step; step >>= 1) {
-				size_t	test = pos + step;
-				if (test-- <= max) {
-					int res = !IS_LT(ta, pa + test);
-					pos += step * res;
-				}
+			for (size_t test, step = 1 << msb64(max); step; step >>= 1) {
+				test = pos + step;
+				uint32_t res = (test-- <= max) && !IS_LT(ta, pa + test);
+				pos += step * res;
 			}
-//			print_array(pa, (ta - pa) + 1);
-//			printf("*pa = %u\n, pos = %lu, *pos = %u", *(uint32_t *)ta, pos, *(uint32_t *)(pa + pos));
-			pos = (ta - pa) - pos;
-			while (pos--)
-				*tc-- = *tb--;
-			*tc = t;
+//			pos = (ta - pa) - pos;
+//			while (pos--)
+//				*tc-- = *tb--;
+//			*tc = t;
 #else
 			// Find where to insert it
 			VAR	t = *ta, *tb = ta - 1, *tc = ta;
@@ -175,22 +171,17 @@ NAME(insertion_sort)(VAR *a, const size_t n, COMMON_PARAMS)
 				// 	max = pos;
 				// else
 				// 	min = pos + 1;
-#if 0
 				uint32_t res = IS_LT(ta, pa + pos) - 1;
 				max = (pos++ & ~res) | (max & res);
 				min = (min & ~res) | (pos & res);
-#else
-				size_t res = !(IS_LT(ta, pa + pos));
-				max = (max * res) + (pos++ * !res);
-				min = (min * !res) + (pos * res);
-#endif
+
 				pos = (min + max) >> 1;
 			}
+#endif
 			pos = (ta - pa) - pos;
 			while (pos--)
 				*tc-- = *tb--;
 			*tc = t;
-#endif
 		}
 	}
 } // insertion_sort

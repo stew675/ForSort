@@ -192,7 +192,7 @@ get_swap_type (void *const pbase, size_t size)
 static int
 msb64(uint64_t v)
 {
-	static const uint64_t dbm64 = (uint64_t)0x03f79d71b4cb0a89;
+	static const uint64_t dbm64 = (uint64_t)0x03f79d71b4cb0a89ULL;
 	static const uint8_t dbi64[64] = {
 		 0, 47,  1, 56, 48, 27,  2, 60, 57, 49, 41, 37, 28, 16,  3, 61,
 		54, 58, 35, 52, 50, 42, 21, 44, 38, 32, 29, 23, 17, 11,  4, 62,
@@ -212,6 +212,25 @@ msb64(uint64_t v)
 }
 
 #if 0
+static int
+msb32(uint32_t v)
+{
+	static const uint32_t dbm32 = (uint32_t)0x07C4ACDDUL;
+	static const uint8_t dbi32[32] = {
+		0, 9, 1, 10, 13, 21, 2, 29, 11, 14, 16, 18, 22, 25, 3, 30,
+		8, 12, 20, 28, 15, 17, 24, 7, 19, 27, 23, 6, 26, 5, 4, 31
+	};
+
+	if (!v)
+		return -1;
+	v |= v >> 1;
+	v |= v >> 2;
+	v |= v >> 4;
+	v |= v >> 8;
+	v |= v >> 16;
+	return dbi32[(v * dbm32) >> 27];
+}
+
 // A relatively quick integer square root estimator.  Borrowed
 // from here: https://stackoverflow.com/a/31120562/16534062
 static size_t
