@@ -166,6 +166,8 @@ ForSort Workspace Stable[2]
 10000000                            528303.381     224527023       52.830
 100000000                          6093108.276    2522421876       60.931
 
+10000000                            523981.678     224527163       52.398  <- New 16/11/25
+
 ForSort No Workspace Unstable
 100                                      2.381           679       23.806
 1000                                    30.843         10168       30.843
@@ -181,11 +183,10 @@ ForSort In-Place Stable[3]
 10000                                  391.139        141504       39.114
 100000                                4624.911       1727402       46.249
 1000000                              52184.073      20575940       52.184
-
 10000000                            588740.639     239222227       58.874
-10000000                            579956.735     238413256       57.996  <- New 16/11/25
-
 100000000                          6800782.635    2695845640       68.008
+
+10000000                            579956.735     238413256       57.996  <- New 16/11/25
 
 GrailSort In-Place
 100                                      3.307           737       33.070
@@ -238,11 +239,10 @@ ForSort Basic[1]
 10000                                  798.514        202673       79.851
 100000                               10380.701       2605785      103.807
 1000000                             126564.877      31763249      126.565
-
 10000000                           1498201.608     374313526      149.820
-10000000                           1503834.051     376180003      150.383  <- New 16/11/25
-
 100000000                         17555403.126    4308330381      175.554
+
+10000000                           1503834.051     376180003      150.383  <- New 16/11/25
 
 NOTES:
 [1]   This is the raw ForSort merge algorithm implemented in its most basic manner
@@ -281,6 +281,8 @@ Here's the speeds when given data that has been disordered by 5% (ie. 1 in 20 it
 ```
         ALGORITHM                    TIME       COMPARES (M)
 ForSort Workspace Stable            0.193s         63.733
+10000000                            194781.262      63832066       19.478  <- New 16/11/25
+
 ForSort No Workspace Unstable       0.208s         70.062
 TimSort                             0.217s         59.739
 
@@ -305,7 +307,11 @@ Stable ForSort is still very close though
 ```
         ALGORITHM                    TIME       COMPARES (M)
 TimSort                             0.092s         29.032
+10000000                             91596.804      29069695        9.160  <- New 16/11/25
+
 ForSort Workspace Stable            0.110s         35.013
+10000000                            109555.790      35028562       10.956  <- New 16/11/25
+
 ForSort No Workspace Unstable       0.114s         36.419
 ForSort In-Place Stable             0.126s         39.936
 10000000                            115600.765      37733370       11.560  <- New 16/11/25
@@ -319,19 +325,21 @@ GLibC Qsort                         0.336s        178.719
 GrailSort In-Place                  0.354s        167.276
 ```
 
-What about reversed data ordering (still with potential duplicates)?  ForSort
-doesn't make any explicit checks for fully reversed ordering, but it still runs quickly.
+What about reversed data ordering (still with potential duplicates)?
 
 ```
         ALGORITHM                    TIME       COMPARES (M)
-ForSort In-Place Stable             0.146s         60.038
+TimSort
+10000000                             36682.035      19539179        3.668  <- New 16/11/25
+
+ForSort In-Place Stable
 10000000                             76407.761      26906893        7.641  <- New 16/11/25
 
-ForSort Basic                       0.148s         53.161
+ForSort Basic
 10000000                             78719.568      27901055        7.872  <- New 16/11/25
 
 ForSort No Workspace Unstable       0.132s         57.187
-TimSort                             0.134s         39.874
+
 ForSort Workspace Stable            0.136s         60.684
 
 WikiSort                            0.159s         63.018
@@ -346,11 +354,14 @@ space, even though it never uses it, which incurs an overhead here.
 
 ```
         ALGORITHM                    TIME       COMPARES (M)
+TimSort                             0.009s          9.999
+10000000                              8663.449       9999999        0.866  <- New 16/11/25
+
 ForSort Basic                       0.017s          9.999
 10000000                              8923.754       9999999        0.892  <- New 16/11/25
 
-TimSort                             0.009s          9.999
 ForSort Workspace Stable            0.013s         10.000
+
 ForSort No Workspace Unstable       0.014s         10.001
 
 ForSort In-Place Stable             0.024s         12.480
