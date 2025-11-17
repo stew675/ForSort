@@ -678,7 +678,7 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 } // basic_top_down_sort
 
 
-static inline void
+static void
 NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 {
 	size_t	num_swaps = ((NITEM(end - start) + 1) / 2);
@@ -711,13 +711,12 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 			VAR	*start = prev;	// Marks start of a run
 
 			do {
-				nl -= !!nl;
+				nl--;		// We KNOW that nl > 0 here
 				prev = curr;
 				curr += ES;
 			} while (nl && IS_LT(curr, prev));
 
 			reversals += NITEM(prev - start);
-
 			CALL(reverse_block)(start, prev, es);
 		}
 		nl -= !!nl;
