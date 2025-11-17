@@ -678,33 +678,51 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 } // basic_top_down_sort
 
 
+static inline void
+NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
+{
+	size_t	num_swaps = ((NITEM(end - start) + 1) / 2);
+
+	while (num_swaps) {
+		num_swaps--;
+		SWAP(start, end);
+		start += ES;
+		end -= ES;
+	}
+	assert((start == end) || ((end + ES) == start));
+} // reverse_block
+
+
 // Because basic sort is so heavily reliant upon insertion sort, and because
 // insertion sort's worst case is reversed input, this is the one time that
 // Forsort explicitly does something to handle reversed inputs
 static size_t
-NAME(dereverse)(VAR *pa, const size_t n, COMMON_PARAMS)
+NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
-	VAR	*pe = pa + (n * ES), *ta = pa + ES;
+	// (stew675) - "val -= !!val" is a way to safely decrement a value
+	// without causing an underflow if the value starts off as zero
+	VAR	*curr = pa + ES;
+	VAR	*prev = pa;
 	size_t	reversals = 0;
+	size_t	nl = n - !!n;	// nl meaning "Number Of Loops"
 
-	while (ta < pe) {
-		if (IS_LT(ta, ta - ES)) {
-			VAR	*tb = ta - ES;
-			VAR	*tc = ta + ES;
+	while (nl) {
+		if (IS_LT(curr, prev)) {
+			VAR	*start = prev;	// Marks start of a run
 
-			while ((tc != pe) && IS_LT(tc, tc - ES))
-				tc += ES;
-
-			reversals += (tc - tb) / ES;
-			ta = tc;
-			tc -= ES;
 			do {
-				SWAP(tb, tc);
-				tb += ES;
-				tc -= ES;
-			} while (tb < tc);
+				nl -= !!nl;
+				prev = curr;
+				curr += ES;
+			} while (nl && IS_LT(curr, prev));
+
+			reversals += NITEM(prev - start);
+
+			CALL(reverse_block)(start, prev, es);
 		}
-		ta += ES;
+		nl -= !!nl;
+		prev = curr;
+		curr += ES;
 	}
 	return reversals;
 } // dereverse
@@ -1568,9 +1586,9 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	size_t reversals = CALL(basic_sort)(pa, nw, COMMON_ARGS);
 
 	// Check if it looks like the input may benefit from a reversal
-	if ((nw - reversals) <= (nw >> 8)) {
+	if ((nw - reversals) <= (nw >> 5)) {
 #ifdef	DEBUG_UNIQUE_PROCESSING
-		printf("stable_sort() - Input is likely reversed: nw = %lu,"
+		printf("stable_sort() - Input is likely reversed: nw = %lu, "
 		       "reversals = %lu\n", nw, reversals);
 #endif
 		CALL(dereverse)(pr, nr, COMMON_ARGS);
