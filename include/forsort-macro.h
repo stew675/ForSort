@@ -678,7 +678,7 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 } // basic_top_down_sort
 
 
-static inline void
+static void
 NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 {
 	size_t	num_swaps = ((NITEM(end - start) + 1) / 2);
@@ -686,10 +686,10 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 	while (num_swaps) {
 		num_swaps--;
 		SWAP(start, end);
-		start += ES;
 		end -= ES;
+		start += ES;
 	}
-	assert((start == end) || ((end + ES) == start));
+//	assert((start == end) || ((end + ES) == start));
 } // reverse_block
 
 
@@ -702,7 +702,7 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	// (stew675) - "val -= !!val" is a way to safely decrement a value
 	// without causing an underflow if the value starts off as zero
 	VAR	*curr = pa + ES;
-	VAR	*prev = pa;
+	VAR	*prev = pa, *next;
 	size_t	reversals = 0;
 	size_t	nl = n - !!n;	// nl meaning "Number Of Loops"
 
@@ -711,18 +711,19 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 			VAR	*start = prev;	// Marks start of a run
 
 			do {
-				nl -= !!nl;
+				nl--;		// We KNOW that nl > 0 here
+				next = curr + ES;
 				prev = curr;
-				curr += ES;
+				curr = next;
 			} while (nl && IS_LT(curr, prev));
 
 			reversals += NITEM(prev - start);
-
 			CALL(reverse_block)(start, prev, es);
 		}
 		nl -= !!nl;
+		next = curr + ES;
 		prev = curr;
-		curr += ES;
+		curr = next;
 	}
 	return reversals;
 } // dereverse
