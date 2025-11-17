@@ -91,9 +91,9 @@
 // values around 20+ giving best speeds at the expense of more swaps/compares
 // Drop this to 8 if you want to minimise comparisons, but the overall
 // algorithm will run a bit slower if you do so.
-#define	INSERT_SORT_MAX		16
+#define	INSERT_SORT_MAX		11
 
-#define	BASIC_INSERT_MAX	48
+#define	BASIC_INSERT_MAX	44
 
 // For shift_merge_in_place(), 1 work stack position holds 3 pointers (24
 // bytes on 64-bit machines). A stack size of 80 requires a hair under 4K on
