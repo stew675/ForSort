@@ -1606,6 +1606,15 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		       "reversals = %lu\n", nw, reversals);
 #endif
 		CALL(dereverse)(pr, nr, COMMON_ARGS);
+	} else if (reversals == 0) {
+		// Check if input isn't already fully sorted
+		reversals = CALL(dereverse)(pr - ES, nr + 1, COMMON_ARGS);
+		if (reversals == 0) {
+#ifdef	DEBUG_UNIQUE_PROCESSING
+		printf("stable_sort() - Input was fully sorted\n");
+#endif
+			return;
+		}
 	}
 
 	// Now pull out our first set of unique values
