@@ -1570,9 +1570,9 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	printf("size of stable state processing structure = %lu bytes\n",
 			sizeof(struct NAME(stable_state)));
 #endif
-	// 80 items appears to be about the cross-over
-	// That 2-stage binary insertion sort holds up pretty well!
-	if (n <= 99) {
+	// 75 items appears to be about the cross-over between using only
+	// basic_sort() and using the main stable_sort() sequence.
+	if (n < 75) {
 		CALL(basic_sort)(pa, n, COMMON_ARGS);
 		return;
 	}
