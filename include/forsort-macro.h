@@ -1611,7 +1611,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		reversals = CALL(dereverse)(pr - ES, nr + 1, COMMON_ARGS);
 		if (reversals == 0) {
 #ifdef	DEBUG_UNIQUE_PROCESSING
-		printf("stable_sort() - Input was fully sorted\n");
+			printf("stable_sort() - Input was fully sorted\n");
 #endif
 			return;
 		}
