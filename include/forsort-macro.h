@@ -683,7 +683,6 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 {
 	size_t	num_swaps = ((NITEM(end - start) + 1) / 2);
 
-//	while (start < end) {
 	while (num_swaps) {
 //		assert(start < end);
 		num_swaps--;
@@ -692,7 +691,6 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 		end -= ES;
 	}
 //	assert((start == end) || ((end + ES) == start));
-//	printf("gap = %lu, n = %lu\n", gap, n);
 } // reverse_block
 
 
@@ -702,27 +700,36 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 static size_t
 NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
-	VAR	*end = pa + (n * ES);
+	// (stew675) - "val -= !!val" is a way to safely decrement a value
+	// without causing an underflow if the value starts off as zero
+//	VAR	*end = pa + (n * ES);
 	VAR	*curr = pa + ES;
 	VAR	*prev = pa;
+	size_t	nl = n - !!n;	// nl meaning "Number Of Loops"
 	size_t	reversals = 0;
 
-	while (curr < end) {
+//	while (curr < end) {
+	while (nl) {
 		if (IS_LT(curr, prev)) {
-			VAR	*start = prev;
+			VAR	*start = prev;	// Marks start of a run
 
 			do {
+				nl -= !!nl;
 				prev = curr;
 				curr += ES;
-			} while ((curr < end) && IS_LT(curr, prev));
+			} while (nl && IS_LT(curr, prev));
+//			} while ((curr < end) && IS_LT(curr, prev));
 
-			reversals += (prev - start) / ES;
+//			reversals += (prev - start) / ES;
+			reversals += NITEM(prev - start);
 
 			CALL(reverse_block)(start, prev, es);
 		}
+		nl -= !!nl;
 		prev = curr;
 		curr += ES;
 	}
+//	printf("n = %lu, nl = %lu, reversals = %lu\n", n, nl, reversals); 
 	return reversals;
 } // dereverse
 
