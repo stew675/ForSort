@@ -684,13 +684,12 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 	size_t	num_swaps = ((NITEM(end - start) + 1) / 2);
 
 	while (num_swaps) {
-//		assert(start < end);
 		num_swaps--;
 		SWAP(start, end);
 		start += ES;
 		end -= ES;
 	}
-//	assert((start == end) || ((end + ES) == start));
+	assert((start == end) || ((end + ES) == start));
 } // reverse_block
 
 
@@ -702,13 +701,11 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
 	// (stew675) - "val -= !!val" is a way to safely decrement a value
 	// without causing an underflow if the value starts off as zero
-//	VAR	*end = pa + (n * ES);
 	VAR	*curr = pa + ES;
 	VAR	*prev = pa;
-	size_t	nl = n - !!n;	// nl meaning "Number Of Loops"
 	size_t	reversals = 0;
+	size_t	nl = n - !!n;	// nl meaning "Number Of Loops"
 
-//	while (curr < end) {
 	while (nl) {
 		if (IS_LT(curr, prev)) {
 			VAR	*start = prev;	// Marks start of a run
@@ -718,9 +715,7 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 				prev = curr;
 				curr += ES;
 			} while (nl && IS_LT(curr, prev));
-//			} while ((curr < end) && IS_LT(curr, prev));
 
-//			reversals += (prev - start) / ES;
 			reversals += NITEM(prev - start);
 
 			CALL(reverse_block)(start, prev, es);
@@ -729,7 +724,6 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		prev = curr;
 		curr += ES;
 	}
-//	printf("n = %lu, nl = %lu, reversals = %lu\n", n, nl, reversals); 
 	return reversals;
 } // dereverse
 
@@ -1592,9 +1586,9 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	size_t reversals = CALL(basic_sort)(pa, nw, COMMON_ARGS);
 
 	// Check if it looks like the input may benefit from a reversal
-	if ((nw - reversals) <= (nw >> 8)) {
+	if ((nw - reversals) <= (nw >> 5)) {
 #ifdef	DEBUG_UNIQUE_PROCESSING
-		printf("stable_sort() - Input is likely reversed: nw = %lu,"
+		printf("stable_sort() - Input is likely reversed: nw = %lu, "
 		       "reversals = %lu\n", nw, reversals);
 #endif
 		CALL(dereverse)(pr, nr, COMMON_ARGS);
