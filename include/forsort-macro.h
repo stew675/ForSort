@@ -698,39 +698,46 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t n, size_t e
 static size_t
 NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
-	// stew675 - "val -= !!val" is a way to safely decrement a value
-	// without causing an underflow if the value starts off as zero
-	VAR	*prev = pa, *curr = pa + ES, *next;
-	size_t	reversals = 0;
-	size_t	nl = n - !!n;	// nl meaning "Number Of Loops"
+	VAR	*start, *prev, *next, *curr = pa;
+	size_t	reversals = 0, num_swaps, nl = n;
 
-	while (nl) {
-		if (IS_LT(curr, prev)) {
-			VAR	*start = prev;	// Marks start of a run
+	if (nl < 2)
+		return reversals;
 
-			do {
-				// The use of "next" here seems to
-				// help on some architectures
-				next = curr + ES;
-				nl--;
-				prev = curr;
-				curr = next;
-			} while (nl && IS_LT(curr, prev));
+	// The structure of the following code is weird, but fast
+	// Some architectures seem to prefer this ordering.  Some
+	// also seem to prefer the use of the superfluous "next".
+	// Is it due to instruction side-effects? I'm not sure
+	do {
+		do {
+			nl--;
+			next = curr + ES;
+			prev = curr;
+			curr = next;
 
-			// prev points at the last item in the run now
-			size_t	num_swaps = NITEM(prev - start);
+			if (nl == 0)
+				return reversals;
 
-			reversals += num_swaps;
-			num_swaps = (num_swaps + 1) >> 1;
-			CALL(reverse_block)(start, prev, num_swaps, es);
-			if (unlikely(nl == 0))
+			if (IS_LT(next, prev))
 				break;
-		}
-		next = curr + ES;
-		nl--;
-		prev = curr;
-		curr = next;
-	}
+		} while (true);
+
+		start = prev;	// Marks start of a run
+
+		do {
+			nl--;
+			next = curr + ES;
+			prev = curr;
+			curr = next;
+		} while (nl && IS_LT(next, prev));
+
+		// prev points at the last item in the run now
+		num_swaps = NITEM(prev - start);
+		reversals += num_swaps;
+		num_swaps = (num_swaps + 1) >> 1;
+		CALL(reverse_block)(start, prev, num_swaps, es);
+	} while (nl);
+
 	return reversals;
 } // dereverse
 
