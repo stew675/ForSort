@@ -678,18 +678,17 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 } // basic_top_down_sort
 
 
+// Breaking this out into a separate function appears to help the C optimizer
 static void
-NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
+NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t n, size_t es)
 {
-	size_t	num_swaps = ((NITEM(end - start) + 1) / 2);
-
-	while (num_swaps) {
-		num_swaps--;
+	while (n) {
+		n--;
 		SWAP(start, end);
 		end -= ES;
 		start += ES;
 	}
-//	assert((start == end) || ((end + ES) == start));
+	assert((start == end) || ((end + ES) == start));
 } // reverse_block
 
 
@@ -699,10 +698,9 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 static size_t
 NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
-	// (stew675) - "val -= !!val" is a way to safely decrement a value
+	// stew675 - "val -= !!val" is a way to safely decrement a value
 	// without causing an underflow if the value starts off as zero
-	VAR	*curr = pa + ES;
-	VAR	*prev = pa, *next;
+	VAR	*prev = pa, *curr = pa + ES, *next;
 	size_t	reversals = 0;
 	size_t	nl = n - !!n;	// nl meaning "Number Of Loops"
 
@@ -711,17 +709,25 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 			VAR	*start = prev;	// Marks start of a run
 
 			do {
-				nl--;		// We KNOW that nl > 0 here
+				// The use of "next" here seems to
+				// help on some architectures
 				next = curr + ES;
+				nl--;
 				prev = curr;
 				curr = next;
 			} while (nl && IS_LT(curr, prev));
 
-			reversals += NITEM(prev - start);
-			CALL(reverse_block)(start, prev, es);
+			// prev points at the last item in the run now
+			size_t	num_swaps = NITEM(prev - start);
+
+			reversals += num_swaps;
+			num_swaps = (num_swaps + 1) >> 1;
+			CALL(reverse_block)(start, prev, num_swaps, es);
+			if (unlikely(nl == 0))
+				break;
 		}
-		nl -= !!nl;
 		next = curr + ES;
+		nl--;
 		prev = curr;
 		curr = next;
 	}
