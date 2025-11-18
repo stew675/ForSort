@@ -29,7 +29,8 @@ BIN=ts
 
 #CC= gcc
 CC=clang
-OPT_FLAGS= -O2 -mtune=native
+CC_OPT_FLAGS= -O2
+LD_OPT_FLAGS= -O3
 DEBUG_FLAGS= -Wall # -g -pg --profile -fprofile-arcs -ftest-coverage
 LIBS=
 
@@ -37,8 +38,8 @@ LIBS=
 # The rules to make it all work.  Should rarely need to edit anything below this line
 ######################################################################################
 
-CFLAGS= -I$(INCDIR) $(DEBUG_FLAGS) $(OPT_FLAGS)
-LDFLAGS= $(DEBUG_FLAGS) $(OPT_FLAGS)
+CFLAGS= -I$(INCDIR) $(DEBUG_FLAGS) $(CC_OPT_FLAGS)
+LDFLAGS= $(DEBUG_FLAGS) $(LD_OPT_FLAGS)
 
 DEPS= $(patsubst %,$(INCDIR)/%,$(DEP)) Makefile
 
