@@ -232,6 +232,76 @@ NAME(block_rotate)(VAR *a, VAR *b, VAR *e, size_t es)
 } // block_rotate
 
 
+// Assumes initial condition that *PA < *(PA - ES)
+static void
+NAME(bubble_down)(VAR *pa, VAR *pe, COMMON_PARAMS)
+{
+	VAR	*pn = pa - ES;
+
+	// Bubble Element Down
+	assert(pa > pe);
+	do {
+		SWAP(pa, pn);
+		pa = pn;
+		pn -= ES;
+	} while ((pa != pe) && IS_LT(pa, pn));
+} // bubble_down
+
+
+// Assumes initial condition that *PA < *(PA + ES)
+static void
+NAME(bubble_up)(VAR *pa, VAR *pe, COMMON_PARAMS)
+{
+	VAR	*pn = pa + ES;
+
+	// Bubble Element Up
+	assert(pn < pe);
+	do {
+		SWAP(pa, pn);
+		pa = pn;
+		pn += ES;
+	} while ((pn != pe) && IS_LT(pn, pa));
+} // bubble_up
+
+
+static VAR *
+NAME(linear_search_split)(VAR *sp, VAR *pb, COMMON_PARAMS)
+{
+	assert (sp < pb);
+
+//	for ( ; (sp != pb) && !IS_LT(rp - ES, sp); sp += ES, rp -= ES);
+	VAR *rp = pb + (pb - sp);
+	while (sp != pb) {
+		rp -= ES;
+		if (IS_LT(rp, sp))
+			return sp;
+		sp += ES;
+	}
+	return sp;
+} // linear_search_split
+
+
+static VAR *
+NAME(binary_search_split)(VAR *pa, VAR *pb, COMMON_PARAMS)
+{
+	size_t	min = 0, max = NITEM(pb - pa), pos = max >> 1;
+
+	VAR *sp = pb - (pos * ES);
+	VAR *rp = pb + (pos * ES);
+
+	while (min < max) {
+		int res = !!(IS_LT(rp, sp - ES));
+		min = (!res * min) + (res * (pos + res));
+		max = (res * max) + (!res * pos);
+
+		pos = (min + max) >> 1;
+		sp = pb - (pos * ES);
+		rp = pb + (pos * ES);
+	}
+	return sp;
+} // binary_search_split
+
+
 #ifndef GET_SPLIT_STACK_SIZE
 #define GET_SPLIT_STACK_SIZE
 static size_t
@@ -462,44 +532,6 @@ reverse_pos:
 } // reverse_merge_in_place
 
 
-static VAR *
-NAME(linear_search_split)(VAR *sp, VAR *pb, COMMON_PARAMS)
-{
-	assert (sp < pb);
-
-//	for ( ; (sp != pb) && !IS_LT(rp - ES, sp); sp += ES, rp -= ES);
-	VAR *rp = pb + (pb - sp);
-	while (sp != pb) {
-		rp -= ES;
-		if (IS_LT(rp, sp))
-			return sp;
-		sp += ES;
-	}
-	return sp;
-} // linear_search_split
-
-
-static VAR *
-NAME(binary_search_split)(VAR *pa, VAR *pb, COMMON_PARAMS)
-{
-	size_t	min = 0, max = NITEM(pb - pa), pos = max >> 1;
-
-	VAR *sp = pb - (pos * ES);
-	VAR *rp = pb + (pos * ES);
-
-	while (min < max) {
-		int res = !!(IS_LT(rp, sp - ES));
-		min = (!res * min) + (res * (pos + res));
-		max = (res * max) + (!res * pos);
-
-		pos = (min + max) >> 1;
-		sp = pb - (pos * ES);
-		rp = pb + (pos * ES);
-	}
-	return sp;
-} // binary_search_split
-
-
 // This is what everything is based on, and I call it shift_merge_in_place()
 //
 // At its heart, the following algorithm is a variation on PowerMerge that
@@ -528,18 +560,12 @@ NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	size_t	bs;		// Byte-wise block size of pa->pb
 
 shift_again:
-	// Just insert merge single items. We already know that *PB < *PA
+	// Just bubble merge single items. We already know that *PB < *PA
 	if ((bs = (pb - pa)) == ES) {
-		do {	// Bubble Up
-			SWAP(pa, pb);
-			pa = pb;  pb = pb + ES;
-		} while ((pb != pe) && IS_LT(pb, pa));
+		CALL(bubble_up)(pa, pe, COMMON_ARGS);
 		goto shift_pop;
 	} else if ((pb + ES) == pe) {
-		do {	// Bubble Down
-			SWAP(pb, pb - ES);
-			pb -= ES;
-		} while ((pb != pa) && IS_LT(pb, pb - ES));
+		CALL(bubble_down)(pb, pa, COMMON_ARGS);
 		goto shift_pop;
 	}
 
@@ -550,14 +576,11 @@ shift_again:
 	}
 
 	// Shift entirety of PA->PB up as far as we can
-	for (rp = pb + bs; rp <= pe && IS_LT(rp - ES, pa); rp += bs) {
+	for (rp = pb + bs; (rp <= pe) && IS_LT(rp - ES, pa); rp += bs) {
 		CALL(block_swap)(pa, pb, es);
 		pa += bs;
 		pb += bs;
 	}
-
-	// We couldn't shift the full PA->PB block up any further
-	// Split the block up, and keep trying with the remainders
 
 	// Handle scenario where our block cannot fit within what remains
 	if (rp > pe) {
@@ -571,9 +594,12 @@ shift_again:
 			goto shift_pop;
 		}
 
+		// Adjust block size to account for approaching the end of PB->PE
 		bs = (pe - pb);
 	}
 
+	// We couldn't shift the full PA->PB block up any further
+	// Split the block up, and keep trying with the remainders
 	// Find spot within PA->PB to split it at.  This means finding
 	// the first point in PB->PE that is smaller than the matching
 	// point within PA->PB, centered around the PB pivot
