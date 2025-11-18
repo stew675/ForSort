@@ -29,7 +29,8 @@ BIN=ts
 
 #CC= gcc
 CC=clang
-OPT_FLAGS= -O2 -march=native -mtune=native -falign-functions=32 -falign-loops=32
+#OPT_FLAGS= -O2 -march=native -mtune=native -falign-functions=32 -falign-loops=32
+OPT_FLAGS= -O2
 DEBUG_FLAGS= -Wall # -g -pg --profile -fprofile-arcs -ftest-coverage
 LIBS=
 
