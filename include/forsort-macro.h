@@ -194,11 +194,12 @@ NAME(test_sorted)(VAR *pa, size_t n, COMMON_PARAMS)
 
 
 static void __attribute__((noinline))
-NAME(block_swap)(VAR * restrict pa, VAR * restrict pb, size_t n, size_t es)
+NAME(block_swap)(VAR * restrict pa, VAR * restrict pb, size_t es)
 {
-	assert((pa + (n * ES)) <= pb);
-	while (n) {
-		n--;
+	VAR	*end = pb;
+
+	assert(pa <= pb);
+	while (pa != end) {
 		SWAP(pa, pb);
 		pa += ES;
 		pb += ES;
@@ -293,7 +294,7 @@ split_again:
 
 	// Advance the PA->PB block up as far as we can
 	for (rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, NITEM(bs), es);
+		CALL(block_swap)(pa, pb, es);
 		pa += bs;
 		pb += bs;
 	}
@@ -382,7 +383,7 @@ reverse_again:
 
 	// Shift entirety of PB->PE down as far as we can
 	for (sp = pb - bs; sp >= pa && IS_LT(pe - ES, sp); sp -= bs) {
-		CALL(block_swap)(sp, pb, NITEM(bs), es);
+		CALL(block_swap)(sp, pb, es);
 		pb -= bs;  pe -= bs;
 	}
 
@@ -461,6 +462,44 @@ reverse_pos:
 } // reverse_merge_in_place
 
 
+static VAR *
+NAME(linear_search_split)(VAR *sp, VAR *pb, COMMON_PARAMS)
+{
+	assert (sp < pb);
+
+//	for ( ; (sp != pb) && !IS_LT(rp - ES, sp); sp += ES, rp -= ES);
+	VAR *rp = pb + (pb - sp);
+	while (sp != pb) {
+		rp -= ES;
+		if (IS_LT(rp, sp))
+			return sp;
+		sp += ES;
+	}
+	return sp;
+} // linear_search_split
+
+
+static VAR *
+NAME(binary_search_split)(VAR *pa, VAR *pb, COMMON_PARAMS)
+{
+	size_t	min = 0, max = NITEM(pb - pa), pos = max >> 1;
+
+	VAR *sp = pb - (pos * ES);
+	VAR *rp = pb + (pos * ES);
+
+	while (min < max) {
+		int res = !!(IS_LT(rp, sp - ES));
+		min = (!res * min) + (res * (pos + res));
+		max = (res * max) + (!res * pos);
+
+		pos = (min + max) >> 1;
+		sp = pb - (pos * ES);
+		rp = pb + (pos * ES);
+	}
+	return sp;
+} // binary_search_split
+
+
 // This is what everything is based on, and I call it shift_merge_in_place()
 //
 // At its heart, the following algorithm is a variation on PowerMerge that
@@ -512,7 +551,7 @@ shift_again:
 
 	// Shift entirety of PA->PB up as far as we can
 	for (rp = pb + bs; rp <= pe && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, NITEM(bs), es);
+		CALL(block_swap)(pa, pb, es);
 		pa += bs;
 		pb += bs;
 	}
@@ -538,31 +577,22 @@ shift_again:
 	// Find spot within PA->PB to split it at.  This means finding
 	// the first point in PB->PE that is smaller than the matching
 	// point within PA->PB, centered around the PB pivot
-	if (bs >= (ES << 3)) {	// Binary search on larger sets
-		size_t	min = 0, max = NITEM(bs), pos = max >> 1;
-
-		sp = pb - (pos * ES);
-		rp = pb + (pos * ES);
-
-		while (min < max) {
-			int res = !!(IS_LT(rp, sp - ES));
-			min = (!res * min) + (res * (pos + res));
-			max = (res * max) + (!res * pos);
-
-			pos = (min + max) >> 1;
-			sp = pb - (pos * ES);
-			rp = pb + (pos * ES);
-		}
-	} else {	// Linear scan is faster for smaller sets
-		sp = pb - bs;	rp = pb + bs;
-		for ( ; (sp != pb) && !IS_LT(rp - ES, sp); sp += ES, rp -= ES);
+	if (bs >= (ES << 3)) {
+		// Binary search on larger sets
+		sp = CALL(binary_search_split)(pb - bs, pb, COMMON_ARGS);
+	} else {
+		// Linear scan is faster for smaller sets
+		sp = CALL(linear_search_split)(pb - bs, pb, COMMON_ARGS);
 	}
 
 	if (sp == pb)
 		goto shift_pop;  // Nothing to swap. We're done here
 
-	// Do a single shift at the split point
-	// The compiler optimiser REALLY doesn't like us calling block_swap here
+	// Adjust rp to match the split point on the other side of pb
+	rp = pb + (pb - sp);
+
+	// Do a single block swap from the split point.  I don't know why but
+	// the compiler optimiser REALLY doesn't like us calling block_swap here
 	for (VAR *ta = sp, *tb = pb; ta != pb; ta += ES, tb += ES)
 		SWAP(ta, tb);
 
