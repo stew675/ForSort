@@ -471,7 +471,7 @@ reverse_again:
 	}
 
 	// Insertion MIP is slightly faster for very small sorted array pairs
-	if ((pe - pa) <= (ES * 12)) {
+	if ((pe - pa) <= (ES * 11)) {
 		CALL(insertion_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 		goto reverse_pop;
 	}
@@ -570,7 +570,7 @@ NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 
 	// The work stack holds 3 pointers per "position" and so the multiplier
 	// here must be an even multiple of 3.
-	size_t	stack_size = get_split_stack_size(NITEM(pb - pa)) * 6;
+	size_t	stack_size = get_split_stack_size(NITEM(pb - pa)) * 3;
 	_Alignas(64) VAR *_stack[stack_size];
 	VAR	**stack = _stack, **maxstack = stack + stack_size;
 	VAR	*rp, *sp;	// Roaming-Pointer, and Split Pointer
@@ -592,7 +592,7 @@ shift_again:
 	}
 
 	// Insertion MIP is slightly faster for very small sorted array pairs
-	if ((pe - pa) <= (ES * 12)) {
+	if ((pe - pa) <= (ES * 11)) {
 		CALL(insertion_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 		goto shift_pop;
 	}
@@ -656,12 +656,12 @@ shift_again:
 	bs = ((rp != pe) && IS_LT(rp, rp - ES));
 	if (IS_LT(sp, sp - ES)) {
 		if (bs) {
-			// If our stack is about to over-flow, move to use the
-			// slower, but resilient algorithm that handles degenerate
-			// scenarios without issue.
+			// If our stack is about to over-flow, move to the reverse
+			// direction.  Chances are we've hit a degenerate scenario
+			// that the reverse merge will handle easily
 			SHIFT_STACK_PUSH(pb, rp, pe);
 			if (unlikely(stack == maxstack)) {
-				CALL(split_merge_in_place)(pa, sp, pb, COMMON_ARGS);
+				CALL(reverse_merge_in_place)(pa, sp, pb, COMMON_ARGS);
 				goto shift_pop;
 			}
 		}
