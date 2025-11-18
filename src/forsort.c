@@ -157,8 +157,8 @@
 #define unlikely(x)	__builtin_expect(!!(x), 0)
 
 // Handy defines to keep code looking cleaner
-#define	COMMON_ARGS	es, swaptype, is_lt
-#define	COMMON_PARAMS	const size_t es, int swaptype, int (*is_lt)(const void *, const void *)
+#define	COMMON_ARGS	es, is_lt
+#define	COMMON_PARAMS	const size_t es, int (*is_lt)(const void *, const void *)
 
 // Construct a 128-bit type
 typedef struct {
