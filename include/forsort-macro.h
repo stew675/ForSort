@@ -304,6 +304,11 @@ NAME(binary_search_split)(VAR *pa, VAR *pb, COMMON_PARAMS)
 
 #ifndef GET_SPLIT_STACK_SIZE
 #define GET_SPLIT_STACK_SIZE
+// The value returned by this function is tied to this line from split_merge()
+//
+//	size_t split_size = ((NITEM(bs) + 3) / 5) * ES;
+//
+// If that calculation is altered, then this function needs to be updated
 static size_t
 get_split_stack_size(size_t n)
 {
@@ -360,6 +365,8 @@ split_again:
 	// never returns 0.  Due to single item bubbling, we're guaranteed
 	// to have at least two items.  Split off 1/5th of the items.
 	// The imbalanced split here improves algorithmic performance.
+	// If you change this calculation, then get_split_stack_size() needs
+	// to be updated to match the new ratio
 	size_t split_size = ((NITEM(bs) + 3) / 5) * ES;
 
 	// Advance the PA->PB block up as far as we can
@@ -469,6 +476,7 @@ reverse_again:
 		// fully stack bounded split_merge_in_place().  I've never
 		// seen it happen, but that doesn't meant it cannot
 
+		// Adjust block size to account for approaching the end of PB->PE
 		bs = pb - pa;
 	}
 
@@ -560,11 +568,16 @@ NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	size_t	bs;		// Byte-wise block size of pa->pb
 
 shift_again:
-	// Just bubble merge single items. We already know that *PB < *PA
+	// The presumption at the start of the loop is that *PB < *(PB - ES)
+
+	// Just bubble merge single items.
 	if ((bs = (pb - pa)) == ES) {
 		CALL(bubble_up)(pa, pe, COMMON_ARGS);
 		goto shift_pop;
-	} else if ((pb + ES) == pe) {
+	}
+
+	// Just bubble merge single items.
+	if ((pb + ES) == pe) {
 		CALL(bubble_down)(pb, pa, COMMON_ARGS);
 		goto shift_pop;
 	}
@@ -584,11 +597,12 @@ shift_again:
 
 	// Handle scenario where our block cannot fit within what remains
 	if (rp > pe) {
+		// Check if we didn't just fit in perfectly!
 		if (pb == pe)
 			goto shift_pop;
 
 		// If it looks like we're working on merging a much larger array
-		// into a smaller one, then reverse the direction
+		// into a smaller one, then reverse the merge direction
 		if ((pb - pa) > ((pe - pb) << 2)) {
 			CALL(reverse_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 			goto shift_pop;
@@ -611,8 +625,9 @@ shift_again:
 		sp = CALL(linear_search_split)(pb - bs, pb, COMMON_ARGS);
 	}
 
+       	// If there is nothing to swap then we're done here
 	if (sp == pb)
-		goto shift_pop;  // Nothing to swap. We're done here
+		goto shift_pop;
 
 	// Adjust rp to match the split point on the other side of pb
 	rp = pb + (pb - sp);
