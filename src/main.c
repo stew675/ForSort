@@ -35,8 +35,12 @@ struct item {
 #if (USE32BIT == 0)
 	uint32_t	order;
 #endif
+
+	// Uncomment following line to test 128-bit types
+//	uint64_t	stuff64;
+
 	// Uncomment following line to enable un-aligned testing
-//	char	stuff;
+//	uint8_t		stuff8;
 };
 
 #include "forsort.h"

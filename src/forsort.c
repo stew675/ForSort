@@ -161,10 +161,8 @@
 #define	COMMON_PARAMS	const size_t es, int (*is_lt)(const void *, const void *)
 
 // Construct a 128-bit type
-typedef struct {
-	uint64_t	a;
-	uint64_t	b;
-} xb16_t;
+
+typedef unsigned __int128 uint128_t;
 
 enum swap_type_t {
 	SWAP_WORDS_128 = 0,
@@ -182,7 +180,7 @@ get_swap_type (void *const pbase, size_t size)
 			return SWAP_WORDS_32;
 		} else if (size == sizeof (uint64_t) && ((uintptr_t) pbase) % __alignof__ (uint64_t) == 0) {
 			return SWAP_WORDS_64;
-		} else if (size == sizeof (xb16_t) && ((uintptr_t) pbase) % __alignof__ (xb16_t) == 0) {
+		} else if (size == sizeof (uint128_t) && ((uintptr_t) pbase) % __alignof__ (uint128_t) == 0) {
 			return SWAP_WORDS_128;
 		}
 	}
@@ -263,7 +261,7 @@ extern void print_array(void *a, size_t n);
 
 #define ES 1
 #define	NITEM(_x_)		(_x_)
-#define	VAR xb16_t
+#define	VAR uint128_t
 #include "forsort-macro.h"
 #undef VAR
 #undef NITEM
@@ -306,7 +304,7 @@ forsort_basic(void *a, const size_t n, const size_t es,
 	} else if (swaptype == SWAP_WORDS_32) {
 		basic_sort_uint32_t((uint32_t *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_128) {
-		basic_sort_xb16_t((xb16_t *)a, n, COMMON_ARGS);
+		basic_sort_uint128_t((uint128_t *)a, n, COMMON_ARGS);
 	} else {
 		basic_sort_char((char *)a, n, COMMON_ARGS);
 	}
@@ -324,7 +322,7 @@ forsort_stable(void *a, const size_t n, const size_t es,
 	} else if (swaptype == SWAP_WORDS_32) {
 		stable_sort_uint32_t((uint32_t *)a, n, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_128) {
-		stable_sort_xb16_t((xb16_t *)a, n, COMMON_ARGS);
+		stable_sort_uint128_t((uint128_t *)a, n, COMMON_ARGS);
 	} else {
 		stable_sort_char((char *)a, n, COMMON_ARGS);
 	}
@@ -353,7 +351,7 @@ forsort_inplace(void *a, const size_t n, const size_t es,
 	} else if (swaptype == SWAP_WORDS_32) {
 		merge_sort_in_place_uint32_t((uint32_t *)a, n, (uint32_t *)workspace, worksize / es, COMMON_ARGS);
 	} else if (swaptype == SWAP_WORDS_128) {
-		merge_sort_in_place_xb16_t((xb16_t *)a, n, (xb16_t *)workspace, worksize / es, COMMON_ARGS);
+		merge_sort_in_place_uint128_t((uint128_t *)a, n, (uint128_t *)workspace, worksize / es, COMMON_ARGS);
 	} else {
 		merge_sort_in_place_char((char *)a, n, (char *)workspace, worksize / es, COMMON_ARGS);
 	}
