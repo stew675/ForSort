@@ -30,7 +30,7 @@ BIN=ts
 #CC= gcc
 CC=clang
 CC_OPT_FLAGS= -O2
-LD_OPT_FLAGS= -O3
+LD_OPT_FLAGS= -O3 -mtune=native
 DEBUG_FLAGS= -Wall # -g -pg --profile -fprofile-arcs -ftest-coverage
 LIBS=
 
