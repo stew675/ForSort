@@ -239,12 +239,10 @@ NAME(test_sorted)(VAR *pa, size_t n, COMMON_PARAMS)
 
 
 static void __attribute__((noinline))
-NAME(block_swap)(VAR * restrict pa, VAR * restrict pb, size_t es)
+NAME(block_swap)(VAR * restrict pa, VAR * restrict pe, VAR * restrict pb, size_t es)
 {
-	VAR	*end = pb;
-
-	assert(pa <= pb);
-	while (pa != end) {
+	assert(pa <= pe);
+	while (pa != pe) {
 		SWAP(pa, pb);
 		pa += ES;
 		pb += ES;
@@ -412,7 +410,7 @@ split_again:
 
 	// Advance the PA->PB block up as far as we can
 	for (VAR *rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, es);
+		CALL(block_swap)(pa, pb, pb, es);
 		pa += bs;  pb += bs;
 	}
 
@@ -478,7 +476,7 @@ reverse_again:
 
 	// Shift entirety of PB->PE down as far as we can
 	for (sp = pb - bs; sp >= pa && IS_LT(pe - ES, sp); sp -= bs) {
-		CALL(block_swap)(sp, pb, es);
+		CALL(block_swap)(sp, pb, pb, es);
 		pb -= bs;  pe -= bs;
 	}
 
@@ -599,7 +597,7 @@ shift_again:
 
 	// Shift entirety of PA->PB up as far as we can
 	for (rp = pb + bs; (rp <= pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, es);
+		CALL(block_swap)(pa, pb, pb, es);
 		pa += bs;
 		pb += bs;
 	}
@@ -1076,13 +1074,18 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 			  VAR *w, const size_t nw, COMMON_PARAMS)
 {
 	VAR	*pe = b + (nb * ES);
-	VAR	*pw = w;
 
 	assert(na <= nw);
 
 	// Now copy everything in A to W
+#if 1
+	VAR *pw = w + (na * ES);
+	CALL(block_swap)(w, pw, a, es);
+#else
+	VAR	*pw = w;
 	for (VAR *ta = a; na--; pw += ES, ta += ES)
 		SWAP(pw, ta);
+#endif
 
 	// We already know that the first B is smaller, so swap it now
 	SWAP(a, b);
@@ -1092,61 +1095,68 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 	// Now merge rest of W into B. Set up sprint values
 	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
 
-	while ((b < pe) && (w < pw)) {
-		if ((a_run | b_run) < sprint) {
-			// The following 8 lines implement this logic
-			// if(IS_LT(b, w)) {
-			//	SWAP(a, b);
-			//	b += ES;
-			//	a_run = 0;
-			//	b_run++;
-			// } else {
-			//	SWAP(a, w);
-			//	w += ES;
-			//	a_run++;
-			//	b_run = 0;
-			// }
-			VAR	*which[2] = {w, b};
-			int	result = !!(IS_LT(b, w));
-			SWAP(a, which[result]);
-			b += result * ES;
-			w += !result * ES;
-			a_run = (a_run + !result) * !result;
-			b_run = (b_run + result) * result;
-			a += ES;
-			continue;
-		}
+merge_continue:
+	for (;;) {
+		if ((b == pe) || (w == pw))
+			goto merge_done;
 
-		do {
-			sprint -= !!(sprint > 2);
+		if ((a_run | b_run) >= sprint)
+			break;
 
-			// Stuff from A/workspace is sprinting
-			VAR	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
-			a_run = NITEM(tw - w);
-			if (a_run) {
-				for (size_t num = a_run; num--; w += ES, a += ES)
-					SWAP(a, w);
-				if (w >= pw)
-					break;
-			}
-
-			// Stuff from B is sprinting
-			VAR	*tb = CALL(sprint_left)(b, pe, w, LEAP_RIGHT, COMMON_ARGS);
-			b_run = NITEM(tb - b);
-			if (b_run) {
-				for (size_t num = b_run; num--; b += ES, a += ES)
-					SWAP(a, b);
-				if (b >= pe)
-					break;
-			}
-		} while ((a_run >= SPRINT_ACTIVATE) || (b_run >= SPRINT_ACTIVATE));
-
-		// Reset sprint mode
-		sprint += SPRINT_EXIT_PENALTY;
-		a_run = 0;
-		b_run = 0;
+		// The following 8 lines implement this logic
+		// if(IS_LT(b, w)) {
+		//	SWAP(a, b);
+		//	b += ES;
+		//	a_run = 0;
+		//	b_run++;
+		// } else {
+		//	SWAP(a, w);
+		//	w += ES;
+		//	a_run++;
+		//	b_run = 0;
+		// }
+		VAR	*which[2] = {w, b};
+		int	result = !!(IS_LT(b, w));
+		SWAP(a, which[result]);
+		b += result * ES;
+		w += !result * ES;
+		a_run = (a_run + !result) * !result;
+		b_run = (b_run + result) * result;
+		a += ES;
 	}
 
+	do {
+		sprint -= !!(sprint > 2);
+
+		// Stuff from A/workspace is sprinting
+		VAR	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
+		a_run = NITEM(tw - w);
+		if (a_run) {
+			for (size_t num = a_run; num--; w += ES, a += ES)
+				SWAP(a, w);
+			if (w >= pw)
+				goto merge_done;
+		}
+
+		// Stuff from B is sprinting
+		VAR	*tb = CALL(sprint_left)(b, pe, w, LEAP_RIGHT, COMMON_ARGS);
+		b_run = NITEM(tb - b);
+		if (b_run) {
+			for (size_t num = b_run; num--; b += ES, a += ES)
+				SWAP(a, b);
+			if (b >= pe)
+				goto merge_done;
+			a_run += !a_run;
+		}
+	} while ((a_run >= SPRINT_ACTIVATE) || (b_run >= SPRINT_ACTIVATE));
+
+	// Reset sprint mode
+	sprint += SPRINT_EXIT_PENALTY;
+	a_run = 0;
+	b_run = 0;
+	goto merge_continue;
+
+merge_done:
 	// Swap back any remainder
 	assert(w <= pw);
 	for ( ; w != pw; w += ES, a += ES)
