@@ -96,6 +96,23 @@ memswap(void * restrict p1, void * restrict p2, size_t n)
 
 #define	SWAP(_xa_, _xb_)	memswap((_xa_), (_xb_), ES)
 
+// Merges two sorted sub-arrays together using insertion sort
+// This is horribly inefficient for all but the smallest arrays
+static void
+NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
+{
+	VAR	*tb = pe;
+
+	do {
+		pe = tb - ES; tb = pb - ES; pb = tb;
+		do {
+			SWAP(tb + ES, tb);
+			tb += ES;
+		} while ((tb != pe) && IS_LT(tb + ES, tb));
+	} while ((pb != pa) && IS_LT(pb, pb - ES));
+} // insertion_merge_in_place
+
+
 static void
 NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
@@ -123,6 +140,27 @@ NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 		*(VAR *)(_xb_) = xa;		\
 		*(VAR *)(_xa_) = xb;		\
 	}
+
+// Merges two sorted sub-arrays together using insertion sort
+// This is horribly inefficient for all but the smallest arrays
+static void
+NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
+{
+	VAR	*tb = pe;
+
+	do {
+		pe = tb - 1; tb = pb - 1; pb = tb;
+
+		VAR	t[1] = {*tb}, *tc = tb + 1;
+
+		do {
+			*tb++ = *tc++;
+		} while ((tb != pe) && IS_LT(tc, t));
+
+		*tb = *t;
+	} while ((pb != pa) && IS_LT(pb, pb - ES));
+} // insertion_merge_in_place
+
 
 // ta -> where to start sorting from
 static void
@@ -276,7 +314,6 @@ NAME(linear_search_split)(VAR *sp, VAR *pb, COMMON_PARAMS)
 {
 	assert (sp < pb);
 
-//	for ( ; (sp != pb) && !IS_LT(rp - ES, sp); sp += ES, rp -= ES);
 	VAR *rp = pb + (pb - sp);
 	while (sp != pb) {
 		rp -= ES;
@@ -400,24 +437,6 @@ split_pop:
 } // split_merge_in_place
 
 
-// Merges two sorted sub-arrays together using insertion sort
-// This is horribly inefficient for all but the smallest arrays
-static void
-NAME(insertion_merge_in_place)(VAR * pa, VAR * pb,
-			 VAR * pe, COMMON_PARAMS)
-{
-	VAR	*tb = pe;
-
-	do {
-		pe = tb - ES; tb = pb - ES; pb = tb;
-		while ((tb != pe) && IS_LT(tb + ES, tb)) {
-			SWAP(tb + ES, tb);
-			tb += ES;
-		}
-	} while ((pb != pa) && IS_LT(pb, pb - ES));
-} // insertion_merge_in_place
-
-
 #define	SHIFT_STACK_PUSH(s1, s2, s3) 	\
 	{ *stack++ = s1; *stack++ = s2; *stack++ = s3; }
 
@@ -452,7 +471,7 @@ reverse_again:
 	}
 
 	// Insertion MIP is slightly faster for very small sorted array pairs
-	if ((pe - pa) < (ES << 3)) {
+	if ((pe - pa) <= (ES * 12)) {
 		CALL(insertion_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 		goto reverse_pop;
 	}
@@ -573,7 +592,7 @@ shift_again:
 	}
 
 	// Insertion MIP is slightly faster for very small sorted array pairs
-	if ((pe - pa) < (ES << 3)) {
+	if ((pe - pa) <= (ES * 12)) {
 		CALL(insertion_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 		goto shift_pop;
 	}
