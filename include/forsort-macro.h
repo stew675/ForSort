@@ -692,7 +692,6 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 		end -= ES;
 		start += ES;
 	}
-	assert((start == end) || ((start + ES) == end));
 } // reverse_block
 
 
@@ -702,46 +701,34 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 static size_t
 NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
+	VAR	*pe = pa + (n * ES), *curr = pa;
+	VAR	*prev, *start;
 	size_t	reversals = 0;
 
-	if (n < 2)
-		return reversals;
-
-	VAR	*pe = pa + (n * ES);
-	VAR	*curr = pa;
-
-	// I admit that the structure of the following code is weird, but it
-	// is fast!  Some architectures seem to prefer this ordering.  Some
-	// also seem to prefer the use of the superfluous "next". Is it due
-	// to instruction side-effects? Something else? I'm not sure...
-	do {
-		VAR	*prev, *start, *next;
-
+	__asm__("nop");
+	__asm__("nop");
+	__asm__("nop");
+	// The following code seems highly prone to CPU instruction cache
+	// loop misalignment, which strongly impacts performance.
+	while (curr != pe) {
 		do {
-			next = curr + ES;
-
-			if (next == pe)
-				return reversals;
-
 			prev = curr;
-			curr = next;
-
-			if (IS_LT(curr, prev))
-				break;
-		} while (true);
+			curr += ES;
+			if (curr == pe)
+				return reversals;
+		} while (!IS_LT(curr, prev));
 
 		start = prev;		// Marks start of a run
 
 		do {
-			next = curr + ES;
 			prev = curr;
-			curr = next;
-		} while ((next != pe) && IS_LT(curr, prev));
+			curr += ES;
+		} while ((curr != pe) && IS_LT(curr, prev));
 
 		// prev points at the last item in the run now
 		reversals += NITEM(prev - start);
 		CALL(reverse_block)(start, prev, es);
-	} while (curr != pe);
+	}
 
 	return reversals;
 } // dereverse
