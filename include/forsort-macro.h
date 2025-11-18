@@ -685,15 +685,14 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 
 // Breaking this out into a separate function appears to help the C optimizer
 static void
-NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t n, size_t es)
+NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 {
-	while (n) {
-		n--;
+	while (start < end) {
 		SWAP(start, end);
 		end -= ES;
 		start += ES;
 	}
-	assert((start == end) || ((end + ES) == start));
+	assert((start == end) || ((start + ES) == end));
 } // reverse_block
 
 
@@ -703,45 +702,46 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t n, size_t e
 static size_t
 NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
-	VAR	*start, *prev, *next, *curr = pa;
-	size_t	reversals = 0, num_swaps, nl = n;
+	size_t	reversals = 0;
 
-	if (nl < 2)
+	if (n < 2)
 		return reversals;
 
-	// The structure of the following code is weird, but fast
-	// Some architectures seem to prefer this ordering.  Some
-	// also seem to prefer the use of the superfluous "next".
-	// Is it due to instruction side-effects? I'm not sure
+	VAR	*pe = pa + (n * ES);
+	VAR	*curr = pa;
+
+	// I admit that the structure of the following code is weird, but it
+	// is fast!  Some architectures seem to prefer this ordering.  Some
+	// also seem to prefer the use of the superfluous "next". Is it due
+	// to instruction side-effects? Something else? I'm not sure...
 	do {
+		VAR	*prev, *start, *next;
+
 		do {
-			nl--;
 			next = curr + ES;
+
+			if (next == pe)
+				return reversals;
+
 			prev = curr;
 			curr = next;
 
-			if (nl == 0)
-				return reversals;
-
-			if (IS_LT(next, prev))
+			if (IS_LT(curr, prev))
 				break;
 		} while (true);
 
-		start = prev;	// Marks start of a run
+		start = prev;		// Marks start of a run
 
 		do {
-			nl--;
 			next = curr + ES;
 			prev = curr;
 			curr = next;
-		} while (nl && IS_LT(next, prev));
+		} while ((next != pe) && IS_LT(curr, prev));
 
 		// prev points at the last item in the run now
-		num_swaps = NITEM(prev - start);
-		reversals += num_swaps;
-		num_swaps = (num_swaps + 1) >> 1;
-		CALL(reverse_block)(start, prev, num_swaps, es);
-	} while (nl);
+		reversals += NITEM(prev - start);
+		CALL(reverse_block)(start, prev, es);
+	} while (curr != pe);
 
 	return reversals;
 } // dereverse
