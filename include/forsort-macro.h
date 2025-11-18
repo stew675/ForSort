@@ -694,6 +694,35 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 	}
 } // reverse_block
 
+static VAR *
+NAME(process_descending)(VAR *pa, VAR *pe, COMMON_PARAMS)
+{
+	VAR *prev = pa, *curr = pa + ES;
+
+	assert(pa < pe);
+	while ((curr != pe) && IS_LT(curr, prev)) {
+		prev = curr;
+		curr += ES;
+	}
+	return curr;
+} // process_descending
+
+
+static VAR *
+NAME(process_ascending)(VAR *pa, VAR *pe, COMMON_PARAMS)
+{
+	VAR *prev = pa, *curr = pa + ES;
+
+	assert(pa < pe);
+	while (curr != pe) {
+		if (IS_LT(curr, prev))
+			return curr;
+		prev = curr;
+		curr += ES;
+	}
+	return curr;
+} // process_ascending
+
 
 // Because basic sort is so heavily reliant upon insertion sort, and because
 // insertion sort's worst case is reversed input, this is the one time that
@@ -702,34 +731,22 @@ static size_t
 NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
 	VAR	*pe = pa + (n * ES), *curr = pa;
-	VAR	*prev, *start;
+	VAR	*start, *end;
 	size_t	reversals = 0;
 
-	__asm__("nop");
-	__asm__("nop");
-	__asm__("nop");
-	// The following code seems highly prone to CPU instruction cache
-	// loop misalignment, which strongly impacts performance.
+	// I learned a lesson here.  Break out tight loops into their own
+	// functions and let the C compiler optimize it.  This allows the
+	// compiler to work around CPU UOP cache alignment issues better.
 	while (curr != pe) {
-		do {
-			prev = curr;
-			curr += ES;
-			if (curr == pe)
-				return reversals;
-		} while (!IS_LT(curr, prev));
-
-		start = prev;		// Marks start of a run
-
-		do {
-			prev = curr;
-			curr += ES;
-		} while ((curr != pe) && IS_LT(curr, prev));
-
-		// prev points at the last item in the run now
-		reversals += NITEM(prev - start);
-		CALL(reverse_block)(start, prev, es);
+		curr = CALL(process_ascending)(curr, pe, COMMON_ARGS);
+		if (curr == pe)
+			return reversals;
+		start = curr - ES;
+		curr = CALL(process_descending)(curr, pe, COMMON_ARGS);
+		end = curr - ES;
+		reversals += NITEM(end - start);
+		CALL(reverse_block)(start, end, es);
 	}
-
 	return reversals;
 } // dereverse
 
