@@ -346,18 +346,15 @@ NAME(split_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 
 	// The stack_size is * 2 due to two pointers per stack entry.  Even
 	// if we're asked to merge 2^64 items, the stack will be just 3.2KB
-	size_t	bs, stack_size = get_split_stack_size(NITEM(pb - pa)) * 2;
-	_Alignas(64) VAR *_stack[stack_size];
-	VAR	**stack = _stack, *rp, *spa;
+	size_t	stack_size = get_split_stack_size(NITEM(pb - pa)) * 2;
+	size_t	bs, split_size;
+	_Alignas(64) VAR *stack_space[stack_size];
+	VAR	**work_stack = stack_space, *spa;
 
 split_again:
 	// Just bubble single items into place. We already know that *PB < *PA
 	if ((bs = (pb - pa)) == ES) {
-		do {
-			SWAP(pa, pb);
-			pa = pb;
-			pb += ES;
-		} while ((pb != pe) && IS_LT(pb, pa));
+		CALL(bubble_up)(pa, pe, COMMON_ARGS);
 		goto split_pop;
 	}
 
@@ -367,29 +364,28 @@ split_again:
 	// The imbalanced split here improves algorithmic performance.
 	// If you change this calculation, then get_split_stack_size() needs
 	// to be updated to match the new ratio
-	size_t split_size = ((NITEM(bs) + 3) / 5) * ES;
+	split_size = ((NITEM(bs) + 3) / 5) * ES;
 
 	// Advance the PA->PB block up as far as we can
-	for (rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
+	for (VAR *rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
 		CALL(block_swap)(pa, pb, es);
-		pa += bs;
-		pb += bs;
+		pa += bs;  pb += bs;
 	}
 
 	// Split the A block into two, and keep trying with the remainder
 	spa = pa + split_size;
 	if (IS_LT(pb, pb - ES)) {
 		// Push a new split point to the work stack
-		*stack++ = pa;
-		*stack++ = spa;
+		*work_stack++ = pa;
+		*work_stack++ = spa;
 		pa = spa;
 		goto split_again;
 	}
 
 split_pop:
-	while (stack != _stack) {
-		pb = *--stack;
-		pa = *--stack;
+	while (work_stack != stack_space) {
+		pb = *--work_stack;
+		pa = *--work_stack;
 
 		if (IS_LT(pb, pb - ES))
 			goto split_again;
@@ -441,21 +437,17 @@ NAME(reverse_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 reverse_again:
 	// Just insert merge single items. We already know that *PB < *PA
 	if ((bs = (pe - pb)) == ES) {
-		do {	// Bubble Down
-			SWAP(pb, pb - ES);  pb -= ES;
-		} while ((pb != pa) && IS_LT(pb, pb - ES));
-		goto reverse_pos;
+		CALL(bubble_down)(pb, pa, COMMON_ARGS);
+		goto reverse_pop;
 	} else if ((pa + ES) == pb) {
-		do {	// Bubble Up
-			SWAP(pa, pb);  pa = pb;  pb = pb + ES;
-		} while (pb != pe && IS_LT(pb, pa));
-		goto reverse_pos;
+		CALL(bubble_up)(pa, pe, COMMON_ARGS);
+		goto reverse_pop;
 	}
 
 	// Insertion MIP is slightly faster for very small sorted array pairs
 	if ((pe - pa) < (ES << 3)) {
 		CALL(insertion_merge_in_place)(pa, pb, pe, COMMON_ARGS);
-		goto reverse_pos;
+		goto reverse_pop;
 	}
 
 	// Shift entirety of PB->PE down as far as we can
@@ -467,7 +459,7 @@ reverse_again:
 	// Handle scenario where our block cannot fit within what remains
 	if (sp < pa) {
 		if (pb == pa)
-			goto reverse_pos;
+			goto reverse_pop;
 
 		// reverse_merge_in_place() won't re-reverse the direction
 		// back to shift_merge_in_place.  This is to prevent
@@ -481,29 +473,20 @@ reverse_again:
 	}
 
 	// Find spot within PB->PE to split it at.
-	if (bs >= (ES << 3)) {	// Binary search on larger sets
-		size_t	min = 0, max = NITEM(bs), pos = max >> 1;
-
-		sp = pb - (pos * ES);
-		rp = pb + (pos * ES);
-
-		while (min < max) {
-			int res = !!(IS_LT(rp, sp - ES));
-			min = (!res * min) + (res * (pos + res));
-			max = (res * max) + (!res * pos);
-
-			pos = (min + max) >> 1;
-			sp = pb - (pos * ES);
-			rp = pb + (pos * ES);
-		}
-	} else {	// Linear scan is faster for smaller sets
-		sp = pb - bs;	rp = pb + bs;
-		for ( ; (sp != pb) && !IS_LT(rp - ES, sp); sp += ES, rp -= ES);
+	if (bs >= (ES << 3)) {
+		// Binary search on larger sets
+		sp = CALL(binary_search_split)(pb - bs, pb, COMMON_ARGS);
+	} else {
+		// Linear scan is faster for smaller sets
+		sp = CALL(linear_search_split)(pb - bs, pb, COMMON_ARGS);
 	}
 
 	// If nothing to swap, we're done here
-	if (pb == sp)
-		goto reverse_pos;
+	if (sp == pb)
+		goto reverse_pop;
+
+	// Adjust rp to match the split point on the other side of pb
+	rp = pb + (pb - sp);
 
 	// Do a single shift at the split point
 	for (VAR *ta = sp, *tb = pb; ta != pb; ta += ES, tb += ES)
@@ -520,7 +503,7 @@ reverse_again:
 			SHIFT_STACK_PUSH(pa, sp, pb);
 			if (unlikely(stack == maxstack)) {
 				CALL(split_merge_in_place)(pb, rp, pe, COMMON_ARGS);
-				goto reverse_pos;
+				goto reverse_pop;
 			}
 		}
 
@@ -532,7 +515,7 @@ reverse_again:
 		pb = sp;
 		goto reverse_again;
 	}
-reverse_pos:
+reverse_pop:
 	if (stack != _stack) {
 		SHIFT_STACK_POP(pa, pb, pe);
 		goto reverse_again;
