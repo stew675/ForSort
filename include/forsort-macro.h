@@ -28,7 +28,9 @@ enum {
 };
 
 #define	MIN(_x_, _y_)  (((_x_) < (_y_)) ? (_x_) : (_y_))
-#define	IS_LT	is_lt
+
+//#define	IS_LT(_x_, _y_)	 (*(uint32_t *)(_x_) < *(uint32_t *)(_y_))
+#define	IS_LT is_lt
 
 // Sparingly used to guide compiling optimization
 #define likely(x)       __builtin_expect(!!(x), 1)
@@ -191,11 +193,24 @@ NAME(test_sorted)(VAR *pa, size_t n, COMMON_PARAMS)
 } // test_sorted
 
 
+static void __attribute__((noinline))
+NAME(block_swap)(VAR * restrict pa, VAR * restrict pb, size_t n, size_t es)
+{
+	assert((pa + (n * ES)) <= pb);
+	while (n) {
+		n--;
+		SWAP(pa, pb);
+		pa += ES;
+		pb += ES;
+	}
+} // block_swap
+
+
 // Swaps two contiguous blocks of differing lengths in place efficiently
 // Basically my version of the well known Block Rotate() functionality
 // that avoids the use of explicit, or implicit, division or multiplication
 static void
-NAME(block_rotate)(VAR *a, VAR *b, VAR *e, COMMON_PARAMS)
+NAME(block_rotate)(VAR *a, VAR *b, VAR *e, size_t es)
 {
 	size_t	gapa = b - a, gapb = e - b;
 	while (gapa && gapb) {
@@ -215,16 +230,6 @@ NAME(block_rotate)(VAR *a, VAR *b, VAR *e, COMMON_PARAMS)
 	}
 } // block_rotate
 
-
-static void __attribute__((noinline))
-NAME(block_swap)(VAR *a, VAR *b, size_t n, COMMON_PARAMS)
-{
-	while (n--) {
-		SWAP(a, b);
-		a += ES;
-		b += ES;
-	}
-} // block_swap
 
 #ifndef GET_SPLIT_STACK_SIZE
 #define GET_SPLIT_STACK_SIZE
@@ -288,7 +293,7 @@ split_again:
 
 	// Advance the PA->PB block up as far as we can
 	for (rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, NITEM(bs), COMMON_ARGS);
+		CALL(block_swap)(pa, pb, NITEM(bs), es);
 		pa += bs;
 		pb += bs;
 	}
@@ -377,7 +382,7 @@ reverse_again:
 
 	// Shift entirety of PB->PE down as far as we can
 	for (sp = pb - bs; sp >= pa && IS_LT(pe - ES, sp); sp -= bs) {
-		CALL(block_swap)(sp, pb, NITEM(bs), COMMON_ARGS);
+		CALL(block_swap)(sp, pb, NITEM(bs), es);
 		pb -= bs;  pe -= bs;
 	}
 
@@ -507,7 +512,7 @@ shift_again:
 
 	// Shift entirety of PA->PB up as far as we can
 	for (rp = pb + bs; rp <= pe && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, NITEM(bs), COMMON_ARGS);
+		CALL(block_swap)(pa, pb, NITEM(bs), es);
 		pa += bs;
 		pb += bs;
 	}
@@ -1192,7 +1197,7 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 
 		// Rotate the part of A that doesn't fit into the workspace
 		// with everything in B that is less than where we split A at
-		CALL(block_rotate)(pb, rp, sp, COMMON_ARGS);
+		CALL(block_rotate)(pb, rp, sp, es);
 
 		// Adjust the rotation pointer after the rotate and fix up sizes
 		rp = pb + (sp - rp);
@@ -1335,7 +1340,7 @@ NAME(extract_unique_sub)(VAR * const a, VAR * const pe, VAR *ph, COMMON_PARAMS)
 		if ((pa - dp) > ES) {
 			// Multiple duplicates. block_rotate them into position
 			if (dp > pu)
-				CALL(block_rotate)(pu, dp, pa, COMMON_ARGS);
+				CALL(block_rotate)(pu, dp, pa, es);
 			pu += (pa - dp);
 		} else {
 			// Single item, just bubble it down
@@ -1350,7 +1355,7 @@ NAME(extract_unique_sub)(VAR * const a, VAR * const pe, VAR *ph, COMMON_PARAMS)
 
 	if (ph < pe) {
 		// Everything (ph - es) to (pe - es) is a duplicate
-		CALL(block_rotate)(pu, ph - ES, pe - ES, COMMON_ARGS);
+		CALL(block_rotate)(pu, ph - ES, pe - ES, es);
 		pu += (pe - ph);
 	}
 
@@ -1408,7 +1413,7 @@ NAME(extract_uniques)(VAR * const a, const size_t n, VAR *hints, COMMON_PARAMS)
 
 	// Coalesce non-uniques together
 	if (bpu > pb) {
-		CALL(block_rotate)(apu, pb, bpu, COMMON_ARGS);
+		CALL(block_rotate)(apu, pb, bpu, es);
 	}
 	pb = apu + (bpu - pb);
 
