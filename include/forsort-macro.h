@@ -88,10 +88,15 @@ NAME(binary_search_gt_ne)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
 		// }
 		// The following 3 lines implement the
 		// above logic in a branchless manner
+#if 0
 		int res = !!(IS_LT(test, end));
 		max = (!res * max) + (res * pos++);
 		min = (res * min) + (!res * pos);
-
+#else
+		uint32_t res = IS_LT(test, end) - 1;
+		max = (max & res) | (~res & pos++);
+		min = (min & ~res) | (pos & res);
+#endif
 		pos = (min + max) >> 1;
 		end = start + (pos * ES);
 	}
@@ -117,9 +122,15 @@ NAME(binary_search_gt_eq)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
 		// }
 		// The following 3 lines implement the
 		// above logic in a branchless manner
+#if 0
 		int res = !!(IS_LT(end, test));
 		max = (res * max) + (!res * pos++);
 		min = (!res * min) + (res * pos);
+#else
+		uint32_t res = IS_LT(end, test) - 1;
+		max = (max & ~res) | (res & pos++);
+		min = (min & res) | (pos & ~res);
+#endif
 
 		pos = (min + max) >> 1;
 		end = start + (pos * ES);
