@@ -1277,19 +1277,19 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 			
 		// Find where in the B array we can split to rotate the
 		// remainder of A into.  Use binary search for speed
-		do {
+		sp = rp + (pos * ES);
+		while (min < max) {
+			// if (IS_LT(sp, pb - ES))
+			//	min = pos + 1;
+			// else
+			//	max = pos;
+			int res = !!(IS_LT(sp, pb - ES));
+			max = (res * max) + (!res * pos++);
+			min = (!res * min) + (res * pos);
+
+			pos = (min + max) >> 1;
 			sp = rp + (pos * ES);
-
-			while (min < max) {
-				if (IS_LT(sp, pb - ES))
-					min = pos + 1;
-				else
-					max = pos;
-
-				pos = (min + max) >> 1;
-				sp = rp + (pos * ES);
-			}
-		} while(0);
+		}
 
 		// Rotate the part of A that doesn't fit into the workspace
 		// with everything in B that is less than where we split A at
@@ -1302,17 +1302,19 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 
 		// We now have 4 arrays.
 		// - PA->PB  is the part of A the same size as our workspace.
-		// - PB->RP  is the portion of the original B array that is
-		//           less than where we split A at
-		// - RP->SP  is the remainder of A that was larger than the
-		//           workspace
-		// - SP->PE  is the rest of B that is >= where we split A at
+		// - PB->RP  is the portion of the original B array whose
+		//           entries all compare less than where A was split
+		// - RP->SP  is the remainder of A that could not fit into
+		//           the available workspace
+		// - SP->PE  is the rest of B that is >= where A was split
 
-		// Now merge A with B - the rotation can make nb be 0, so check
+		// Now merge PA ->PB with PB -> RP.  The
+		// rotation can make nb be 0, so check it
 		if (nb > 0)
 			CALL(merge_using_workspace)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
 
 		// Now set PA and PB, to be RP and SP respectively, and loop
+		// This sets us up to process RP->SP as A, and SP->PE as B
 		pa = rp;
 		pb = sp;
 		na = NITEM(sp - rp);
@@ -1388,10 +1390,10 @@ NAME(merge_sort_in_place)(VAR * const pa, const size_t n, VAR * const ws,
 	// Sort B using A as the workspace
 	CALL(sort_using_workspace)(pb, nb, pa, na, COMMON_ARGS);
 
-	// Now recursively sort what we used as work-space
+	// Now recursively sort the workspace we had split off
 	CALL(merge_sort_in_place)(pa, na, NULL, 0, COMMON_ARGS);
 
-	// Now merge them together
+	// Now merge the workspace and the main sets together
 #if LOW_STACK
 	CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 #else
@@ -1399,6 +1401,9 @@ NAME(merge_sort_in_place)(VAR * const pa, const size_t n, VAR * const ws,
 #endif
 } // merge_sort_in_place
 
+//-----------------------------------------------------------------
+//                Start of stable_sort() code
+//-----------------------------------------------------------------
 
 // Designed for efficiently processing smallish sets of items
 // Note that the last item is always guaranteed to be unique
@@ -1482,7 +1487,6 @@ NAME(extract_uniques)(VAR * const a, const size_t n, VAR *hints, COMMON_PARAMS)
 	VAR	*pa = a;
 	size_t	na = (n + 3) >> 2;	// Looks to be about right
 	VAR	*pb = pa + (na * ES);
-
 	VAR	*ps = pb;	// Records original intended split point
 
 	// First find where to split at, which basically means, find the
@@ -1599,7 +1603,7 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 		// If merged dups is full, there will never be any unmerged frees
 		// If there are unmerged frees, then merged dups won't be full.
 		// Therefore, the following operation is perfectly bounded
-		ASSERT(state->num_merged != MAX_DUPS);
+		ASSERT(state->num_merged < MAX_DUPS);
 		state->merged_dups[state->num_merged++] = mf;
 		state->free_dups[0] = NULL;
 		state->num_free = 0;
@@ -1614,7 +1618,7 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 		md = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
 	}
 
-	// Now sort our workspace if it's required
+	// Sort our workspace now (if it's required)
 	if (state->work_sorted == false)
 		CALL(merge_sort_in_place)(ws, nw, NULL, 0, COMMON_ARGS);
 
@@ -1677,11 +1681,9 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 			sizeof(struct NAME(stable_state)));
 #endif
 	// 75 items appears to be about the cross-over between using only
-	// basic_sort() and using the main stable_sort() sequence.
-	if (n < 75) {
-		CALL(basic_sort)(pa, n, COMMON_ARGS);
-		return;
-	}
+	// basic_sort(), and going on to use the main stable_sort() sequence
+	if (n < 75)
+		return (void)(CALL(basic_sort)(pa, n, COMMON_ARGS));
 
 	// We start with a workspace candidate size that is intentionally
 	// small, as we need to use the slower basic_sort() algorithm to
@@ -1689,10 +1691,12 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	// initial unique values that we extract to drive use of the
 	// merge-sort algorithm, to help us find more uniques faster!
 	nw = (n >> 7) + STABLE_WSRATIO;
+	if (nw > (n >> 2))	// Cap work-space size to 1/4 of n
+		nw = n >> 2;
 	nr = n - nw;
 	pr = pa + (nw * ES);	// Pointer to rest
 
-	// Determine how much workspace we're aiming for
+	// Determine how much workspace we're really aiming for
 	size_t	wstarget = nr / STABLE_WSRATIO;
 
 	// First sort our candidate work-space chunk
@@ -1706,7 +1710,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 #endif
 		CALL(dereverse)(pr, nr, COMMON_ARGS);
 	} else if (reversals == 0) {
-		// Check if input isn't already fully sorted
+		// Check if entire input wasn't already fully sorted
 		reversals = CALL(dereverse)(pr - ES, nr + 1, COMMON_ARGS);
 		if (reversals == 0) {
 #ifdef	DEBUG_UNIQUE_PROCESSING
@@ -1735,15 +1739,18 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	// PR->PE is everything else that we still need to sort
 
 	// If there were duplicates (PA->WS), then add them to the list
-	// The first set of duplicates is a special case, as it is often
-	// very large, so it goes straight to the set of merged duplicates
-	if (ws > pa) {
+	// If the first set of duplicates is very large, just add it
+	// directly to the set of merged duplicates.
+	if ((ws - pa) > (pr - ws)) {
 		state->merged_dups[0] = pa;
 		state->num_merged = 1;
+	} else if (ws > pa) {
+		state->free_dups[0] = pa;
+		state->num_free = 1;
 	}
 
 	// If we couldn't find enough work-space we'll keep trying until our
-	// duplicate management system fill up. Despite this seeming excessive,
+	// duplicate management storage fills up. Despite this seeming excessive,
 	// with each try we're still sorting more of the array any way, so in
 	// the end it all balances out.  Swings and roundabouts :)
 	while ((nw < wstarget) && (state->num_merged < MAX_DUPS)) {
@@ -1764,18 +1771,18 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		ratio /= (nw + nd);		// Ratio of uniques
 		size_t	grab = wstarget - nw;	// How much we're short by
 		grab = grab / ratio;		// Estimate of how much to grab
-		grab = (grab * 9) >> 3;		// Add a fudge factor
+		grab = (grab * 9) >> 3;		// Add a fudge factor of 1/8th
 
 		// Don't grab less than 1/32th. This is to avoid creeping up to
 		// the target too slowly as we get close to it
 		if (grab < (nr >> 5))
 			grab = nr >> 5;
 
-		// Don't grab more than we can efficiently sort
+		// Don't grab more than we can efficiently sort though
 		if (grab > (nw * STABLE_WSRATIO))
 			grab = nw * STABLE_WSRATIO;
 
-		// Don't grab more than 1/8th of what's remaining.  We only
+		// Also don't grab more than 1/8th of what's remaining.  We only
 		// want to be doing this for as long as we absolutely need to be
 		if (grab > (nr >> 3))
 			grab = nr >> 3;
@@ -1796,11 +1803,14 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		// Sort new work-space candidates using our current workspace
 		CALL(merge_sort_in_place)(nws, grab, ws, tnw, COMMON_ARGS);
 
-		// Our current work-space is now jumbled, so sort that too
+		// Our current work-space is now jumbled, so sort just
+		// the portion that was used to sort the candidates
 		CALL(merge_sort_in_place)(ws, tnw, NULL, 0, COMMON_ARGS);
 		state->work_sorted = true;
 
-		// Merge current workspace with the new set
+		// Merge current workspace with the new workspace candidates
+		// We cannot use the faster merge algorithm here or we will
+		// end up breaking sort stability.
 #if LOW_STACK
 		CALL(split_merge_in_place)(ws, nws, pr, COMMON_ARGS);
 #else
@@ -1812,21 +1822,24 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		ws = CALL(extract_uniques)(ws, nw + grab, NULL, COMMON_ARGS);
 		nw = NITEM(pr - ws);
 
-		// Update state with work-space changes
+		// Update stable state with new work-space changes
 		state->work_space = ws;
 		state->work_size = nw;
 
-		// Append any new duplicates to the list of duplicates.
+		// Append any new duplicates to the lists of duplicates.
 		if (ws > nws)
 			CALL(add_duplicate)(state, nws, COMMON_ARGS);
 
 		// Recalculate the new work-space size target.  If it's just
 		// trivial amounts of unsorted data left, then just leave!
-		// This avoid an overly degenerate merging scenario later
+		// This avoids an overly degenerate merging scenario later
 		if (nr < (n >> 4))
 			break;
 
 		// Short-circuit the search if we have even just barely enough!
+		// The merge sort can run at near full speed with just 1/128th
+		// as work-space, and so it's faster to just break out if we're
+		// close enough, than it is to continue searching for more.
 		if ((nr < ((n * 3)>>2)) && (nw >= (nr >> 7)))
 			break;
 
