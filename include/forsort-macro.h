@@ -2,8 +2,8 @@
 //
 // Author: Stew Forster (stew675@gmail.com)	Copyright (C) 2021-2025
 //
-// This is my implementation of what I believe to be an O(nlogn) in-place
-// adaptive merge-sort style algorithm.
+// This is my implementation of what I believe to be an O(nlogn) time-complexity
+// O(logn) space-complexity, in-place and adaptive merge-sort style algorithm.
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
@@ -27,8 +27,15 @@ enum {
 	LEAP_RIGHT,
 };
 
+// Flip between the two to enable/disable assert()'s, but leaving them
+// on does not appear to impact performance in any significant manner
+#define	ASSERT	assert
+//#define	ASSERT(_x_)
+
 #define	MIN(_x_, _y_)  (((_x_) < (_y_)) ? (_x_) : (_y_))
 
+// Choose the first #define if you want to test with inlined comparisons
+// Sort times are typically ~0.7x of when using an external comparison
 //#define	IS_LT(_x_, _y_)	 (*(uint32_t *)(_x_) < *(uint32_t *)(_y_))
 #define	IS_LT is_lt
 
@@ -191,13 +198,13 @@ NAME(insertion_sort_binary)(VAR *pa, VAR *ta, const size_t n, COMMON_PARAMS)
 			do {
 				// The following 3 lines implement
 				// this logic in a branchless manner
-				// if (IS_LT(ta, tb))
+				// if (IS_LT(ta, where + pos))
 				// 	max = pos;
 				// else
 				// 	min = pos + 1;
-				uint32_t res = IS_LT(ta, where + pos) - 1;
-				max = (max & res) | (~res & pos++);
-				min = (min & ~res) | (pos & res);
+				int res = !!(IS_LT(ta, where + pos));
+				max = (!res * max) + (res * pos++);
+				min = (res * min) + (!res * pos);
 
 				pos = (min + max) >> 1;
 			} while (min < max);
@@ -244,7 +251,7 @@ NAME(block_swap)(VAR * restrict pa, VAR * restrict pb, size_t es)
 {
 	VAR	*end = pb;
 
-	assert(pa <= pb);
+	ASSERT(pa <= pb);
 	while (pa != end) {
 		SWAP(pa, pb);
 		pa += ES;
@@ -285,7 +292,7 @@ NAME(bubble_down)(VAR *pa, VAR *pe, COMMON_PARAMS)
 	VAR	*pn = pa - ES;
 
 	// Bubble Element Down
-	assert(pa > pe);
+	ASSERT(pa > pe);
 	do {
 		SWAP(pa, pn);
 		pa = pn;
@@ -301,7 +308,7 @@ NAME(bubble_up)(VAR *pa, VAR *pe, COMMON_PARAMS)
 	VAR	*pn = pa + ES;
 
 	// Bubble Element Up
-	assert(pn < pe);
+	ASSERT(pn < pe);
 	do {
 		SWAP(pa, pn);
 		pa = pn;
@@ -313,7 +320,7 @@ NAME(bubble_up)(VAR *pa, VAR *pe, COMMON_PARAMS)
 static VAR *
 NAME(linear_search_split)(VAR *sp, VAR *pb, COMMON_PARAMS)
 {
-	assert (sp < pb);
+	ASSERT (sp < pb);
 
 	VAR *rp = pb + (pb - sp);
 	while (sp != pb) {
@@ -335,9 +342,15 @@ NAME(binary_search_split)(VAR *pa, VAR *pb, COMMON_PARAMS)
 	VAR *rp = pb + (pos * ES);
 
 	while (min < max) {
+		// The following 3 lines implement
+		// this logic in a branchless manner
+		// if (IS_LT(rp, sp - ES))
+		// 	min = pos + 1;
+		// else
+		// 	max = pos;
 		int res = !!(IS_LT(rp, sp - ES));
-		min = (!res * min) + (res * (pos + res));
-		max = (res * max) + (!res * pos);
+		max = (res * max) + (!res * pos++);
+		min = (!res * min) + (res * pos);
 
 		pos = (min + max) >> 1;
 		sp = pb - (pos * ES);
@@ -383,7 +396,7 @@ get_split_stack_size(size_t n)
 static void
 NAME(split_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
-	assert((pb > pa) && (pe > pb));
+	ASSERT((pb > pa) && (pe > pb));
 
 	// Check if we need to do anything at all
 	if (!IS_LT(pb, pb - ES))
@@ -444,12 +457,16 @@ split_pop:
 #define	SHIFT_STACK_POP(s1, s2, s3) \
 	{ s3 = *--stack; s2 = *--stack; s1 = *--stack; }
 
-// This is just the reverse of shift_merge_in_place().  I'll leave
-// less comments in this function as a result
+// This is just the reverse of shift_merge_in_place().  I'll leave less comments
+// in this function as a result.  reverse_merge_in_place() won't re-reverse the
+// direction back to shift_merge_in_place().  This is to prevent potential stack
+// overflows.  Instead it will just persist, and if it runs out of stack, it'll
+// fall back to the fully stack bounded split_merge_in_place().  I've never seen
+// it happen, but that doesn't meant it cannot
 static void
 NAME(reverse_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
-	assert((pb > pa) && (pe > pb));
+	ASSERT((pb > pa) && (pe > pb));
 
 	// Check if we need to do anything at all before proceeding
 	if (!IS_LT(pb, pb - ES))
@@ -488,13 +505,6 @@ reverse_again:
 		if (pb == pa)
 			goto reverse_pop;
 
-		// reverse_merge_in_place() won't re-reverse the direction
-		// back to shift_merge_in_place.  This is to prevent
-		// potential stack overflows.  Instead it will just persist,
-		// and if it runs out of stack, it'll fall back to the
-		// fully stack bounded split_merge_in_place().  I've never
-		// seen it happen, but that doesn't meant it cannot
-
 		// Adjust block size to account for approaching the end of PB->PE
 		bs = pb - pa;
 	}
@@ -524,9 +534,9 @@ reverse_again:
 	bs = (sp > pa) && IS_LT(sp, sp - ES);
 	if (IS_LT(rp, rp - ES)) {
 		if (bs) {
-			// If our stack is about to over-flow, move to use the
-			// slower, but resilient algorithm that handles degenerate
-			// scenarios without issue.
+			// If our stack is about to over-flow, just invoke
+			// split_merge_in_place().  It's a bit slower but
+			// we'll only use it until the obstacle has passed
 			SHIFT_STACK_PUSH(pa, sp, pb);
 			if (unlikely(stack == maxstack)) {
 				CALL(split_merge_in_place)(pb, rp, pe, COMMON_ARGS);
@@ -563,14 +573,14 @@ reverse_pop:
 static void
 NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
-	assert((pb > pa) && (pe > pb));
+	ASSERT((pb > pa) && (pe > pb));
 
 	// Check if we need to do anything at all before proceeding
 	if (!IS_LT(pb, pb - ES))
 		return;
 
-	// The work stack holds 3 pointers per "position" and so the multiplier
-	// here must be an even multiple of 3.
+	// The work stack holds 3 pointers per "position" and so the
+	// multiplier here must be an even multiple of 3.
 	size_t	stack_size = get_split_stack_size(NITEM(pb - pa)) * 3;
 	_Alignas(64) VAR *_stack[stack_size];
 	VAR	**stack = _stack, **maxstack = stack + stack_size;
@@ -578,7 +588,7 @@ NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	size_t	bs;		// Byte-wise block size of pa->pb
 
 shift_again:
-	// The presumption at the start of the loop is that *PB < *(PB - ES)
+	// The presumption at the start of each loop is that *PB < *(PB - ES)
 
 	// Just bubble merge single items.
 	if ((bs = (pb - pa)) == ES) {
@@ -592,8 +602,8 @@ shift_again:
 		goto shift_pop;
 	}
 
-	// Insertion MIP is slightly faster for very small sorted array pairs
-	if ((pe - pa) <= (ES * 11)) {
+	// Insertion MIP is faster for very small sorted array pairs
+	if ((pe - pa) <= (ES * 12)) {
 		CALL(insertion_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 		goto shift_pop;
 	}
@@ -607,7 +617,7 @@ shift_again:
 
 	// Handle scenario where our block cannot fit within what remains
 	if (rp > pe) {
-		// Check if we didn't just fit in perfectly!
+		// Check scenario where our block just perfectly!
 		if (pb == pe)
 			goto shift_pop;
 
@@ -658,8 +668,8 @@ shift_again:
 	if (IS_LT(sp, sp - ES)) {
 		if (bs) {
 			// If our stack is about to over-flow, move to the reverse
-			// direction.  Chances are we've hit a degenerate scenario
-			// that the reverse merge will handle easily
+			// direction.  Chances are high that we've hit a degenerate
+			// pattern that a reversed merge will overcome easily
 			SHIFT_STACK_PUSH(pb, rp, pe);
 			if (unlikely(stack == maxstack)) {
 				CALL(reverse_merge_in_place)(pa, sp, pb, COMMON_ARGS);
@@ -775,12 +785,13 @@ NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
 	}
 } // reverse_block
 
+
 static VAR *
 NAME(process_descending)(VAR *pa, VAR *pe, COMMON_PARAMS)
 {
 	VAR *prev = pa, *curr = pa + ES;
 
-	assert(pa < pe);
+	ASSERT(pa < pe);
 	while ((curr != pe) && IS_LT(curr, prev)) {
 		prev = curr;
 		curr += ES;
@@ -794,7 +805,7 @@ NAME(process_ascending)(VAR *pa, VAR *pe, COMMON_PARAMS)
 {
 	VAR *prev = pa, *curr = pa + ES;
 
-	assert(pa < pe);
+	ASSERT(pa < pe);
 	while (curr != pe) {
 		if (IS_LT(curr, prev))
 			return curr;
@@ -894,6 +905,8 @@ NAME(sprint_left)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 		if (pos > max) {
 			min = max - (pos >> 1);
 		} else {
+			// The !!pos prevents an increment when pos == 0
+			// otherwise we could end up with min > max
 			min = (pos >> 1) + !!pos;
 			max = pos;
 		}
@@ -941,6 +954,8 @@ NAME(sprint_right)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 		if (pos > max) {
 			min = max - (pos >> 1);
 		} else {
+			// The !!pos prevents an increment when pos == 0
+			// otherwise we could end up with min > max
 			min = (pos >> 1) + !!pos;
 			max = pos;
 		}
@@ -986,10 +1001,11 @@ static void
 NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 			  VAR *w, const size_t nw, COMMON_PARAMS)
 {
+	size_t	a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
 	VAR	*pe = b + (nb * ES), *pw = w;
 	VAR	*pb = pe, *pa = b;
 
-	assert(nb <= nw);
+	ASSERT(nb <= nw);
 
 	// Now copy everything remaining from B to W
 	for (VAR *tb = b; nb--; pw += ES, tb += ES)
@@ -1000,9 +1016,7 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 	pb -= ES;
 	SWAP(pb, pa);
 
-	// Now merge rest of W into A. Set up sprint values
-	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
-
+	// Now merge rest of W into A
 	while ((pa > a) && (pw > w)) {
 		if ((a_run | b_run) < sprint) {
 			// The following 8 lines implement this logic
@@ -1041,7 +1055,7 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 					SWAP(pa, pb);
 				}
 				if (pa == a)
-					break;
+					goto merge_done;
 				b_run += !b_run;
 			}
 
@@ -1054,7 +1068,7 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 					SWAP(pw, pb);
 				}
 				if (pw == w)
-					break;
+					goto merge_done;
 				a_run += !a_run;
 			}
 		} while ((a_run >= SPRINT_ACTIVATE) || (b_run >= SPRINT_ACTIVATE));
@@ -1064,9 +1078,9 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 		a_run = 0;
 		b_run = 0;
 	}
-
+merge_done:
 	// Swap back any remainder
-	assert(w <= pw);
+	ASSERT(w <= pw);
 	for ( ; w != pw; w += ES, a += ES)
 		SWAP(a, w);
 } // merge_left
@@ -1079,7 +1093,7 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 	VAR	*pe = b + (nb * ES);
 	VAR	*pw = w;
 
-	assert(na <= nw);
+	ASSERT(na <= nw);
 
 	// Now copy everything in A to W
 	for (VAR *ta = a; na--; pw += ES, ta += ES)
@@ -1128,7 +1142,7 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 				for (size_t num = a_run; num--; w += ES, a += ES)
 					SWAP(a, w);
 				if (w >= pw)
-					break;
+					goto merge_done;
 			}
 
 			// Stuff from B is sprinting
@@ -1138,7 +1152,7 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 				for (size_t num = b_run; num--; b += ES, a += ES)
 					SWAP(a, b);
 				if (b >= pe)
-					break;
+					goto merge_done;
 			}
 		} while ((a_run >= SPRINT_ACTIVATE) || (b_run >= SPRINT_ACTIVATE));
 
@@ -1147,9 +1161,9 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 		a_run = 0;
 		b_run = 0;
 	}
-
+merge_done:
 	// Swap back any remainder
-	assert(w <= pw);
+	ASSERT(w <= pw);
 	for ( ; w != pw; w += ES, a += ES)
 		SWAP(a, w);
 } // merge_right
@@ -1161,8 +1175,8 @@ static void
 NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 			  VAR *w, const size_t nw, COMMON_PARAMS)
 {
-	assert(na > 0);
-	assert(nb > 0);
+	ASSERT(na > 0);
+	ASSERT(nb > 0);
 
 	// Check if we need to do anything at all!
 	if (!IS_LT(b, b - ES))
@@ -1184,8 +1198,8 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 				// else
 				//	min = pos + 1;
 				int res = !!(IS_LT(b, sp));
-				max = (max * !res) + (pos * res);
-				min = (min * res) + (!res * (pos + 1));
+				max = (max * !res) + (res * pos++);
+				min = (min * res) + (!res * pos);
 
 				pos = (min + max) >> 1;
 				sp = a + (pos * ES);
@@ -1198,8 +1212,8 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 				na--;
 			} while (!IS_LT(b, a));
 		}
-		assert(na > 0);
-		assert((a + (na * ES)) < pe);	// Catch underflow
+		ASSERT(na > 0);
+		ASSERT((a + (na * ES)) < pe);	// Catch underflow
 	}
 
 	// Skip last part of B if the opportunity arises
@@ -1218,8 +1232,8 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 				// else
 				//	max = pos;
 				int res = !!(IS_LT(sp, b - ES));
-				min = (!res * min) + (res * (pos + 1));
-				max = (res * max) + (!res * pos);
+				max = (res * max) + (!res * pos++);
+				min = (!res * min) + (res * pos);
 
 				pos = (min + max) >> 1;
 				sp = b + (pos * ES);
@@ -1231,12 +1245,11 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 				nb--;
 			} while (!IS_LT(sp, tb));
 		}
-		assert(nb > 0);
-		assert((b + (nb * ES)) <= pe);	// Catch underflow
+		ASSERT(nb > 0);
+		ASSERT((b + (nb * ES)) <= pe);	// Catch underflow
 	}
 
 	// Use merge-left if nb is smaller than na
-	// Fall-back to shift-merge if our work-space would overflow
 	if (nb < na)
 		CALL(merge_left)(a, na, b, nb, w, nw, COMMON_ARGS);
 	else
@@ -1245,7 +1258,7 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 
 
 // This function's job to merge two arrays together, given whatever
-// workspace it gets.  It'll always make it work....eventually!
+// size workspace is given.  It'll always make it work...eventually!
 static void
 NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 			  VAR *ws, const size_t nw, COMMON_PARAMS)
@@ -1253,6 +1266,7 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 	VAR	*pe = pb + (nb * ES);
 
 	while (na > nw) {
+		size_t	min = 0, max = nb, pos = max >> 1;
 		VAR	*rp, *sp;	// Rotate + Split pointers
 
 		// RP now tracks the point of block rotation
@@ -1264,9 +1278,6 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 		// Find where in the B array we can split to rotate the
 		// remainder of A into.  Use binary search for speed
 		do {
-			size_t	min = 0, max = nb;
-			size_t	pos = max >> 1;
-
 			sp = rp + (pos * ES);
 
 			while (min < max) {
@@ -1298,10 +1309,8 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 		// - SP->PE  is the rest of B that is >= where we split A at
 
 		// Now merge A with B - the rotation can make nb be 0, so check
-		if (nb > 0) {
+		if (nb > 0)
 			CALL(merge_using_workspace)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
-//			CALL(test_sorted)(pa, na + nb, COMMON_ARGS);
-		}
 
 		// Now set PA and PB, to be RP and SP respectively, and loop
 		pa = rp;
@@ -1309,7 +1318,7 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 		na = NITEM(sp - rp);
 		nb = NITEM(pe - sp);
 	}
-	assert(na > 0);		// It should never be possible that na == 0
+	ASSERT(na > 0);		// It should never be possible that na == 0
 
 	// The rotations can make nb be 0, so check it!
 	if (nb > 0)
@@ -1325,8 +1334,8 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	if ((n <= INSERT_SORT_MAX) || (n <= 8))
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
-	assert(ws != NULL);
-	assert(nw > 0);
+	ASSERT(ws != NULL);
+	ASSERT(nw > 0);
 
 	// The standard merge-sort algorithm is mathematically best
 	// when splitting the work up completely evenly (50:50 split)
@@ -1590,7 +1599,7 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 		// If merged dups is full, there will never be any unmerged frees
 		// If there are unmerged frees, then merged dups won't be full.
 		// Therefore, the following operation is perfectly bounded
-		assert(state->num_merged != MAX_DUPS);
+		ASSERT(state->num_merged != MAX_DUPS);
 		state->merged_dups[state->num_merged++] = mf;
 		state->free_dups[0] = NULL;
 		state->num_free = 0;
