@@ -70,6 +70,64 @@ struct NAME(stable_state) {
 //----------------- START OF SPECIFIC ELEMENT SIZE DEFINES ------------------//
 //---------------------------------------------------------------------------//
 
+// Returns the first item in the range start->end that is
+// is greater than but NOT equal to the test item
+static VAR *
+NAME(binary_search_gt_ne)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
+{
+	assert(end >= start);
+
+	size_t min = 0, max = (end - start) / ES, pos = max >> 1;
+
+	end = start + pos * ES;
+	while (min < max) {
+		// if (IS_LT(test, end)) {
+		//	max = pos;
+		// } else {
+		//	min = pos + 1;
+		// }
+		// The following 3 lines implement the
+		// above logic in a branchless manner
+		int res = !!(IS_LT(test, end));
+		max = (!res * max) + (res * pos++);
+		min = (res * min) + (!res * pos);
+
+		pos = (min + max) >> 1;
+		end = start + (pos * ES);
+	}
+	return end;
+} // binary_search_gt_ne
+
+
+// Returns the first item in the range start->end that is greater
+// than or equal to the test item
+static VAR *
+NAME(binary_search_gt_eq)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
+{
+	assert(end >= start);
+
+	size_t min = 0, max = (end - start) / ES, pos = max >> 1;
+
+	end = start + pos * ES;
+	while (min < max) {
+		// if (IS_LT(end, test)) {
+		//	min = pos + 1;
+		// } else {
+		//	max = pos;
+		// }
+		// The following 3 lines implement the
+		// above logic in a branchless manner
+		int res = !!(IS_LT(end, test));
+		max = (res * max) + (!res * pos++);
+		min = (!res * min) + (res * pos);
+
+		pos = (min + max) >> 1;
+		end = start + (pos * ES);
+	}
+	return end;
+} // binary_search_gt_eq
+
+
 #ifdef UNTYPED
 
 // Generic unaligned/odd-byte size handling
@@ -184,24 +242,11 @@ NAME(insertion_sort_binary)(VAR *pa, VAR *ta, const size_t n, COMMON_PARAMS)
 {
 	for (VAR *pe = pa + n; ta < pe; ta++) {
 		if (IS_LT(ta, ta - 1)) {
-			// Find where to insert it
-			VAR	t = *ta, *tb = ta - 1, *tc = ta, *where = pa;
-			uint32_t max = tb - pa, min = 0, pos = max >> 1;
+			VAR	t = *ta, *tb = ta - 1, *tc = ta, *where;
 
-			do {
-				// The following 3 lines implement
-				// this logic in a branchless manner
-				// if (IS_LT(ta, tb))
-				// 	max = pos;
-				// else
-				// 	min = pos + 1;
-				uint32_t res = IS_LT(ta, where + pos) - 1;
-				max = (pos++ & ~res) | (max & res);
-				min = (min & ~res) | (pos & res);
-				pos = (min + max) >> 1;
-			} while (min < max);
-
-			for (where += pos; tc != where; *tc-- = *tb--);
+			where = CALL(binary_search_gt_ne)(pa, tb, ta, COMMON_ARGS);
+			while (tc != where)
+				*tc-- = *tb--;
 			*where = t;
 		}
 	}
@@ -335,8 +380,8 @@ NAME(binary_search_split)(VAR *pa, VAR *pb, COMMON_PARAMS)
 
 	while (min < max) {
 		int res = !!(IS_LT(rp, sp - ES));
-		min = (!res * min) + (res * (pos + res));
-		max = (res * max) + (!res * pos);
+		max = (res * max) + (!res * pos++);
+		min = (!res * min) + (res * pos);
 
 		pos = (min + max) >> 1;
 		sp = pb - (pos * ES);
@@ -907,8 +952,8 @@ NAME(sprint_left)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 		// else
 		// 	max = pos;
 		int result = !!(IS_LT(sp, pt));
-		min = (min * !result) + (result * (pos + 1));
-		max = (max * result) + (!result * pos);
+		max = (max * result) + (!result * pos++);
+		min = (min * !result) + (result * pos);
 
 		pos = (min + max) >> 1;
 		sp = pa + (pos * ES);
@@ -971,8 +1016,8 @@ NAME(sprint_right)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 		// else
 		// 	min = pos + 1;
 		int result = !!(IS_LT(pt, sp));
-		max = (max * !result) + (result * pos);
-		min = (min * result) + (!result * (pos + 1));
+		max = (max * !result) + (result * pos++);
+		min = (min * result) + (!result * pos);
 
 		pos = (min + max) >> 1;
 		sp = pa + (pos * ES);
@@ -1154,64 +1199,6 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 } // merge_right
 
 
-// Returns the first item in the range start->end that is
-// is greater than but NOT equal to the test item
-static VAR *
-NAME(binary_search_gt_ne)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
-{
-	assert(end >= start);
-
-	size_t min = 0, max = (end - start) / ES, pos = max >> 1;
-
-	end = start + pos * ES;
-	while (min < max) {
-#if 0
-		if (IS_LT(test, end)) {
-			max = pos;
-		} else {
-			min = pos + 1;
-		}
-#endif
-		int res = !!(IS_LT(test, end));
-		max = (max * !res) + (pos * res);
-		min = (min * res) + (!res * (pos + 1));
-
-		pos = (min + max) >> 1;
-		end = start + (pos * ES);
-	}
-	return end;
-} // binary_search_gt_ne
-
-
-// Returns the first item in the range start->end that is greater
-// than or equal to the test item
-static VAR *
-NAME(binary_search_gt_eq)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
-{
-	assert(end >= start);
-
-	size_t min = 0, max = (end - start) / ES, pos = max >> 1;
-
-	end = start + pos * ES;
-	while (min < max) {
-#if 0
-		if (IS_LT(end, test)) {
-			min = pos + 1;
-		} else {
-			max = pos;
-		}
-#endif
-		int res = !!(IS_LT(end, test));
-		min = (!res * min) + (res * (pos + 1));
-		max = (res * max) + (!res * pos);
-
-		pos = (min + max) >> 1;
-		end = start + (pos * ES);
-	}
-	return end;
-} // binary_search_gt_eq
-
-
 // Prepares A and B for merging via merge_left or merge_right
 // Assumes both NA and NB are > zero on entry
 static void
@@ -1319,10 +1306,8 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 		// - SP->PE  is the rest of B that is >= where we split A at
 
 		// Now merge A with B - the rotation can make nb be 0, so check
-		if (nb > 0) {
+		if (nb > 0)
 			CALL(merge_using_workspace)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
-//			CALL(test_sorted)(pa, na + nb, COMMON_ARGS);
-		}
 
 		// Now set PA and PB, to be RP and SP respectively, and loop
 		pa = rp;
