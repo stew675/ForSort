@@ -1836,14 +1836,14 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		if (nr < (n >> 4))
 			break;
 
+		wstarget = nr / STABLE_WSRATIO;
+
 		// Short-circuit the search if we have even just barely enough!
 		// The merge sort can run at near full speed with just 1/128th
 		// as work-space, and so it's faster to just break out if we're
 		// close enough, than it is to continue searching for more.
 		if ((nr < ((n * 3)>>2)) && (nw >= (nr >> 7)))
 			break;
-
-		wstarget = nr / STABLE_WSRATIO;
 	}
 
 	// Now sort the remaining unsorted data
