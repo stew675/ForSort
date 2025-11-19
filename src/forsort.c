@@ -93,18 +93,6 @@
 // algorithm will run a bit slower if you do so.
 #define	INSERT_SORT_MAX		11
 
-#define	BASIC_INSERT_MAX	44
-
-// For shift_merge_in_place(), 1 work stack position holds 3 pointers (24
-// bytes on 64-bit machines). A stack size of 80 requires a hair under 4K on
-// the call stack.  I choose 160 (~8K) as this appears to cover all but the
-// most degenerate of scenarios up to 10^12 items.  It will always fall back
-// to the memory bounded split_merge_in_place() algorithm though as needed.
-// If stack is super tight, this can be dropped to 40 without issue.  If
-// stack memory is even tighter, just use split_merge_in_place() instead.
-#define	SHIFT_STACK_SIZE	160
-
-// SKEW defines the split ratio when doing top-down division of the array
 // A SKEW of 50 is a classic merge sort 50:50 split, which would be better
 // for larger element sizes, an expensive comparison function, for highly
 // ordered inputs, or for low available stack memory deployments.
@@ -112,6 +100,15 @@
 // enough to give a small boost for a small (~0.1%) increase in comparisons
 #define	MERGE_SKEW		50
 
+// BASIC_INSERT_MAX defines the number of items below which the basic_sort()
+// functionality will simply Insertion Sort.  Above a certain amount, the
+// insertion sort switches from linear to binary search, and so can run fairly
+// quickly up to even 80 items.  This is different to INSERT_SORT_MAX because
+// that value affects the high performance merge routines, whereas the basic
+// sort has a higher K-factor overhead, and so BASIC_INSERT_MAX can be higher
+#define	BASIC_INSERT_MAX	44
+
+// SKEW defines the split ratio when doing top-down division of the array
 // While shift_merge_in_place and split_merge_in_place can definitely merge
 // any two sorted arrays together in linear O(M+N) time, experimentally there
 // is an observable performance bias to be had when the first array, M, is
@@ -120,8 +117,8 @@
 // is observed to perform about 5-10% better than a 1:1 ratio.  Since the
 // stable merge-in-place algorithm relies heavily on this basic sort to form
 // its initial working sets, it's best that this skew ratio is managed
-// independently from the main merge-sort skew.  Experimentally, a 20:80
-// split appears to offer the best overall performance.
+// independently from the main merge-sort skew.  Experimentally, a 41:59
+// split appears to offer the best compromise
 #define	BASIC_SKEW		41
 
 // WSRATIO defines the split ratio when choosing how much of the array to
@@ -136,15 +133,7 @@
 // there's a trade-off between spending more time digging out uniques, as
 // opposed to just using what we can find.  A good value appears to be anywhere
 // from 1.5x to 3x of what WSRATIO is set to,
-// 17 to 18 appears near optimal
 #define	STABLE_WSRATIO		24
-
-// WSTRIES is the maximum number of attempts that the stable_sort() front-end
-// will try to attempt to achieve a suitably sized workspace to pass to the
-// in-place merge sort.  The interesting thing though is that the uniques
-// extraction system can wind up sorting the entire input in degenerate cases,
-// and it will do it very quickly too!
-#define	WSTRIES			24
 
 // Set the following to 1 to enable low-stack mode, whereby we will not use
 // shift_merge_in_place(), and ONLY use split_merge_in_place algorithm.  This
@@ -152,6 +141,10 @@
 // a 4% speed penalty, which admittedly isn't a whole lot
 #define	LOW_STACK		0
 
+
+//-----------------------------------------------------------------------------
+//                           Generic Defines
+//-----------------------------------------------------------------------------
 
 // Sparingly used to guide compiling optimization
 #define likely(x)	__builtin_expect(!!(x), 1)
@@ -162,7 +155,6 @@
 #define	COMMON_PARAMS	const size_t es, int (*is_lt)(const void *, const void *)
 
 // Construct a 128-bit type
-
 typedef unsigned __int128 uint128_t;
 
 enum swap_type_t {
@@ -172,20 +164,6 @@ enum swap_type_t {
 	SWAP_BYTES
 };
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-
-#define CONCAT(x, y) x ## _ ## y
-#define MAKE_STR(x, y) CONCAT(x,y)
-#define NAME(x) MAKE_STR(x, VAR)
-#define CALL(x) NAME(x)
-
-// Uncomment to turn on debugging output for the uniques extraction and merging system
-//#define	DEBUG_UNIQUE_PROCESSING
-
-// Uncomment to turn on general debugging output
-// #define	DEBUG
-
 enum {
 	LEAP_LEFT = 0,
 	LEAP_RIGHT,
@@ -193,40 +171,34 @@ enum {
 
 // Flip between the two to enable/disable assert()'s, but leaving them
 // on does not appear to impact performance in any significant manner
+#if 1
 #define	ASSERT	assert
-//#define	ASSERT(_x_)
+#else
+#define	ASSERT(_x_)
+#endif
 
+// Activate to turn on general debugging output
+#if 0
+#define	DEBUG
+#endif
+
+// Classic MIN macro
 #define	MIN(_x_, _y_)  (((_x_) < (_y_)) ? (_x_) : (_y_))
 
 // Choose the first #define if you want to test with inlined comparisons
 // Sort times are typically ~0.7x of when using an external comparison
-//#define	IS_LT(_x_, _y_)	 (*(uint32_t *)(_x_) < *(uint32_t *)(_y_))
+#if 0
+#define	IS_LT(_x_, _y_)	 (*(uint32_t *)(_x_) < *(uint32_t *)(_y_))
+#else
 #define	IS_LT is_lt
-
-// Sparingly used to guide compiling optimization
-#define likely(x)       __builtin_expect(!!(x), 1)
-#define unlikely(x)     __builtin_expect(!!(x), 0)
-
-// Experimentally 13 appears to be the best binary insertion cutoff
-#define	BINARY_INSERTION_MIN	13
-
-// Experimentally, 7 appears best as the sprint activation value
-#define	SPRINT_ACTIVATE 	7
-#define	SPRINT_EXIT_PENALTY	2
-
-// Since the merge_duplicates algorithm uses a 1:2 split ratio, it's best to
-// have MAX_DUPS be an even power of 3, so a value of 27 is perfect here.
-// With a MAX_DUPS value of 27, if the data set is so degenerate as to fill up
-// the duplicates table, then dropping out and sorting is trivially fast
-#define	MAX_DUPS 27
-
+#endif
 
 //---------------------------------------------------------------------------//
-//----------------- START OF SPECIFIC ELEMENT SIZE DEFINES ------------------//
+//                         Generic helper functions
 //---------------------------------------------------------------------------//
 
-// Generic unaligned/odd-byte size handling
-
+// Generic unaligned/odd-byte swap handling
+// TODO - This thing is pretty slow....fix it!
 static inline void
 memswap(void * restrict p1, void * restrict p2, size_t n)
 {
@@ -262,6 +234,9 @@ get_swap_type (void *const pbase, size_t size)
 	return SWAP_BYTES;
 } // get_swap_type
 
+// The following are just some utility functions that may, or may not, get used
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
 
 // The get index of the most significant bit of a 64 bit value
 static int
@@ -286,7 +261,6 @@ msb64(uint64_t v)
 	return dbi64[(v * dbm64) >> 58];
 }
 
-#if 0
 static int
 msb32(uint32_t v)
 {
@@ -330,42 +304,43 @@ ceil_log_base_16(size_t n)
 
 	return (result + !result);	// Don't return a 0
 } // ceil_log_base_16
-#endif
 
-extern void print_array(void *a, size_t n);
+#pragma GCC diagnostic pop
+
+//---------------------------------------------------------------------------//
+//                         Specific Typed Includes
+//---------------------------------------------------------------------------//
 
 #define ES 1
 #define	NITEM(_x_)		(_x_)
+
 #define	VAR uint128_t
 #include "forsort-insert.h"
 #include "forsort-basic.h"
 #include "forsort-merge.h"
 #include "forsort-stable.h"
 #undef VAR
-#undef NITEM
-#undef ES
 
-#define ES 1
-#define	NITEM(_x_)		(_x_)
 #define	VAR uint64_t
 #include "forsort-insert.h"
 #include "forsort-basic.h"
 #include "forsort-merge.h"
 #include "forsort-stable.h"
 #undef VAR
-#undef NITEM
-#undef ES
 
-#define ES 1
-#define	NITEM(_x_)		(_x_)
 #define	VAR uint32_t
 #include "forsort-insert.h"
 #include "forsort-basic.h"
 #include "forsort-merge.h"
 #include "forsort-stable.h"
 #undef VAR
+
 #undef NITEM
 #undef ES
+
+//---------------------------------------------------------------------------//
+//                         Generic Untyped Includes
+//---------------------------------------------------------------------------//
 
 #define ES es
 #define	NITEM(_x_)		((_x_) / es)
@@ -379,6 +354,13 @@ extern void print_array(void *a, size_t n);
 #undef VAR
 #undef NITEM
 #undef ES
+
+
+//---------------------------------------------------------------------------//
+//                     Externally visible API Functions
+//---------------------------------------------------------------------------//
+
+// extern void print_array(void *a, size_t n);
 
 void	    
 forsort_basic(void *a, const size_t n, const size_t es,

@@ -96,6 +96,9 @@ NAME(insertion_sort_binary)(VAR *pa, VAR *ta, const size_t n, COMMON_PARAMS)
 } // insertion_sort_binary
 
 
+// Experimentally 13 appears to be the best general purpose value
+#define BINARY_INSERTION_MIN    13
+
 static void
 NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
@@ -106,7 +109,12 @@ NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	if (n > BINARY_INSERTION_MIN)
 		CALL(insertion_sort_binary)(pa, pa + rn, n, COMMON_ARGS);
 } // insertion_sort
+#undef BINARY_INSERTION_MIN
 #endif
+
+//--------------------------------------------------------------------------
+//                          #define cleanup
+//--------------------------------------------------------------------------
 
 #undef SWAP
 #undef CONCAT

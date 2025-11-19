@@ -32,15 +32,17 @@
 	}
 #endif
 
-
 //--------------------------------------------------------------------------
 //                    basic_sort() implementation
 //--------------------------------------------------------------------------
 
 #ifdef UNTYPED
-
 // Merges two sorted sub-arrays together using insertion sort
 // This is horribly inefficient for all but the smallest arrays
+// It is assumed upon entry that the first element of B is less
+// than the last element of A.  It is upon the caller to ensure
+// this condition
+// This is the generic char type implementation
 static void
 NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
 {
@@ -57,6 +59,12 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
 
 #else
 
+// Merges two sorted sub-arrays together using insertion sort
+// This is horribly inefficient for all but the smallest arrays
+// It is assumed upon entry that the first element of B is less
+// than the last element of A.  It is upon the caller to ensure
+// this condition
+// This is the type-specific implementation
 static void
 NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
 {
@@ -74,8 +82,8 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
 		*tb = *t;
 	} while ((pb != pa) && IS_LT(pb, pb - ES));
 } // insertion_merge_in_place
-
 #endif
+
 static void __attribute__((noinline))
 NAME(block_swap)(VAR * restrict pa, VAR * restrict pb, size_t es)
 {
@@ -662,6 +670,11 @@ NAME(basic_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 #endif
 	return reversals;
 } // basic_sort
+
+
+//--------------------------------------------------------------------------
+//                          #define cleanup
+//--------------------------------------------------------------------------
 
 #undef SWAP
 #undef CONCAT

@@ -14,7 +14,6 @@
 #define NAME(x) MAKE_STR(x, VAR)
 #define CALL(x) NAME(x)
 
-
 #ifdef UNTYPED
 
 #define	SWAP(_xa_, _xb_)	memswap((_xa_), (_xb_), ES)
@@ -34,6 +33,9 @@
 //                Start of merge_sort() code
 //-----------------------------------------------------------------
 
+// Experimentally, 7 appears best as the sprint activation value
+#define SPRINT_ACTIVATE         7
+#define SPRINT_EXIT_PENALTY     2
 
 // Swaps two contiguous blocks of differing lengths in place efficiently
 // Basically my version of the well known Block Rotate() functionality
@@ -602,6 +604,13 @@ NAME(merge_sort_in_place)(VAR * const pa, const size_t n, VAR * const ws,
 #endif
 } // merge_sort_in_place
 
+
+//-----------------------------------------------------------------
+//                        #define cleanup
+//-----------------------------------------------------------------
+
+#undef SPRINT_ACTIVATE
+#undef SPRINT_EXIT_PENALTY
 #undef SWAP
 #undef CONCAT
 #undef MAKE_STR

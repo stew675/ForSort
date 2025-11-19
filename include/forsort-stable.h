@@ -5,15 +5,14 @@
 // This is my implementation of what I believe to be an O(nlogn) time-complexity
 // O(logn) space-complexity, in-place and adaptive merge-sort style algorithm.
 
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-
 #define CONCAT(x, y) x ## _ ## y
 #define MAKE_STR(x, y) CONCAT(x,y)
 #define NAME(x) MAKE_STR(x, VAR)
 #define CALL(x) NAME(x)
 
+//-----------------------------------------------------------------
+//                         SWAP macros
+//-----------------------------------------------------------------
 
 #ifdef UNTYPED
 
@@ -32,8 +31,20 @@
 #endif
 
 //-----------------------------------------------------------------
-//                Start of stable_sort() code
+//            Start of stable_sort() implementation
 //-----------------------------------------------------------------
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
+
+// Since the merge_duplicates algorithm uses a 1:2 split ratio, it's best to
+// have MAX_DUPS be an even power of 3, so a value of 27 is perfect here.
+// With a MAX_DUPS value of 27, if the data set is so degenerate as to fill up
+// the duplicates table, then dropping out and sorting is trivially fast
+#define MAX_DUPS 27
+
+// Uncomment to turn on debugging output for the uniques extraction and merging system
+//#define       DEBUG_UNIQUE_PROCESSING
 
 // A structure to manage the state of the stable sort algorithm
 struct NAME(stable_state) {
@@ -510,6 +521,15 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	CALL(stable_sort_finisher)(state, COMMON_ARGS);
 } // stable_sort
 
+//-----------------------------------------------------------------
+//                      #DEF  cleanup!
+//-----------------------------------------------------------------
+
+#ifdef DEBUG_UNIQUE_PROCESSING
+#undef DEBUG_UNIQUE_PROCESSING
+#endif
+
+#undef MAX_DUPS
 #undef SWAP
 #undef CONCAT
 #undef MAKE_STR
