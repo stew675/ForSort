@@ -337,6 +337,7 @@ extern void print_array(void *a, size_t n);
 #define ES 1
 #define	NITEM(_x_)		(_x_)
 #define	VAR uint128_t
+#include "forsort-insert.h"
 #include "forsort-basic.h"
 #include "forsort-merge.h"
 #include "forsort-stable.h"
@@ -347,6 +348,7 @@ extern void print_array(void *a, size_t n);
 #define ES 1
 #define	NITEM(_x_)		(_x_)
 #define	VAR uint64_t
+#include "forsort-insert.h"
 #include "forsort-basic.h"
 #include "forsort-merge.h"
 #include "forsort-stable.h"
@@ -357,6 +359,7 @@ extern void print_array(void *a, size_t n);
 #define ES 1
 #define	NITEM(_x_)		(_x_)
 #define	VAR uint32_t
+#include "forsort-insert.h"
 #include "forsort-basic.h"
 #include "forsort-merge.h"
 #include "forsort-stable.h"
@@ -368,6 +371,7 @@ extern void print_array(void *a, size_t n);
 #define	NITEM(_x_)		((_x_) / es)
 #define	VAR char
 #define UNTYPED
+#include "forsort-insert.h"
 #include "forsort-basic.h"
 #include "forsort-merge.h"
 #include "forsort-stable.h"
