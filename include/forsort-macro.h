@@ -196,8 +196,9 @@ NAME(insertion_sort_binary)(VAR *pa, VAR *ta, const size_t n, COMMON_PARAMS)
 				// else
 				// 	min = pos + 1;
 				uint32_t res = IS_LT(ta, where + pos) - 1;
-				max = (pos++ & ~res) | (max & res);
+				max = (max & res) | (~res & pos++);
 				min = (min & ~res) | (pos & res);
+
 				pos = (min + max) >> 1;
 			} while (min < max);
 
@@ -906,9 +907,9 @@ NAME(sprint_left)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 		// 	min = pos + 1;
 		// else
 		// 	max = pos;
-		int result = !!(IS_LT(sp, pt));
-		min = (min * !result) + (result * (pos + 1));
-		max = (max * result) + (!result * pos);
+		int res = !!(IS_LT(sp, pt));
+		max = (max * res) + (!res * pos++);
+		min = (min * !res) + (res * pos);
 
 		pos = (min + max) >> 1;
 		sp = pa + (pos * ES);
@@ -970,9 +971,9 @@ NAME(sprint_right)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 		// 	max = pos;
 		// else
 		// 	min = pos + 1;
-		int result = !!(IS_LT(pt, sp));
-		max = (max * !result) + (result * pos);
-		min = (min * result) + (!result * (pos + 1));
+		int	res = !!(IS_LT(pt, sp));
+		max = (max * !res) + (res * pos++);
+		min = (min * res) + (!res * pos);
 
 		pos = (min + max) >> 1;
 		sp = pa + (pos * ES);
@@ -1018,13 +1019,13 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 			//	b_run++;
 			// }
 			VAR	*which[2] = {(pw - ES), (pa - ES)};
-			int	result = !!(IS_LT(pw - ES, pa - ES));
+			int	res = !!(IS_LT(pw - ES, pa - ES));
 			pb = pb - ES;
-			SWAP(pb, which[result]);
-			pa = pa - (result * ES);
-			pw = pw - (!result * ES);
-			a_run = (a_run + result) * result;
-			b_run = (b_run + !result) * !result;
+			SWAP(pb, which[res]);
+			pa = pa - (res * ES);
+			pw = pw - (!res * ES);
+			a_run = (a_run + res) * res;
+			b_run = (b_run + !res) * !res;
 			continue;
 		}
 
@@ -1107,12 +1108,12 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 			//	b_run = 0;
 			// }
 			VAR	*which[2] = {w, b};
-			int	result = !!(IS_LT(b, w));
-			SWAP(a, which[result]);
-			b += result * ES;
-			w += !result * ES;
-			a_run = (a_run + !result) * !result;
-			b_run = (b_run + result) * result;
+			int	res = !!(IS_LT(b, w));
+			SWAP(a, which[res]);
+			b += res * ES;
+			w += !res * ES;
+			a_run = (a_run + !res) * !res;
+			b_run = (b_run + res) * res;
 			a += ES;
 			continue;
 		}
