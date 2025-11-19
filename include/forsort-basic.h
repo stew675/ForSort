@@ -85,12 +85,10 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
 #endif
 
 static void __attribute__((noinline))
-NAME(block_swap)(VAR * restrict pa, VAR * restrict pb, size_t es)
+NAME(block_swap)(VAR * restrict pa, VAR * restrict pe, VAR * restrict pb, size_t es)
 {
-	VAR	*end = pb;
-
-	ASSERT(pa <= pb);
-	while (pa != end) {
+	ASSERT(pa <= pe);
+	while (pa < pe) {
 		SWAP(pa, pb);
 		pa += ES;
 		pb += ES;
@@ -239,7 +237,7 @@ split_again:
 
 	// Advance the PA->PB block up as far as we can
 	for (VAR *rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, es);
+		CALL(block_swap)(pa, pb, pb, es);
 		pa += bs;  pb += bs;
 	}
 
@@ -309,7 +307,7 @@ reverse_again:
 
 	// Shift entirety of PB->PE down as far as we can
 	for (sp = pb - bs; sp >= pa && IS_LT(pe - ES, sp); sp -= bs) {
-		CALL(block_swap)(sp, pb, es);
+		CALL(block_swap)(sp, pb, pb, es);
 		pb -= bs;  pe -= bs;
 	}
 
@@ -423,7 +421,7 @@ shift_again:
 
 	// Shift entirety of PA->PB up as far as we can
 	for (rp = pb + bs; (rp <= pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, es);
+		CALL(block_swap)(pa, pb, pb, es);
 		pa += bs;
 		pb += bs;
 	}
