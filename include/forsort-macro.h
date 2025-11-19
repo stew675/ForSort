@@ -1154,6 +1154,63 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 } // merge_right
 
 
+// Returns the first item in the range start->end that is
+// is greater than but NOT equal to the test item
+static VAR *
+NAME(binary_search_gt_ne)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
+{
+	assert(end >= start);
+
+	size_t min = 0, max = (end - start) / ES, pos = max >> 1;
+
+	end = start + pos * ES;
+	while (min < max) {
+#if 0
+		if (IS_LT(test, end)) {
+			max = pos;
+		} else {
+			min = pos + 1;
+		}
+#endif
+		int res = !!(IS_LT(test, end));
+		max = (max * !res) + (pos * res);
+		min = (min * res) + (!res * (pos + 1));
+		pos = (min + max) >> 1;
+		end = start + (pos * ES);
+	}
+	return end;
+} // binary_search_gt_ne
+
+
+// Returns the first item in the range start->end that is greater
+// than or equal to the test item
+static VAR *
+NAME(binary_search_gt_eq)(VAR *start, VAR *end, VAR *test, COMMON_PARAMS)
+{
+	assert(end >= start);
+
+	size_t min = 0, max = (end - start) / ES, pos = max >> 1;
+
+	end = start + pos * ES;
+	while (min < max) {
+#if 0
+		if (IS_LT(end, test)) {
+			min = pos + 1;
+		} else {
+			max = pos;
+		}
+#endif
+		int res = !!(IS_LT(end, test));
+		min = (!res * min) + (res * (pos + 1));
+		max = (res * max) + (!res * pos);
+
+			pos = (min + max) >> 1;
+		end = start + (pos * ES);
+	}
+	return end;
+} // binary_search_gt_eq
+
+
 // Prepares A and B for merging via merge_left or merge_right
 // Assumes both NA and NB are > zero on entry
 static void
@@ -1170,6 +1227,20 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 	VAR	*pe = b + (nb * ES);
 
 	// Skip initial part of A if the opportunity arises
+#if 1
+	if (!IS_LT(b, a)) {
+		if (na > 10) {
+			VAR *pp = CALL(binary_search_gt_ne)(a, b, b, COMMON_ARGS);
+			a = pp;
+			na = NITEM(b - a);
+		} else {
+			do {
+				a += ES;
+				na--;
+			} while (!IS_LT(b, a));
+		}
+	}
+#else
 	if (!IS_LT(b, a)) {
 		if (na > 10) {
 			size_t	min = 1, max = na;
@@ -1200,8 +1271,25 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 		assert(na > 0);
 		assert((a + (na * ES)) < pe);	// Catch underflow
 	}
+#endif
 
 	// Skip last part of B if the opportunity arises
+#if 1
+	VAR	*sp = pe - ES;
+	VAR	*tb = b - ES;
+	if (!IS_LT(sp, tb)) {
+		if (nb > 10) {
+			VAR *pp = CALL(binary_search_gt_eq)(b, pe, tb, COMMON_ARGS);
+			nb = NITEM(pp - b);
+		} else {
+
+			do {
+				sp -= ES;
+				nb--;
+			} while (!IS_LT(sp, tb));
+		}
+	}
+#else
 	VAR	*sp = pe - ES;
 	VAR	*tb = b - ES;
 	if (!IS_LT(sp, tb)) {
@@ -1233,7 +1321,7 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 		assert(nb > 0);
 		assert((b + (nb * ES)) <= pe);	// Catch underflow
 	}
-
+#endif
 	// Use merge-left if nb is smaller than na
 	// Fall-back to shift-merge if our work-space would overflow
 	if (nb < na)
