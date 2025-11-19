@@ -14,6 +14,23 @@
 #define NAME(x) MAKE_STR(x, VAR)
 #define CALL(x) NAME(x)
 
+
+#ifdef UNTYPED
+
+#define	SWAP(_xa_, _xb_)	memswap((_xa_), (_xb_), ES)
+
+#else
+
+#define	SWAP(_xa_, _xb_)			\
+	{					\
+		VAR xa = *(VAR *)(_xa_);	\
+		VAR xb = *(VAR *)(_xb_);	\
+		*(VAR *)(_xb_) = xa;		\
+		*(VAR *)(_xa_) = xb;		\
+	}
+
+#endif
+
 //-----------------------------------------------------------------
 //                Start of stable_sort() code
 //-----------------------------------------------------------------
@@ -493,6 +510,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	CALL(stable_sort_finisher)(state, COMMON_ARGS);
 } // stable_sort
 
+#undef SWAP
 #undef CONCAT
 #undef MAKE_STR
 #undef NAME

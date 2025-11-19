@@ -3,7 +3,7 @@
 # SRC = all source objects we want included in the final executable
 ######################################################################################
 
-DEP=	forsort-typed.h forsort-stable.h forsort-merge.h forsort-basic.h
+DEP=	forsort-stable.h forsort-merge.h forsort-basic.h
 
 SRC=	forsort.c \
 	main.c \

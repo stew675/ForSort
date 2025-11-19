@@ -14,10 +14,52 @@
 #define NAME(x) MAKE_STR(x, VAR)
 #define CALL(x) NAME(x)
 
+
+#ifdef UNTYPED
+
+#define	SWAP(_xa_, _xb_)	memswap((_xa_), (_xb_), ES)
+
+#else
+
+#define	SWAP(_xa_, _xb_)			\
+	{					\
+		VAR xa = *(VAR *)(_xa_);	\
+		VAR xb = *(VAR *)(_xb_);	\
+		*(VAR *)(_xb_) = xa;		\
+		*(VAR *)(_xa_) = xb;		\
+	}
+#endif
+
 //-----------------------------------------------------------------
 //                Start of merge_sort() code
 //-----------------------------------------------------------------
-//
+
+
+// Swaps two contiguous blocks of differing lengths in place efficiently
+// Basically my version of the well known Block Rotate() functionality
+// that avoids the use of explicit, or implicit, division or multiplication
+static void
+NAME(block_rotate)(VAR *a, VAR *b, VAR *e, size_t es)
+{
+	size_t	gapa = b - a, gapb = e - b;
+	while (gapa && gapb) {
+		if (gapa < gapb) {
+			// s = source, d = destination
+			// (Not that source and dest make sense when swapping)
+			for (VAR *s = a, *d = a + gapb; d != e; s += ES, d += ES)
+				SWAP(s, d);
+			e -= gapa;
+			gapb = e - b;
+		} else {
+			for (VAR *s = b, *d = a; s != e; s += ES, d += ES)
+				SWAP(s, d);
+			a += gapb;
+			gapa = b - a;
+		}
+	}
+} // block_rotate
+
+
 // Giving credit where it's due.  All this sprint-left/right, merge-left/right
 // stuff is heavily influenced by TimSort.  I'd already implemented something
 // similar, but when I looked at TimSort code I saw a few extra good ideas and
@@ -560,6 +602,7 @@ NAME(merge_sort_in_place)(VAR * const pa, const size_t n, VAR * const ws,
 #endif
 } // merge_sort_in_place
 
+#undef SWAP
 #undef CONCAT
 #undef MAKE_STR
 #undef NAME
