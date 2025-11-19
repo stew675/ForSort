@@ -938,26 +938,14 @@ NAME(sprint_left)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 		if (pos > max) {
 			min = max - (pos >> 1);
 		} else {
-			min = (pos >> 1) + 1;
+			// The !!pos here means that it will only
+			// add one if pos start off as non zero
+			min = (pos >> 1) + !!pos;
 			max = pos;
 		}
 	}
-
-	pos = (min + max) >> 1;
-	sp = pa + (pos * ES);
-	while (min < max) {
-		// The following 3 lines implement this logic
-		// if (IS_LT(sp, pt))
-		// 	min = pos + 1;
-		// else
-		// 	max = pos;
-		int result = !!(IS_LT(sp, pt));
-		max = (max * result) + (!result * pos++);
-		min = (min * !result) + (result * pos);
-
-		pos = (min + max) >> 1;
-		sp = pa + (pos * ES);
-	}
+	assert(max >= min);
+	sp = CALL(binary_search_gt_eq)(pa + (min * ES), pa + (max * ES), pt, COMMON_ARGS);
 	return sp;
 } // sprint_left
 
@@ -970,6 +958,8 @@ NAME(sprint_right)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 	size_t	max = NITEM(pe - pa);
 	size_t	min = 0, pos = 0;
 	VAR	*sp;
+
+	assert(pe > pa);
 
 	if (direction == LEAP_RIGHT) {
 		// First leap-frog our way to find the search range
@@ -985,7 +975,9 @@ NAME(sprint_right)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 		if (pos > max) {
 			min = max - (pos >> 1);
 		} else {
-			min = (pos >> 1) + 1;
+			// The !!pos here means that it will only
+			// add one if pos start off as non zero
+			min = (pos >> 1) + !!pos;
 			max = pos;
 		}
 	} else {
@@ -1006,22 +998,8 @@ NAME(sprint_right)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 			max = min + (pos >> 1);
 		}
 	}
-
-	pos = (min + max) >> 1;
-	sp = pa + (pos * ES);
-	while (min < max) {
-		// The following 3 lines implement this logic
-		// if (IS_LT(pt, sp))
-		// 	max = pos;
-		// else
-		// 	min = pos + 1;
-		int result = !!(IS_LT(pt, sp));
-		max = (max * !result) + (result * pos++);
-		min = (min * result) + (!result * pos);
-
-		pos = (min + max) >> 1;
-		sp = pa + (pos * ES);
-	}
+	assert(max >= min);
+	sp = CALL(binary_search_gt_ne)(pa + (min * ES), pa + (max * ES), pt, COMMON_ARGS);
 	return sp;
 } // sprint_right
 
@@ -1271,22 +1249,7 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 			
 		// Find where in the B array we can split to rotate the
 		// remainder of A into.  Use binary search for speed
-		do {
-			size_t	min = 0, max = nb;
-			size_t	pos = max >> 1;
-
-			sp = rp + (pos * ES);
-
-			while (min < max) {
-				if (IS_LT(sp, pb - ES))
-					min = pos + 1;
-				else
-					max = pos;
-
-				pos = (min + max) >> 1;
-				sp = rp + (pos * ES);
-			}
-		} while(0);
+		sp = CALL(binary_search_gt_eq)(rp, pe, pb - ES, COMMON_ARGS);
 
 		// Rotate the part of A that doesn't fit into the workspace
 		// with everything in B that is less than where we split A at
