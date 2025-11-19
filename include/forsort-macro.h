@@ -893,7 +893,7 @@ NAME(sprint_left)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 		if (pos > max) {
 			min = max - (pos >> 1);
 		} else {
-			min = (pos >> 1) + 1;
+			min = (pos >> 1) + !!pos;
 			max = pos;
 		}
 	}
@@ -940,7 +940,7 @@ NAME(sprint_right)(VAR *pa, VAR *pe, VAR *pt, int direction, COMMON_PARAMS)
 		if (pos > max) {
 			min = max - (pos >> 1);
 		} else {
-			min = (pos >> 1) + 1;
+			min = (pos >> 1) + !!pos;
 			max = pos;
 		}
 	} else {
