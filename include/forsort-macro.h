@@ -61,15 +61,15 @@ enum {
 struct NAME(stable_state) {
 	// All sizes are in numbers of entries, not bytes
 	VAR	*merged_dups[MAX_DUPS];		// Merged up duplicates
-	size_t	num_merged;			// No. of merged duplicate entries
 	VAR	*free_dups[MAX_DUPS];		// Unmerged duplicates
-	size_t	num_free;			// No. of unmerged duplicate entries
 	VAR	*work_space;			// Work Space
-	size_t	work_size;			// Size of work space
-	bool	work_sorted;			// If work-space is sorted or not
 	VAR	*rest;				// Rest of the main array
-	size_t	rest_size;			// Size of the rest
 	VAR	*pe;				// End of main array
+	size_t	num_merged;			// No. of merged duplicate entries
+	size_t	num_free;			// No. of unmerged duplicate entries
+	size_t	work_size;			// Size of work space
+	size_t	rest_size;			// Size of the rest
+	bool	work_sorted;			// If work-space is sorted or not
 };
 
 

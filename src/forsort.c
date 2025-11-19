@@ -152,6 +152,7 @@
 // a 4% speed penalty, which admittedly isn't a whole lot
 #define	LOW_STACK		0
 
+
 // Sparingly used to guide compiling optimization
 #define likely(x)	__builtin_expect(!!(x), 1)
 #define unlikely(x)	__builtin_expect(!!(x), 0)
@@ -171,6 +172,80 @@ enum swap_type_t {
 	SWAP_BYTES
 };
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
+
+#define CONCAT(x, y) x ## _ ## y
+#define MAKE_STR(x, y) CONCAT(x,y)
+#define NAME(x) MAKE_STR(x, VAR)
+#define CALL(x) NAME(x)
+
+// Uncomment to turn on debugging output for the uniques extraction and merging system
+//#define	DEBUG_UNIQUE_PROCESSING
+
+// Uncomment to turn on general debugging output
+// #define	DEBUG
+
+enum {
+	LEAP_LEFT = 0,
+	LEAP_RIGHT,
+};
+
+// Flip between the two to enable/disable assert()'s, but leaving them
+// on does not appear to impact performance in any significant manner
+#define	ASSERT	assert
+//#define	ASSERT(_x_)
+
+#define	MIN(_x_, _y_)  (((_x_) < (_y_)) ? (_x_) : (_y_))
+
+// Choose the first #define if you want to test with inlined comparisons
+// Sort times are typically ~0.7x of when using an external comparison
+//#define	IS_LT(_x_, _y_)	 (*(uint32_t *)(_x_) < *(uint32_t *)(_y_))
+#define	IS_LT is_lt
+
+// Sparingly used to guide compiling optimization
+#define likely(x)       __builtin_expect(!!(x), 1)
+#define unlikely(x)     __builtin_expect(!!(x), 0)
+
+// Experimentally 13 appears to be the best binary insertion cutoff
+#define	BINARY_INSERTION_MIN	13
+
+// Experimentally, 7 appears best as the sprint activation value
+#define	SPRINT_ACTIVATE 	7
+#define	SPRINT_EXIT_PENALTY	2
+
+// Since the merge_duplicates algorithm uses a 1:2 split ratio, it's best to
+// have MAX_DUPS be an even power of 3, so a value of 27 is perfect here.
+// With a MAX_DUPS value of 27, if the data set is so degenerate as to fill up
+// the duplicates table, then dropping out and sorting is trivially fast
+#define	MAX_DUPS 27
+
+
+//---------------------------------------------------------------------------//
+//----------------- START OF SPECIFIC ELEMENT SIZE DEFINES ------------------//
+//---------------------------------------------------------------------------//
+
+// Generic unaligned/odd-byte size handling
+
+static inline void
+memswap(void * restrict p1, void * restrict p2, size_t n)
+{
+	enum { SWAP_GENERIC_SIZE = 32 };
+
+	unsigned char tmp[SWAP_GENERIC_SIZE];
+
+	while (n > SWAP_GENERIC_SIZE) {
+		mempcpy(tmp, p1, SWAP_GENERIC_SIZE);
+		p1 = __mempcpy(p1, p2, SWAP_GENERIC_SIZE);
+		p2 = __mempcpy(p2, tmp, SWAP_GENERIC_SIZE);
+		n -= SWAP_GENERIC_SIZE;
+	}
+	while (n > 0) {
+		unsigned char t = ((unsigned char *)p1)[--n];
+		((unsigned char *)p1)[n] = ((unsigned char *)p2)[n];
+		((unsigned char *)p2)[n] = t;
+	}
+} // memswap
 
 static enum swap_type_t
 get_swap_type (void *const pbase, size_t size)
@@ -262,36 +337,52 @@ extern void print_array(void *a, size_t n);
 #define ES 1
 #define	NITEM(_x_)		(_x_)
 #define	VAR uint128_t
-#include "forsort-macro.h"
+#include "forsort-typed.h"
+#include "forsort-basic.h"
+#include "forsort-merge.h"
+#include "forsort-stable.h"
 #undef VAR
 #undef NITEM
 #undef ES
+#undef SWAP
 
 #define ES 1
 #define	NITEM(_x_)		(_x_)
 #define	VAR uint64_t
-#include "forsort-macro.h"
+#include "forsort-typed.h"
+#include "forsort-basic.h"
+#include "forsort-merge.h"
+#include "forsort-stable.h"
 #undef VAR
 #undef NITEM
 #undef ES
+#undef SWAP
 
 #define ES 1
 #define	NITEM(_x_)		(_x_)
 #define	VAR uint32_t
-#include "forsort-macro.h"
+#include "forsort-typed.h"
+#include "forsort-basic.h"
+#include "forsort-merge.h"
+#include "forsort-stable.h"
 #undef VAR
 #undef NITEM
 #undef ES
+#undef SWAP
 
 #define ES es
 #define	NITEM(_x_)		((_x_) / es)
 #define	VAR char
 #define UNTYPED
-#include "forsort-macro.h"
+#include "forsort-typed.h"
+#include "forsort-basic.h"
+#include "forsort-merge.h"
+#include "forsort-stable.h"
 #undef UNTYPED
 #undef VAR
 #undef NITEM
 #undef ES
+#undef SWAP
 
 void	    
 forsort_basic(void *a, const size_t n, const size_t es,
@@ -359,3 +450,4 @@ forsort_inplace(void *a, const size_t n, const size_t es,
 	if (dynamic && (workspace != NULL))
 		free(workspace);
 } // forsort_inplace
+
