@@ -28,12 +28,14 @@ void trinity_rotation(size_t *array, size_t left, size_t right)
 			memcpy(swap, array, left * sizeof(size_t));
 			memmove(array, array + left, right * sizeof(size_t));
 			memcpy(array + right, swap, left * sizeof(size_t));
+			num_swaps += right;
 		}
 		else
 		{
 			memcpy(swap, array + left, right * sizeof(size_t));
 			memmove(array + right, array, left * sizeof(size_t));
 			memcpy(array, swap, right * sizeof(size_t));
+			num_swaps += left;
 		}
 	}
 	else
@@ -102,7 +104,7 @@ reverse_block(size_t * restrict pa, size_t * restrict pe)
 } // reverse_block
 
 
-static void
+static inline void
 swap_block(size_t * restrict pa, size_t * restrict pe, size_t * restrict pb)
 {
 	for ( ; pa < pe; pa++, pb++)
@@ -135,7 +137,7 @@ single_down(size_t *pa, size_t *pe)
 
 #if 0
 
-#if 0
+#if 1
 // Half Reverse Rotate
 void
 rotate_block(size_t *pa, size_t *pb, size_t *pe)
@@ -189,34 +191,63 @@ rotate_block(size_t *pa, size_t *pb, size_t *pe)
 static void
 rotate_block(size_t *pa, size_t *pb, size_t *pe)
 {
+	size_t	na = pb - pa, nb = pe - pb;
+
 	// Handle empty list possibilities
-	if ((pa == pb) || (pb == pe))
+	if (!na || !nb)
 		return;
 
-	for (;;) {
-		// Just bubble single items, either up...
-		if ((pa + 1) == pb)
-			return single_up(pa, pe);
+	if (na < 8 || nb < 8)
+	{
+		size_t swap[7];
 
-		// ...or down
-		if ((pb + 1) == pe)
-			return single_down(pb, pa);
-
-		// Roll all of PA->PB up as far as we can until it doesn't fit
-		for (size_t bs = pb - pa; bs <= (pe - pb); pa += bs, pb += bs)
-			swap_block(pa, pb, pb);
-
-		// Check if it was a perfect fit
-		if (pb < pe) {
-			// Okay, so what's in A doesn't fit.  Swap a B sized
-			// portion at the end of A, with B, and reloop
-			size_t	*sp = pb - (pe - pb);
-			swap_block(sp, pb, pb);
-			pe = pb;
-			pb = sp;
-		} else
-			return;
+		if (na < 8)
+		{
+			memcpy(swap, pa, na * sizeof(size_t));
+			memmove(pa, pa + na, nb * sizeof(size_t));
+			memcpy(pa + nb, swap, na * sizeof(size_t));
+			num_swaps += nb;
+		}
+		else
+		{
+			memcpy(swap, pa + na, nb * sizeof(size_t));
+			memmove(pa + nb, pa, na * sizeof(size_t));
+			memcpy(pa, swap, nb * sizeof(size_t));
+			num_swaps += na;
+		}
+		return;
 	}
+
+	while (na > 1) {
+		// Roll all of PA->PB up as far as we can until it doesn't fit
+		while (na <= nb) {
+			swap_block(pa, pb, pb);
+			pa = pb;
+			pb += na;
+			nb -= na;
+		}
+
+		if (nb < 2)
+			break;
+
+		// Okay, so what's in A doesn't fit.  Swap a B sized
+		// portion at the end of A, with B, and reloop
+		while (nb <= na) {
+			size_t	*sp = pb - nb;
+			swap_block(sp, pb, pb);
+			pb = sp;
+			na -= nb;
+		}
+	}
+
+	// Just bubble single items, either up...
+	// pe == pb + nb
+	if (na == 1)
+		return single_up(pa, pb + nb);
+
+	// ...or down
+	if (nb == 1)
+		return single_down(pb, pa);
 } // rotate_block
 
 #else
@@ -225,42 +256,53 @@ rotate_block(size_t *pa, size_t *pb, size_t *pe)
 static void
 rotate_block(size_t *a, size_t *b, size_t *e)
 {
-	size_t	na = b - a, nb = e - b;
+	size_t	na = b - a, nb = e - b, off;
 
-	// Handle empty list possibilities
-	if ((a == b) || (b == e))
+	if (na < 8 || nb < 8)
+	{
+		size_t swap[7];
+
+		if (na < 8)
+		{
+			memcpy(swap, a, na * sizeof(size_t));
+			memmove(a, a + na, nb * sizeof(size_t));
+			memcpy(a + nb, swap, na * sizeof(size_t));
+			num_swaps += nb;
+		}
+		else
+		{
+			memcpy(swap, a + na, nb * sizeof(size_t));
+			memmove(a + nb, a, na * sizeof(size_t));
+			memcpy(a, swap, nb * sizeof(size_t));
+			num_swaps += na;
+		}
 		return;
+	}
 
-	for (;;) {
+	int	flag = (na > 1) & (nb > 1);
+
+	while (flag) {
 		if (na >= nb) {
-			if (nb > 1) {
-				// s = source, d = destination.  Not that
-				// source and dest makes sense when swapping
-				swap_block(b, e, a);
-				a += nb;
-				na = b - a;
-				if (!na)
-					return;
-			} else {
-				// Just bubble single items.
-				// Going down!
-				return single_down(b, a);
-			}
+			// s = source, d = destination.  Not that
+			// source and dest makes sense when swapping
+			swap_block(b, e, a);
+			na -= nb;
+			flag &= (na > 1);
+			a = a + nb;
 		} else {
-			if (na > 1) {
-				// na < nb
-				swap_block(a + nb, e, a);
-				e -= na;
-				nb = e - b;
-				if (!nb)
-					return;
-			} else {
-				// Just bubble single items.
-				// Going up!
-				return single_up(a, e);
-			}
+			// na < nb
+			swap_block(a + nb, e, a);
+			nb -= na;
+			flag &= (nb > 1);
+			e = b + nb;
 		}
 	}
+
+	if (na == 1)
+		return single_up(a, e);
+
+	if (nb == 1)
+		return single_down(b, a);
 } // rotate_block
 #endif
 #endif
@@ -270,7 +312,7 @@ int
 main()
 {
 	struct	timespec start, end;
-	size_t	SZ = 1000000;
+	size_t	SZ = 200;
 	size_t	*a;
 
 	a = malloc(sizeof(*a) * SZ);
@@ -283,12 +325,14 @@ main()
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
 
-	for (size_t i = 1; i < SZ; i++)
-#if 1
-		trinity_rotation(a, i, SZ - i);
+	for (size_t j = 0; j < 10000000; j++) {
+		for (size_t i = 1; i < SZ; i++)
+#if 0
+			trinity_rotation(a, i, SZ - i);
 #else
-		rotate_block(a, a + i, a + SZ);
+			rotate_block(a, a + i, a + SZ);
 #endif
+	}
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
 

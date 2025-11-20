@@ -69,36 +69,62 @@ NAME(single_down)(VAR *pa, VAR *pe, size_t es)
 static void
 NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
-        // Handle empty list possibilities
-        if ((pa == pb) || (pb == pe))
-                return;
+	size_t  na = NITEM(pb - pa), nb = NITEM(pe - pb);
 
-	assert(pa < pb);
-	assert(pb < pe);
-        for (;;) {
-                // Just bubble single items, either up...
-                if ((pb - pa) == ES)
-                        return CALL(single_up)(pa, pe, es);
+	// Handle empty list possibilities
+	if (!na || !nb)
+		return;
 
-                // ...or down
-                if ((pe - pb) == ES)
-                        return CALL(single_down)(pb, pa, es);
+#if (LOW_STACK == 0)
+	if (na < 8 || nb < 8)
+	{
+		VAR swap[7 * ES];
 
-                // Roll all of PA->PB up as far as we can until it doesn't fit
-                for (size_t bs = pb - pa; bs <= (pe - pb); pa += bs, pb += bs)
-                        CALL(swap_block)(pa, pb, pb, es);
+		if (na < 8)
+		{
+			memcpy(swap, pa, na * sizeof(VAR));
+			memmove(pa, pa + na, nb * sizeof(VAR));
+			memcpy(pa + nb, swap, na * sizeof(VAR));
+		}
+		else
+		{
+			memcpy(swap, pa + na, nb * sizeof(VAR));
+			memmove(pa + nb, pa, na * sizeof(VAR));
+			memcpy(pa, swap, nb * sizeof(VAR));
+		}
+		return;
+	}
+#endif
+	for (;;) {
+		// Roll all of PA->PB up as far as we can until it doesn't fit
+		if (na < 2) {
+			if (na == 1)
+				CALL(single_up)(pa, pb + (nb * ES), es);
+			return;
+		}
 
-                // Check if it was a perfect fit
-                if (pb < pe) {
-                        // Okay, so what's in A doesn't fit.  Swap a B sized
-                        // portion at the end of A, with B, and reloop
-                        VAR  *sp = pb - (pe - pb);
-                        CALL(swap_block)(sp, pb, pb, es);
-                        pe = pb;
-                        pb = sp;
-                } else
-                        return;
-        }
+		while (na <= nb) {
+			CALL(swap_block)(pa, pb, pb, es);
+			pa = pb;
+			pb += (na * ES);
+			nb -= na;
+		}
+
+		// Okay, so what's in A doesn't fit.  Swap a B sized
+		// portion at the end of A, with B, and reloop
+		if (nb < 2) {
+			if (nb == 1)
+				CALL(single_down)(pb, pa, es);
+			return;
+		}
+
+		while (nb <= na) {
+			VAR  *sp = pb - (nb * ES);
+			CALL(swap_block)(sp, pb, pb, es);
+			pb = sp;
+			na -= (nb * ES);
+		}
+	}
 } // rotate_block
 
 
