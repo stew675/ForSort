@@ -1,0 +1,31 @@
+1 2 3 4  5 6 7 8 9 0
+
+Reverse larger
+swap smaller into position
+reverse overlap portion of larger
+reverse reverse non-
+
+1 2 3 4  0 9 8 7 6 5
+
+8 7 6 5  0 9 1 2 3 4
+
+5 6 7 8  9 0 1 2 3 4
+
+
+1 2 3 4  5 6 7 8 9 0
+
+1 2 3    0 9 8 7 6 5 4		3
+
+6 5 4    0 9 8 7 1 2 3		3
+
+4 5 6    7 8 9 0 1 2 3          1 + 2
+
+
+reverse larger
+linear swap smaller with end of larger
+reverse non-overlapping portion of larger
+reverse overlapping portion of larger
+
+1 2 3   4 5 6 7 8 9 0
+
+8 9 0   4 5 6 7 1 2 3
