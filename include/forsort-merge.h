@@ -37,115 +37,69 @@
 #define SPRINT_ACTIVATE         7
 #define SPRINT_EXIT_PENALTY     2
 
-#if 0
-// Gries-Mills block rotate
+static void
+NAME(single_up)(VAR *pa, VAR *pe, size_t es)
+{
+        VAR  *pb = pa + ES;
+
+        while (pb < pe) {
+                SWAP(pa, pb);
+                pa = pb;
+                pb += ES;
+        }
+}
+
+
+static void
+NAME(single_down)(VAR *pa, VAR *pe, size_t es)
+{
+        VAR  *pb = pa - ES;
+
+        while (pa > pe) {
+                SWAP(pa, pb);
+                pa = pb;
+                pb -= ES;
+        }
+}
+
+
+// I looked at shift_merge_in_place() and though that a block rotate should
+// look just like that, just without the comparisons.  This is that.
+// In concept it's basically Gries-Mills, just expressed differently
 static void
 NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
-	VAR	*sp, *tp;
+        // Handle empty list possibilities
+        if ((pa == pb) || (pb == pe))
+                return;
 
-	// Assert on bad entry conditions.  Caller is doing
-	// something wrong, and we're the canary that dies
-	ASSERT(pa <= pb);
-	ASSERT(pb <= pe);
+	assert(pa < pb);
+	assert(pb < pe);
+        for (;;) {
+                // Just bubble single items, either up...
+                if ((pb - pa) == ES)
+                        return CALL(single_up)(pa, pe, es);
 
-	// Handle empty list possibilities
-	if ((pa == pb) || (pb == pe))
-		return;
+                // ...or down
+                if ((pe - pb) == ES)
+                        return CALL(single_down)(pb, pa, es);
 
-rotate_again:
-	// Just bubble single items, either up...
-	if ((pa + ES) == pb) {
-		do {
-			SWAP(pa, pb);
-			pa = pb;
-			pb += ES;
-		} while (pb < pe);
-		return;
-	}
-	// ...or down
-	if ((pb + ES) == pe) {
-		do {
-			pe = pb;
-			pb -= ES;
-			SWAP(pb, pe);
-		} while (pb > pa);
-		return;
-	}
+                // Roll all of PA->PB up as far as we can until it doesn't fit
+                for (size_t bs = pb - pa; bs <= (pe - pb); pa += bs, pb += bs)
+                        CALL(swap_block)(pa, pb, pb, es);
 
-	// Roll all of PA->PB up as far as we can until it
-	// doesn't fit
-	while ((pb - pa) <= (pe - pb)) {
-		tp = pb;
-		do {
-			SWAP(pa, pb);
-			pa += ES;
-			pb += ES;
-		} while (pa < tp);
-	}
-
-	// Check if it was a perfect fit
-	if (pb == pe)
-		return;
-
-	// Okay, so what's in A doesn't fit.  Swap a B sized
-	// portion at the end of A, with B, and reloop
-	sp = pb - (pe - pb);	// Start of section of A to swap
-	pe = pb;		// pb will become our new pe
-	tp = sp;		// Record where the split was
-	do {
-		SWAP(sp, pb);
-		sp += ES;
-		pb += ES;
-	} while (sp < pe);
-	pb = tp;		// What was sp becomes our new pb
-	goto rotate_again;
+                // Check if it was a perfect fit
+                if (pb < pe) {
+                        // Okay, so what's in A doesn't fit.  Swap a B sized
+                        // portion at the end of A, with B, and reloop
+                        VAR  *sp = pb - (pe - pb);
+                        CALL(swap_block)(sp, pb, pb, es);
+                        pe = pb;
+                        pb = sp;
+                } else
+                        return;
+        }
 } // rotate_block
-#else
-// Gries-Mills inspired Block Rotation
-static void
-NAME(rotate_block)(VAR *a, VAR *b, VAR *e, size_t es)
-{
-	size_t	gapa = b - a, gapb = e - b;
-	while (gapa && gapb) {
-		// Just bubble single items, either up...
-		if (gapa == ES) {
-			do {
-				SWAP(a, b);
-				a = b;
-				b += ES;
-			} while (b < e);
-			return;
-		}
-
-		// ...or down
-		if (gapb == ES) {
-			do {
-				e = b;
-				b -= ES;
-				SWAP(b, e);
-			} while (b > a);
-			return;
-		}
-
-		if (gapa >= gapb) {
-			// s = source, d = destination
-			// (Not that source and dest make sense when swapping)
-			for (VAR *s = b, *d = a; s != e; s += ES, d += ES)
-				SWAP(s, d);
-			a += gapb;
-			gapa = b - a;
-			continue;
-		}
-
-		// gapa < gapb
-		for (VAR *s = a, *d = a + gapb; d != e; s += ES, d += ES)
-			SWAP(s, d);
-		e -= gapa;
-		gapb = e - b;
-	}
-} // rotate_block
-#endif
 
 
 // Giving credit where it's due.  All this sprint-left/right, merge-left/right

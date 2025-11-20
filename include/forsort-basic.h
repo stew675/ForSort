@@ -84,15 +84,12 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
 } // insertion_merge_in_place
 #endif
 
-static void __attribute__((noinline))
+
+static void
 NAME(swap_block)(VAR * restrict pa, VAR * restrict pe, VAR * restrict pb, size_t es)
 {
-	ASSERT(pa <= pe);
-	while (pa < pe) {
-		SWAP(pa, pb);
-		pa += ES;
-		pb += ES;
-	}
+        for ( ; pa < pe; pa += ES, pb += ES)
+                SWAP(pa, pb);
 } // swap_block
 
 
