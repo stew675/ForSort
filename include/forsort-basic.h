@@ -85,7 +85,7 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
 #endif
 
 static void __attribute__((noinline))
-NAME(block_swap)(VAR * restrict pa, VAR * restrict pe, VAR * restrict pb, size_t es)
+NAME(swap_block)(VAR * restrict pa, VAR * restrict pe, VAR * restrict pb, size_t es)
 {
 	ASSERT(pa <= pe);
 	while (pa < pe) {
@@ -93,7 +93,7 @@ NAME(block_swap)(VAR * restrict pa, VAR * restrict pe, VAR * restrict pb, size_t
 		pa += ES;
 		pb += ES;
 	}
-} // block_swap
+} // swap_block
 
 
 // Assumes initial condition that *PA < *(PA - ES)
@@ -237,7 +237,7 @@ split_again:
 
 	// Advance the PA->PB block up as far as we can
 	for (VAR *rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, pb, es);
+		CALL(swap_block)(pa, pb, pb, es);
 		pa += bs;  pb += bs;
 	}
 
@@ -307,7 +307,7 @@ reverse_again:
 
 	// Shift entirety of PB->PE down as far as we can
 	for (sp = pb - bs; sp >= pa && IS_LT(pe - ES, sp); sp -= bs) {
-		CALL(block_swap)(sp, pb, pb, es);
+		CALL(swap_block)(sp, pb, pb, es);
 		pb -= bs;  pe -= bs;
 	}
 
@@ -421,7 +421,7 @@ shift_again:
 
 	// Shift entirety of PA->PB up as far as we can
 	for (rp = pb + bs; (rp <= pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(block_swap)(pa, pb, pb, es);
+		CALL(swap_block)(pa, pb, pb, es);
 		pa += bs;
 		pb += bs;
 	}
@@ -464,7 +464,7 @@ shift_again:
 	rp = pb + (pb - sp);
 
 	// Do a single block swap from the split point.  I don't know why but
-	// the compiler optimiser REALLY doesn't like us calling block_swap here
+	// the compiler optimiser REALLY doesn't like us calling swap_block here
 	for (VAR *ta = sp, *tb = pb; ta != pb; ta += ES, tb += ES)
 		SWAP(ta, tb);
 
@@ -586,13 +586,16 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 
 
 // Breaking this out into a separate function appears to help the C optimizer
+// Reverse from start -> (end - ES)
 static void
-NAME(reverse_block)(VAR * restrict start, VAR * restrict end, size_t es)
+NAME(reverse_block)(VAR * restrict pa, VAR * restrict pe, size_t es)
 {
-	while (start < end) {
-		SWAP(start, end);
-		end -= ES;
-		start += ES;
+	while (true) {
+		pe -= ES;
+		if (pa >= pe)
+			return;
+		SWAP(pa, pe);
+		pa += ES;
 	}
 } // reverse_block
 
@@ -633,8 +636,7 @@ NAME(process_ascending)(VAR *pa, VAR *pe, COMMON_PARAMS)
 static size_t
 NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
-	VAR	*pe = pa + (n * ES), *curr = pa;
-	VAR	*start, *end;
+	VAR	*pe = pa + (n * ES), *curr = pa, *start;
 	size_t	reversals = 0;
 
 	// I learned a lesson here.  Break out tight loops into their own
@@ -644,11 +646,10 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		curr = CALL(process_ascending)(curr, pe, COMMON_ARGS);
 		if (curr == pe)
 			return reversals;
-		start = curr - ES;
+		start = curr;
 		curr = CALL(process_descending)(curr, pe, COMMON_ARGS);
-		end = curr - ES;
-		reversals += NITEM(end - start);
-		CALL(reverse_block)(start, end, es);
+		reversals += NITEM(curr - start);
+		CALL(reverse_block)(start - ES, curr, es);
 	}
 	return reversals;
 } // dereverse

@@ -93,9 +93,9 @@ NAME(extract_unique_sub)(VAR * const a, VAR * const pe, VAR *ph, COMMON_PARAMS)
 		// pa now points at the last item of the duplicate run
 		// Roll the duplicates down
 		if ((pa - dp) > ES) {
-			// Multiple duplicates. block_rotate them into position
+			// Multiple duplicates. rotate_block them into position
 			if (dp > pu)
-				CALL(block_rotate)(pu, dp, pa, es);
+				CALL(rotate_block)(pu, dp, pa, es);
 			pu += (pa - dp);
 		} else {
 			// Single item, just bubble it down
@@ -110,7 +110,7 @@ NAME(extract_unique_sub)(VAR * const a, VAR * const pe, VAR *ph, COMMON_PARAMS)
 
 	if (ph < pe) {
 		// Everything (ph - es) to (pe - es) is a duplicate
-		CALL(block_rotate)(pu, ph - ES, pe - ES, es);
+		CALL(rotate_block)(pu, ph - ES, pe - ES, es);
 		pu += (pe - ph);
 	}
 
@@ -167,7 +167,7 @@ NAME(extract_uniques)(VAR * const a, const size_t n, VAR *hints, COMMON_PARAMS)
 
 	// Coalesce non-uniques together
 	if (bpu > pb) {
-		CALL(block_rotate)(apu, pb, bpu, es);
+		CALL(rotate_block)(apu, pb, bpu, es);
 	}
 	pb = apu + (bpu - pb);
 

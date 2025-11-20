@@ -37,29 +37,115 @@
 #define SPRINT_ACTIVATE         7
 #define SPRINT_EXIT_PENALTY     2
 
-// Swaps two contiguous blocks of differing lengths in place efficiently
-// Basically my version of the well known Block Rotate() functionality
-// that avoids the use of explicit, or implicit, division or multiplication
+#if 0
+// Gries-Mills block rotate
 static void
-NAME(block_rotate)(VAR *a, VAR *b, VAR *e, size_t es)
+NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
+{
+	VAR	*sp, *tp;
+
+	// Assert on bad entry conditions.  Caller is doing
+	// something wrong, and we're the canary that dies
+	ASSERT(pa <= pb);
+	ASSERT(pb <= pe);
+
+	// Handle empty list possibilities
+	if ((pa == pb) || (pb == pe))
+		return;
+
+rotate_again:
+	// Just bubble single items, either up...
+	if ((pa + ES) == pb) {
+		do {
+			SWAP(pa, pb);
+			pa = pb;
+			pb += ES;
+		} while (pb < pe);
+		return;
+	}
+	// ...or down
+	if ((pb + ES) == pe) {
+		do {
+			pe = pb;
+			pb -= ES;
+			SWAP(pb, pe);
+		} while (pb > pa);
+		return;
+	}
+
+	// Roll all of PA->PB up as far as we can until it
+	// doesn't fit
+	while ((pb - pa) <= (pe - pb)) {
+		tp = pb;
+		do {
+			SWAP(pa, pb);
+			pa += ES;
+			pb += ES;
+		} while (pa < tp);
+	}
+
+	// Check if it was a perfect fit
+	if (pb == pe)
+		return;
+
+	// Okay, so what's in A doesn't fit.  Swap a B sized
+	// portion at the end of A, with B, and reloop
+	sp = pb - (pe - pb);	// Start of section of A to swap
+	pe = pb;		// pb will become our new pe
+	tp = sp;		// Record where the split was
+	do {
+		SWAP(sp, pb);
+		sp += ES;
+		pb += ES;
+	} while (sp < pe);
+	pb = tp;		// What was sp becomes our new pb
+	goto rotate_again;
+} // rotate_block
+#else
+// Gries-Mills inspired Block Rotation
+static void
+NAME(rotate_block)(VAR *a, VAR *b, VAR *e, size_t es)
 {
 	size_t	gapa = b - a, gapb = e - b;
 	while (gapa && gapb) {
-		if (gapa < gapb) {
+		// Just bubble single items, either up...
+		if (gapa == ES) {
+			do {
+				SWAP(a, b);
+				a = b;
+				b += ES;
+			} while (b < e);
+			return;
+		}
+
+		// ...or down
+		if (gapb == ES) {
+			do {
+				e = b;
+				b -= ES;
+				SWAP(b, e);
+			} while (b > a);
+			return;
+		}
+
+		if (gapa >= gapb) {
 			// s = source, d = destination
 			// (Not that source and dest make sense when swapping)
-			for (VAR *s = a, *d = a + gapb; d != e; s += ES, d += ES)
-				SWAP(s, d);
-			e -= gapa;
-			gapb = e - b;
-		} else {
 			for (VAR *s = b, *d = a; s != e; s += ES, d += ES)
 				SWAP(s, d);
 			a += gapb;
 			gapa = b - a;
+			continue;
 		}
+
+		// gapa < gapb
+		for (VAR *s = a, *d = a + gapb; d != e; s += ES, d += ES)
+			SWAP(s, d);
+		e -= gapa;
+		gapb = e - b;
 	}
-} // block_rotate
+} // rotate_block
+#endif
 
 
 // Giving credit where it's due.  All this sprint-left/right, merge-left/right
@@ -496,7 +582,7 @@ NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
 
 		// Rotate the part of A that doesn't fit into the workspace
 		// with everything in B that is less than where we split A at
-		CALL(block_rotate)(pb, rp, sp, es);
+		CALL(rotate_block)(pb, rp, sp, es);
 
 		// Adjust the rotation pointer after the rotate and fix up sizes
 		rp = pb + (sp - rp);
