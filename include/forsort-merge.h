@@ -63,6 +63,34 @@ NAME(single_down)(VAR *pa, VAR *pe, size_t es)
 }
 
 
+static void
+NAME(reverse_rotate)(VAR *pa, VAR *pb, VAR *pe, size_t es)
+{
+#if 0
+	size_t  na = NITEM(pb - pa), nb = NITEM(pe - pb);
+
+	if (na == nb)
+		return CALL(swap_block)(pa, pb, pb, es);
+
+	if (na > nb) {
+		CALL(reverse_block)(pa, pb, es);
+		CALL(reverse_block)(pa, pa + nb, es);
+		CALL(reverse_block)(pa + nb, pb, es);
+		CALL(swap_block)(pa, pa + nb, pb, es);
+	} else {
+		CALL(reverse_block)(pb, pe, es);
+		CALL(reverse_block)(pb, pe - na, es);
+		CALL(reverse_block)(pe - na, pe, es);
+		CALL(swap_block)(pa, pb, pe - na, es);
+	}
+#else
+	CALL(reverse_block)(pa, pb, es);
+	CALL(reverse_block)(pb, pe, es);
+	CALL(reverse_block)(pa, pe, es);
+#endif
+} // reverse_rotate
+
+
 // I looked at shift_merge_in_place() and though that a block rotate should
 // look just like that, just without the comparisons.  This is that.
 // In concept it's basically Gries-Mills, just expressed differently
@@ -75,26 +103,10 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 	if (!na || !nb)
 		return;
 
-#if (LOW_STACK == 0)
-	if (na < 8 || nb < 8)
-	{
-		VAR swap[7 * ES];
+	// Triple reverse faster for small sets
+	if ((na <= 16) && (nb <= 16))
+		return CALL(reverse_rotate)(pa, pb, pe, es);
 
-		if (na < 8)
-		{
-			memcpy(swap, pa, na * sizeof(VAR));
-			memmove(pa, pa + na, nb * sizeof(VAR));
-			memcpy(pa + nb, swap, na * sizeof(VAR));
-		}
-		else
-		{
-			memcpy(swap, pa + na, nb * sizeof(VAR));
-			memmove(pa + nb, pa, na * sizeof(VAR));
-			memcpy(pa, swap, nb * sizeof(VAR));
-		}
-		return;
-	}
-#endif
 	for (;;) {
 		// Roll all of PA->PB up as far as we can until it doesn't fit
 		if (na < 2) {
