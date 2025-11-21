@@ -66,7 +66,7 @@ NAME(single_down)(VAR *pa, VAR *pe, size_t es)
 static void
 NAME(reverse_rotate)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
-#if 0
+#if 1
 	size_t  na = NITEM(pb - pa), nb = NITEM(pe - pb);
 
 	if (na == nb)
@@ -104,7 +104,10 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 		return;
 
 	// Triple reverse faster for small sets
-	if ((na <= 16) && (nb <= 16))
+	if ((na <= 16) && (nb <= 128))
+		return CALL(reverse_rotate)(pa, pb, pe, es);
+
+	if ((nb <= 16) && (na <= 128))
 		return CALL(reverse_rotate)(pa, pb, pe, es);
 
 	for (;;) {

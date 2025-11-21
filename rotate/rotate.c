@@ -17,8 +17,10 @@ size_t	num_swaps = 0;
 		num_swaps++;		\
 	}
 #if 1
+
 void trinity_rotation(size_t *array, size_t left, size_t right)
 {
+#if 0
 	if (left < 8 || right < 8)
 	{
 		size_t swap[7];
@@ -39,6 +41,7 @@ void trinity_rotation(size_t *array, size_t left, size_t right)
 		}
 	}
 	else
+#endif
 	{
 		size_t *pta, *ptb, *ptc, *ptd, swap;
 		size_t loop;
@@ -135,18 +138,11 @@ single_down(size_t *pa, size_t *pe)
 	}
 }
 
-#if 0
-
-#if 1
 // Half Reverse Rotate
 void
-rotate_block(size_t *pa, size_t *pb, size_t *pe)
+half_reverse_rotate(size_t *pa, size_t *pb, size_t *pe)
 {
-	size_t	na = pb - pa;
-	size_t	nb = pe - pb;
-
-	if ((pa >= pb) || (pb >= pe))
-		return;
+	size_t	na = pb - pa, nb = pe - pb;
 
 	if (na == nb)
 		return swap_block(pa, pb, pb);
@@ -164,26 +160,16 @@ rotate_block(size_t *pa, size_t *pb, size_t *pe)
 	}
 }
 
-#else
-
 // Classic triple-reverse rotate
 void
-rotate_block(size_t *pa, size_t *pb, size_t *pe)
+reverse_rotate(size_t *pa, size_t *pb, size_t *pe)
 {
-	size_t	na = pb - pa;
-	size_t	nb = pe - pb;
-
-	if ((pa >= pb) || (pb >= pe))
-		return;
+	size_t	na = pb - pa, nb = pe - pb;
 
 	reverse_block(pa, pb);
 	reverse_block(pb, pe);
 	reverse_block(pa, pe);
 } // rotate_block
-
-#endif
-
-#else
 
 #if 1
 // A Gries-Mills inspired block rotate.  I notice that
@@ -196,7 +182,12 @@ rotate_block(size_t *pa, size_t *pb, size_t *pe)
 	// Handle empty list possibilities
 	if (!na || !nb)
 		return;
-
+#if 1
+	if ((na <= 12) && (nb <= 100))
+		return half_reverse_rotate(pa, pb, pe);
+	if ((nb <= 12) && (na <= 100))
+		return half_reverse_rotate(pa, pb, pe);
+#else
 	if (na < 8 || nb < 8)
 	{
 		size_t swap[7];
@@ -217,9 +208,15 @@ rotate_block(size_t *pa, size_t *pb, size_t *pe)
 		}
 		return;
 	}
-
-	while (na > 1) {
+#endif
+	for (;;) {
 		// Roll all of PA->PB up as far as we can until it doesn't fit
+		if (na < 2) {
+			if (na == 1)
+				single_up(pa, pb + nb);
+			return;
+		}
+
 		while (na <= nb) {
 			swap_block(pa, pb, pb);
 			pa = pb;
@@ -227,8 +224,11 @@ rotate_block(size_t *pa, size_t *pb, size_t *pe)
 			nb -= na;
 		}
 
-		if (nb < 2)
-			break;
+		if (nb < 2) {
+			if (nb == 1)
+				single_down(pb, pa);
+			return;
+		}
 
 		// Okay, so what's in A doesn't fit.  Swap a B sized
 		// portion at the end of A, with B, and reloop
@@ -239,15 +239,6 @@ rotate_block(size_t *pa, size_t *pb, size_t *pe)
 			na -= nb;
 		}
 	}
-
-	// Just bubble single items, either up...
-	// pe == pb + nb
-	if (na == 1)
-		return single_up(pa, pb + nb);
-
-	// ...or down
-	if (nb == 1)
-		return single_down(pb, pa);
 } // rotate_block
 
 #else
@@ -305,14 +296,14 @@ rotate_block(size_t *a, size_t *b, size_t *e)
 		return single_down(b, a);
 } // rotate_block
 #endif
-#endif
 
 
+#define MAX 100000000
 int
 main()
 {
 	struct	timespec start, end;
-	size_t	SZ = 200;
+	size_t	SZ = 2000;
 	size_t	*a;
 
 	a = malloc(sizeof(*a) * SZ);
@@ -325,13 +316,16 @@ main()
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
 
-	for (size_t j = 0; j < 10000000; j++) {
-		for (size_t i = 1; i < SZ; i++)
-#if 0
+	size_t	stop = MAX / SZ;
+
+	for (size_t j = 0; j < stop; j++) {
+		for (size_t i = 1; i < SZ; i++) {
+#if 1
 			trinity_rotation(a, i, SZ - i);
 #else
 			rotate_block(a, a + i, a + SZ);
 #endif
+		}
 	}
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
