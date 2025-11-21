@@ -63,6 +63,83 @@ NAME(single_down)(VAR *pa, VAR *pe, size_t es)
 }
 
 
+#if 1
+
+// Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
+static void
+NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
+		        VAR * restrict pb, VAR * restrict pc, size_t es)
+{
+	while (pa < pe) {
+		SWAP(pa, pb);
+		SWAP(pb, pc);
+		pc += ES;
+		pb += ES;
+		pa += ES;
+	}
+} // three_way_swap_block
+
+// This is kind of like a blend of both versions of Gries-Mills
+// It tries to eliminate two sets of the smaller block size per cycle
+// while also keeping the CPU cache warm.  When both blocks are even
+// in size, it does behave the second Gries-Mills variant.  When the
+// blocks are vastly different in size, it's basically collapsing the
+// array from both ends at once and in doing so, keeps the cache warm
+// for every cycle
+static void
+NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
+{
+	size_t  na = NITEM(pb - pa), nb = NITEM(pe - pb);
+
+	for (;;) {
+		if (na <= nb) {
+			size_t	bs = pb - pa;
+
+			if (na < 2) {
+				if (na == 1)
+					CALL(single_up)(pa, pb + (nb * ES), es);
+				return;
+			}
+			if ((nb - na) < na) {
+				// Overflow scenario
+				CALL(swap_block)(pa, pb, pe - bs, es);
+				pe -= bs;
+				nb -= na;
+			} else {
+				// Remainder scenario
+				CALL(three_way_swap_block)(pa, pb, pb, pe - bs, es);
+				pa = pb;
+				pb += bs;
+				pe -= bs;
+				nb -= (na + na);
+			}
+		} else {
+			size_t	bs = pe - pb;
+
+			if (nb < 2) {
+				if (nb == 1)
+					CALL(single_down)(pb, pa, es);
+				return;
+			}
+			if ((na - nb) < nb) {
+				// Overflow scenario
+				CALL(swap_block)(pb, pe, pa, es);
+				pa += bs;
+				na -= nb;
+			} else {
+				// Remainder scenario
+				CALL(three_way_swap_block)(pb, pe, pb - bs, pa, es);
+				pe = pb;
+				pb -= bs;
+				pa += bs;
+				na -= (nb + nb);
+			}
+		}
+	}
+} // rotate_block
+
+#else
+
 static void
 NAME(partial_reverse_rotate)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
@@ -138,7 +215,7 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 		}
 	}
 } // rotate_block
-
+#endif
 
 // Giving credit where it's due.  All this sprint-left/right, merge-left/right
 // stuff is heavily influenced by TimSort.  I'd already implemented something
