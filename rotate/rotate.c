@@ -9,95 +9,185 @@
 
 size_t	num_swaps = 0;
 
+#if 0
 #define SWAP(_a_, _b_)			\
 	{				\
-		size_t t = *(_a_);	\
+		size_t xa = *(_a_);	\
 		*(_a_) = *(_b_);	\
-		*(_b_) = t;		\
-		num_swaps++;		\
+		*(_b_) = xa;		\
 	}
-#if 1
+#else
+
+#define SWAP(_a_, _b_)			\
+	{				\
+		size_t xa = *(_a_);	\
+		size_t xb = *(_b_);	\
+		*(_a_) = xb;		\
+		*(_b_) = xa;		\
+	}
+
+//		num_swaps++;		\
+
+#endif
+
+#if 0
+#define ROT3L(_a_, _b_, _c_)		\
+	{				\
+		size_t xa = *(_a_);	\
+		*(_a_) = *(_b_);	\
+		*(_b_) = *(_c_);	\
+		*(_c_) = xa;		\
+	}
+
+#else
+
+#define ROT3L(_a_, _b_, _c_)		\
+	{				\
+		size_t xa = *(_a_);	\
+		size_t xb = *(_b_);	\
+		size_t xc = *(_c_);	\
+		*(_a_) = xb;		\
+		*(_b_) = xc;		\
+		*(_c_) = xa;		\
+	}
+
+//		num_swaps += 2;		\
+
+#endif
+
+
+#define MAX_AUX 8
 
 void trinity_rotation(size_t *array, size_t left, size_t right)
 {
-#if 0
-	if (left < 8 || right < 8)
-	{
-		size_t swap[7];
+	size_t *pta, *ptb, *ptc, *ptd, swap[MAX_AUX];
+	size_t loop;
 
-		if (left < 8)
+	if (left < right)
+	{
+		if (left <= MAX_AUX)
 		{
 			memcpy(swap, array, left * sizeof(size_t));
 			memmove(array, array + left, right * sizeof(size_t));
 			memcpy(array + right, swap, left * sizeof(size_t));
-			num_swaps += right;
 		}
 		else
+		{
+			pta = array;
+			ptb = pta + left;
+
+			loop = right - left;
+
+			if (loop <= MAX_AUX && loop > 3)
+			{
+				ptc = pta + right;
+				ptd = ptc + left;
+
+				memcpy(swap, ptb, loop * sizeof(size_t));
+
+				while (left--)
+				{
+					*--ptc = *--ptd; *ptd = *--ptb;
+				}
+				memcpy(pta, swap, loop * sizeof(size_t));
+			}
+			else
+			{
+				ptc = ptb;
+				ptd = ptc + right;
+
+				loop = left / 2;
+
+				while (loop--)
+				{
+					*swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = *swap;
+				}
+
+				loop = (ptd - ptc) / 2;
+
+				while (loop--)
+				{
+					*swap = *ptc; *ptc++ = *--ptd; *ptd = *pta; *pta++ = *swap;
+				}
+
+				loop = (ptd - pta) / 2;
+
+				while (loop--)
+				{
+					*swap = *pta; *pta++ = *--ptd; *ptd = *swap;
+				}
+			}
+		}
+	}
+	else if (right < left)
+	{
+		if (right <= MAX_AUX)
 		{
 			memcpy(swap, array + left, right * sizeof(size_t));
 			memmove(array + right, array, left * sizeof(size_t));
 			memcpy(array, swap, right * sizeof(size_t));
-			num_swaps += left;
-		}
-	}
-	else
-#endif
-	{
-		size_t *pta, *ptb, *ptc, *ptd, swap;
-		size_t loop;
-
-		pta = array;
-		ptb = pta + left;
-		ptc = ptb;
-		ptd = ptc + right;
-
-		if (left >= right)
-		{
-			loop = right / 2;
-
-			while (loop--)
-			{
-				swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
-				num_swaps += 3;
-			}
-
-			loop = (ptb - pta) / 2;
-
-			while (loop--)
-			{
-				swap = *--ptb; *ptb = *pta; *pta++ = *--ptd; *ptd = swap;
-				num_swaps += 2;
-			}
 		}
 		else
 		{
-			loop = left / 2;
+			pta = array;
+			ptb = pta + left;
 
-			while (loop--)
+			loop = left - right;
+
+			if (loop <= MAX_AUX && loop > 3)
 			{
-				swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
-				num_swaps += 3;
+				ptc = pta + right;
+				ptd = ptc + left;
+
+				memcpy(swap, ptc, loop * sizeof(size_t));
+
+				while (right--)
+				{
+					*ptc++ = *pta; *pta++ = *ptb++;
+				}
+				memcpy(ptd - loop, swap, loop * sizeof(size_t));
 			}
-
-			loop = (ptd - ptc) / 2;
-
-			while (loop--)
+			else
 			{
-				swap = *ptc; *ptc++ = *--ptd; *ptd = *pta; *pta++ = swap;
-				num_swaps += 2;
+				ptc = ptb;
+				ptd = ptc + right;
+
+				loop = right / 2;
+
+				while (loop--)
+				{
+					*swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = *swap;
+				}
+
+				loop = (ptb - pta) / 2;
+
+				while (loop--)
+				{
+					*swap = *--ptb; *ptb = *pta; *pta++ = *--ptd; *ptd = *swap;
+				}
+
+				loop = (ptd - pta) / 2;
+
+				while (loop--)
+				{
+					*swap = *pta; *pta++ = *--ptd; *ptd = *swap;
+				}
 			}
 		}
+	}
+	else
+	{
+		pta = array;
+		ptb = pta + left;
 
-		loop = (ptd - pta) / 2;
-
-		while (loop--)
+		while (left--)
 		{
-			swap = *pta; *pta++ = *--ptd; *ptd = swap;
-			num_swaps++;
+			*swap = *pta; *pta++ = *ptb; *ptb++ = *swap;
 		}
 	}
 }
-#endif
+
+#undef MAX_AUX
 
 static void
 reverse_block(size_t * restrict pa, size_t * restrict pe)
@@ -297,13 +387,82 @@ rotate_block(size_t *a, size_t *b, size_t *e)
 } // rotate_block
 #endif
 
+static void
+three_way_swap_block(size_t * restrict pa, size_t * restrict pe,
+                        size_t * restrict pb, size_t * restrict pc)
+{
+        while (pa < pe) {
+#if 0
+		ROT3L(pa, pb, pc);
+#else
+                SWAP(pa, pb);
+                SWAP(pb, pc);
+#endif
+                pc++;
+                pb++;
+                pa++;
+        }
+} // three_way_swap_block
 
-#define MAX 100000000
+static void
+triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
+{
+        size_t  na = pb - pa, nb = pe - pb;
+
+        for (;;) {
+                if (na <= nb) {
+                        size_t  bs = pb - pa;
+
+                        if (na < 2) {
+                                if (na == 1)
+                                        single_up(pa, pb + nb);
+                                return;
+                        }
+                        if ((nb - na) < na) {
+                                // Overflow scenario
+                                swap_block(pa, pb, pe - bs);
+                                pe -= bs;
+                                nb -= na;
+                        } else {
+                                // Remainder scenario
+                                three_way_swap_block(pa, pb, pb, pe - bs);
+                                pa = pb;
+                                pb += bs;
+                                pe -= bs;
+                                nb -= (na + na);
+                        }
+                } else {
+                        size_t  bs = pe - pb;
+
+                        if (nb < 2) {
+                                if (nb == 1)
+                                        single_down(pb, pa);
+                                return;
+                        }
+                        if ((na - nb) < nb) {
+                                // Overflow scenario
+                                swap_block(pb, pe, pa);
+                                pa += bs;
+                                na -= nb;
+                        } else {
+                                // Remainder scenario
+                                three_way_swap_block(pb, pe, pb - bs, pa);
+                                pe = pb;
+                                pb -= bs;
+                                pa += bs;
+                                na -= (nb + nb);
+                        }
+                }
+        }
+} // rotate_block
+
+
+#define MAX 1000000000
 int
 main()
 {
 	struct	timespec start, end;
-	size_t	SZ = 2000;
+	size_t	SZ = 50;
 	size_t	*a;
 
 	a = malloc(sizeof(*a) * SZ);
@@ -320,10 +479,14 @@ main()
 
 	for (size_t j = 0; j < stop; j++) {
 		for (size_t i = 1; i < SZ; i++) {
-#if 1
+#if 0
 			trinity_rotation(a, i, SZ - i);
 #else
+#if 0
 			rotate_block(a, a + i, a + SZ);
+#else
+			triple_shift_rotate(a, a + i, a + SZ);
+#endif
 #endif
 		}
 	}
