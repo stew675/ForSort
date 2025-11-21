@@ -137,7 +137,7 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 			VAR  *sp = pb - (nb * ES);
 			CALL(swap_block)(sp, pb, pb, es);
 			pb = sp;
-			na -= (nb * ES);
+			na -= nb;
 		}
 	}
 } // rotate_block
