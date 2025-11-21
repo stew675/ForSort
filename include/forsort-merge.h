@@ -74,13 +74,13 @@ NAME(reverse_rotate)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 
 	if (na > nb) {
 		CALL(reverse_block)(pa, pb, es);
-		CALL(reverse_block)(pa, pa + nb, es);
 		CALL(reverse_block)(pa + nb, pb, es);
+		CALL(reverse_block)(pa, pa + nb, es);
 		CALL(swap_block)(pa, pa + nb, pb, es);
 	} else {
 		CALL(reverse_block)(pb, pe, es);
-		CALL(reverse_block)(pb, pe - na, es);
 		CALL(reverse_block)(pe - na, pe, es);
+		CALL(reverse_block)(pb, pe - na, es);
 		CALL(swap_block)(pa, pb, pe - na, es);
 	}
 #else
