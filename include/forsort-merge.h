@@ -40,38 +40,40 @@
 static void
 NAME(single_up)(VAR *pa, VAR *pe, size_t es)
 {
-        VAR  *pb = pa + ES;
+	VAR  *pb = pa + ES;
 
-        while (pb < pe) {
-                SWAP(pa, pb);
-                pa = pb;
-                pb += ES;
-        }
+	while (pb < pe) {
+		SWAP(pa, pb);
+		pa = pb;
+		pb += ES;
+	}
 }
 
 
 static void
 NAME(single_down)(VAR *pa, VAR *pe, size_t es)
 {
-        VAR  *pb = pa - ES;
+	VAR  *pb = pa - ES;
 
-        while (pa > pe) {
-                SWAP(pa, pb);
-                pa = pb;
-                pb -= ES;
-        }
+	while (pa > pe) {
+		SWAP(pa, pb);
+		pa = pb;
+		pb -= ES;
+	}
 }
 
 
 static void
-NAME(reverse_rotate)(VAR *pa, VAR *pb, VAR *pe, size_t es)
+NAME(partial_reverse_rotate)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
-#if 1
 	size_t  na = NITEM(pb - pa), nb = NITEM(pe - pb);
 
 	if (na == nb)
 		return CALL(swap_block)(pa, pb, pb, es);
 
+	// The following is what I call a partial-reverse rotate.
+	// It only reverses the larger of the two blocks and has
+	// slightly better CPU cache locality
 	if (na > nb) {
 		CALL(reverse_block)(pa, pb, es);
 		CALL(reverse_block)(pa + nb, pb, es);
@@ -83,12 +85,7 @@ NAME(reverse_rotate)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 		CALL(reverse_block)(pb, pe - na, es);
 		CALL(swap_block)(pa, pb, pe - na, es);
 	}
-#else
-	CALL(reverse_block)(pa, pb, es);
-	CALL(reverse_block)(pb, pe, es);
-	CALL(reverse_block)(pa, pe, es);
-#endif
-} // reverse_rotate
+} // partial_reverse_rotate
 
 
 // I looked at shift_merge_in_place() and though that a block rotate should
@@ -103,12 +100,12 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 	if (!na || !nb)
 		return;
 
-	// Triple reverse faster for small sets
+	// Partial reverse rotate is faster for smaller sets
 	if ((na <= 16) && (nb <= 128))
-		return CALL(reverse_rotate)(pa, pb, pe, es);
+		return CALL(partial_reverse_rotate)(pa, pb, pe, es);
 
 	if ((nb <= 16) && (na <= 128))
-		return CALL(reverse_rotate)(pa, pb, pe, es);
+		return CALL(partial_reverse_rotate)(pa, pb, pe, es);
 
 	for (;;) {
 		// Roll all of PA->PB up as far as we can until it doesn't fit
