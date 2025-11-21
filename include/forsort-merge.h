@@ -63,8 +63,6 @@ NAME(single_down)(VAR *pa, VAR *pe, size_t es)
 }
 
 
-#if 1
-
 // Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
 static void
 NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
@@ -79,13 +77,23 @@ NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
 	}
 } // three_way_swap_block
 
-// This is kind of like a blend of both versions of Gries-Mills
-// It tries to eliminate two sets of the smaller block size per cycle
-// while also keeping the CPU cache warm.  When both blocks are even
-// in size, it does behave the second Gries-Mills variant.  When the
-// blocks are vastly different in size, it's basically collapsing the
-// array from both ends at once and in doing so, keeps the cache warm
-// for every cycle
+
+// I believe this to be a new variant of a block swap algorithm.  Until I find
+// otherwise, I'm going to call it the triple-shift rotation.
+//
+// It ultimately has its roots in the successive swap Gries-Mills variant, but
+// adds an improvement of a 3-way block swap.  When the blocks are close in
+// size, it'll work similarly to the successive swap Gries-Mills, but usually
+// (within one cycle) it'll shift to the speedier 3-way block swap which
+// collapses the rotation space from both ends while also keeping the CPU cache
+// warm for the next loop.  For blocks starting out with vastly different sizes
+// it'll immediately start out with the 3-swap block swap cycle which, again,
+// quickly collapses the rotation space with every cycle.
+//
+// I've tried many block swap variants now, and this one appears to be the most
+// performant for the Forsort algorithm's typical block swap patterns.  I am
+// not claiming that this is the fastest algorithm for all use cases though. It
+// is just apparently the fastest for ForSort.
 static void
 NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
@@ -138,84 +146,6 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 	}
 } // rotate_block
 
-#else
-
-static void
-NAME(partial_reverse_rotate)(VAR *pa, VAR *pb, VAR *pe, size_t es)
-{
-	size_t  na = NITEM(pb - pa), nb = NITEM(pe - pb);
-
-	if (na == nb)
-		return CALL(swap_block)(pa, pb, pb, es);
-
-	// The following is what I call a partial-reverse rotate.
-	// It only reverses the larger of the two blocks and has
-	// slightly better CPU cache locality
-	if (na > nb) {
-		CALL(reverse_block)(pa, pb, es);
-		CALL(reverse_block)(pa + nb, pb, es);
-		CALL(reverse_block)(pa, pa + nb, es);
-		CALL(swap_block)(pa, pa + nb, pb, es);
-	} else {
-		CALL(reverse_block)(pb, pe, es);
-		CALL(reverse_block)(pe - na, pe, es);
-		CALL(reverse_block)(pb, pe - na, es);
-		CALL(swap_block)(pa, pb, pe - na, es);
-	}
-} // partial_reverse_rotate
-
-
-// I looked at shift_merge_in_place() and though that a block rotate should
-// look just like that, just without the comparisons.  This is that.
-// In concept it's basically Gries-Mills, just expressed differently
-static void
-NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
-{
-	size_t  na = NITEM(pb - pa), nb = NITEM(pe - pb);
-
-	// Handle empty list possibilities
-	if (!na || !nb)
-		return;
-
-	// Partial reverse rotate is faster for smaller sets
-	if ((na <= 16) && (nb <= 128))
-		return CALL(partial_reverse_rotate)(pa, pb, pe, es);
-
-	if ((nb <= 16) && (na <= 128))
-		return CALL(partial_reverse_rotate)(pa, pb, pe, es);
-
-	for (;;) {
-		// Roll all of PA->PB up as far as we can until it doesn't fit
-		if (na < 2) {
-			if (na == 1)
-				CALL(single_up)(pa, pb + (nb * ES), es);
-			return;
-		}
-
-		while (na <= nb) {
-			CALL(swap_block)(pa, pb, pb, es);
-			pa = pb;
-			pb += (na * ES);
-			nb -= na;
-		}
-
-		// Okay, so what's in A doesn't fit.  Swap a B sized
-		// portion at the end of A, with B, and reloop
-		if (nb < 2) {
-			if (nb == 1)
-				CALL(single_down)(pb, pa, es);
-			return;
-		}
-
-		while (nb <= na) {
-			VAR  *sp = pb - (nb * ES);
-			CALL(swap_block)(sp, pb, pb, es);
-			pb = sp;
-			na -= nb;
-		}
-	}
-} // rotate_block
-#endif
 
 // Giving credit where it's due.  All this sprint-left/right, merge-left/right
 // stuff is heavily influenced by TimSort.  I'd already implemented something
