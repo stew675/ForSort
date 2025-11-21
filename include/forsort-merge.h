@@ -18,15 +18,29 @@
 
 #define	SWAP(_xa_, _xb_)	memswap((_xa_), (_xb_), ES)
 
+#define	ROTATE_3_LEFT(_xa_, _xb_, _xc_)		\
+	{					\
+		SWAP(_xa_, _xb_);		\
+		SWAP(_xb_, _xc_);		\
+	}
+
 #else
 
-#define	SWAP(_xa_, _xb_)			\
-	{					\
-		VAR xa = *(VAR *)(_xa_);	\
-		VAR xb = *(VAR *)(_xb_);	\
-		*(VAR *)(_xb_) = xa;		\
-		*(VAR *)(_xa_) = xb;		\
+#define	SWAP(_xa_, _xb_)				\
+	{						\
+		VAR xa = *(VAR *)(_xa_);		\
+		*(VAR *)(_xa_) = *(VAR *)(_xb_);	\
+		*(VAR *)(_xb_) = xa;			\
 	}
+
+#define	ROTATE_3_LEFT(_xa_, _xb_, _xc_)			\
+	{						\
+		VAR xa = *(VAR *)(_xa_);		\
+		*(VAR *)(_xa_) = *(VAR *)(_xb_);	\
+		*(VAR *)(_xb_) = *(VAR *)(_xc_);	\
+		*(VAR *)(_xc_) = xa;			\
+	}
+
 #endif
 
 //-----------------------------------------------------------------
@@ -69,8 +83,9 @@ NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
 		        VAR * restrict pb, VAR * restrict pc, size_t es)
 {
 	while (pa < pe) {
-		SWAP(pa, pb);
-		SWAP(pb, pc);
+		ROTATE_3_LEFT(pa, pb, pc);
+//		SWAP(pa, pb);
+//		SWAP(pb, pc);
 		pc += ES;
 		pb += ES;
 		pa += ES;
@@ -697,6 +712,7 @@ NAME(merge_sort_in_place)(VAR * const pa, const size_t n, VAR * const ws,
 #undef SPRINT_ACTIVATE
 #undef SPRINT_EXIT_PENALTY
 #undef SWAP
+#undef ROTATE_3_LEFT
 #undef CONCAT
 #undef MAKE_STR
 #undef NAME
