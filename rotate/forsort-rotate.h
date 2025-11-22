@@ -28,6 +28,11 @@
 // scenarios and this rotation algorithm will still run just fine, albeit with
 // a ~20% speed penalty.
 
+#include <assert.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <string.h>
+
 #define	SWAP(_xa_, _xb_)				\
 	{						\
 		size_t xa = *(size_t *)(_xa_);		\
@@ -36,10 +41,9 @@
 		*(size_t *)(_xb_) = xa;			\
 	}
 
-#define SMALL_ROTATE_SIZE       1
+#define SMALL_ROTATE_SIZE      16
 
-static void two_way_swap_block(size_t *pa, size_t *pe, size_t *pb);
-
+static void two_way_swap_block(size_t * restrict pa, size_t * restrict pe, size_t * restrict pb);
 
 // Completely optional function to handle degenerate scenario of rotating a
 // tiny block with a larger block
@@ -48,27 +52,24 @@ rotate_small(size_t *pa, size_t *pb, size_t *pe)
 {
 	size_t	na = pb - pa, nb = pe - pb;
 
+	if (na == nb)
+		return two_way_swap_block(pa, pb, pe);
+
+	size_t	buf[SMALL_ROTATE_SIZE];
+	size_t	*pc = pa + nb;
+
 	// Steps are:
 	// 1.  Copy out the smaller of the two arrays into the buffer entirely
 	// 2.  Move the larger of the arrays over to where the smaller was
 	// 3.  Copy the smaller array data back to the hole created by the move
 	if (na < nb) {
-		size_t	buf[SMALL_ROTATE_SIZE];
-		size_t	*pc = pa + nb;
-
 		memcpy(buf, pa, na * sizeof(*pa));
 		memmove(pa, pb, nb * sizeof(*pa));
 		memcpy(pc, buf, na * sizeof(*pa));
-	} else if (nb < na) {
-		size_t	buf[SMALL_ROTATE_SIZE];
-		size_t	*pc = pa + nb;
-
+	} else {
 		memcpy(buf, pb, nb * sizeof(*pa));
 		memmove(pc, pa, na * sizeof(*pa));
 		memcpy(pa, buf, nb * sizeof(*pa));
-	} else {
-		// Blocks are evenly sized.  Just swap
-		two_way_swap_block(pa, pb, pe);
 	}
 } // rotate_small
 
@@ -80,10 +81,13 @@ rotate_overlap(size_t *pa, size_t *pb, size_t *pe)
 {
 	size_t	na = pb - pa, nb = pe - pb;
 
+	if (na == nb)
+		return two_way_swap_block(pa, pb, pb);
+
+	size_t	buf[SMALL_ROTATE_SIZE];
+
 	if (na < nb) {
-		size_t	nc = nb - na;
-		size_t	*pc = pb + nc;
-		size_t	buf[SMALL_ROTATE_SIZE];
+		size_t	nc = nb - na, *pc = pb + nc;
 
 		// Steps are:
 		// 1.  Copy out the overlapping amount from the end of B into the buffer
@@ -94,10 +98,8 @@ rotate_overlap(size_t *pa, size_t *pb, size_t *pe)
 		memmove(pc, pb, na * sizeof(*pa));
 		two_way_swap_block(pa, pb, pc);
 		memcpy(pb, buf, nc * sizeof(*pa));
-	} else if (nb < na) {
-		size_t	nc = na - nb;
-		size_t	*pc = pb - nc;
-		size_t	buf[SMALL_ROTATE_SIZE];
+	} else {
+		size_t	nc = na - nb, *pc = pb - nc;
 
 		// Steps are:
 		// 1.  Copy out the overlapping amount from the end of A into the buffer
@@ -108,9 +110,6 @@ rotate_overlap(size_t *pa, size_t *pb, size_t *pe)
 		memmove(pc, pb, nb * sizeof(*pa));
 		two_way_swap_block(pa, pc, pc);
 		memcpy(pe - nc, buf, nc * sizeof(*pa));
-	} else {
-		// Blocks are evenly sized.  Just swap
-		two_way_swap_block(pa, pb, pe);
 	}
 } // rotate_overlap
 
@@ -150,13 +149,13 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 
 	for (;;) {
 		if (na <= nb) {
+			size_t  nc = nb - na;
+
 			if (na <= SMALL_ROTATE_SIZE) {
 				if (na)
 					rotate_small(pa, pb, pe);
 				return;
 			}
-
-			size_t  nc = nb - na;
 
 			if (nc < na) {
 				// Overflow scenario
@@ -172,13 +171,13 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 				pa = pb;  pb += na;  pe -= na;  nb -= (na << 1);
 			}
 		} else {
+			size_t  nc = na - nb;
+
 			if (nb <= SMALL_ROTATE_SIZE) {
 				if (nb)
 					rotate_small(pa, pb, pe);
 				return;
 			}
-
-			size_t  nc = na - nb;
 
 			if (nc < nb) {
 				// Overflow scenario
@@ -195,7 +194,7 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 			}
 		}
 	}
-} // rotate_block
+} // triple_shift_rotate
 
 
 //-----------------------------------------------------------------

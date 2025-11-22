@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "forsort-rotate.h"
+
 static size_t	num_swaps = 0;
 
 #define SWAP(_xa_, _xb_)				\
@@ -199,8 +201,6 @@ reverse_rotate(size_t *pa, size_t *pb, size_t *pe)
 } // rotate_block
 
 #undef SWAP
-
-#include "forsort-rotate.h"
 
 #define MAX 100000000
 int
