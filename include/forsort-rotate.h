@@ -4,7 +4,40 @@
 //
 // This is my implementation of what I believe to be an O(nlogn) time-complexity
 // O(logn) space-complexity, in-place and adaptive merge-sort style algorithm.
-
+//
+//                             rotate_block()
+//
+// I believe this to be a new variant of a block rotate algorithm.  Until I find
+// otherwise, I'm going to name it the "Triple Shift Block Rotation" algorithm
+//
+// It ultimately has its roots in the successive swap Gries-Mills variant, but
+// adds an improvement of a 3-way block swap.  When the blocks are close in
+// size, it'll work similarly to the successive swap Gries-Mills, but instead
+// of reducing the rotation space by the smaller array size per loop, it will
+// instead collapse the rotation space by the larger array size.  This nets a
+// small, but measurable speed boost that becomes more significant the larger
+// the difference in sizes is.
+//
+// For blocks starting out with vastly different sizes it will collapse the
+// rotation space by twice the size of the smaller array per loop.  This nets
+// a significant speed boost over the regular successive swap Gries-Mills as 
+// it quickly collapses the rotation space with every cycle.
+//
+// To work around the degenerate case of the two arrays differening by only a
+// small amount, which collapses the rotation space by the smallest amount per
+// cycle, the (optional) rotate_small() function is used.  rotate_small() will
+// allocate space for a small number of items on the stack to copy the items
+// out, and shift the memory over with memmove().  rotate_small() limits its
+// stack use to 256 bytes however (or the size of 1 element, whichever is the
+// larger), but rotate_small() can be disabled entirely in stack-restricted
+// scenarios and this rotation algorithm will still run just fine, albeit with
+// a ~20% speed penalty.  The impact that this has on the sort algorithm is
+// barely measurable however.
+//
+// I've tried many block swap variants now, and this one appears to be the most
+// performant for the Forsort algorithm's typical block swap patterns.  I am
+// not claiming that this is the fastest algorithm for all use cases. It is just
+// apparently the fastest for ForSort.
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
@@ -56,40 +89,20 @@
 #define SMALL_ROTATE_SIZE       16
 #endif
 
+static void NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pe, VAR * restrict pb, size_t es);
 
-// Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
-static void
-NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
-		        VAR * restrict pb, size_t es)
-{
-	while (pa < pe) {
-		SWAP(pa, pb);
-		pb += ES;
-		pa += ES;
-	}
-} // two_way_swap_block
-
-// Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
-static void
-NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
-		        VAR * restrict pb, VAR * restrict pc, size_t es)
-{
-	while (pa < pe) {
-		SWAP(pa, pb);
-		SWAP(pb, pc);
-		pc += ES;
-		pb += ES;
-		pa += ES;
-	}
-} // three_way_swap_block
-
+// Completely optional function to handle degenerate scenario of rotating a
+// tiny block with a larger block
 static void
 NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
 	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
+
+	if (na == nb)
+		return CALL(two_way_swap_block)(pa, pb, pb, es);
+
 	VAR	buffer[ES * SMALL_ROTATE_SIZE];
 	VAR	*pc = pa + (nb * ES);
-
 
 	// Steps are:
 	// 1.  Copy out the smaller of the two arrays into the buffer entirely
@@ -101,12 +114,13 @@ NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 		memcpy(buffer, pa, na * es);
 		memmove(pa, pb, nb * es);
 		memcpy(pc, buffer, na * es);
-	} else {
+	} else if (nb < na) {
 		memcpy(buffer, pb, nb * es);
 		memmove(pc, pa, na * es);
 		memcpy(pa, buffer, nb * es);
 	}
 } // rotate_small
+
 
 // Uses a limited amount of stack space to rotate two blocks that overlap by
 // only a small amount.  It's basically a special variant of rotate_small()
@@ -114,6 +128,10 @@ static void
 NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
 	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
+
+	if (na == nb)
+		return CALL(two_way_swap_block)(pa, pb, pb, es);
+
 	VAR	buffer[ES * SMALL_ROTATE_SIZE];
 
 	// Must use actual 'es' within the mem*() calls to get sizes in bytes
@@ -130,7 +148,7 @@ NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 		memmove(pc, pb, na * es);
 		CALL(two_way_swap_block)(pa, pb, pc, es);
 		memcpy(pb, buffer, nc * es);
-	} else {
+	} else if (nb < na) {
 		size_t	nc = na - nb;
 		VAR	*pc = pb - (nc * ES);
 
@@ -146,38 +164,39 @@ NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 	}
 } // rotate_overlap
 
+// The following 3 functions, and the SWAP macro,  are the only functions
+// actually required for the block rotate algorithm to do its thing.  The
+// rotate_small() and rotate_overlap() functions act more as optional
+// "helpers" to handle a small handful of degenerate corner cases.
 
-// I believe this to be a new variant of a block swap algorithm.  Until I find
-// otherwise, I'm going to call it the "Triple Shift Block Rotation" algorithm
-//
-// It ultimately has its roots in the successive swap Gries-Mills variant, but
-// adds an improvement of a 3-way block swap.  When the blocks are close in
-// size, it'll work similarly to the successive swap Gries-Mills, but instead
-// of reducing the rotation space by the smaller array size per loop, it will
-// instead collapse the rotation space by the larger array size.  This nets a
-// small, but measurable speed boost that becomes more significant the larger
-// the difference in sizes is.
-//
-// For blocks starting out with vastly different sizes it will collapse the
-// rotation space by twice the size of the smaller array per loop.  This nets
-// a significant speed boost over the regular successive swap Gries-Mills as 
-// it quickly collapses the rotation space with every cycle.
-//
-// To work around the degenerate case of the two arrays differening by only a
-// small amount, which collapses the rotation space by the smallest amount per
-// cycle, the (optional) rotate_small() function is used.  rotate_small() will
-// allocate space for a small number of items on the stack to copy the items
-// out, and shift the memory over with memmove().  rotate_small() limits its
-// stack use to 256 bytes however (or the size of 1 element, whichever is the
-// larger), but rotate_small() can be disabled entirely in stack-restricted
-// scenarios and this rotation algorithm will still run just fine, albeit with
-// a ~20% speed penalty.  The impact that this has on the sort algorithm is
-// barely measurable however.
-//
-// I've tried many block swap variants now, and this one appears to be the most
-// performant for the Forsort algorithm's typical block swap patterns.  I am
-// not claiming that this is the fastest algorithm for all use cases. It is just
-// apparently the fastest for ForSort.
+// Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
+static void
+NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
+		        VAR * restrict pb, size_t es)
+{
+	while (pa < pe) {
+		SWAP(pa, pb);
+		pb += ES;
+		pa += ES;
+	}
+} // two_way_swap_block
+
+
+// Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
+static void
+NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
+		        VAR * restrict pb, VAR * restrict pc, size_t es)
+{
+	while (pa < pe) {
+		SWAP(pa, pb);
+		SWAP(pb, pc);
+		pc += ES;
+		pb += ES;
+		pa += ES;
+	}
+} // three_way_swap_block
+
+
 static void
 NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
@@ -185,13 +204,13 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 
 	for (;;) {
 		if (na <= nb) {
+			size_t  nc = nb - na;
+
 			if (na <= SMALL_ROTATE_SIZE) {
 				if (na)
 					CALL(rotate_small)(pa, pb, pe, es);
 				return;
 			}
-
-			size_t  nc = nb - na;
 
 			if (nc < na) {
 				// Overflow scenario
@@ -217,13 +236,13 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 				nb -= (na << 1);
 			}
 		} else {
+			size_t  nc = na - nb;
+
 			if (nb <= SMALL_ROTATE_SIZE) {
 				if (nb)
 					CALL(rotate_small)(pa, pb, pe, es);
 				return;
 			}
-
-			size_t  nc = na - nb;
 
 			if (nc < nb) {
 				// Overflow scenario
@@ -240,8 +259,8 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 				nb -= nc;
 			} else {
 				// Remainder scenario
-				size_t	bsb = pe - pb;		// Block Size B
-								//
+				size_t	bsb = pe - pb;	// Block Size B
+
 				CALL(three_way_swap_block)(pb, pe, pb - bsb, pa, es);
 				pe = pb;
 				pb -= bsb;
