@@ -405,7 +405,7 @@ three_way_swap_block(size_t * restrict pa, size_t * restrict pe,
 } // three_way_swap_block
 
 
-#define	SMALL_ROTATE_SIZE	3
+#define	SMALL_ROTATE_SIZE	7
 
 static void
 rotate_small(size_t *pa, size_t *pb, size_t *pe)
@@ -433,8 +433,6 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 
 	for (;;) {
 		if (na <= nb) {
-			size_t  bs = pb - pa;
-
 			if (na <= SMALL_ROTATE_SIZE) {
 				if (na)
 					rotate_small(pa, pb, pe);
@@ -443,20 +441,23 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 
 			if ((nb - na) < na) {
 				// Overflow scenario
-				swap_block(pa, pb, pe - bs);
-				pe -= bs;
-				nb -= na;
+				size_t	nc = nb - na;
+				// 0 1 2 3   4 5 6 7 8  -> NC = 1
+				three_way_swap_block(pa, pa + nc, pb, pb + nc);
+				swap_block(pa + nc, pb, pb + (nc << 1));
+				pe -= na;
+				nb = nc;
+				pa += nc;
+				na -= nc;
 			} else {
 				// Remainder scenario
-				three_way_swap_block(pa, pb, pb, pe - bs);
+				three_way_swap_block(pa, pb, pb, pe - na);
 				pa = pb;
-				pb += bs;
-				pe -= bs;
+				pb += na;
+				pe -= na;
 				nb -= (na + na);
 			}
 		} else {
-			size_t  bs = pe - pb;
-
 			if (nb <= SMALL_ROTATE_SIZE) {
 				if (nb)
 					rotate_small(pa, pb, pe);
@@ -465,15 +466,22 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 
 			if ((na - nb) < nb) {
 				// Overflow scenario
-				swap_block(pb, pe, pa);
-				pa += bs;
-				na -= nb;
+				size_t	nc = na - nb;
+				// 0 1 2 3 4   5 6 7 8  -> NC = 1
+				three_way_swap_block(pb, pb + nc, pb - nc, pa);
+				// 5 1 2 3 0   4 6 7 8
+				swap_block(pb + nc, pe, pa + nc);
+				// 5 6 7 8 0   4 1 2 3
+				pa = pb;
+				na = nc;
+				pb += nc;
+				nb -= nc;
 			} else {
 				// Remainder scenario
-				three_way_swap_block(pb, pe, pb - bs, pa);
+				three_way_swap_block(pb, pe, pb - nb, pa);
 				pe = pb;
-				pb -= bs;
-				pa += bs;
+				pb -= nb;
+				pa += nb;
 				na -= (nb + nb);
 			}
 		}
@@ -481,12 +489,12 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 } // rotate_block
 
 
-#define MAX 10000000
+#define MAX 100000000
 int
 main()
 {
 	struct	timespec start, end;
-	size_t	SZ = 8000;
+	size_t	SZ = 80;
 	size_t	*a;
 
 	a = malloc(sizeof(*a) * SZ);
@@ -503,7 +511,7 @@ main()
 
 	for (size_t j = 0; j < stop; j++) {
 		for (size_t i = 1; i < SZ; i++) {
-#if 1
+#if 0
 			trinity_rotation(a, i, SZ - i);
 #else
 #if 0

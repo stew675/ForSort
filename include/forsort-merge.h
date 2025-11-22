@@ -114,45 +114,75 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 
 	for (;;) {
 		if (na <= nb) {
-			size_t	bs = pb - pa;
-
 			if (na <= SMALL_ROTATE_SIZE) {
 				if (na)
 					CALL(rotate_small)(pa, pb, pe, es);
 				return;
 			}
-			if ((nb - na) < na) {
+
+			size_t	bsa = pb - pa;	// Block Size A
+			size_t  nc = nb - na;
+
+			if (nc < na) {
+#if 1
 				// Overflow scenario
-				CALL(swap_block)(pa, pb, pe - bs, es);
-				pe -= bs;
+				size_t	bsc = nc * ES;	// Block Size C
+				// 0 1 2 3   4 5 6 7 8  NC = 1
+                                CALL(three_way_swap_block)(pa, pa + bsc, pb, pb + bsc, es);
+				// 4 1 2 3   5 0 6 7 8
+                                CALL(swap_block)(pa + bsc, pb, pb + (bsc << 1), es);
+				// 4 6 7 8   5 0 1 2 3
+                                pe -= bsa;
+                                nb = nc;
+                                pa += bsc;
+                                na -= nc;
+#else
+				CALL(swap_block)(pa, pb, pe - bsa, es);
+				pe -= bsa;
 				nb -= na;
+#endif
 			} else {
 				// Remainder scenario
-				CALL(three_way_swap_block)(pa, pb, pb, pe - bs, es);
+				CALL(three_way_swap_block)(pa, pb, pb, pe - bsa, es);
 				pa = pb;
-				pb += bs;
-				pe -= bs;
+				pb += bsa;
+				pe -= bsa;
 				nb -= (na + na);
 			}
 		} else {
-			size_t	bs = pe - pb;
-
 			if (nb <= SMALL_ROTATE_SIZE) {
 				if (nb)
 					CALL(rotate_small)(pa, pb, pe, es);
 				return;
 			}
-			if ((na - nb) < nb) {
+
+			size_t	bsb = pe - pb;		// Block Size B
+			size_t  nc = na - nb;
+
+			if (nc < nb) {
+#if 1
 				// Overflow scenario
+				size_t	bsc = nc * ES;	// Block Size C
+                                // 0 1 2 3 4   5 6 7 8  -> NC = 1
+                                CALL(three_way_swap_block)(pb, pb + bsc, pb - bsc, pa, es);
+                                // 5 1 2 3 0   4 6 7 8
+                                CALL(swap_block)(pb + bsc, pe, pa + bsc, es);
+                                // 5 6 7 8 0   4 1 2 3
+                                pa = pb;
+                                na = nc;
+                                pb += bsc;
+                                nb -= nc;
+#else
 				CALL(swap_block)(pb, pe, pa, es);
-				pa += bs;
+				pa += bsb;
 				na -= nb;
+#endif
 			} else {
 				// Remainder scenario
-				CALL(three_way_swap_block)(pb, pe, pb - bs, pa, es);
+				CALL(three_way_swap_block)(pb, pe, pb - bsb, pa, es);
 				pe = pb;
-				pb -= bs;
-				pa += bs;
+				pb -= bsb;
+				pa += bsb;
 				na -= (nb + nb);
 			}
 		}
