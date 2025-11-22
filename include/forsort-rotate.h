@@ -72,13 +72,17 @@
 // LOW_STACK and arbitrary object sizes are set, then rotate_small() won't get
 // used.
 //
-// The rotate_block() algorithm will run about 10% slower on average.  If
-// arbitrary item sizes are set, but LOW_STACK is not, then we will allocate 1
-// item in size on the stack.
+// The rotate_block() algorithm will run about 20% slower on average, if no
+// stack space is allowed.  If arbitrary item sizes are set, but LOW_STACK is
+// not, then we will allocate 1 item in size on the stack.
 //
 // If we have specific types set, then since the item sizes are well bounded so
 // we'll use up to 16 items worth (256 bytes at most), which enables the
-// rotate_block() algorithm to run at full speed.
+// rotate_block() algorithm to run at good pace.
+//
+// In general, the higher you make this value, the faster the algorithm will
+// run, but beyond about 16 items the gains do start to aymptote, and so a
+// value of 16 here is a decent tradeoff between speed and minimal stack use.
 #ifdef UNTYPED
 #if LOW_STACK
 #define SMALL_ROTATE_SIZE       0
