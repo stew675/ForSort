@@ -442,22 +442,25 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 			size_t	nc = nb - na;
 			if (nc < na) {
 				// Overflow scenario
-#if 0
-				if (nc <= SMALL_ROTATE_SIZE) {
-					// 0 1 2 3   4 5 6 7 8  -> NC = 1
-					three_way_swap_block(pa, pa + nc, pb, pb + nc);
-					swap_block(pa + nc, pb, pb + (nc << 1));
-					pe -= na;
-					nb = nc;
-					pa += nc;
-					na -= nc;
-				} else {
+#if 1
+				// 0 1 2 3   4 5 6 7 8  -> NC = 1
+				three_way_swap_block(pa, pa + nc, pb, pb + nc);
+				swap_block(pa + nc, pb, pb + (nc << 1));
+				pe -= na;
+				nb = nc;
+				pa += nc;
+				na -= nc;
 #else
-					swap_block(pa, pb, pe - na);
-					pe -= na;
-					nb -= na;
+				// 0 1 2 3   4 5 6 7 8  -> NC = 1
+				swap_block(pa, pb, pe - na);
+				// 5 6 7 8   4 9 1 2 3  -> NC = 1
+				pe -= na;
+				nb -= na;
+				swap_block(pa, pa + nc, pb);
+				// 4 6 7 8   5 9 1 2 3  -> NC = 1
+				pa += nc;
+				na -= nc;
 #endif
-//				}
 			} else {
 				// Remainder scenario
 				three_way_swap_block(pa, pb, pb, pe - na);
@@ -476,24 +479,29 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 			size_t	nc = na - nb;
 			if (nc < nb) {
 				// Overflow scenario
-#if 0
-				if (nc <= SMALL_ROTATE_SIZE) {
-					// 0 1 2 3 4   5 6 7 8  -> NC = 1
-					three_way_swap_block(pb, pb + nc, pb - nc, pa);
-					// 5 1 2 3 0   4 6 7 8
-					swap_block(pb + nc, pe, pa + nc);
-					// 5 6 7 8 0   4 1 2 3
-					pa = pb;
-					na = nc;
-					pb += nc;
-					nb -= nc;
-				} else {
+#if 1
+				// 0 1 2 3 4   5 6 7 8  -> NC = 1
+				three_way_swap_block(pb, pb + nc, pb - nc, pa);
+				// 5 1 2 3 0   4 6 7 8
+				swap_block(pb + nc, pe, pa + nc);
+				// 5 6 7 8 0   4 1 2 3
+				pa = pb;
+				na = nc;
+				pb += nc;
+				nb -= nc;
 #else
-					swap_block(pb, pe, pa);
-					pa += nb;
-					na -= nb;
+				// 0 1 2 3 4   5 6 7 8  -> NC = 1
+				swap_block(pb, pe, pa);
+				// 5 6 7 8 4   0 1 2 3  -> NC = 1
+//				pa += nb;
+//				na -= nb;
+				swap_block(pb - nc, pb, pb);
+				// 5 6 7 8 0   4 1 2 3  -> NC = 1
+				pa = pb;
+				na = nc;
+				pb += nc;
+				nb -= nc;
 #endif
-//				}
 			} else {
 				// Remainder scenario
 				three_way_swap_block(pb, pe, pb - nb, pa);

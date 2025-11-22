@@ -31,17 +31,6 @@ reverse overlapping portion of larger
 8 9 0   4 5 6 7 1 2 3
 ---------------------------------------------
 
-0 1 2 3 4   5 6 7 8 9 10 
-
-0 -> 4
-0 -> 6
-1 -> 5
-1 -> 7
-2 -> 8
-3 -> 9
-
-
-4 5 8 9   6 7 0 1 2 3
 
 Let NC = NB - NA
 3-way from PA, PB, PB + NC  for NC times
@@ -51,3 +40,23 @@ PA = PA + NC
 PB remains
 PE -= NA
 Reloop
+
+
+0   1   2   3   4   5     6   7   8   9  10  11  12  13
+
+(PB - NC) -> PB -> (E - NC)
+
+0   1   2   3   6   7    12  13   8   9  10  11   4   5
+
+PA  ->  (PB - NC) -> (PB + NC)
+
+6   7   2   3   8   9    12  13   0   1  10  11   4   5
+
+PA + NC  -> (PB + 2NC)
+
+6   7  10  11   8   9    12  13   0   1   2   3   4   5
+
+NA -= 2NC
+PA += NC
+PB = PA + NA
+NB -= 3NC
