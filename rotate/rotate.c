@@ -405,7 +405,7 @@ three_way_swap_block(size_t * restrict pa, size_t * restrict pe,
 } // three_way_swap_block
 
 
-#define	SMALL_ROTATE_SIZE	7
+#define	SMALL_ROTATE_SIZE	16
 
 static void
 rotate_small(size_t *pa, size_t *pb, size_t *pe)
@@ -439,16 +439,25 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 				return;
 			}
 
-			if ((nb - na) < na) {
+			size_t	nc = nb - na;
+			if (nc < na) {
 				// Overflow scenario
-				size_t	nc = nb - na;
-				// 0 1 2 3   4 5 6 7 8  -> NC = 1
-				three_way_swap_block(pa, pa + nc, pb, pb + nc);
-				swap_block(pa + nc, pb, pb + (nc << 1));
-				pe -= na;
-				nb = nc;
-				pa += nc;
-				na -= nc;
+#if 0
+				if (nc <= SMALL_ROTATE_SIZE) {
+					// 0 1 2 3   4 5 6 7 8  -> NC = 1
+					three_way_swap_block(pa, pa + nc, pb, pb + nc);
+					swap_block(pa + nc, pb, pb + (nc << 1));
+					pe -= na;
+					nb = nc;
+					pa += nc;
+					na -= nc;
+				} else {
+#else
+					swap_block(pa, pb, pe - na);
+					pe -= na;
+					nb -= na;
+#endif
+//				}
 			} else {
 				// Remainder scenario
 				three_way_swap_block(pa, pb, pb, pe - na);
@@ -464,18 +473,27 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 				return;
 			}
 
-			if ((na - nb) < nb) {
+			size_t	nc = na - nb;
+			if (nc < nb) {
 				// Overflow scenario
-				size_t	nc = na - nb;
-				// 0 1 2 3 4   5 6 7 8  -> NC = 1
-				three_way_swap_block(pb, pb + nc, pb - nc, pa);
-				// 5 1 2 3 0   4 6 7 8
-				swap_block(pb + nc, pe, pa + nc);
-				// 5 6 7 8 0   4 1 2 3
-				pa = pb;
-				na = nc;
-				pb += nc;
-				nb -= nc;
+#if 0
+				if (nc <= SMALL_ROTATE_SIZE) {
+					// 0 1 2 3 4   5 6 7 8  -> NC = 1
+					three_way_swap_block(pb, pb + nc, pb - nc, pa);
+					// 5 1 2 3 0   4 6 7 8
+					swap_block(pb + nc, pe, pa + nc);
+					// 5 6 7 8 0   4 1 2 3
+					pa = pb;
+					na = nc;
+					pb += nc;
+					nb -= nc;
+				} else {
+#else
+					swap_block(pb, pe, pa);
+					pa += nb;
+					na -= nb;
+#endif
+//				}
 			} else {
 				// Remainder scenario
 				three_way_swap_block(pb, pe, pb - nb, pa);
@@ -494,7 +512,7 @@ int
 main()
 {
 	struct	timespec start, end;
-	size_t	SZ = 80;
+	size_t	SZ = 200;
 	size_t	*a;
 
 	a = malloc(sizeof(*a) * SZ);

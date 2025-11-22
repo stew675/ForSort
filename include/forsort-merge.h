@@ -59,7 +59,7 @@ NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
 // algorithm will run about 10% slower on average.  If arbitrary block sizes are
 // set, but LOW_STACK is not, then we will allocate 1 item in size on the stack.
 // If we have specific types set, then since the item sizes are well bounded so
-// we'll use up to 10 items worth (160 bytes at most), which enables the
+// we'll use up to 16 items worth (256 bytes at most), which enables the
 // rotate_block() algorithm to run at full speed.
 #ifdef UNTYPED
 #if LOW_STACK
@@ -68,7 +68,7 @@ NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
 #define SMALL_ROTATE_SIZE       1
 #endif
 #else
-#define SMALL_ROTATE_SIZE       10
+#define SMALL_ROTATE_SIZE       16
 #endif
 static void
 NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
@@ -124,22 +124,22 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 			size_t  nc = nb - na;
 
 			if (nc < na) {
-#if 1
-				// Overflow scenario
-				size_t	bsc = nc * ES;	// Block Size C
-				// 0 1 2 3   4 5 6 7 8  NC = 1
-                                CALL(three_way_swap_block)(pa, pa + bsc, pb, pb + bsc, es);
-				// 4 1 2 3   5 0 6 7 8
-                                CALL(swap_block)(pa + bsc, pb, pb + (bsc << 1), es);
-				// 4 6 7 8   5 0 1 2 3
-                                pe -= bsa;
-                                nb = nc;
-                                pa += bsc;
-                                na -= nc;
+#if 0
+					// Overflow scenario
+					size_t	bsc = nc * ES;	// Block Size C
+					// 0 1 2 3   4 5 6 7 8  NC = 1
+					CALL(three_way_swap_block)(pa, pa + bsc, pb, pb + bsc, es);
+					// 4 1 2 3   5 0 6 7 8
+					CALL(swap_block)(pa + bsc, pb, pb + (bsc << 1), es);
+					// 4 6 7 8   5 0 1 2 3
+					pe -= bsa;
+					nb = nc;
+					pa += bsc;
+					na -= nc;
 #else
-				CALL(swap_block)(pa, pb, pe - bsa, es);
-				pe -= bsa;
-				nb -= na;
+					CALL(swap_block)(pa, pb, pe - bsa, es);
+					pe -= bsa;
+					nb -= na;
 #endif
 			} else {
 				// Remainder scenario
@@ -160,22 +160,22 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 			size_t  nc = na - nb;
 
 			if (nc < nb) {
-#if 1
-				// Overflow scenario
-				size_t	bsc = nc * ES;	// Block Size C
-                                // 0 1 2 3 4   5 6 7 8  -> NC = 1
-                                CALL(three_way_swap_block)(pb, pb + bsc, pb - bsc, pa, es);
-                                // 5 1 2 3 0   4 6 7 8
-                                CALL(swap_block)(pb + bsc, pe, pa + bsc, es);
-                                // 5 6 7 8 0   4 1 2 3
-                                pa = pb;
-                                na = nc;
-                                pb += bsc;
-                                nb -= nc;
+#if 0
+					// Overflow scenario
+					size_t	bsc = nc * ES;	// Block Size C
+					// 0 1 2 3 4   5 6 7 8  -> NC = 1
+					CALL(three_way_swap_block)(pb, pb + bsc, pb - bsc, pa, es);
+					// 5 1 2 3 0   4 6 7 8
+					CALL(swap_block)(pb + bsc, pe, pa + bsc, es);
+					// 5 6 7 8 0   4 1 2 3
+					pa = pb;
+					na = nc;
+					pb += bsc;
+					nb -= nc;
 #else
-				CALL(swap_block)(pb, pe, pa, es);
-				pa += bsb;
-				na -= nb;
+					CALL(swap_block)(pb, pe, pa, es);
+					pa += bsb;
+					na -= nb;
 #endif
 			} else {
 				// Remainder scenario
