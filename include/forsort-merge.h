@@ -41,6 +41,18 @@
 
 // Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
 static void
+NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
+		        VAR * restrict pb, size_t es)
+{
+	while (pa < pe) {
+		SWAP(pa, pb);
+		pb += ES;
+		pa += ES;
+	}
+} // two_way_swap_block
+
+// Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
+static void
 NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
 		        VAR * restrict pb, VAR * restrict pc, size_t es)
 {
@@ -78,7 +90,7 @@ NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 	VAR	*pc = pa + (nb * ES);
 
 
-	// Must use actual 'es' here to get sizes in bytes
+	// Must use actual 'es' within the mem*() calls to get sizes in bytes
 	if (na < nb) {
 		memcpy(buffer, pa, na * es);
 		memmove(pa, pb, nb * es);
@@ -89,6 +101,44 @@ NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 		memcpy(pa, buffer, nb * es);
 	}
 } // rotate_small
+
+// Uses a limited amount of stack space to rotate two blocks that overlap by
+// only a small amount.  It's basically a special variant of rotate_small()
+static void
+NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
+{
+	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
+	VAR	buffer[ES * SMALL_ROTATE_SIZE];
+
+	// Must use actual 'es' within the mem*() calls to get sizes in bytes
+	if (na < nb) {
+		size_t	nc = nb - na;
+		VAR	*pc = pb + (nc * ES);
+
+		// Steps are:
+		// 1.  Copy out the overlapping amount from the end of B into the buffer
+		// 2.  memmove() B over to the end of the array
+		// 3.  Swap A with B
+		// 4.  Copy the buffer back to the end of where B is now
+		memcpy(buffer, pe - (nc * ES), nc * es);
+		memmove(pc, pb, na * es);
+		CALL(swap_block)(pa, pb, pc, es);
+		memcpy(pb, buffer, nc * es);
+	} else {
+		size_t	nc = na - nb;
+		VAR	*pc = pb - (nc * ES);
+
+		// Steps are:
+		// 1.  Copy out the overlapping amount from the end of A into the buffer
+		// 2.  memmove() B over to the end of A, where A is reduced by the overlap
+		// 3.  Swap A with B
+		// 4.  Copy the buffer back to the end of where A now is
+		memcpy(buffer, pc, nc * es);
+		memmove(pc, pb, nb * es);
+		CALL(swap_block)(pa, pc, pc, es);
+		memcpy(pe - (nc * ES), buffer, nc * es);
+	}
+} // rotate_overlap
 
 
 // I believe this to be a new variant of a block swap algorithm.  Until I find
@@ -135,31 +185,25 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 				return;
 			}
 
-			size_t	bsa = pb - pa;	// Block Size A
 			size_t  nc = nb - na;
 
 			if (nc < na) {
 				// Overflow scenario
-#if 1
 				size_t	bsc = nc * ES;	// Block Size C
-				// 0  1  2  3    4  5  6  7  8  9  10  NC = 3
+
+				if (nc <= SMALL_ROTATE_SIZE)
+					return CALL(rotate_overlap)(pa, pb, pe, es);
+
 				CALL(three_way_swap_block)(pb - bsc, pb, pb, pe - bsc, es);
-				// 0  4  5  6    8  9 10  7  1  2  3
-				CALL(swap_block)(pa, pb - bsc, pb + bsc, es);
-				// 7  4  5  6    8  9 10  0  1  2  3
+				CALL(two_way_swap_block)(pa, pb - bsc, pb + bsc, es);
 				na -= nc;
 				pe = pb;
 				pb -= bsc;
 				nb = nc;
-#else
-				// 0 1 2 3   4 5 6 7 8  NC = 1
-				CALL(swap_block)(pa, pb, pe - bsa, es);
-				// 5 6 7 8   4 0 1 2 3
-				pe -= bsa;
-				nb -= na;
-#endif
 			} else {
 				// Remainder scenario
+				size_t	bsa = pb - pa;	// Block Size A
+
 				CALL(three_way_swap_block)(pa, pb, pb, pe - bsa, es);
 				pa = pb;
 				pb += bsa;
@@ -173,29 +217,25 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 				return;
 			}
 
-			size_t	bsb = pe - pb;		// Block Size B
 			size_t  nc = na - nb;
 
 			if (nc < nb) {
-#if 1
 				// Overflow scenario
 				size_t	bsc = nc * ES;	// Block Size C
-				// 0 1 2 3 4   5 6 7 8  -> NC = 1
+
+				if (nc <= SMALL_ROTATE_SIZE)
+					return CALL(rotate_overlap)(pa, pb, pe, es);
+
 				CALL(three_way_swap_block)(pb, pb + bsc, pb - bsc, pa, es);
-				// 5 1 2 3 0   4 6 7 8
-				CALL(swap_block)(pb + bsc, pe, pa + bsc, es);
-				// 5 6 7 8 0   4 1 2 3
+				CALL(two_way_swap_block)(pb + bsc, pe, pa + bsc, es);
 				pa = pb;
 				na = nc;
 				pb += bsc;
 				nb -= nc;
-#else
-				CALL(swap_block)(pb, pe, pa, es);
-				pa += bsb;
-				na -= nb;
-#endif
 			} else {
 				// Remainder scenario
+				size_t	bsb = pe - pb;		// Block Size B
+								//
 				CALL(three_way_swap_block)(pb, pe, pb - bsb, pa, es);
 				pe = pb;
 				pb -= bsb;
