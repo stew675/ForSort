@@ -202,12 +202,12 @@ reverse_rotate(size_t *pa, size_t *pb, size_t *pe)
 
 #undef SWAP
 
-#define MAX 100000000
+#define MAX 100000000000ULL
 int
 main()
 {
 	struct	timespec start, end;
-	size_t	SZ = 200;
+	size_t	SZ = 100;
 	size_t	*a;
 
 	a = malloc(sizeof(*a) * SZ);
@@ -220,7 +220,9 @@ main()
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
 
-	size_t	stop = MAX / SZ;
+	size_t	stop = MAX / (SZ * SZ);
+	if (stop == 1)
+		stop = 1;
 
 	for (size_t j = 0; j < stop; j++) {
 		for (size_t i = 1; i < SZ; i++) {

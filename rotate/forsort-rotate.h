@@ -141,7 +141,8 @@ three_way_swap_block(size_t * restrict pa, size_t * restrict pe,
 	}
 } // three_way_swap_block
 
-
+// 3 is good. 4 is very close. 0 seems the same. 1/2 are worse
+#define	MIN_OVERLAP	3
 static void
 triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 {
@@ -159,7 +160,7 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 
 			if (nc < na) {
 				// Overflow scenario
-				if ((nc > 2) && (nc <= SMALL_ROTATE_SIZE))
+				if ((nc >= MIN_OVERLAP) && (nc <= SMALL_ROTATE_SIZE))
 					return rotate_overlap(pa, pb, pe);
 
 				three_way_swap_block(pb - nc, pb, pb, pe - nc);
@@ -181,7 +182,7 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 
 			if (nc < nb) {
 				// Overflow scenario
-				if ((nc > 2) && (nc <= SMALL_ROTATE_SIZE))
+				if ((nc >= MIN_OVERLAP) && (nc <= SMALL_ROTATE_SIZE))
 					return rotate_overlap(pa, pb, pe);
 
 				three_way_swap_block(pb, pb + nc, pb - nc, pa);
