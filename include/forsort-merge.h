@@ -96,17 +96,32 @@ NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 //
 // It ultimately has its roots in the successive swap Gries-Mills variant, but
 // adds an improvement of a 3-way block swap.  When the blocks are close in
-// size, it'll work similarly to the successive swap Gries-Mills, but usually
-// (within one loop) it'll shift to the speedier 3-way block swap which
-// collapses the rotation space from both ends while also keeping the CPU cache
-// warm for the next loop.  For blocks starting out with vastly different sizes
-// it'll immediately start out with the 3-swap block swap cycle which, again,
-// quickly collapses the rotation space with every cycle.
+// size, it'll work similarly to the successive swap Gries-Mills, but instead
+// of reducing the rotation space by the smaller array size per loop, it will
+// instead collapse the rotation space by the larger array size.  This nets a
+// small, but measurable speed boost that becomes more significant the larger
+// the difference in sizes is.
+//
+// For blocks starting out with vastly different sizes it will collapse the
+// rotation space by twice the size of the smaller array per loop.  This nets
+// a significant speed boost over the regular successive swap Gries-Mills as 
+// it quickly collapses the rotation space with every cycle.
+//
+// To work around the degenerate case of the two arrays differening by only a
+// small amount, which collapses the rotation space by the smallest amount per
+// cycle, the (optional) rotate_small() function is used.  rotate_small() will
+// allocate space for a small number of items on the stack to copy the items
+// out, and shift the memory over with memmove().  rotate_small() limits its
+// stack use to 256 bytes however (or the size of 1 element, whichever is the
+// larger), but rotate_small() can be disabled entirely in stack-restricted
+// scenarios and this rotation algorithm will still run just fine, albeit with
+// a ~20% speed penalty.  The impact that this has on the sort algorithm is
+// barely measurable however.
 //
 // I've tried many block swap variants now, and this one appears to be the most
 // performant for the Forsort algorithm's typical block swap patterns.  I am
-// not claiming that this is the fastest algorithm for all use cases though. It
-// is just apparently the fastest for ForSort.
+// not claiming that this is the fastest algorithm for all use cases. It is just
+// apparently the fastest for ForSort.
 static void
 NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
