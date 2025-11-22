@@ -389,80 +389,104 @@ rotate_block(size_t *a, size_t *b, size_t *e)
 
 static void
 three_way_swap_block(size_t * restrict pa, size_t * restrict pe,
-                        size_t * restrict pb, size_t * restrict pc)
+			size_t * restrict pb, size_t * restrict pc)
 {
-        while (pa < pe) {
+	while (pa < pe) {
 #if 0
 		ROT3L(pa, pb, pc);
 #else
-                SWAP(pa, pb);
-                SWAP(pb, pc);
+		SWAP(pa, pb);
+		SWAP(pb, pc);
 #endif
-                pc++;
-                pb++;
-                pa++;
-        }
+		pc++;
+		pb++;
+		pa++;
+	}
 } // three_way_swap_block
+
+
+#define	SMALL_ROTATE_SIZE	3
+
+static void
+rotate_small(size_t *pa, size_t *pb, size_t *pe)
+{
+	size_t	na = pb - pa, nb = pe - pb;
+	size_t	buffer[SMALL_ROTATE_SIZE];
+	size_t	*pc = pa + nb;
+
+	if (na < nb) {
+		memcpy(buffer, pa, na * sizeof(*pa));
+		memmove(pa, pb, nb * sizeof(*pb));
+		memcpy(pc, buffer, na * sizeof(*pa));
+	} else {
+		memcpy(buffer, pb, nb * sizeof(*pb));
+		memmove(pc, pa, na * sizeof(*pa));
+		memcpy(pa, buffer, nb * sizeof(*pb));
+	}
+} // rotate_small
+
 
 static void
 triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 {
-        size_t  na = pb - pa, nb = pe - pb;
+	size_t  na = pb - pa, nb = pe - pb;
 
-        for (;;) {
-                if (na <= nb) {
-                        size_t  bs = pb - pa;
+	for (;;) {
+		if (na <= nb) {
+			size_t  bs = pb - pa;
 
-                        if (na < 2) {
-                                if (na == 1)
-                                        single_up(pa, pb + nb);
-                                return;
-                        }
-                        if ((nb - na) < na) {
-                                // Overflow scenario
-                                swap_block(pa, pb, pe - bs);
-                                pe -= bs;
-                                nb -= na;
-                        } else {
-                                // Remainder scenario
-                                three_way_swap_block(pa, pb, pb, pe - bs);
-                                pa = pb;
-                                pb += bs;
-                                pe -= bs;
-                                nb -= (na + na);
-                        }
-                } else {
-                        size_t  bs = pe - pb;
+			if (na <= SMALL_ROTATE_SIZE) {
+				if (na)
+					rotate_small(pa, pb, pe);
+				return;
+			}
 
-                        if (nb < 2) {
-                                if (nb == 1)
-                                        single_down(pb, pa);
-                                return;
-                        }
-                        if ((na - nb) < nb) {
-                                // Overflow scenario
-                                swap_block(pb, pe, pa);
-                                pa += bs;
-                                na -= nb;
-                        } else {
-                                // Remainder scenario
-                                three_way_swap_block(pb, pe, pb - bs, pa);
-                                pe = pb;
-                                pb -= bs;
-                                pa += bs;
-                                na -= (nb + nb);
-                        }
-                }
-        }
+			if ((nb - na) < na) {
+				// Overflow scenario
+				swap_block(pa, pb, pe - bs);
+				pe -= bs;
+				nb -= na;
+			} else {
+				// Remainder scenario
+				three_way_swap_block(pa, pb, pb, pe - bs);
+				pa = pb;
+				pb += bs;
+				pe -= bs;
+				nb -= (na + na);
+			}
+		} else {
+			size_t  bs = pe - pb;
+
+			if (nb <= SMALL_ROTATE_SIZE) {
+				if (nb)
+					rotate_small(pa, pb, pe);
+				return;
+			}
+
+			if ((na - nb) < nb) {
+				// Overflow scenario
+				swap_block(pb, pe, pa);
+				pa += bs;
+				na -= nb;
+			} else {
+				// Remainder scenario
+				three_way_swap_block(pb, pe, pb - bs, pa);
+				pe = pb;
+				pb -= bs;
+				pa += bs;
+				na -= (nb + nb);
+			}
+		}
+	}
 } // rotate_block
 
 
-#define MAX 1000000000
+#define MAX 10000000
 int
 main()
 {
 	struct	timespec start, end;
-	size_t	SZ = 50;
+	size_t	SZ = 8000;
 	size_t	*a;
 
 	a = malloc(sizeof(*a) * SZ);
@@ -479,7 +503,7 @@ main()
 
 	for (size_t j = 0; j < stop; j++) {
 		for (size_t i = 1; i < SZ; i++) {
-#if 0
+#if 1
 			trinity_rotation(a, i, SZ - i);
 #else
 #if 0

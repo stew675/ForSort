@@ -41,7 +41,7 @@ struct item {
 
 	// Uncomment following line to enable un-aligned testing
 //	uint8_t		stuff8;
-};
+} __attribute__((packed));
 
 #include "forsort.h"
 
@@ -548,6 +548,7 @@ main(int argc, char *argv[])
 	}
 	// Now populate the array according to the command line options
 	printf("\nPopulating array of size: %lu\n\n", n);
+	printf("Item Size: %lu bytes\n", sizeof(*a));
 	printf("Data value range is 0..%u (inclusive)\n", data_set_limit - 1);
 	if (disorder_factor == 0) {
 		printf("Data set is ordered\n");

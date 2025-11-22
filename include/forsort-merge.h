@@ -38,31 +38,6 @@
 #define SPRINT_ACTIVATE         7
 #define SPRINT_EXIT_PENALTY     2
 
-static void
-NAME(single_up)(VAR *pa, VAR *pe, size_t es)
-{
-	VAR  *pb = pa + ES;
-
-	while (pb < pe) {
-		SWAP(pa, pb);
-		pa = pb;
-		pb += ES;
-	}
-}
-
-
-static void
-NAME(single_down)(VAR *pa, VAR *pe, size_t es)
-{
-	VAR  *pb = pa - ES;
-
-	while (pa > pe) {
-		SWAP(pa, pb);
-		pa = pb;
-		pb -= ES;
-	}
-}
-
 
 // Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
 static void
@@ -78,14 +53,51 @@ NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
 	}
 } // three_way_swap_block
 
+// rotate_small() can use a small number of items worth of stack space as a
+// buffer to speed up the rotate_block() algorithm.  If LOW_STACK and arbitrary
+// object sizes are set, then rotate_small() won't get used.  The rotate_block()
+// algorithm will run about 10% slower on average.  If arbitrary block sizes are
+// set, but LOW_STACK is not, then we will allocate 1 item in size on the stack.
+// If we have specific types set, then since the item sizes are well bounded so
+// we'll use up to 10 items worth (160 bytes at most), which enables the
+// rotate_block() algorithm to run at full speed.
+#ifdef UNTYPED
+#if LOW_STACK
+#define SMALL_ROTATE_SIZE       0
+#else
+#define SMALL_ROTATE_SIZE       1
+#endif
+#else
+#define SMALL_ROTATE_SIZE       10
+#endif
+static void
+NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
+{
+	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
+	VAR	buffer[ES * SMALL_ROTATE_SIZE];
+	VAR	*pc = pa + (nb * ES);
+
+
+	// Must use actual 'es' here to get sizes in bytes
+	if (na < nb) {
+		memcpy(buffer, pa, na * es);
+		memmove(pa, pb, nb * es);
+		memcpy(pc, buffer, na * es);
+	} else {
+		memcpy(buffer, pb, nb * es);
+		memmove(pc, pa, na * es);
+		memcpy(pa, buffer, nb * es);
+	}
+} // rotate_small
+
 
 // I believe this to be a new variant of a block swap algorithm.  Until I find
-// otherwise, I'm going to call it the triple-shift rotation.
+// otherwise, I'm going to call it the "Triple Shift Block Rotation" algorithm
 //
 // It ultimately has its roots in the successive swap Gries-Mills variant, but
 // adds an improvement of a 3-way block swap.  When the blocks are close in
 // size, it'll work similarly to the successive swap Gries-Mills, but usually
-// (within one cycle) it'll shift to the speedier 3-way block swap which
+// (within one loop) it'll shift to the speedier 3-way block swap which
 // collapses the rotation space from both ends while also keeping the CPU cache
 // warm for the next loop.  For blocks starting out with vastly different sizes
 // it'll immediately start out with the 3-swap block swap cycle which, again,
@@ -104,9 +116,9 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 		if (na <= nb) {
 			size_t	bs = pb - pa;
 
-			if (na < 2) {
-				if (na == 1)
-					CALL(single_up)(pa, pb + (nb * ES), es);
+			if (na <= SMALL_ROTATE_SIZE) {
+				if (na)
+					CALL(rotate_small)(pa, pb, pe, es);
 				return;
 			}
 			if ((nb - na) < na) {
@@ -125,9 +137,9 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 		} else {
 			size_t	bs = pe - pb;
 
-			if (nb < 2) {
-				if (nb == 1)
-					CALL(single_down)(pb, pa, es);
+			if (nb <= SMALL_ROTATE_SIZE) {
+				if (nb)
+					CALL(rotate_small)(pa, pb, pe, es);
 				return;
 			}
 			if ((na - nb) < nb) {
@@ -145,6 +157,7 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 			}
 		}
 	}
+#undef SMALL_ROTATE_SIZE
 } // rotate_block
 
 
