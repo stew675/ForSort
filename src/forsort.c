@@ -315,6 +315,7 @@ ceil_log_base_16(size_t n)
 #define	NITEM(_x_)		(_x_)
 
 #define	VAR uint128_t
+#include "forsort-rotate.h"
 #include "forsort-insert.h"
 #include "forsort-basic.h"
 #include "forsort-merge.h"
@@ -322,6 +323,7 @@ ceil_log_base_16(size_t n)
 #undef VAR
 
 #define	VAR uint64_t
+#include "forsort-rotate.h"
 #include "forsort-insert.h"
 #include "forsort-basic.h"
 #include "forsort-merge.h"
@@ -329,6 +331,7 @@ ceil_log_base_16(size_t n)
 #undef VAR
 
 #define	VAR uint32_t
+#include "forsort-rotate.h"
 #include "forsort-insert.h"
 #include "forsort-basic.h"
 #include "forsort-merge.h"
@@ -346,6 +349,7 @@ ceil_log_base_16(size_t n)
 #define	NITEM(_x_)		((_x_) / es)
 #define	VAR char
 #define UNTYPED
+#include "forsort-rotate.h"
 #include "forsort-insert.h"
 #include "forsort-basic.h"
 #include "forsort-merge.h"
