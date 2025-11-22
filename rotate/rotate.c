@@ -7,240 +7,90 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "rotate.h"
 #include "forsort-rotate.h"
 
-static size_t	num_swaps = 0;
 
-#define SWAP(_xa_, _xb_)				\
-	{						\
-		int32_t xa = *(int32_t *)(_xa_);	\
-		int32_t xb = *(int32_t *)(_xb_);	\
-		*(int32_t *)(_xa_) = xb;		\
-		*(int32_t *)(_xb_) = xa;		\
-	}
 
-#define MAX_AUX 8
+typedef void rotate_function(int *array, size_t left, size_t right);
 
-void trinity_rotation(size_t *array, size_t left, size_t right)
+typedef struct {
+	rotate_function		*rotate;
+	char			*name;
+} rotate_function_t;
+
+rotate_function_t rotations[] = {
+	{griesmills_rotation, "Gries-Mills Rotation"},
+	{reversal_rotation, "Triple-Reverse Rotate"},
+	{piston_rotation, "Piston Rotation"},
+	{grail_rotation, "Grail Rotation"},
+	{contrev_rotation, "ContRev Rotation"},
+	{auxiliary_rotation, "Auxiliary Rotation"},
+	{bridge_rotation, "Bridge Rotation"},
+	{trinity_rotation, "Trinity Rotation"},
+	{triple_shift_rotate, "Triple Shift Rotate"},
+	{NULL, "End Of List"}
+};
+
+
+rotate_function_t *
+get_next_function(int i)
 {
-	size_t *pta, *ptb, *ptc, *ptd, swap[MAX_AUX];
-	size_t loop;
-
-	if (left < right)
-	{
-		if (left <= MAX_AUX)
-		{
-			memcpy(swap, array, left * sizeof(size_t));
-			memmove(array, array + left, right * sizeof(size_t));
-			memcpy(array + right, swap, left * sizeof(size_t));
-		}
-		else
-		{
-			pta = array;
-			ptb = pta + left;
-
-			loop = right - left;
-
-			if (loop <= MAX_AUX && loop > 3)
-			{
-				ptc = pta + right;
-				ptd = ptc + left;
-
-				memcpy(swap, ptb, loop * sizeof(size_t));
-
-				while (left--)
-				{
-					*--ptc = *--ptd; *ptd = *--ptb;
-				}
-				memcpy(pta, swap, loop * sizeof(size_t));
-			}
-			else
-			{
-				ptc = ptb;
-				ptd = ptc + right;
-
-				loop = left / 2;
-
-				while (loop--)
-				{
-					*swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = *swap;
-				}
-
-				loop = (ptd - ptc) / 2;
-
-				while (loop--)
-				{
-					*swap = *ptc; *ptc++ = *--ptd; *ptd = *pta; *pta++ = *swap;
-				}
-
-				loop = (ptd - pta) / 2;
-
-				while (loop--)
-				{
-					*swap = *pta; *pta++ = *--ptd; *ptd = *swap;
-				}
-			}
-		}
-	}
-	else if (right < left)
-	{
-		if (right <= MAX_AUX)
-		{
-			memcpy(swap, array + left, right * sizeof(size_t));
-			memmove(array + right, array, left * sizeof(size_t));
-			memcpy(array, swap, right * sizeof(size_t));
-		}
-		else
-		{
-			pta = array;
-			ptb = pta + left;
-
-			loop = left - right;
-
-			if (loop <= MAX_AUX && loop > 3)
-			{
-				ptc = pta + right;
-				ptd = ptc + left;
-
-				memcpy(swap, ptc, loop * sizeof(size_t));
-
-				while (right--)
-				{
-					*ptc++ = *pta; *pta++ = *ptb++;
-				}
-				memcpy(ptd - loop, swap, loop * sizeof(size_t));
-			}
-			else
-			{
-				ptc = ptb;
-				ptd = ptc + right;
-
-				loop = right / 2;
-
-				while (loop--)
-				{
-					*swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = *swap;
-				}
-
-				loop = (ptb - pta) / 2;
-
-				while (loop--)
-				{
-					*swap = *--ptb; *ptb = *pta; *pta++ = *--ptd; *ptd = *swap;
-				}
-
-				loop = (ptd - pta) / 2;
-
-				while (loop--)
-				{
-					*swap = *pta; *pta++ = *--ptd; *ptd = *swap;
-				}
-			}
-		}
-	}
-	else
-	{
-		pta = array;
-		ptb = pta + left;
-
-		while (left--)
-		{
-			*swap = *pta; *pta++ = *ptb; *ptb++ = *swap;
-		}
-	}
-}
-
-#undef MAX_AUX
-
-static void
-reverse_block(size_t * restrict pa, size_t * restrict pe)
-{
-	for (pe--; pa < pe; pa++, pe--)
-		SWAP(pa, pe);
-} // reverse_block
-
-
-static inline void
-swap_block(size_t * restrict pa, size_t * restrict pe, size_t * restrict pb)
-{
-	for ( ; pa < pe; pa++, pb++)
-		SWAP(pa, pb);
-}
-
-// Half Reverse Rotate
-void
-half_reverse_rotate(size_t *pa, size_t *pb, size_t *pe)
-{
-	size_t	na = pb - pa, nb = pe - pb;
-
-	if (na == nb)
-		return swap_block(pa, pb, pb);
-
-	if (na > nb) {
-		reverse_block(pa, pb);
-		reverse_block(pa, pa + nb);
-		reverse_block(pa + nb, pb);
-		swap_block(pa, pa + nb, pb);
-	} else {
-		reverse_block(pb, pe);
-		reverse_block(pb, pe - na);
-		reverse_block(pe - na, pe);
-		swap_block(pa, pb, pe - na);
-	}
-}
-
-// Classic triple-reverse rotate
-void
-reverse_rotate(size_t *pa, size_t *pb, size_t *pe)
-{
-	size_t	na = pb - pa, nb = pe - pb;
-
-	reverse_block(pa, pb);
-	reverse_block(pb, pe);
-	reverse_block(pa, pe);
-} // rotate_block
-
-#undef SWAP
+	for (int j = 0; j < i; j++)
+		if (rotations[j].rotate == NULL)
+			return NULL;
+	if (rotations[i].rotate == NULL)
+		return NULL;
+	return rotations + i;
+} // get_next_function 
 
 #define MAX 100000000000ULL
 int
 main()
 {
 	struct	timespec start, end;
-	size_t	SZ = 100;
-	size_t	*a;
+	size_t	MAXSZ = 10000000;
+	int32_t	*a;
 
-	a = malloc(sizeof(*a) * SZ);
+	a = malloc(sizeof(*a) * MAXSZ);
 	if (!a) {
 		printf("malloc() failure\n");
 		exit(1);
 	}
-	for (size_t i = 0; i < SZ; i++)
+	for (size_t i = 0; i < MAXSZ; i++)
 		a[i] = i;
 
-	clock_gettime(CLOCK_MONOTONIC, &start);
+	for (size_t SZ = 20; ((SZ * SZ) < (MAX * 5)) && (SZ < MAXSZ); SZ <<= 1) {
+		printf("\n");
+		printf("=======================================================\n");
+		printf("         NAME                  ITEMS    TIME/ROTATE (s)\n");
+		printf("=======================================================\n");
+		for (int fno = 0; ; fno++) {
+			rotate_function_t *f = get_next_function(fno);
+			if (f == NULL)
+				break;
 
-	size_t	stop = MAX / (SZ * SZ);
-	if (stop == 1)
-		stop = 1;
+			size_t	stop = MAX / (SZ * SZ);
+			stop /= 10;
+			size_t	runs = 0;
+			if (stop < 1)
+				stop = 1;
 
-	for (size_t j = 0; j < stop; j++) {
-		for (size_t i = 1; i < SZ; i++) {
-#if 0
-			trinity_rotation(a, i, SZ - i);
-#else
-			triple_shift_rotate(a, a + i, a + SZ);
-#endif
+			clock_gettime(CLOCK_MONOTONIC, &start);
+
+			for (size_t j = 0; j < stop; j++) {
+				for (size_t i = 1; i < SZ; i++) {
+					f->rotate(a, i, SZ - i);
+					runs++;
+				}
+			}
+
+			clock_gettime(CLOCK_MONOTONIC, &end);
+
+			double tim = ((end.tv_sec - start.tv_sec) * 1000000000) + (end.tv_nsec - start.tv_nsec);
+			printf("%-24s    %7lu        %10.3fns\n", f->name, SZ, tim/runs);
 		}
 	}
-
-	clock_gettime(CLOCK_MONOTONIC, &end);
-
-	printf("Num Swaps = %lu\n", num_swaps / SZ);
-
-	double tim = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-
-	printf("Time Taken = %.3fs\n", tim);
 
 	free(a);
 } // main
