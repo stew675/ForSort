@@ -216,7 +216,7 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 				// Overflow scenario
 				size_t	bsc = nc * ES;	// Block Size C
 
-				if (nc <= SMALL_ROTATE_SIZE)
+				if ((nc > 2) && (nc <= SMALL_ROTATE_SIZE))
 					return CALL(rotate_overlap)(pa, pb, pe, es);
 
 				CALL(three_way_swap_block)(pb - bsc, pb, pb, pe - bsc, es);
@@ -248,7 +248,7 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 				// Overflow scenario
 				size_t	bsc = nc * ES;	// Block Size C
 
-				if (nc <= SMALL_ROTATE_SIZE)
+				if ((nc > 2) && (nc <= SMALL_ROTATE_SIZE))
 					return CALL(rotate_overlap)(pa, pb, pe, es);
 
 				CALL(three_way_swap_block)(pb, pb + bsc, pb - bsc, pa, es);

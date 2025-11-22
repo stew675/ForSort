@@ -159,7 +159,7 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 
 			if (nc < na) {
 				// Overflow scenario
-				if (nc <= SMALL_ROTATE_SIZE)
+				if ((nc > 2) && (nc <= SMALL_ROTATE_SIZE))
 					return rotate_overlap(pa, pb, pe);
 
 				three_way_swap_block(pb - nc, pb, pb, pe - nc);
@@ -181,7 +181,7 @@ triple_shift_rotate(size_t *pa, size_t *pb, size_t *pe)
 
 			if (nc < nb) {
 				// Overflow scenario
-				if (nc <= SMALL_ROTATE_SIZE)
+				if ((nc > 2) && (nc <= SMALL_ROTATE_SIZE))
 					return rotate_overlap(pa, pb, pe);
 
 				three_way_swap_block(pb, pb + nc, pb - nc, pa);
