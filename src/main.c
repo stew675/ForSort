@@ -54,9 +54,13 @@ extern void nqsort(void *a, const size_t n, const size_t es,
 extern void WikiSort(void *a, const size_t n,
 	int (*cmp)(struct item, struct item));
 
+extern void blitsort(void *, size_t n, size_t es,
+	int (*cmp)(const void *, const void *));
+
 enum {
 	GLIBC_QSORT = 1,
 	BENTLEY_QSORT,
+	BLIT_SORT,
 	TIM_SORT,
 	WIKI_SORT,
 	GRAIL_SORT,
@@ -76,6 +80,16 @@ wiki_compare(struct item p1, struct item p2)
 	return p1.value < p2.value;
 } // wiki_compare
 
+// Used to determine if the first uint32_t pointed at, is less than
+// the second uint32_t that is pointed at
+static int __attribute__((noinline))
+is_greater_than_uint32(const void *p1, const void *p2)
+{
+	numcmps++;
+	return (((struct item *)p1)->value > ((struct item *)p2)->value);
+} // is_greater_than_uint32
+
+// Used to compare two uint32_t values pointed at by the pointers given
 // Used to determine if the first uint32_t pointed at, is less than
 // the second uint32_t that is pointed at
 static int __attribute__((noinline))
@@ -178,6 +192,7 @@ usage(char *prog, const char *msg)
 	fprintf(stderr, "  -w <num>      Optional workspace size (in elements) to pass to the sorting algorithm\n");
 	fprintf(stderr, "                A value of 1 asks the sort to allocate its own workspace (if it supports doing so)\n");
 	fprintf(stderr, "\nAvailable Sort Types:\n");
+	fprintf(stderr, "   bl   - Blit Sort In-Place                     (Stable)\n");
 	fprintf(stderr, "   fb   - Basic Forsort In-Place                 (Stable)\n");
 	fprintf(stderr, "   fi   - Adaptive Forsort In-Place              (Unstable)\n");
 	fprintf(stderr, "   fs   - Stable Forsort In-Place                (Stable)\n");
@@ -196,6 +211,12 @@ parse_sort_type(char *opt)
 	if (strcmp(opt, "gs") == 0) {
 		sortname = "GrailSort";
 		sorttype =  GRAIL_SORT;
+		return;
+	}
+
+	if (strcmp(opt, "bl") == 0) {
+		sortname = "BlitSort";
+		sorttype =  BLIT_SORT;
 		return;
 	}
 
@@ -625,6 +646,9 @@ main(int argc, char *argv[])
 			break;
 		case BENTLEY_QSORT:
 			nqsort(a, n, sizeof(*a), compare_uint32);
+			break;
+		case BLIT_SORT:
+			blitsort(a, n, sizeof(*a), is_greater_than_uint32);
 			break;
 		case WIKI_SORT:
 			WikiSort(a, n, wiki_compare);	// Wiki-Sort only accepts 64-bit items
