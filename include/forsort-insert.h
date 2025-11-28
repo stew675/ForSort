@@ -64,15 +64,36 @@ NAME(insertion_sort_regular)(VAR *pa, VAR *ta, const size_t n, COMMON_PARAMS)
 	}
 } // insertion_sort_regular
 
+extern void print_array(void *, size_t);
 
 // ta -> where to start sorting from
 static void
 NAME(insertion_sort_binary)(VAR *pa, VAR *ta, const size_t n, COMMON_PARAMS)
 {
+#if 1
 	for (VAR *pe = pa + n; ta < pe; ta++) {
 		if (IS_LT(ta, ta - 1)) {
 			// Find where to insert it
-			VAR	t = *ta, *tb = ta - 1, *tc = ta, *where = pa;
+			VAR	t = *ta, *tb = ta - 1, *where = pa;
+			uint32_t mid = (tb - pa), pos = 0, mask = 0xfffffffe;
+
+			do {
+				uint32_t val = (mid++ >> 1);
+				pos += val;
+				pos -= IS_LT(ta, where + pos) * val;
+			} while ((mid >>= 1) & mask);
+
+			where += pos;
+			where += !IS_LT(ta, where);
+			memmove(where + 1, where, (ta - where) * es);
+			*where = t;
+		}
+	}
+#else
+	for (VAR *pe = pa + n; ta < pe; ta++) {
+		if (IS_LT(ta, ta - 1)) {
+			// Find where to insert it
+			VAR	t = *ta, *tb = ta - 1, *where = pa;
 			uint32_t max = tb - pa, min = 0, pos = max >> 1;
 
 			do {
@@ -89,10 +110,12 @@ NAME(insertion_sort_binary)(VAR *pa, VAR *ta, const size_t n, COMMON_PARAMS)
 				pos = (min + max) >> 1;
 			} while (min < max);
 
-			for (where += pos; tc != where; *tc-- = *tb--);
+			where += pos;
+			for (VAR *tc = ta; tc != where; *tc-- = *tb--);
 			*where = t;
 		}
 	}
+#endif
 } // insertion_sort_binary
 
 

@@ -48,6 +48,9 @@ struct item {
 extern void grailSortInPlace(void *a, const size_t n, const size_t es,
 	int (*cmp)(const void *, const void *));
 
+extern void insertion_sort(void *a, const size_t n, const size_t es,
+	int (*cmp)(const void *, const void *));
+
 extern void nqsort(void *a, const size_t n, const size_t es,
 	int (*cmp)(const void *, const void *));
 
@@ -64,6 +67,7 @@ enum {
 	TIM_SORT,
 	WIKI_SORT,
 	GRAIL_SORT,
+	INSERT_SORT,
 	FORSORT_INPLACE,
 	FORSORT_BASIC,
 	FORSORT_STABLE,
@@ -80,7 +84,8 @@ wiki_compare(struct item p1, struct item p2)
 	return p1.value < p2.value;
 } // wiki_compare
 
-// Used to determine if the first uint32_t pointed at, is less than
+#if 0
+// Used to determine if the first uint32_t pointed at, is greater than
 // the second uint32_t that is pointed at
 static int __attribute__((noinline))
 is_greater_than_uint32(const void *p1, const void *p2)
@@ -88,6 +93,7 @@ is_greater_than_uint32(const void *p1, const void *p2)
 	numcmps++;
 	return (((struct item *)p1)->value > ((struct item *)p2)->value);
 } // is_greater_than_uint32
+#endif
 
 // Used to compare two uint32_t values pointed at by the pointers given
 // Used to determine if the first uint32_t pointed at, is less than
@@ -98,6 +104,7 @@ is_less_than_uint32(const void *p1, const void *p2)
 	numcmps++;
 	return (((struct item *)p1)->value < ((struct item *)p2)->value);
 } // is_less_than_uint32
+
 
 // Used to compare two uint32_t values pointed at by the pointers given
 static int __attribute__((noinline))
@@ -192,10 +199,11 @@ usage(char *prog, const char *msg)
 	fprintf(stderr, "  -w <num>      Optional workspace size (in elements) to pass to the sorting algorithm\n");
 	fprintf(stderr, "                A value of 1 asks the sort to allocate its own workspace (if it supports doing so)\n");
 	fprintf(stderr, "\nAvailable Sort Types:\n");
-	fprintf(stderr, "   bl   - Blit Sort In-Place                     (Stable)\n");
+//	fprintf(stderr, "   bl   - Blit Sort In-Place                     (Stable)\n");
 	fprintf(stderr, "   fb   - Basic Forsort In-Place                 (Stable)\n");
 	fprintf(stderr, "   fi   - Adaptive Forsort In-Place              (Unstable)\n");
 	fprintf(stderr, "   fs   - Stable Forsort In-Place                (Stable)\n");
+	fprintf(stderr, "   is   - Insertion Sort                         (Stable)\n");
 	fprintf(stderr, "   gs   - Grail Sort In-Place                    (Stable)\n");
 	fprintf(stderr, "   gq   - GLibc Quick Sort In-Place              (Stability Not Guaranteed)\n");
 	fprintf(stderr, "   nq   - Bentley/McIlroy Quick Sort In-Place    (Unstable)\n");
@@ -214,9 +222,17 @@ parse_sort_type(char *opt)
 		return;
 	}
 
+#if 0
 	if (strcmp(opt, "bl") == 0) {
 		sortname = "BlitSort";
 		sorttype =  BLIT_SORT;
+		return;
+	}
+#endif
+
+	if (strcmp(opt, "is") == 0) {
+		sortname = "Insertion Sort";
+		sorttype =  INSERT_SORT;
 		return;
 	}
 
@@ -647,8 +663,11 @@ main(int argc, char *argv[])
 		case BENTLEY_QSORT:
 			nqsort(a, n, sizeof(*a), compare_uint32);
 			break;
-		case BLIT_SORT:
-			blitsort(a, n, sizeof(*a), is_greater_than_uint32);
+//		case BLIT_SORT:
+//			blitsort(a, n, sizeof(*a), is_greater_than_uint32);
+//			break;
+		case INSERT_SORT:
+			insertion_sort(a, n, sizeof(*a), is_less_than_uint32);
 			break;
 		case WIKI_SORT:
 			WikiSort(a, n, wiki_compare);	// Wiki-Sort only accepts 64-bit items

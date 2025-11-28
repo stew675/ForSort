@@ -366,6 +366,24 @@ ceil_log_base_16(size_t n)
 
 // extern void print_array(void *a, size_t n);
 
+void
+insertion_sort(void *a, const size_t n, const size_t es,
+	int (*is_lt)(const void *, const void *))
+{
+	int     swaptype = get_swap_type(a, es);
+
+	if (swaptype == SWAP_WORDS_64) {
+		insertion_sort_uint64_t((uint64_t *)a, n, COMMON_ARGS);
+	} else if (swaptype == SWAP_WORDS_32) {
+		insertion_sort_uint32_t((uint32_t *)a, n, COMMON_ARGS);
+	} else if (swaptype == SWAP_WORDS_128) {
+		insertion_sort_uint128_t((uint128_t *)a, n, COMMON_ARGS);
+	} else {
+		insertion_sort_char((char *)a, n, COMMON_ARGS);
+	}
+} // forsort_basic
+
+
 void	    
 forsort_basic(void *a, const size_t n, const size_t es,
 	int (*is_lt)(const void *, const void *))

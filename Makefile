@@ -11,8 +11,9 @@ SRC=	forsort.c \
 	timsort.c \
 	WikiSort.c \
 	timsort_r.c \
-	blitsort.c \
 	grail_sort.c 
+
+#	blitsort.c \
 
 INCDIR= include
 SRCDIR= src
