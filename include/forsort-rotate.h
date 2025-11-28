@@ -90,7 +90,8 @@
 #define SMALL_ROTATE_SIZE       1
 #endif
 #else
-#define SMALL_ROTATE_SIZE       16
+//#define SMALL_ROTATE_SIZE       16
+#define SMALL_ROTATE_SIZE       0
 #endif
 
 static void NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pe, VAR * restrict pb, size_t es);
@@ -168,6 +169,7 @@ NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 	}
 } // rotate_overlap
 
+
 // The following 3 functions, and the SWAP macro,  are the only functions
 // actually required for the block rotate algorithm to do its thing.  The
 // rotate_small() and rotate_overlap() functions act more as optional
@@ -186,10 +188,25 @@ NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
 } // two_way_swap_block
 
 
-// Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
 static void
-NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
-		        VAR * restrict pb, VAR * restrict pc, size_t es)
+NAME(three_way_swap_block_negative)(VAR * restrict pa, VAR * restrict pe,
+                     VAR * restrict pb, VAR * restrict pc, size_t es)
+{
+	while (pa > pe) {
+		pa -= ES;
+		pb -= ES;
+		pc -= ES;
+		SWAP(pa, pb);
+		SWAP(pb, pc);
+	}
+} // three_way_swap_block_negative
+
+
+// When given 3 blocks of equal size, everything in B goes to A, everything
+// in C goes to B, and everything in A goes to C.
+static void
+NAME(three_way_swap_block_positive)(VAR * restrict pa, VAR * restrict pe,
+                     VAR * restrict pb, VAR * restrict pc, size_t es)
 {
 	while (pa < pe) {
 		SWAP(pa, pb);
@@ -198,82 +215,62 @@ NAME(three_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
 		pb += ES;
 		pa += ES;
 	}
-} // three_way_swap_block
+} // three_way_swap_block_positive
 
-// There's a small boost to be had by not invoking rotate_overlap()
-// for very small values
-#define	MIN_OVERLAP 3
 
 static void
 NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
-	size_t  na = NITEM(pb - pa), nb = NITEM(pe - pb);
+	size_t na = NITEM(pb - pa), nb = NITEM(pe - pb);
 
-	for (;;) {
-		if (na <= nb) {
-			size_t  nc = nb - na;
+	for ( ; na; nb = NITEM(pe - pb), na = NITEM(pb - pa)) {
+		if (na < nb) {
+			if (na <= SMALL_ROTATE_SIZE)
+				return CALL(rotate_small)(pa, pb, pe, es);
 
-			if (na <= SMALL_ROTATE_SIZE) {
-				if (na)
-					CALL(rotate_small)(pa, pb, pe, es);
-				return;
-			}
+			size_t  no = nb - na;
 
-			if (nc < na) {
-				// Overflow scenario
-				size_t	bsc = nc * ES;	// Block Size C
+			if (no <= SMALL_ROTATE_SIZE)
+				return CALL(rotate_overlap)(pa, pb, pe, es);
 
-				if ((nc > MIN_OVERLAP) && (nc <= SMALL_ROTATE_SIZE))
-					return CALL(rotate_overlap)(pa, pb, pe, es);
+			pe -= (na * ES);
+			no *= ES;
 
-				CALL(three_way_swap_block)(pb - bsc, pb, pb, pe - bsc, es);
-				CALL(two_way_swap_block)(pa, pb - bsc, pb + bsc, es);
-				na -= nc;
-				pe = pb;
-				pb -= bsc;
-				nb = nc;
-			} else {
-				// Remainder scenario
-				size_t	bsa = pb - pa;	// Block Size A
+			VAR	*ta = pa, *tb = pe, *stop = pe;
 
-				CALL(three_way_swap_block)(pa, pb, pb, pe - bsa, es);
-				pa = pb;
-				pb += bsa;
-				pe -= bsa;
-				nb -= (na << 1);
-			}
+			for ( ; (pb - ta) > no; ta += no, tb += no)
+				CALL(three_way_swap_block_positive)(pb, stop, tb, ta, es);
+
+			CALL(three_way_swap_block_positive)(ta, pb, pb, tb, es);
+
+			pa = pb;
+			pb += (pb - ta);
+		} else if (na == nb) {
+			return CALL(two_way_swap_block)(pa, pb, pb, es);
+		} else if (nb == 0) {
+			return;
 		} else {
-			size_t  nc = na - nb;
 
-			if (nb <= SMALL_ROTATE_SIZE) {
-				if (nb)
-					CALL(rotate_small)(pa, pb, pe, es);
-				return;
-			}
+			if (nb <= SMALL_ROTATE_SIZE)
+				return CALL(rotate_small)(pa, pb, pe, es);
 
-			if (nc < nb) {
-				// Overflow scenario
-				size_t	bsc = nc * ES;	// Block Size C
+			size_t  no = na - nb;
 
-				if ((nc > MIN_OVERLAP) && (nc <= SMALL_ROTATE_SIZE))
-					return CALL(rotate_overlap)(pa, pb, pe, es);
+			if (no <= SMALL_ROTATE_SIZE)
+				return CALL(rotate_overlap)(pa, pb, pe, es);
 
-				CALL(three_way_swap_block)(pb, pb + bsc, pb - bsc, pa, es);
-				CALL(two_way_swap_block)(pb + bsc, pe, pa + bsc, es);
-				pa = pb;
-				na = nc;
-				pb += bsc;
-				nb -= nc;
-			} else {
-				// Remainder scenario
-				size_t	bsb = pe - pb;	// Block Size B
+			pa += (nb * ES);
+			no *= ES;
 
-				CALL(three_way_swap_block)(pb, pe, pb - bsb, pa, es);
-				pe = pb;
-				pb -= bsb;
-				pa += bsb;
-				na -= (nb << 1);
-			}
+			VAR	*ta = pa, *tb = pe, *stop = pa;
+
+			for ( ; (tb - pb) > no; ta -= no, tb -= no)
+				CALL(three_way_swap_block_negative)(pb, stop, ta, tb, es);
+
+			CALL(three_way_swap_block_positive)(tb, pb, pb, ta, es);
+
+			pe = pb;
+			pb -= (tb - pb);
 		}
 	}
 } // rotate_block
