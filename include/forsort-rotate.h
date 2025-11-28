@@ -101,8 +101,7 @@ static void
 NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
 	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
-
-	VAR	buffer[ES * SMALL_ROTATE_SIZE];
+	VAR	buf[ES * SMALL_ROTATE_SIZE];
 	VAR	*pc = pa + (nb * ES);
 
 	// Steps are:
@@ -112,13 +111,13 @@ NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 	//
 	// Must use actual 'es' within the mem*() calls to get sizes in bytes
 	if (na < nb) {
-		memcpy(buffer, pa, na * es);
+		memcpy(buf, pa, na * es);
 		memmove(pa, pb, nb * es);
-		memcpy(pc, buffer, na * es);
+		memcpy(pc, buf, na * es);
 	} else if (nb < na) {
-		memcpy(buffer, pb, nb * es);
+		memcpy(buf, pb, nb * es);
 		memmove(pc, pa, na * es);
-		memcpy(pa, buffer, nb * es);
+		memcpy(pa, buf, nb * es);
 	}
 } // rotate_small
 
@@ -129,36 +128,47 @@ static void
 NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
 	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
-
-	VAR	buffer[ES * SMALL_ROTATE_SIZE];
+	VAR	buf[ES * SMALL_ROTATE_SIZE];
 
 	// Must use actual 'es' within the mem*() calls to get sizes in bytes
 	if (na < nb) {
 		size_t	nc = nb - na;
-		VAR	*pc = pb + (nc * ES);
+		VAR	*pc = pb, *pd = pe - (nc * ES);
 
 		// Steps are:
 		// 1.  Copy out the overlapping amount from the end of B into the buffer
-		// 2.  memmove() B over to the end of the array
-		// 3.  Swap A with B
-		// 4.  Copy the buffer back to the end of where B is now
-		memcpy(buffer, pe - (nc * ES), nc * es);
-		memmove(pc, pb, na * es);
-		CALL(two_way_swap_block)(pa, pb, pc, es);
-		memcpy(pb, buffer, nc * es);
+		// 2.  Swap A with B, while moving B over to the end of the array
+		// 3.  Copy the buffer back to the end of where B is now
+		memcpy(buf, pd, nc * es);
+
+		while (pc > pa) {
+			pc -= ES;
+			pd -= ES;
+			pe -= ES;
+			SWAP(pe, pc);
+			SWAP(pc, pd);
+		}
+
+		memcpy(pb, buf, nc * es);
 	} else if (nb < na) {
 		size_t	nc = na - nb;
-		VAR	*pc = pb - (nc * ES);
+		VAR	*pc = pa + (nb * ES), *pd = pe - (nc * ES);
 
 		// Steps are:
 		// 1.  Copy out the overlapping amount from the end of A into the buffer
-		// 2.  memmove() B over to the end of A, where A is reduced by the overlap
-		// 3.  Swap A with B
-		// 4.  Copy the buffer back to the end of where A now is
-		memcpy(buffer, pc, nc * es);
-		memmove(pc, pb, nb * es);
-		CALL(two_way_swap_block)(pa, pc, pc, es);
-		memcpy(pe - (nc * ES), buffer, nc * es);
+		// 2.  Swap non-overlapping portion of A with B, and move B back to PC
+		// 3.  Copy the buffer back to the end of where A now is
+		memcpy(buf, pc, nc * es);
+
+		while (pc < pd) {
+			SWAP(pc, pa);
+			SWAP(pa, pb);
+			pa += ES;
+			pb += ES;
+			pc += ES;
+		}
+
+		memcpy(pd, buf, nc * es);
 	}
 } // rotate_overlap
 
