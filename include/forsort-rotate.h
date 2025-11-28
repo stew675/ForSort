@@ -90,8 +90,7 @@
 #define SMALL_ROTATE_SIZE       1
 #endif
 #else
-//#define SMALL_ROTATE_SIZE       16
-#define SMALL_ROTATE_SIZE       0
+#define SMALL_ROTATE_SIZE       16
 #endif
 
 static void NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pe, VAR * restrict pb, size_t es);
@@ -102,9 +101,6 @@ static void
 NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
 	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
-
-	if (na == nb)
-		return CALL(two_way_swap_block)(pa, pb, pb, es);
 
 	VAR	buffer[ES * SMALL_ROTATE_SIZE];
 	VAR	*pc = pa + (nb * ES);
@@ -133,9 +129,6 @@ static void
 NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
 	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
-
-	if (na == nb)
-		return CALL(two_way_swap_block)(pa, pb, pb, es);
 
 	VAR	buffer[ES * SMALL_ROTATE_SIZE];
 
@@ -250,7 +243,6 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 		} else if (nb == 0) {
 			return;
 		} else {
-
 			if (nb <= SMALL_ROTATE_SIZE)
 				return CALL(rotate_small)(pa, pb, pe, es);
 
@@ -267,7 +259,7 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 			for ( ; (tb - pb) > no; ta -= no, tb -= no)
 				CALL(three_way_swap_block_negative)(pb, stop, ta, tb, es);
 
-			CALL(three_way_swap_block_positive)(tb, pb, pb, ta, es);
+			CALL(three_way_swap_block_negative)(tb, pb, pb, ta, es);
 
 			pe = pb;
 			pb -= (tb - pb);
