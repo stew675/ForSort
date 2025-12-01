@@ -86,18 +86,27 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
 
 
 static void
-NAME(swap_block)(VAR * restrict pa, VAR * restrict pe, VAR * restrict pb, size_t es)
+NAME(swap_block)(VAR * restrict pa, VAR * restrict pb, size_t num, size_t es)
 {
+#if 1
+	VAR	* restrict stop = pa + (num * ES);
+
+	while (pa != stop) {
+                SWAP(pa, pb);
+		pb += ES, pa += ES;
+	}
+#else
         for ( ; pa < pe; pa += ES, pb += ES)
                 SWAP(pa, pb);
+#endif
 } // swap_block
 
 
 // Assumes initial condition that *PA < *(PA - ES)
 static void
-NAME(bubble_down)(VAR *pa, VAR *pe, COMMON_PARAMS)
+NAME(bubble_down)(VAR * restrict pa, VAR * restrict pe, COMMON_PARAMS)
 {
-	VAR	*pn = pa - ES;
+	VAR	* restrict pn = pa - ES;
 
 	// Bubble Element Down
 	ASSERT(pa > pe);
@@ -111,9 +120,9 @@ NAME(bubble_down)(VAR *pa, VAR *pe, COMMON_PARAMS)
 
 // Assumes initial condition that *PA < *(PA + ES)
 static void
-NAME(bubble_up)(VAR *pa, VAR *pe, COMMON_PARAMS)
+NAME(bubble_up)(VAR * restrict pa, VAR * restrict pe, COMMON_PARAMS)
 {
-	VAR	*pn = pa + ES;
+	VAR	* restrict pn = pa + ES;
 
 	// Bubble Element Up
 	ASSERT(pn < pe);
@@ -126,7 +135,7 @@ NAME(bubble_up)(VAR *pa, VAR *pe, COMMON_PARAMS)
 
 
 static VAR *
-NAME(linear_search_split)(VAR *sp, VAR *pb, COMMON_PARAMS)
+NAME(linear_search_split)(VAR * restrict sp, VAR * restrict pb, COMMON_PARAMS)
 {
 	ASSERT (sp < pb);
 
@@ -142,12 +151,12 @@ NAME(linear_search_split)(VAR *sp, VAR *pb, COMMON_PARAMS)
 
 
 static VAR *
-NAME(binary_search_split)(VAR *pa, VAR *pb, COMMON_PARAMS)
+NAME(binary_search_split)(VAR * restrict pa, VAR * restrict pb, COMMON_PARAMS)
 {
 	size_t	min = 0, max = NITEM(pb - pa), pos = max >> 1;
 
-	VAR *sp = pb - (pos * ES);
-	VAR *rp = pb + (pos * ES);
+	VAR * restrict sp = pb - (pos * ES);
+	VAR * restrict rp = pb + (pos * ES);
 
 	while (min < max) {
 		// The following 3 lines implement
@@ -234,7 +243,7 @@ split_again:
 
 	// Advance the PA->PB block up as far as we can
 	for (VAR *rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(swap_block)(pa, pb, pb, es);
+		CALL(swap_block)(pa, pb, NITEM(bs), es);
 		pa += bs;  pb += bs;
 	}
 
@@ -304,7 +313,7 @@ reverse_again:
 
 	// Shift entirety of PB->PE down as far as we can
 	for (sp = pb - bs; sp >= pa && IS_LT(pe - ES, sp); sp -= bs) {
-		CALL(swap_block)(sp, pb, pb, es);
+		CALL(swap_block)(sp, pb, NITEM(bs), es);
 		pb -= bs;  pe -= bs;
 	}
 
@@ -418,7 +427,7 @@ shift_again:
 
 	// Shift entirety of PA->PB up as far as we can
 	for (rp = pb + bs; (rp <= pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(swap_block)(pa, pb, pb, es);
+		CALL(swap_block)(pa, pb, NITEM(bs), es);
 		pa += bs;
 		pb += bs;
 	}
@@ -598,9 +607,9 @@ NAME(reverse_block)(VAR * restrict pa, VAR * restrict pe, size_t es)
 
 
 static VAR *
-NAME(process_descending)(VAR *pa, VAR *pe, COMMON_PARAMS)
+NAME(process_descending)(VAR * restrict pa, VAR * restrict pe, COMMON_PARAMS)
 {
-	VAR *prev = pa, *curr = pa + ES;
+	VAR * restrict prev = pa, * restrict curr = pa + ES;
 
 	ASSERT(pa < pe);
 	while ((curr != pe) && IS_LT(curr, prev)) {
@@ -612,9 +621,9 @@ NAME(process_descending)(VAR *pa, VAR *pe, COMMON_PARAMS)
 
 
 static VAR *
-NAME(process_ascending)(VAR *pa, VAR *pe, COMMON_PARAMS)
+NAME(process_ascending)(VAR * restrict pa, VAR * restrict pe, COMMON_PARAMS)
 {
-	VAR *prev = pa, *curr = pa + ES;
+	VAR * restrict prev = pa, * restrict curr = pa + ES;
 
 	ASSERT(pa < pe);
 	while (curr != pe) {

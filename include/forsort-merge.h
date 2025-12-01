@@ -267,15 +267,15 @@ merge_done:
 
 static void
 NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
-			  VAR *w, const size_t nw, COMMON_PARAMS)
+			  VAR * restrict w, const size_t nw, COMMON_PARAMS)
 {
-	VAR	*pe = b + (nb * ES);
-	VAR	*pw = w;
+	VAR	* restrict pe = b + (nb * ES);
+	VAR	* restrict pw = w;
 
 	ASSERT(na <= nw);
 
 	// Now copy everything in A to W
-	for (VAR *ta = a; na--; pw += ES, ta += ES)
+	for (VAR * restrict ta = a; na--; pw += ES, ta += ES)
 		SWAP(pw, ta);
 
 	// We already know that the first B is smaller, so swap it now
@@ -396,8 +396,8 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 	}
 
 	// Skip last part of B if the opportunity arises
-	VAR	*sp = pe - ES;
-	VAR	*tb = b - ES;
+	VAR	* restrict sp = pe - ES;
+	VAR	* restrict tb = b - ES;
 	if (!IS_LT(sp, tb)) {
 		if (nb > 10) {
 			size_t  min = 0, max = nb;

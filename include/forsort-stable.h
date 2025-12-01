@@ -70,7 +70,7 @@ struct NAME(stable_state) {
 //  A -> PU = Duplicates
 // PU -> PE = Unique items
 static VAR *
-NAME(extract_unique_sub)(VAR * const a, VAR * const pe, VAR *ph, COMMON_PARAMS)
+NAME(extract_unique_sub)(VAR * const a, VAR * const pe, VAR * restrict ph, COMMON_PARAMS)
 {
 	VAR	*pu = a;	// Points to list of unique items
 
@@ -79,12 +79,12 @@ NAME(extract_unique_sub)(VAR * const a, VAR * const pe, VAR *ph, COMMON_PARAMS)
 		ph = pe;
 
 	// Process everything up to the hints pointer
-	for (VAR *pa = a + ES; pa < ph; pa += ES) {
+	for (VAR * restrict pa = a + ES; pa < ph; pa += ES) {
 		if (IS_LT(pa - ES, pa))
 			continue;
 
 		// The item before our position is a duplicate.  Mark it.
-		VAR *dp = pa - ES;
+		VAR * restrict dp = pa - ES;
 
 		// Now find the end of the run of duplicates
 		for (pa += ES; (pa < ph) && !IS_LT(pa - ES, pa); pa += ES);
@@ -142,7 +142,7 @@ NAME(extract_uniques)(VAR * const a, const size_t n, VAR *hints, COMMON_PARAMS)
 	// to an O(n) time complexity, albeit with a moderately high K factor
 	VAR	*pa = a;
 	size_t	na = (n + 3) >> 2;	// Looks to be about right
-	VAR	*pb = pa + (na * ES);
+	VAR	* restrict pb = pa + (na * ES);
 	VAR	*ps = pb;	// Records original intended split point
 
 	// First find where to split at, which basically means, find the
