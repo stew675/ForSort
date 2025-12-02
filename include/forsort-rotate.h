@@ -67,33 +67,58 @@
 //                Start of rotate_block() code
 //-----------------------------------------------------------------
 
-// rotate_small() and rotate_overlap() can use a small number of items worth of
-// stack space as a buffer to speed up the rotate_block() algorithm.  If
-// LOW_STACK and arbitrary object sizes are set, then rotate_small() won't get
-// used.
+// At their core, both triple_shift_rotate() and triple_shift_rotate_v2() are
+// essentially using the overlap between any two blocks as an in-place buffer
+// to effectuate a streaming transfer of bytes when exchanging the two blocks
 //
-// The rotate_block() algorithm will run about 20% slower on average, if no
-// stack space is allowed.  If arbitrary item sizes are set, but LOW_STACK is
-// not, then we will allocate 1 item in size on the stack.
+// As such, their performance is highly reliant upon the compiler being able
+// to optimise and engage SSE/AVX calls behind the scenes to rapidly exchange
+// bytes.  When the effective buffer gets too small, the algorithms need to
+// drop back to slower byte/word-wise copying, which is exactly why rotating
+// a tiny block with a large block, or rotating two blocks that only differ
+// in size by a small amount are slow degenerate scenarios.  It's fairly
+// common practise, even for in-place algorithms, to have small fixed sized
+// temporary buffers allocated on the stack to boost their operational speed.
 //
-// If we have specific types set, then since the item sizes are well bounded so
-// we'll use up to 16 items worth (256 bytes at most), which enables the
-// rotate_block() algorithm to run at good pace.
+// As such, the MIN_STREAM_SIZE definition below specifies the minimum overlap
+// size that will be used for doing data transfers.  Overlaps smaller than
+// this number of bytes (note, BYTES and not ITEMS), will instead use the
+// stack buffered calls of rotate_small() and rotate_overlap() to speed up
+// the handling of small transfers
 //
-// In general, the higher you make this value, the faster the algorithm will
-// run, but beyond about 16 items the gains do start to aymptote, and so a
-// value of 16 here is a decent tradeoff between speed and minimal stack use.
-#ifdef UNTYPED
-#if LOW_STACK
-#define SMALL_ROTATE_SIZE       0
+// Suggested values to use here range from 64-1024 bytes.  A size of 0 can
+// be set, which forces the algorithms to do all transfers in-place, which
+// naturally comes with a performance penalty for small item sizes in the
+// scenarios described above.
+#define MIN_STREAM_SIZE      1024
+
+// This is done to prevent compiler complaints if SMALL_ROTATE_SIZE is set to 0
+#if (MIN_STREAM_SIZE > 0)
+#define STREAM_BUF_SIZE MIN_STREAM_SIZE
 #else
-#define SMALL_ROTATE_SIZE       1
-#endif
-#else
-#define SMALL_ROTATE_SIZE       16
+#define STREAM_BUF_SIZE 1
 #endif
 
-static void NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pe, VAR * restrict pb, size_t es);
+#ifdef UNTYPED
+#define MIN_STREAM_ITEMS  (STREAM_BUF_SIZE / es)
+#else
+#define MIN_STREAM_ITEMS  (STREAM_BUF_SIZE / sizeof(VAR))
+#endif
+
+// Swaps two blocks of equal size.  Contents of PA are swapped
+// with the contents of PB. Terminates when PA reaches PE
+static void
+NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pb, size_t num, size_t es)
+{
+        VAR * restrict stop = pb + num;
+
+        while (pb != stop) {
+		SWAP(pa, pb);
+		pa += ES;
+		pb += ES;
+	}
+} // two_way_swap_block
+
 
 // Completely optional function to handle degenerate scenario of rotating a
 // tiny block with a larger block
@@ -101,7 +126,8 @@ static void
 NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
 	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
-	VAR	buf[ES * SMALL_ROTATE_SIZE];
+	char	_buf[STREAM_BUF_SIZE];
+	void	*buf = (void *)_buf;
 	VAR	*pc = pa + (nb * ES);
 
 	// Steps are:
@@ -122,52 +148,67 @@ NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 } // rotate_small
 
 
+static void
+NAME(bridge_down)(VAR * restrict pc, VAR *pd, VAR *pe, size_t num, size_t es)
+{
+        VAR *stop = pc - (num * ES);
+
+        while (pc != stop) {
+		pc -= ES;
+		pd -= ES;
+		pe -= ES;
+		SWAP(pe, pc);
+		SWAP(pc, pd);
+	}
+} // bridge_down
+
+
+static void
+NAME(bridge_up)(VAR * restrict pa, VAR *pb, VAR *pc, size_t num, size_t es)
+{
+        VAR *stop = pc + (num * ES);
+
+        while (pc != stop) {
+		SWAP(pc, pa);
+		SWAP(pa, pb);
+		pa += ES;
+		pb += ES;
+		pc += ES;
+	}
+} // bridge_down
+
+
 // Uses a limited amount of stack space to rotate two blocks that overlap by
 // only a small amount.  It's basically a special variant of rotate_small()
 static void
 NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
 	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
-	VAR	buf[ES * SMALL_ROTATE_SIZE];
+	char	_buf[STREAM_BUF_SIZE];
+	void	*buf = (void *)_buf;
 
 	// Must use actual 'es' within the mem*() calls to get sizes in bytes
 	if (na < nb) {
-		size_t	nc = nb - na;
-		VAR	*pc = pb, *pd = pe - (nc * ES);
-
 		// Steps are:
 		// 1.  Copy out the overlapping amount from the end of B into the buffer
 		// 2.  Swap A with B, while moving B over to the end of the array
 		// 3.  Copy the buffer back to the end of where B is now
+		size_t	nc = nb - na;
+		VAR	*pc = pb, *pd = pb + (na * ES);
+
 		memcpy(buf, pd, nc * es);
-
-		while (pc > pa) {
-			pc -= ES;
-			pd -= ES;
-			pe -= ES;
-			SWAP(pe, pc);
-			SWAP(pc, pd);
-		}
-
+		CALL(bridge_down)(pc, pd, pe, na, es);
 		memcpy(pb, buf, nc * es);
 	} else if (nb < na) {
-		size_t	nc = na - nb;
-		VAR	*pc = pa + (nb * ES), *pd = pe - (nc * ES);
-
 		// Steps are:
 		// 1.  Copy out the overlapping amount from the end of A into the buffer
 		// 2.  Swap non-overlapping portion of A with B, and move B back to PC
 		// 3.  Copy the buffer back to the end of where A now is
+		size_t	nc = na - nb;
+		VAR	*pc = pa + (nb * ES), *pd = pc + (nb * ES);
+
 		memcpy(buf, pc, nc * es);
-
-		while (pc < pd) {
-			SWAP(pc, pa);
-			SWAP(pa, pb);
-			pa += ES;
-			pb += ES;
-			pc += ES;
-		}
-
+		CALL(bridge_up)(pa, pb, pc, nb, es);
 		memcpy(pd, buf, nc * es);
 	}
 } // rotate_overlap
@@ -180,45 +221,37 @@ NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 
 // Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
 static void
-NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pe,
-		        VAR * restrict pb, size_t es)
+NAME(ring_positive)(VAR * restrict pa, VAR * restrict po,
+                     VAR * restrict pb, size_t num, size_t es)
 {
-	while (pa < pe) {
-		SWAP(pa, pb);
-		pb += ES;
+	VAR	*stop = pb + (num * ES);
+
+	while (pb != stop) {
+		SWAP(pa, po);
+		SWAP(po, pb);
 		pa += ES;
+		po += ES;
+		pb += ES;
 	}
-} // two_way_swap_block
-
-
-static void
-NAME(three_way_swap_block_negative)(VAR * restrict pa, VAR * restrict pe,
-                     VAR * restrict pb, VAR * restrict pc, size_t es)
-{
-	while (pa > pe) {
-		pa -= ES;
-		pb -= ES;
-		pc -= ES;
-		SWAP(pa, pb);
-		SWAP(pb, pc);
-	}
-} // three_way_swap_block_negative
+} // ring_positive
 
 
 // When given 3 blocks of equal size, everything in B goes to A, everything
 // in C goes to B, and everything in A goes to C.
 static void
-NAME(three_way_swap_block_positive)(VAR * restrict pa, VAR * restrict pe,
-                     VAR * restrict pb, VAR * restrict pc, size_t es)
+NAME(ring_negative)(VAR * restrict pa, VAR * restrict po,
+                     VAR * restrict pb, size_t num, size_t es)
 {
-	while (pa < pe) {
-		SWAP(pa, pb);
-		SWAP(pb, pc);
-		pc += ES;
-		pb += ES;
-		pa += ES;
+	VAR	*stop = pb - (num * ES);
+
+	while (pb != stop) {
+		pa -= ES;
+		po -= ES;
+		pb -= ES;
+		SWAP(pb, po);
+		SWAP(po, pa);
 	}
-} // three_way_swap_block_positive
+} // ring_negative
 
 
 static void
@@ -228,51 +261,40 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 
 	for ( ; na; nb = NITEM(pe - pb), na = NITEM(pb - pa)) {
 		if (na < nb) {
-			if (na <= SMALL_ROTATE_SIZE)
-				return CALL(rotate_small)(pa, pb, pe, es);
-
 			size_t  no = nb - na;
 
-			if (no <= SMALL_ROTATE_SIZE)
+			if (na <= MIN_STREAM_ITEMS)
+				return CALL(rotate_small)(pa, pb, pe, es);
+
+
+			if (no <= MIN_STREAM_ITEMS)
 				return CALL(rotate_overlap)(pa, pb, pe, es);
 
-			pe -= (na * ES);
-			no *= ES;
+			for ( ; na > no; pa += (no * ES), na -= no)
+				CALL(ring_positive)(pa, pb, pe - (na * ES), no, es);
 
-			VAR	*ta = pa, *tb = pe, *stop = pe;
+			CALL(ring_positive)(pa, pb, pe - (na * ES), na, es);
 
-			for ( ; (pb - ta) > no; ta += no, tb += no)
-				CALL(three_way_swap_block_positive)(pb, stop, tb, ta, es);
-
-			CALL(three_way_swap_block_positive)(ta, pb, pb, tb, es);
-
-			pa = pb;
-			pb += (pb - ta);
+			pa = pb;  pe = pb + (no * ES);  pb = pb + (na * ES);
 		} else if (na == nb) {
-			return CALL(two_way_swap_block)(pa, pb, pb, es);
+			return CALL(two_way_swap_block)(pa, pb, na, es);
 		} else if (nb == 0) {
 			return;
 		} else {
-			if (nb <= SMALL_ROTATE_SIZE)
-				return CALL(rotate_small)(pa, pb, pe, es);
-
 			size_t  no = na - nb;
 
-			if (no <= SMALL_ROTATE_SIZE)
+			if (nb <= MIN_STREAM_ITEMS)
+				return CALL(rotate_small)(pa, pb, pe, es);
+
+			if (no <= MIN_STREAM_ITEMS)
 				return CALL(rotate_overlap)(pa, pb, pe, es);
 
-			pa += (nb * ES);
-			no *= ES;
+			for ( ; nb > no; pe -= (no * ES), nb -= no)
+				CALL(ring_negative)(pa + (nb * ES), pb, pe, no, es);
 
-			VAR	*ta = pa, *tb = pe, *stop = pa;
+			CALL(ring_negative)(pa + (nb * ES), pb, pe, nb, es);
 
-			for ( ; (tb - pb) > no; ta -= no, tb -= no)
-				CALL(three_way_swap_block_negative)(pb, stop, ta, tb, es);
-
-			CALL(three_way_swap_block_negative)(tb, pb, pb, ta, es);
-
-			pe = pb;
-			pb -= (tb - pb);
+			pe = pb;  pa = pb - (no * ES);  pb = pb - (nb * ES);
 		}
 	}
 } // rotate_block
@@ -282,8 +304,9 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 //                        #define cleanup
 //-----------------------------------------------------------------
 
-#undef SMALL_ROTATE_SIZE
-#undef MIN_OVERLAP
+#undef MIN_STREAM_ITEMS
+#undef MIN_STREAM_SIZE
+#undef STREAM_BUF_SIZE
 #undef SWAP
 #undef CONCAT
 #undef MAKE_STR
