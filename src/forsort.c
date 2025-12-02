@@ -188,7 +188,8 @@ enum {
 // Choose the first #define if you want to test with inlined comparisons
 // Sort times are typically ~0.7x of when using an external comparison
 #if 0
-#define	IS_LT(_x_, _y_)	 (*(uint32_t *)(_x_) < *(uint32_t *)(_y_))
+extern size_t numcmps;
+#define	IS_LT(_x_, _y_)	 (numcmps++, *(uint32_t *)(_x_) < *(uint32_t *)(_y_))
 #else
 #define	IS_LT is_lt
 #endif

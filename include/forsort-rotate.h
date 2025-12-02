@@ -107,7 +107,7 @@
 
 // Swaps two blocks of equal size.  Contents of PA are swapped
 // with the contents of PB. Terminates when PA reaches PE
-static void
+static inline void
 NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pb, size_t num, size_t es)
 {
         VAR * restrict stop = pb + num;
@@ -148,7 +148,7 @@ NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 } // rotate_small
 
 
-static void
+static inline void
 NAME(bridge_down)(VAR * restrict pc, VAR *pd, VAR *pe, size_t num, size_t es)
 {
         VAR *stop = pc - (num * ES);
@@ -163,7 +163,7 @@ NAME(bridge_down)(VAR * restrict pc, VAR *pd, VAR *pe, size_t num, size_t es)
 } // bridge_down
 
 
-static void
+static inline void
 NAME(bridge_up)(VAR * restrict pa, VAR *pb, VAR *pc, size_t num, size_t es)
 {
         VAR *stop = pc + (num * ES);
@@ -220,7 +220,7 @@ NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 // "helpers" to handle a small handful of degenerate corner cases.
 
 // Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
-static void
+static inline void
 NAME(ring_positive)(VAR * restrict pa, VAR * restrict po,
                      VAR * restrict pb, size_t num, size_t es)
 {
@@ -238,7 +238,7 @@ NAME(ring_positive)(VAR * restrict pa, VAR * restrict po,
 
 // When given 3 blocks of equal size, everything in B goes to A, everything
 // in C goes to B, and everything in A goes to C.
-static void
+static inline void
 NAME(ring_negative)(VAR * restrict pa, VAR * restrict po,
                      VAR * restrict pb, size_t num, size_t es)
 {
@@ -261,11 +261,10 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 
 	for ( ; na; nb = NITEM(pe - pb), na = NITEM(pb - pa)) {
 		if (na < nb) {
-			size_t  no = nb - na;
-
 			if (na <= MIN_STREAM_ITEMS)
 				return CALL(rotate_small)(pa, pb, pe, es);
 
+			size_t  no = nb - na;
 
 			if (no <= MIN_STREAM_ITEMS)
 				return CALL(rotate_overlap)(pa, pb, pe, es);
@@ -275,16 +274,16 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 
 			CALL(ring_positive)(pa, pb, pe - (na * ES), na, es);
 
-			pa = pb;  pe = pb + (no * ES);  pb = pb + (na * ES);
+			pa = pb, pe = pb + (no * ES), pb = pb + (na * ES);
 		} else if (na == nb) {
 			return CALL(two_way_swap_block)(pa, pb, na, es);
 		} else if (nb == 0) {
 			return;
 		} else {
-			size_t  no = na - nb;
-
 			if (nb <= MIN_STREAM_ITEMS)
 				return CALL(rotate_small)(pa, pb, pe, es);
+
+			size_t  no = na - nb;
 
 			if (no <= MIN_STREAM_ITEMS)
 				return CALL(rotate_overlap)(pa, pb, pe, es);
@@ -294,7 +293,7 @@ NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 
 			CALL(ring_negative)(pa + (nb * ES), pb, pe, nb, es);
 
-			pe = pb;  pa = pb - (no * ES);  pb = pb - (nb * ES);
+			pe = pb, pa = pb - (no * ES), pb = pb - (nb * ES);
 		}
 	}
 } // rotate_block

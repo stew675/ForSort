@@ -26,7 +26,7 @@ static	bool	correct = true;
 #if (USE32BIT == 0)
 static	bool	stable = true;
 #endif
-static	size_t	numcmps = 0;
+	size_t	numcmps = 0;
 static	size_t	worksize = 0;
 static	bool	supports_workspace = false;
 
