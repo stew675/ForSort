@@ -217,31 +217,11 @@ NAME(linear_search_rotate)(VAR * restrict pa, VAR * restrict pb, VAR * restrict 
 } // linear_search_rotate
 
 
-
-#ifndef GET_SPLIT_STACK_SIZE
-#define GET_SPLIT_STACK_SIZE
-// The value returned by this function is tied to this line from split_merge()
-//
-//	size_t split_size = ((NITEM(bs) + 3) / 5) * ES;
-//
-// If that calculation is altered, then this function needs to be updated
-static size_t
-get_split_stack_size(size_t n)
-{
-	if (n < 3)
-		return 2;
-
-	size_t sz = msb64(n);
-
-	// Stack size needs to be l(2) / l(1.25), which is ~3.1063 times the
-	// index of the most significant bit. 28/9 is 3.111.., and so it's a
-	// nice integer approximation.
-	sz = ((sz * 28) / 9) + 1;
-
-	return sz;
-} // get_split_stack_size
-#endif
-
+// The alglorithm appears to be viable now that I added the triple_shift_v2()
+// block rotation to Forsort.  I had tried this algorithm before, but with the
+// older block rotation it performed badly. It now appears that this is out
+// performing split_merge_in_place() AND requires 1/3 of the stack space.  It
+// still isn't as fast as shift_merge_in_place() is though.
 static void
 NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
@@ -251,10 +231,11 @@ NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	if (!IS_LT(pb, pb - ES))
 		return;
 
-	// The stack_size is * 2 due to two pointers per stack entry.  Even
-	// if we're asked to merge 2^64 items, the stack will be just 3.2KB
-	size_t	stack_size = get_split_stack_size(NITEM(pb - pa)) * 2;
-	size_t	bs, split_size;
+	// The stack_size is * 2 due to two pointers per stack entry.  Even if
+	// we're asked to merge 2^64 items, the stack will be 1024 bytes in
+	// size, if pointers are 8 bytes in size
+	size_t	stack_size = msb64(NITEM(pb - pa)) * 2;
+	size_t	bs, split_size, step;
 	_Alignas(64) VAR *stack_space[stack_size];
 	VAR	**work_stack = stack_space, *spa, *rp, *vb;
 
@@ -267,27 +248,26 @@ rotate_again:
 
 	// Calculate our split size ahead of time.  Ensure that this formula
 	// never returns 0.  Due to single item bubbling, we're guaranteed
-	// to have at least two items.  Split off 1/5th of the items.
-	// The imbalanced split here improves algorithmic performance.
-	// If you change this calculation, then get_split_stack_size() needs
-	// to be updated to match the new ratio
+	// to have at least two items.
 	split_size = (NITEM(bs) >> 1) * ES;
 
-	// Scan to find rotation point
+	// Scan to find rotation point.  This means finding the largest item
+	// in PB->PE that is smaller than, but not equal to, *PA
 
 	// First "pretend" to be advancing the block, just to get to within
 	// the rough ballpark.  Here we advance a virtual b pointer
+	step = ES * 3;		// A start of ES * 3 experimentally works best
 	vb = pb;
-	rp = pb + bs;
-	for ( ; (rp < pe) && IS_LT(rp - ES, pa); rp += bs, vb += bs);
+	rp = pb + step;
+	for ( ; (rp <= pe) && IS_LT(rp - ES, pa); step += step, vb = rp, rp += step);
 
-	// Limit RP to the data set
+	// Limit RP to the end of the data set
 	if (rp > pe)
 		rp = pe;
 
 	// Now nail down the exact rotation point.  It's going to be somewhere
 	// in the inclusive range of VB->RP
-	if (bs >= (ES << 3)) {
+	if ((rp - vb) >= (ES << 3)) {
 		// Binary search on larger sets
 		rp = CALL(binary_search_rotate)(pa, vb, rp, COMMON_ARGS);
 	} else {
@@ -320,6 +300,9 @@ rotate_again:
 
 rotate_pop:
 	while (work_stack != stack_space) {
+		// Because PA is always precisely in position, we can use
+		// it as our new PE when popping work off the stack
+		pe = pa;
 		pb = *--work_stack;
 		pa = *--work_stack;
 
@@ -328,6 +311,31 @@ rotate_pop:
 	}
 } // rotate_merge_in_place
 	
+
+#ifndef GET_SPLIT_STACK_SIZE
+#define GET_SPLIT_STACK_SIZE
+// The value returned by this function is tied to this line from split_merge()
+//
+//	size_t split_size = ((NITEM(bs) + 3) / 5) * ES;
+//
+// If that calculation is altered, then this function needs to be updated
+static size_t
+get_split_stack_size(size_t n)
+{
+	if (n < 3)
+		return 2;
+
+	size_t sz = msb64(n);
+
+	// Stack size needs to be l(2) / l(1.25), which is ~3.1063 times the
+	// index of the most significant bit. 28/9 is 3.111.., and so it's a
+	// nice integer approximation.
+	sz = ((sz * 28) / 9) + 1;
+
+	return sz;
+} // get_split_stack_size
+#endif
+
 // This in-place split merge algorithm started off life as a variant of ShiftMerge
 // below, but I was looking for a way to solve the multiple degenerate scenarios
 // where unbounded stack recursion could occur.  In the end, I couldn't fully
@@ -714,9 +722,9 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	CALL(basic_top_down_sort)(pa, na, COMMON_ARGS);
 	CALL(basic_top_down_sort)(pb, nb, COMMON_ARGS);
 
-	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+//	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 //	CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
-//	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 } // basic_top_down_sort
 
 
