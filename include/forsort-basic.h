@@ -177,6 +177,47 @@ NAME(binary_search_split)(VAR * restrict pa, VAR * restrict pb, COMMON_PARAMS)
 } // binary_search_split
 
 
+static VAR *
+NAME(binary_search_rotate)(VAR * restrict pa, VAR * restrict pb, VAR * restrict pe, COMMON_PARAMS)
+{
+	size_t	min = 0, max = NITEM(pe - pb), pos = max >> 2;
+
+	VAR * restrict rp = pb + (pos * ES);
+
+	while (min < max) {
+		// The following 3 lines implement
+		// this logic in a branchless manner
+		// if (IS_LT(rp, pa))
+		// 	min = pos + 1;
+		// else
+		// 	max = pos;
+		int res = !!(IS_LT(rp, pa));
+		max = (res * max) + (!res * pos++);
+		min = (!res * min) + (res * pos);
+
+		pos = (min + max) >> 1;
+		rp = pb + (pos * ES);
+	}
+	return rp;
+} // binary_search_rotate
+
+
+static VAR *
+NAME(linear_search_rotate)(VAR * restrict pa, VAR * restrict pb, VAR * restrict pe, COMMON_PARAMS)
+{
+	ASSERT (pb <= pe);
+
+	while (pb != pe) {
+		if (IS_LT(pb, pa))
+			pb += ES;
+		else
+			return pb;
+	}
+	return pb;
+} // linear_search_rotate
+
+
+
 #ifndef GET_SPLIT_STACK_SIZE
 #define GET_SPLIT_STACK_SIZE
 // The value returned by this function is tied to this line from split_merge()
@@ -201,6 +242,92 @@ get_split_stack_size(size_t n)
 } // get_split_stack_size
 #endif
 
+static void
+NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
+{
+	ASSERT((pb > pa) && (pe > pb));
+
+	// Check if we need to do anything at all
+	if (!IS_LT(pb, pb - ES))
+		return;
+
+	// The stack_size is * 2 due to two pointers per stack entry.  Even
+	// if we're asked to merge 2^64 items, the stack will be just 3.2KB
+	size_t	stack_size = get_split_stack_size(NITEM(pb - pa)) * 2;
+	size_t	bs, split_size;
+	_Alignas(64) VAR *stack_space[stack_size];
+	VAR	**work_stack = stack_space, *spa, *rp, *vb;
+
+rotate_again:
+	// Just bubble single items into place. We already know that *PB < *PA
+	if ((bs = (pb - pa)) == ES) {
+		CALL(bubble_up)(pa, pe, COMMON_ARGS);
+		goto rotate_pop;
+	}
+
+	// Calculate our split size ahead of time.  Ensure that this formula
+	// never returns 0.  Due to single item bubbling, we're guaranteed
+	// to have at least two items.  Split off 1/5th of the items.
+	// The imbalanced split here improves algorithmic performance.
+	// If you change this calculation, then get_split_stack_size() needs
+	// to be updated to match the new ratio
+	split_size = (NITEM(bs) >> 1) * ES;
+
+	// Scan to find rotation point
+
+	// First "pretend" to be advancing the block, just to get to within
+	// the rough ballpark.  Here we advance a virtual b pointer
+	vb = pb;
+	rp = pb + bs;
+	for ( ; (rp < pe) && IS_LT(rp - ES, pa); rp += bs, vb += bs);
+
+	// Limit RP to the data set
+	if (rp > pe)
+		rp = pe;
+
+	// Now nail down the exact rotation point.  It's going to be somewhere
+	// in the inclusive range of VB->RP
+	if (bs >= (ES << 3)) {
+		// Binary search on larger sets
+		rp = CALL(binary_search_rotate)(pa, vb, rp, COMMON_ARGS);
+	} else {
+		// Linear scan is faster for smaller sets
+		rp = CALL(linear_search_rotate)(pa, vb, rp, COMMON_ARGS);
+	}
+
+	// Now rotate the block.  This puts PA precisely into position
+	if (rp > pb) {
+		CALL(rotate_block)(pa, pb, rp, es);
+		pa += rp - pb;
+		pb = rp;
+		if (pb == pe)
+			goto rotate_pop;
+	}
+
+	// At this point, pa is precisely where it needs to be
+	// Split the A block into two, and keep trying with the remainder
+	spa = pa + split_size;
+	if (IS_LT(pb, pb - ES)) {
+		// Push a new split point to the work stack.  Since PA is
+		// already in position, push the item after PA
+		if ((spa - pa) > ES) {
+			*work_stack++ = pa + ES;
+			*work_stack++ = spa;
+		}
+		pa = spa;
+		goto rotate_again;
+	}
+
+rotate_pop:
+	while (work_stack != stack_space) {
+		pb = *--work_stack;
+		pa = *--work_stack;
+
+		if (IS_LT(pb, pb - ES))
+			goto rotate_again;
+	}
+} // rotate_merge_in_place
+	
 // This in-place split merge algorithm started off life as a variant of ShiftMerge
 // below, but I was looking for a way to solve the multiple degenerate scenarios
 // where unbounded stack recursion could occur.  In the end, I couldn't fully
@@ -588,6 +715,8 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	CALL(basic_top_down_sort)(pb, nb, COMMON_ARGS);
 
 	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+//	CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+//	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 } // basic_top_down_sort
 
 
