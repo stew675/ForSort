@@ -202,7 +202,7 @@ NAME(merge_duplicates)(struct NAME(stable_state) *state, VAR **list, size_t n, V
 	if (nm1 > (nw * WSRATIO)) {
 		// Use in-place merging
 #if LOW_STACK
-		CALL(split_merge_in_place)(m1, m2, pe, COMMON_ARGS);
+		CALL(rotate_merge_in_place)(m1, m2, pe, COMMON_ARGS);
 #else
 		CALL(shift_merge_in_place)(m1, m2, pe, COMMON_ARGS);
 #endif
@@ -297,12 +297,12 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 
 #if LOW_STACK
 	if ((nm > 0) && (nm < nw)) {
-		CALL(split_merge_in_place)(md, ws, pr, COMMON_ARGS);
-		CALL(split_merge_in_place)(md, pr, pe, COMMON_ARGS);
+		CALL(rotate_merge_in_place)(md, ws, pr, COMMON_ARGS);
+		CALL(rotate_merge_in_place)(md, pr, pe, COMMON_ARGS);
 	} else {
-		CALL(split_merge_in_place)(ws, pr, pe, COMMON_ARGS);
+		CALL(rotate_merge_in_place)(ws, pr, pe, COMMON_ARGS);
 		if (nm > 0)
-			CALL(split_merge_in_place)(md, ws, pe, COMMON_ARGS);
+			CALL(rotate_merge_in_place)(md, ws, pe, COMMON_ARGS);
 	}
 #else
 	if ((nm > 0) && (nm < nw)) {
@@ -468,7 +468,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		// We cannot use the faster merge algorithm here or we will
 		// end up breaking sort stability.
 #if LOW_STACK
-		CALL(split_merge_in_place)(ws, nws, pr, COMMON_ARGS);
+		CALL(rotate_merge_in_place)(ws, nws, pr, COMMON_ARGS);
 #else
 		CALL(shift_merge_in_place)(ws, nws, pr, COMMON_ARGS);
 #endif

@@ -574,7 +574,7 @@ NAME(merge_sort_in_place)(VAR * const pa, const size_t n, VAR * const ws,
 
 	// Now merge the workspace and the main sets together
 #if LOW_STACK
-	CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 #else
 	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 #endif

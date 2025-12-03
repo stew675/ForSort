@@ -336,6 +336,7 @@ get_split_stack_size(size_t n)
 } // get_split_stack_size
 #endif
 
+#if 0
 // This in-place split merge algorithm started off life as a variant of ShiftMerge
 // below, but I was looking for a way to solve the multiple degenerate scenarios
 // where unbounded stack recursion could occur.  In the end, I couldn't fully
@@ -401,7 +402,7 @@ split_pop:
 			goto split_again;
 	}
 } // split_merge_in_place
-
+#endif
 
 #define	SHIFT_STACK_PUSH(s1, s2, s3) 	\
 	{ *stack++ = s1; *stack++ = s2; *stack++ = s3; }
@@ -487,11 +488,11 @@ reverse_again:
 	if (IS_LT(rp, rp - ES)) {
 		if (bs) {
 			// If our stack is about to over-flow, just invoke
-			// split_merge_in_place().  It's a bit slower but
+			// rotate_merge_in_place().  It's a bit slower but
 			// we'll only use it until the obstacle has passed
 			SHIFT_STACK_PUSH(pa, sp, pb);
 			if (unlikely(stack == maxstack)) {
-				CALL(split_merge_in_place)(pb, rp, pe, COMMON_ARGS);
+				CALL(rotate_merge_in_place)(pb, rp, pe, COMMON_ARGS);
 				goto reverse_pop;
 			}
 		}
@@ -690,7 +691,7 @@ NAME(basic_bottom_up_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 
 			if (pos2 < pe) {
 #if LOW_STACK
-				CALL(split_merge_in_place)(pos1, pos2, pos3, COMMON_ARGS);
+				CALL(rotate_merge_in_place)(pos1, pos2, pos3, COMMON_ARGS);
 #else
 				CALL(shift_merge_in_place)(pos1, pos2, pos3, COMMON_ARGS);
 #endif
@@ -722,9 +723,8 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	CALL(basic_top_down_sort)(pa, na, COMMON_ARGS);
 	CALL(basic_top_down_sort)(pb, nb, COMMON_ARGS);
 
-//	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
-//	CALL(split_merge_in_place)(pa, pb, pe, COMMON_ARGS);
-	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+//	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 } // basic_top_down_sort
 
 
