@@ -312,6 +312,9 @@ rotate_pop:
 } // rotate_merge_in_place
 	
 
+// Deprecate split_merge_in_place entirely
+#if 0
+
 #ifndef GET_SPLIT_STACK_SIZE
 #define GET_SPLIT_STACK_SIZE
 // The value returned by this function is tied to this line from split_merge()
@@ -336,7 +339,6 @@ get_split_stack_size(size_t n)
 } // get_split_stack_size
 #endif
 
-#if 0
 // This in-place split merge algorithm started off life as a variant of ShiftMerge
 // below, but I was looking for a way to solve the multiple degenerate scenarios
 // where unbounded stack recursion could occur.  In the end, I couldn't fully
@@ -425,7 +427,7 @@ NAME(reverse_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	if (!IS_LT(pb, pb - ES))
 		return;
 
-	size_t	stack_size = get_split_stack_size(NITEM(pe - pb)) * 3;
+	size_t	stack_size = msb64(NITEM(pb - pa)) * 12;
 	_Alignas(64) VAR *_stack[stack_size];
 	VAR	**stack = _stack, **maxstack = stack + stack_size;
 	VAR	*rp, *sp;
@@ -534,7 +536,7 @@ NAME(shift_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 
 	// The work stack holds 3 pointers per "position" and so the
 	// multiplier here must be an even multiple of 3.
-	size_t	stack_size = get_split_stack_size(NITEM(pb - pa)) * 3;
+	size_t	stack_size = msb64(NITEM(pb - pa)) * 12;
 	_Alignas(64) VAR *_stack[stack_size];
 	VAR	**stack = _stack, **maxstack = stack + stack_size;
 	VAR	*rp, *sp;	// Roaming-Pointer, and Split Pointer
