@@ -86,27 +86,27 @@ NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
 
 
 static void
-NAME(swap_block)(VAR * restrict pa, VAR * restrict pb, size_t num, size_t es)
+NAME(swap_block)(VAR *restrict pa, VAR *restrict pb, size_t num, size_t es)
 {
 #if 1
-	VAR	* restrict stop = pa + (num * ES);
+	VAR	*restrict stop = pa + (num * ES);
 
 	while (pa != stop) {
-                SWAP(pa, pb);
+		SWAP(pa, pb);
 		pb += ES, pa += ES;
 	}
 #else
-        for ( ; pa < pe; pa += ES, pb += ES)
-                SWAP(pa, pb);
+	for ( ; pa < pe; pa += ES, pb += ES)
+		SWAP(pa, pb);
 #endif
 } // swap_block
 
 
 // Assumes initial condition that *PA < *(PA - ES)
 static void
-NAME(bubble_down)(VAR * restrict pa, VAR * restrict pe, COMMON_PARAMS)
+NAME(bubble_down)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
 {
-	VAR	* restrict pn = pa - ES;
+	VAR	*restrict pn = pa - ES;
 
 	// Bubble Element Down
 	ASSERT(pa > pe);
@@ -119,10 +119,10 @@ NAME(bubble_down)(VAR * restrict pa, VAR * restrict pe, COMMON_PARAMS)
 
 
 // Assumes initial condition that *PA < *(PA + ES)
-static void
-NAME(bubble_up)(VAR * restrict pa, VAR * restrict pe, COMMON_PARAMS)
+static VAR *
+NAME(bubble_up)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
 {
-	VAR	* restrict pn = pa + ES;
+	VAR	*restrict pn = pa + ES;
 
 	// Bubble Element Up
 	ASSERT(pn < pe);
@@ -131,11 +131,12 @@ NAME(bubble_up)(VAR * restrict pa, VAR * restrict pe, COMMON_PARAMS)
 		pa = pn;
 		pn += ES;
 	} while ((pn != pe) && IS_LT(pn, pa));
+	return pa;
 } // bubble_up
 
 
 static VAR *
-NAME(linear_search_split)(VAR * restrict sp, VAR * restrict pb, COMMON_PARAMS)
+NAME(linear_search_split)(VAR *restrict sp, VAR *restrict pb, COMMON_PARAMS)
 {
 	ASSERT (sp < pb);
 
@@ -151,21 +152,40 @@ NAME(linear_search_split)(VAR * restrict sp, VAR * restrict pb, COMMON_PARAMS)
 
 
 static VAR *
-NAME(binary_search_split)(VAR * restrict pa, VAR * restrict pb, COMMON_PARAMS)
+NAME(binary_search_split)(VAR *restrict pa, VAR *restrict pb, COMMON_PARAMS)
 {
+#if 1
+	uint32_t mid = NITEM(pb - pa), pos = 0, mask = 0xfffffffe;
+	VAR *restrict sp;
+	VAR *restrict rp;
+
+	do {
+		uint32_t val = (mid++ >> 1);
+		pos += val;
+		rp = pb + pos * ES;
+		sp = pb - ((pos + 1) * ES);
+		pos -= (IS_LT(rp, sp) - 1) & val;
+	} while ((mid >>= 1) & mask);
+
+	rp = pb + pos * ES;
+	sp = pb - ((pos + 1) * ES);
+	if (IS_LT(rp, sp))
+		return sp;
+	return sp + ES;
+#else
 	size_t	min = 0, max = NITEM(pb - pa), pos = max >> 1;
 
-	VAR * restrict sp = pb - (pos * ES);
-	VAR * restrict rp = pb + (pos * ES);
+	VAR *restrict sp = pb - (pos * ES);
+	VAR *restrict rp = pb + (pos * ES);
 
-	while (min < max) {
+	while (min ^ max) {
 		// The following 3 lines implement
 		// this logic in a branchless manner
 		// if (IS_LT(rp, sp - ES))
 		// 	min = pos + 1;
 		// else
 		// 	max = pos;
-		int res = !!(IS_LT(rp, sp - ES));
+		int res = (IS_LT(rp, sp - ES));
 		max = (res * max) + (!res * pos++);
 		min = (!res * min) + (res * pos);
 
@@ -174,17 +194,32 @@ NAME(binary_search_split)(VAR * restrict pa, VAR * restrict pb, COMMON_PARAMS)
 		rp = pb + (pos * ES);
 	}
 	return sp;
+#endif
 } // binary_search_split
 
 
 static VAR *
-NAME(binary_search_rotate)(VAR * restrict pa, VAR * restrict pb, VAR * restrict pe, COMMON_PARAMS)
+NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe, COMMON_PARAMS)
 {
+	// Find where to rotate
+#if 1
+	uint32_t mid = NITEM(pe - pb), pos = 0, mask = -2;
+
+	do {
+		uint32_t val = (mid++ >> 1);
+		pos += val;
+		uint32_t res = IS_LT(pb + (pos * ES), pa) - 1;
+		pos -= res & val;
+		mid >>= 1;
+	} while (mid & mask);
+
+	return pb + (pos + IS_LT(pb, pa)) * ES;
+#else
 	size_t	min = 0, max = NITEM(pe - pb), pos = max >> 2;
 
-	VAR * restrict rp = pb + (pos * ES);
+	VAR *restrict rp = pb + (pos * ES);
 
-	while (min < max) {
+	while (min ^ max) {
 		// The following 3 lines implement
 		// this logic in a branchless manner
 		// if (IS_LT(rp, pa))
@@ -199,29 +234,24 @@ NAME(binary_search_rotate)(VAR * restrict pa, VAR * restrict pb, VAR * restrict 
 		rp = pb + (pos * ES);
 	}
 	return rp;
+#endif
 } // binary_search_rotate
 
 
 static VAR *
-NAME(linear_search_rotate)(VAR * restrict pa, VAR * restrict pb, VAR * restrict pe, COMMON_PARAMS)
+NAME(linear_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe, COMMON_PARAMS)
 {
 	ASSERT (pb <= pe);
-
-	while (pb != pe) {
-		if (IS_LT(pb, pa))
-			pb += ES;
-		else
-			return pb;
-	}
+	for ( ; (pb != pe) && IS_LT(pb, pa); pb += ES);
 	return pb;
 } // linear_search_rotate
 
 
-// The alglorithm appears to be viable now that I added the triple_shift_v2()
+// The algorithm appears to be viable now that I added the triple_shift_v2()
 // block rotation to Forsort.  I had tried this algorithm before, but with the
 // older block rotation it performed badly. It now appears that this is out
 // performing split_merge_in_place() AND requires 1/3 of the stack space.  It
-// still isn't as fast as shift_merge_in_place() is though.
+// isn't as fast as shift_merge_in_place() is though, being about 7% slower
 static void
 NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
@@ -242,7 +272,7 @@ NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 rotate_again:
 	// Just bubble single items into place. We already know that *PB < *PA
 	if ((bs = (pb - pa)) == ES) {
-		CALL(bubble_up)(pa, pe, COMMON_ARGS);
+		pa = CALL(bubble_up)(pa, pe, COMMON_ARGS);
 		goto rotate_pop;
 	}
 
@@ -254,20 +284,25 @@ rotate_again:
 	// Scan to find rotation point.  This means finding the largest item
 	// in PB->PE that is smaller than, but not equal to, *PA
 
-	// First "pretend" to be advancing the block, just to get to within
-	// the rough ballpark.  Here we advance a virtual b pointer
+	// Start off scanning closely ahead, looking ahead exponentially further
+	// the longer we loop.  This helps the scan to work well with small
+	// gaps at the start of large ranges.
+#if 1
 	step = ES * 3;		// A start of ES * 3 experimentally works best
 	vb = pb;
 	rp = pb + step;
 	for ( ; (rp <= pe) && IS_LT(rp - ES, pa); step += step, vb = rp, rp += step);
 
 	// Limit RP to the end of the data set
-	if (rp > pe)
-		rp = pe;
+	rp = (rp > pe) ? pe : rp;
+#else
+	vb = pb;
+	rp = pe;
+#endif
 
 	// Now nail down the exact rotation point.  It's going to be somewhere
 	// in the inclusive range of VB->RP
-	if ((rp - vb) >= (ES << 3)) {
+	if ((rp - vb) > (ES * 12)) {
 		// Binary search on larger sets
 		rp = CALL(binary_search_rotate)(pa, vb, rp, COMMON_ARGS);
 	} else {
@@ -289,8 +324,8 @@ rotate_again:
 	spa = pa + split_size;
 	if (IS_LT(pb, pb - ES)) {
 		// Push a new split point to the work stack.  Since PA is
-		// already in position, push the item after PA
-		if ((spa - pa) > ES) {
+		// already in position, push starting from the item after PA
+		if (split_size > ES) {
 			*work_stack++ = pa + ES;
 			*work_stack++ = spa;
 		}
@@ -725,15 +760,18 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	CALL(basic_top_down_sort)(pa, na, COMMON_ARGS);
 	CALL(basic_top_down_sort)(pb, nb, COMMON_ARGS);
 
+#if 0
 	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
-//	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+#else
+	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+#endif
 } // basic_top_down_sort
 
 
 // Breaking this out into a separate function appears to help the C optimizer
 // Reverse from start -> (end - ES)
 static void
-NAME(reverse_block)(VAR * restrict pa, VAR * restrict pe, size_t es)
+NAME(reverse_block)(VAR *restrict pa, VAR *restrict pe, size_t es)
 {
 	while (true) {
 		pe -= ES;
@@ -746,9 +784,9 @@ NAME(reverse_block)(VAR * restrict pa, VAR * restrict pe, size_t es)
 
 
 static VAR *
-NAME(process_descending)(VAR * restrict pa, VAR * restrict pe, COMMON_PARAMS)
+NAME(process_descending)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
 {
-	VAR * restrict prev = pa, * restrict curr = pa + ES;
+	VAR *restrict prev = pa, *restrict curr = pa + ES;
 
 	ASSERT(pa < pe);
 	while ((curr != pe) && IS_LT(curr, prev)) {
@@ -760,9 +798,9 @@ NAME(process_descending)(VAR * restrict pa, VAR * restrict pe, COMMON_PARAMS)
 
 
 static VAR *
-NAME(process_ascending)(VAR * restrict pa, VAR * restrict pe, COMMON_PARAMS)
+NAME(process_ascending)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
 {
-	VAR * restrict prev = pa, * restrict curr = pa + ES;
+	VAR *restrict prev = pa, *restrict curr = pa + ES;
 
 	ASSERT(pa < pe);
 	while (curr != pe) {
