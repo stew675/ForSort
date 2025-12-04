@@ -136,122 +136,77 @@ NAME(bubble_up)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
 
 
 static VAR *
-NAME(linear_search_split)(VAR *restrict sp, VAR *restrict pb, COMMON_PARAMS)
+NAME(binary_search_split)(VAR *restrict sp, VAR *restrict pb, COMMON_PARAMS)
 {
-	ASSERT (sp < pb);
+	ASSERT (sp <= pb);
 
-	VAR *rp = pb + (pb - sp);
-	while (sp != pb) {
-		rp -= ES;
-		if (IS_LT(rp, sp))
-			return sp;
-		sp += ES;
-	}
-	return sp;
-} // linear_search_split
-
-
-static VAR *
-NAME(binary_search_split)(VAR *restrict pa, VAR *restrict pb, COMMON_PARAMS)
-{
-#if 1
-	uint32_t mid = NITEM(pb - pa), pos = 0, mask = 0xfffffffe;
-	VAR *restrict sp;
+	size_t	bs = pb - sp;
 	VAR *restrict rp;
 
-	do {
-		uint32_t val = (mid++ >> 1);
-		pos += val;
+	if (bs > (ES * 12)) {
+		// Binary Search only on larger sets
+		uint32_t mid = NITEM(bs);
+		uint32_t pos = 0, mask = 0xfffffffe;
+
+		do {
+			uint32_t val = (mid++ >> 1);
+			pos += val;
+			rp = pb + pos * ES;
+			sp = pb - ((pos + 1) * ES);
+			pos -= (IS_LT(rp, sp) - 1) & val;
+		} while ((mid >>= 1) & mask);
+
 		rp = pb + pos * ES;
 		sp = pb - ((pos + 1) * ES);
-		pos -= (IS_LT(rp, sp) - 1) & val;
-	} while ((mid >>= 1) & mask);
-
-	rp = pb + pos * ES;
-	sp = pb - ((pos + 1) * ES);
-	if (IS_LT(rp, sp))
+		if (IS_LT(rp, sp))
+			return sp;
+		return sp + ES;
+	} else {
+		// Linear scans are faster for smaller sets
+		rp = pb + bs;
+		while (sp != pb) {
+			rp -= ES;
+			if (IS_LT(rp, sp))
+				return sp;
+			sp += ES;
+		}
 		return sp;
-	return sp + ES;
-#else
-	size_t	min = 0, max = NITEM(pb - pa), pos = max >> 1;
-
-	VAR *restrict sp = pb - (pos * ES);
-	VAR *restrict rp = pb + (pos * ES);
-
-	while (min ^ max) {
-		// The following 3 lines implement
-		// this logic in a branchless manner
-		// if (IS_LT(rp, sp - ES))
-		// 	min = pos + 1;
-		// else
-		// 	max = pos;
-		int res = (IS_LT(rp, sp - ES));
-		max = (res * max) + (!res * pos++);
-		min = (!res * min) + (res * pos);
-
-		pos = (min + max) >> 1;
-		sp = pb - (pos * ES);
-		rp = pb + (pos * ES);
 	}
-	return sp;
-#endif
 } // binary_search_split
 
 
 static VAR *
 NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe, COMMON_PARAMS)
 {
+	ASSERT (pb <= pe);
+
+	size_t	bs = pe - pb;
+
 	// Find where to rotate
-#if 1
-	uint32_t mid = NITEM(pe - pb), pos = 0, mask = -2;
+	if (bs > (ES * 12)) {
+		uint32_t mid = NITEM(bs), pos = 0, mask = -2;
 
-	do {
-		uint32_t val = (mid++ >> 1);
-		pos += val;
-		uint32_t res = IS_LT(pb + (pos * ES), pa) - 1;
-		pos -= res & val;
-		mid >>= 1;
-	} while (mid & mask);
+		do {
+			uint32_t val = (mid++ >> 1);
+			pos += val;
+			uint32_t res = IS_LT(pb + (pos * ES), pa) - 1;
+			pos -= res & val;
+			mid >>= 1;
+		} while (mid & mask);
 
-	return pb + (pos + IS_LT(pb, pa)) * ES;
-#else
-	size_t	min = 0, max = NITEM(pe - pb), pos = max >> 2;
-
-	VAR *restrict rp = pb + (pos * ES);
-
-	while (min ^ max) {
-		// The following 3 lines implement
-		// this logic in a branchless manner
-		// if (IS_LT(rp, pa))
-		// 	min = pos + 1;
-		// else
-		// 	max = pos;
-		int res = !!(IS_LT(rp, pa));
-		max = (res * max) + (!res * pos++);
-		min = (!res * min) + (res * pos);
-
-		pos = (min + max) >> 1;
-		rp = pb + (pos * ES);
+		pb += (pos + IS_LT(pb, pa)) * ES;
+	} else {
+		for ( ; (pb != pe) && IS_LT(pb, pa); pb += ES);
 	}
-	return rp;
-#endif
+	return pb;
 } // binary_search_rotate
 
 
-static VAR *
-NAME(linear_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe, COMMON_PARAMS)
-{
-	ASSERT (pb <= pe);
-	for ( ; (pb != pe) && IS_LT(pb, pa); pb += ES);
-	return pb;
-} // linear_search_rotate
-
-
-// The algorithm appears to be viable now that I added the triple_shift_v2()
+// This algorithm appears to be viable now that I added the triple_shift_v2()
 // block rotation to Forsort.  I had tried this algorithm before, but with the
 // older block rotation it performed badly. It now appears that this is out
 // performing split_merge_in_place() AND requires 1/3 of the stack space.  It
-// isn't as fast as shift_merge_in_place() is though, being about 7% slower
+// isn't as fast as shift_merge_in_place() is though, being about 5% slower
 static void
 NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
@@ -287,7 +242,6 @@ rotate_again:
 	// Start off scanning closely ahead, looking ahead exponentially further
 	// the longer we loop.  This helps the scan to work well with small
 	// gaps at the start of large ranges.
-#if 1
 	step = ES * 3;		// A start of ES * 3 experimentally works best
 	vb = pb;
 	rp = pb + step;
@@ -295,20 +249,10 @@ rotate_again:
 
 	// Limit RP to the end of the data set
 	rp = (rp > pe) ? pe : rp;
-#else
-	vb = pb;
-	rp = pe;
-#endif
 
 	// Now nail down the exact rotation point.  It's going to be somewhere
 	// in the inclusive range of VB->RP
-	if ((rp - vb) > (ES * 12)) {
-		// Binary search on larger sets
-		rp = CALL(binary_search_rotate)(pa, vb, rp, COMMON_ARGS);
-	} else {
-		// Linear scan is faster for smaller sets
-		rp = CALL(linear_search_rotate)(pa, vb, rp, COMMON_ARGS);
-	}
+	rp = CALL(binary_search_rotate)(pa, vb, rp, COMMON_ARGS);
 
 	// Now rotate the block.  This puts PA precisely into position
 	if (rp > pb) {
@@ -500,13 +444,13 @@ reverse_again:
 	}
 
 	// Find spot within PB->PE to split it at.
-	if (bs >= (ES << 3)) {
+//	if (bs >= (ES << 3)) {
 		// Binary search on larger sets
 		sp = CALL(binary_search_split)(pb - bs, pb, COMMON_ARGS);
-	} else {
+//	} else {
 		// Linear scan is faster for smaller sets
-		sp = CALL(linear_search_split)(pb - bs, pb, COMMON_ARGS);
-	}
+//		sp = CALL(linear_search_split)(pb - bs, pb, COMMON_ARGS);
+//	}
 
 	// If nothing to swap, we're done here
 	if (sp == pb)
@@ -627,13 +571,7 @@ shift_again:
 	// Find spot within PA->PB to split it at.  This means finding
 	// the first point in PB->PE that is smaller than the matching
 	// point within PA->PB, centered around the PB pivot
-	if (bs >= (ES << 3)) {
-		// Binary search on larger sets
-		sp = CALL(binary_search_split)(pb - bs, pb, COMMON_ARGS);
-	} else {
-		// Linear scan is faster for smaller sets
-		sp = CALL(linear_search_split)(pb - bs, pb, COMMON_ARGS);
-	}
+	sp = CALL(binary_search_split)(pb - bs, pb, COMMON_ARGS);
 
        	// If there is nothing to swap then we're done here
 	if (sp == pb)
@@ -760,7 +698,7 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	CALL(basic_top_down_sort)(pa, na, COMMON_ARGS);
 	CALL(basic_top_down_sort)(pb, nb, COMMON_ARGS);
 
-#if 0
+#if 1
 	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 #else
 	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
