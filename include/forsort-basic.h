@@ -147,18 +147,18 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 		size_t mid = NITEM(bs), pos = 0, mask = -2;
 
 		do {
-			size_t val = (mid++ >> 1);
+			size_t val = (mid++ >> 1) * ES;
 			pos += val;
-			size_t res = IS_LT(pb + (pos * ES), pa) - 1;
+			size_t res = IS_LT(pb + pos, pa) - 1;
 			pos -= res & val;
 			mid >>= 1;
 		} while (mid & mask);
 
-		pb += (pos + IS_LT(pb, pa)) * ES;
+		return pb + pos + (IS_LT(pb, pa) * ES);
 	} else {
 		for ( ; (pb != pe) && IS_LT(pb, pa); pb += ES);
+		return pb;
 	}
-	return pb;
 } // binary_search_rotate
 
 
@@ -593,7 +593,7 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	CALL(basic_top_down_sort)(pa, na, COMMON_ARGS);
 	CALL(basic_top_down_sort)(pb, nb, COMMON_ARGS);
 
-#if 1
+#if 0
 	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 #else
 	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
