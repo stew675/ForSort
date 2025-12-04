@@ -144,12 +144,12 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 
 	// Find where to rotate
 	if (bs > (ES * 12)) {
-		uint32_t mid = NITEM(bs), pos = 0, mask = -2;
+		size_t mid = NITEM(bs), pos = 0, mask = -2;
 
 		do {
-			uint32_t val = (mid++ >> 1);
+			size_t val = (mid++ >> 1);
 			pos += val;
-			uint32_t res = IS_LT(pb + (pos * ES), pa) - 1;
+			size_t res = IS_LT(pb + (pos * ES), pa) - 1;
 			pos -= res & val;
 			mid >>= 1;
 		} while (mid & mask);
@@ -261,22 +261,19 @@ NAME(binary_search_split)(VAR *restrict sp, VAR *restrict pb, COMMON_PARAMS)
 
 	if (bs > (ES * 12)) {
 		// Binary Search only on larger sets
-		uint32_t mid = NITEM(bs);
-		uint32_t pos = 0, mask = 0xfffffffe;
-
+		size_t mid = NITEM(bs), pos = 0, mask = -2;
 		do {
-			uint32_t val = (mid++ >> 1);
+			size_t val = (mid++ >> 1) * ES;
 			pos += val;
-			rp = pb + pos * ES;
-			sp = pb - ((pos + 1) * ES);
-			pos -= (IS_LT(rp, sp) - 1) & val;
-		} while ((mid >>= 1) & mask);
+			size_t res = IS_LT(pb + pos, pb - (pos + ES)) - 1;
+			pos -= res & val;
+			mid >>= 1;
+		} while (mid & mask);
 
-		rp = pb + pos * ES;
-		sp = pb - ((pos + 1) * ES);
-		if (IS_LT(rp, sp))
-			return sp;
-		return sp + ES;
+		sp = pb - pos;
+		if (IS_LT(pb + pos, sp - ES))
+			return sp - ES;
+		return sp;
 	} else {
 		// Linear scans are faster for smaller sets
 		rp = pb + bs;
