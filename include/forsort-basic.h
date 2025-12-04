@@ -136,46 +136,6 @@ NAME(bubble_up)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
 
 
 static VAR *
-NAME(binary_search_split)(VAR *restrict sp, VAR *restrict pb, COMMON_PARAMS)
-{
-	ASSERT (sp <= pb);
-
-	size_t	bs = pb - sp;
-	VAR *restrict rp;
-
-	if (bs > (ES * 12)) {
-		// Binary Search only on larger sets
-		uint32_t mid = NITEM(bs);
-		uint32_t pos = 0, mask = 0xfffffffe;
-
-		do {
-			uint32_t val = (mid++ >> 1);
-			pos += val;
-			rp = pb + pos * ES;
-			sp = pb - ((pos + 1) * ES);
-			pos -= (IS_LT(rp, sp) - 1) & val;
-		} while ((mid >>= 1) & mask);
-
-		rp = pb + pos * ES;
-		sp = pb - ((pos + 1) * ES);
-		if (IS_LT(rp, sp))
-			return sp;
-		return sp + ES;
-	} else {
-		// Linear scans are faster for smaller sets
-		rp = pb + bs;
-		while (sp != pb) {
-			rp -= ES;
-			if (IS_LT(rp, sp))
-				return sp;
-			sp += ES;
-		}
-		return sp;
-	}
-} // binary_search_split
-
-
-static VAR *
 NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe, COMMON_PARAMS)
 {
 	ASSERT (pb <= pe);
@@ -291,99 +251,45 @@ rotate_pop:
 } // rotate_merge_in_place
 	
 
-// Deprecate split_merge_in_place entirely
-#if 0
-
-#ifndef GET_SPLIT_STACK_SIZE
-#define GET_SPLIT_STACK_SIZE
-// The value returned by this function is tied to this line from split_merge()
-//
-//	size_t split_size = ((NITEM(bs) + 3) / 5) * ES;
-//
-// If that calculation is altered, then this function needs to be updated
-static size_t
-get_split_stack_size(size_t n)
+static VAR *
+NAME(binary_search_split)(VAR *restrict sp, VAR *restrict pb, COMMON_PARAMS)
 {
-	if (n < 3)
-		return 2;
+	ASSERT (sp <= pb);
 
-	size_t sz = msb64(n);
+	size_t	bs = pb - sp;
+	VAR *restrict rp;
 
-	// Stack size needs to be l(2) / l(1.25), which is ~3.1063 times the
-	// index of the most significant bit. 28/9 is 3.111.., and so it's a
-	// nice integer approximation.
-	sz = ((sz * 28) / 9) + 1;
+	if (bs > (ES * 12)) {
+		// Binary Search only on larger sets
+		uint32_t mid = NITEM(bs);
+		uint32_t pos = 0, mask = 0xfffffffe;
 
-	return sz;
-} // get_split_stack_size
-#endif
+		do {
+			uint32_t val = (mid++ >> 1);
+			pos += val;
+			rp = pb + pos * ES;
+			sp = pb - ((pos + 1) * ES);
+			pos -= (IS_LT(rp, sp) - 1) & val;
+		} while ((mid >>= 1) & mask);
 
-// This in-place split merge algorithm started off life as a variant of ShiftMerge
-// below, but I was looking for a way to solve the multiple degenerate scenarios
-// where unbounded stack recursion could occur.  In the end, I couldn't fully
-// solve some of those without making the code complex and branch inefficient
-// and so split_merge_in_place() was born.  On purely random data, this method
-// slightly outperforms shift_merge_in_place() below, but on anything remotely
-// structured shift_merge() will quickly overtake this function, and this is
-// why split_merge() acts as a fall-back.  When shift_merge() gets bogged down.
-// then it's split_merge's time to shine!
-static void
-NAME(split_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
-{
-	ASSERT((pb > pa) && (pe > pb));
-
-	// Check if we need to do anything at all
-	if (!IS_LT(pb, pb - ES))
-		return;
-
-	// The stack_size is * 2 due to two pointers per stack entry.  Even
-	// if we're asked to merge 2^64 items, the stack will be just 3.2KB
-	size_t	stack_size = get_split_stack_size(NITEM(pb - pa)) * 2;
-	size_t	bs, split_size;
-	_Alignas(64) VAR *stack_space[stack_size];
-	VAR	**work_stack = stack_space, *spa;
-
-split_again:
-	// Just bubble single items into place. We already know that *PB < *PA
-	if ((bs = (pb - pa)) == ES) {
-		CALL(bubble_up)(pa, pe, COMMON_ARGS);
-		goto split_pop;
+		rp = pb + pos * ES;
+		sp = pb - ((pos + 1) * ES);
+		if (IS_LT(rp, sp))
+			return sp;
+		return sp + ES;
+	} else {
+		// Linear scans are faster for smaller sets
+		rp = pb + bs;
+		while (sp != pb) {
+			rp -= ES;
+			if (IS_LT(rp, sp))
+				return sp;
+			sp += ES;
+		}
+		return sp;
 	}
+} // binary_search_split
 
-	// Calculate our split size ahead of time.  Ensure that this formula
-	// never returns 0.  Due to single item bubbling, we're guaranteed
-	// to have at least two items.  Split off 1/5th of the items.
-	// The imbalanced split here improves algorithmic performance.
-	// If you change this calculation, then get_split_stack_size() needs
-	// to be updated to match the new ratio
-	split_size = ((NITEM(bs) + 3) / 5) * ES;
-
-	// Advance the PA->PB block up as far as we can
-	for (VAR *rp = pb + bs; (rp < pe) && IS_LT(rp - ES, pa); rp += bs) {
-		CALL(swap_block)(pa, pb, NITEM(bs), es);
-		pa += bs;  pb += bs;
-	}
-
-	// Split the A block into two, and keep trying with the remainder
-	spa = pa + split_size;
-	if (IS_LT(pb, pb - ES)) {
-		// Push a new split point to the work stack
-		*work_stack++ = pa;
-		*work_stack++ = spa;
-		pa = spa;
-		goto split_again;
-	}
-
-split_pop:
-	while (work_stack != stack_space) {
-		pb = *--work_stack;
-		pa = *--work_stack;
-
-		if (IS_LT(pb, pb - ES))
-			goto split_again;
-	}
-} // split_merge_in_place
-#endif
 
 #define	SHIFT_STACK_PUSH(s1, s2, s3) 	\
 	{ *stack++ = s1; *stack++ = s2; *stack++ = s3; }
@@ -444,13 +350,7 @@ reverse_again:
 	}
 
 	// Find spot within PB->PE to split it at.
-//	if (bs >= (ES << 3)) {
-		// Binary search on larger sets
-		sp = CALL(binary_search_split)(pb - bs, pb, COMMON_ARGS);
-//	} else {
-		// Linear scan is faster for smaller sets
-//		sp = CALL(linear_search_split)(pb - bs, pb, COMMON_ARGS);
-//	}
+	sp = CALL(binary_search_split)(pb - bs, pb, COMMON_ARGS);
 
 	// If nothing to swap, we're done here
 	if (sp == pb)
