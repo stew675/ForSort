@@ -271,9 +271,7 @@ NAME(binary_search_split)(VAR *restrict sp, VAR *restrict pb, COMMON_PARAMS)
 		} while (mid & mask);
 
 		sp = pb - pos;
-		if (IS_LT(pb + pos, sp - ES))
-			return sp - ES;
-		return sp;
+		return sp - IS_LT(pb + pos, sp - ES) * ES;
 	} else {
 		// Linear scans are faster for smaller sets
 		rp = pb + bs;
