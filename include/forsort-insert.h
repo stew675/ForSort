@@ -79,8 +79,7 @@ NAME(insertion_sort_binary)(VAR *pa, VAR *ta, const size_t n, COMMON_PARAMS)
 
 			do {
 				uint32_t val = (mid++ >> 1);
-				pos += val;
-				pos -= IS_LT(ta, pa + pos) * val;
+				pos += ((uint32_t)IS_LT(ta, pa + pos + val) - 1) & val;
 				mid >>= 1;
 			} while (mid & mask);
 
