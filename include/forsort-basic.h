@@ -593,7 +593,7 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	CALL(basic_top_down_sort)(pa, na, COMMON_ARGS);
 	CALL(basic_top_down_sort)(pb, nb, COMMON_ARGS);
 
-#if 0
+#if 1
 	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 #else
 	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
