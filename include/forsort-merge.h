@@ -301,7 +301,7 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 			//	b_run = 0;
 			// }
 			VAR	*which[2] = {w, b};
-			int	res = !!(IS_LT(b, w));
+			size_t	res = !!(IS_LT(b, w));
 			SWAP(a, which[res]);
 			b += res * ES;
 			w += !res * ES;
