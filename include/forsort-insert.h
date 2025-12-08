@@ -73,7 +73,7 @@ NAME(insertion_sort_binary)(VAR *pa, VAR *ta, const size_t n, COMMON_PARAMS)
 	for (VAR *pe = pa + n; ta < pe; ta++) {
 		if (IS_LT(ta, ta - 1)) {
 			// Find where to insert it
-			VAR   t = *ta, *tc = pa;
+			VAR   t = *ta, *restrict tc = pa;
 			uint32_t max = (ta - pa) - 1;
 
 			for (uint32_t val; (val = (max >> 1)); max -= val)
