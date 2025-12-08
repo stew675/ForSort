@@ -74,32 +74,14 @@ NAME(insertion_sort_binary)(VAR *pa, VAR *ta, const size_t n, COMMON_PARAMS)
 		if (IS_LT(ta, ta - 1)) {
 			// Find where to insert it
 			VAR   t = *ta, *tc = pa;
+			uint32_t max = (ta - pa) - 1;
 
-#if 1
-			uint32_t val, top = (ta - pa) - 1;
+			for (uint32_t val; (val = (max >> 1)); max -= val)
+				tc = IS_LT(ta, tc + val) ? tc : tc + val;
 
-			while ((val = (top >> 1))) {
-				tc += val;
-				if (IS_LT(ta, tc))
-					tc -= val;
-				top -= val;
-			}
-
-			tc += 1 - IS_LT(ta, tc);
+			tc += !IS_LT(ta, tc);
 			memmove(tc + 1, tc, (ta - tc) * es);
 			*tc = t;
-#else
-			uint32_t mid = (ta - pa) - 1, mask = -2;
-			do {
-				uint32_t val = (mid++ >> 1);
-				tc += ((uint32_t)IS_LT(ta, tc + val) - 1) & val;
-				mid >>= 1;
-			} while (mid & mask);
-
-			tc += 1 - IS_LT(ta, tc);
-			memmove(tc + 1, tc, (ta - tc) * es);
-			*tc = t;
-#endif
 		}
 	}
 } // insertion_sort_binary
