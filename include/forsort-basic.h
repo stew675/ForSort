@@ -144,17 +144,35 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 
 	// Find where to rotate
 	if (bs > (ES * 12)) {
-		size_t mid = NITEM(bs), pos = 0, mask = -2;
 
+#if 1
+		size_t len = NITEM(bs), pos = 0, off;
+
+		while (len > 2) {
+			pos = len >> 1;
+			off = pos * ES;
+			pb += off;
+			if (branchless(!IS_LT(pb, pa)))
+				pb -= off;
+			len -= pos;
+		}
+		if (IS_LT(pb, pa)) {
+			pb += ES;
+			pb += IS_LT(pb, pa) * ES;
+		}
+		return pb;
+#else
+		size_t len = NITEM(bs), pos = 0, mask = -2;
 		do {
-			size_t val = (mid++ >> 1) * ES;
+			size_t val = (len++ >> 1) * ES;
 			pos += val;
 			size_t res = IS_LT(pb + pos, pa) - 1;
 			pos -= res & val;
-			mid >>= 1;
-		} while (mid & mask);
+			len >>= 1;
+		} while (len & mask);
 
 		return pb + pos + (IS_LT(pb, pa) * ES);
+#endif
 	} else {
 		for ( ; (pb != pe) && IS_LT(pb, pa); pb += ES);
 		return pb;
@@ -198,7 +216,7 @@ rotate_again:
 
 	// Scan to find rotation point.  This means finding the largest item
 	// in PB->PE that is smaller than, but not equal to, *PA
-
+#if 1
 	// Start off scanning closely ahead, looking ahead exponentially further
 	// the longer we loop.  This helps the scan to work well with small
 	// gaps at the start of large ranges.
@@ -213,7 +231,9 @@ rotate_again:
 	// Now nail down the exact rotation point.  It's going to be somewhere
 	// in the inclusive range of VB->RP
 	rp = CALL(binary_search_rotate)(pa, vb, rp, COMMON_ARGS);
-
+#else
+	rp = CALL(binary_search_rotate)(pa, pb, pe, COMMON_ARGS);
+#endif
 	// Now rotate the block.  This puts PA precisely into position
 	if (rp > pb) {
 		CALL(rotate_block)(pa, pb, rp, es);

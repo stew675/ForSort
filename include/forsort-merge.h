@@ -223,7 +223,7 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 		}
 
 		do {
-			sprint -= !!(sprint > 2);
+			sprint -= (sprint > 2);
 
 			// Stuff from A is sprinting
 			if (a_run) {
@@ -288,18 +288,21 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 
 	while ((b < pe) && (w < pw)) {
 		if ((a_run | b_run) < sprint) {
-			// The following 8 lines implement this logic
-			// if(IS_LT(b, w)) {
-			//	SWAP(a, b);
-			//	b += ES;
-			//	a_run = 0;
-			//	b_run++;
-			// } else {
-			//	SWAP(a, w);
-			//	w += ES;
-			//	a_run++;
-			//	b_run = 0;
-			// }
+#if 0
+			// Not branchless
+			if(IS_LT(b, w)) {
+				SWAP(a, b);
+				b += ES;
+				a_run = 0;
+				b_run++;
+			} else {
+				SWAP(a, w);
+				w += ES;
+				a_run++;
+				b_run = 0;
+			}
+#else
+			// Branchless
 			VAR	*which[2] = {w, b};
 			size_t	res = !!(IS_LT(b, w));
 			SWAP(a, which[res]);
@@ -307,12 +310,13 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 			w += !res * ES;
 			a_run = (a_run + !res) * !res;
 			b_run = (b_run + res) * res;
+#endif
 			a += ES;
 			continue;
 		}
 
 		do {
-			sprint -= !!(sprint > 2);
+			sprint -= (sprint > 2);
 
 			// Stuff from A/workspace is sprinting
 			VAR	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
@@ -376,9 +380,16 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 				//	max = pos;
 				// else
 				//	min = pos + 1;
+#if 0
 				int res = !!(IS_LT(b, sp));
 				max = (max * !res) + (res * pos++);
 				min = (min * res) + (!res * pos);
+#else
+				if (branchless(IS_LT(b, sp)))
+					max = pos;
+				else
+					min = pos + 1;
+#endif
 
 				pos = (min + max) >> 1;
 				sp = a + (pos * ES);
@@ -406,14 +417,16 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 			sp = b + (pos * ES);
 			while (min < max) {
 				// The following 3 lines implement this logic
-				// if (IS_LT(sp, b - ES))
-				//	min = pos + 1;
-				// else
-				//	max = pos;
+#if 1
+				if (branchless(IS_LT(sp, b - ES)))
+					min = pos + 1;
+				else
+					max = pos;
+#else
 				int res = !!(IS_LT(sp, b - ES));
 				max = (res * max) + (!res * pos++);
 				min = (!res * min) + (res * pos);
-
+#endif
 				pos = (min + max) >> 1;
 				sp = b + (pos * ES);
 			}

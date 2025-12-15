@@ -150,6 +150,12 @@
 #define likely(x)	__builtin_expect(!!(x), 1)
 #define unlikely(x)	__builtin_expect(!!(x), 0)
 
+#ifdef __clang__
+#define branchless(x)   __builtin_unpredictable(x)
+#else
+#define branchless(x)   (x)
+#endif
+
 // Handy defines to keep code looking cleaner
 #define	COMMON_ARGS	es, is_lt
 #define	COMMON_PARAMS	const size_t es, int (*is_lt)(const void *, const void *)
