@@ -141,7 +141,7 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 {
 	ASSERT (pb <= pe);
 
-	size_t len = pe - pb;
+	size_t len = NITEM(pe - pb);
 
 	// Find where to rotate
 	if (len > 12) {
@@ -149,14 +149,14 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 		do {
 			size_t val = (len++ >> 1);
 			pos += val;
-			size_t res = IS_LT(pb + pos, pa) - 1;
+			size_t res = IS_LT(pb + pos * es, pa) - 1;
 			pos -= res & val;
 			len >>= 1;
 		} while (len & mask);
 		pb += (pos * es);
 		return pb + IS_LT(pb, pa) * es;
 	} else {
-		for ( ; (pb != pe) && IS_LT(pb, pa); pb++);
+		for ( ; (pb != pe) && IS_LT(pb, pa); pb += es);
 		return pb;
 	}
 } // binary_search_rotate
