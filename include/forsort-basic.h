@@ -135,49 +135,72 @@ NAME(bubble_up)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
 } // bubble_up
 
 
+#ifdef UNTYPED
 static VAR *
 NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe, COMMON_PARAMS)
 {
 	ASSERT (pb <= pe);
 
-	size_t	bs = pe - pb;
+	size_t len = pe - pb;
 
 	// Find where to rotate
-	if (bs > (ES * 12)) {
+	if (len > 12) {
+		size_t pos = 0, mask = -2;
+		do {
+			size_t val = (len++ >> 1);
+			pos += val;
+			size_t res = IS_LT(pb + pos, pa) - 1;
+			pos -= res & val;
+			len >>= 1;
+		} while (len & mask);
+		pb += (pos * es);
+		return pb + IS_LT(pb, pa) * es;
+	} else {
+		for ( ; (pb != pe) && IS_LT(pb, pa); pb++);
+		return pb;
+	}
+} // binary_search_rotate
+#else
+static VAR *
+NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe, COMMON_PARAMS)
+{
+	ASSERT (pb <= pe);
 
+	size_t len = pe - pb;
+
+	// Find where to rotate
+	if (len > 12) {
 #if 1
-		size_t len = NITEM(bs), pos = 0, off;
-
 		while (len > 2) {
-			pos = len >> 1;
-			off = pos * ES;
-			pb += off;
-			if (branchless(!IS_LT(pb, pa)))
-				pb -= off;
+			size_t pos = len >> 1;
+			if (branchless(IS_LT(pb + pos, pa)))
+				pb += pos;
 			len -= pos;
 		}
 		if (IS_LT(pb, pa)) {
-			pb += ES;
-			pb += IS_LT(pb, pa) * ES;
+			pb++;
+			return pb + IS_LT(pb, pa);
 		}
 		return pb;
 #else
-		size_t len = NITEM(bs), pos = 0, mask = -2;
+		// This is faster than the above
+		size_t pos = 0, mask = -2;
 		do {
-			size_t val = (len++ >> 1) * ES;
+			size_t val = (len++ >> 1);
 			pos += val;
 			size_t res = IS_LT(pb + pos, pa) - 1;
 			pos -= res & val;
 			len >>= 1;
 		} while (len & mask);
 
-		return pb + pos + (IS_LT(pb, pa) * ES);
+		return pb + pos + IS_LT(pb, pa);
 #endif
 	} else {
-		for ( ; (pb != pe) && IS_LT(pb, pa); pb += ES);
+		for ( ; (pb != pe) && IS_LT(pb, pa); pb++);
 		return pb;
 	}
 } // binary_search_rotate
+#endif
 
 
 // This algorithm appears to be viable now that I added the triple_shift_v2()
@@ -613,7 +636,7 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	CALL(basic_top_down_sort)(pa, na, COMMON_ARGS);
 	CALL(basic_top_down_sort)(pb, nb, COMMON_ARGS);
 
-#if 1
+#if 0
 	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 #else
 	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
