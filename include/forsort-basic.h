@@ -153,6 +153,7 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 			pos -= res & val;
 			len >>= 1;
 		} while (len & mask);
+
 		pb += (pos * es);
 		return pb + IS_LT(pb, pa) * es;
 	} else {
@@ -170,19 +171,6 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 
 	// Find where to rotate
 	if (len > 12) {
-#if 1
-		while (len > 2) {
-			size_t pos = len >> 1;
-			if (branchless(IS_LT(pb + pos, pa)))
-				pb += pos;
-			len -= pos;
-		}
-		if (IS_LT(pb, pa)) {
-			pb++;
-			return pb + IS_LT(pb, pa);
-		}
-		return pb;
-#else
 		// This is faster than the above
 		size_t pos = 0, mask = -2;
 		do {
@@ -193,8 +181,8 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 			len >>= 1;
 		} while (len & mask);
 
-		return pb + pos + IS_LT(pb, pa);
-#endif
+		pb += pos;
+		return pb + IS_LT(pb, pa);
 	} else {
 		for ( ; (pb != pe) && IS_LT(pb, pa); pb++);
 		return pb;
