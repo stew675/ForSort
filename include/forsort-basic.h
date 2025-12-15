@@ -227,7 +227,7 @@ rotate_again:
 
 	// Scan to find rotation point.  This means finding the largest item
 	// in PB->PE that is smaller than, but not equal to, *PA
-#if 1
+
 	// Start off scanning closely ahead, looking ahead exponentially further
 	// the longer we loop.  This helps the scan to work well with small
 	// gaps at the start of large ranges.
@@ -242,9 +242,7 @@ rotate_again:
 	// Now nail down the exact rotation point.  It's going to be somewhere
 	// in the inclusive range of VB->RP
 	rp = CALL(binary_search_rotate)(pa, vb, rp, COMMON_ARGS);
-#else
-	rp = CALL(binary_search_rotate)(pa, pb, pe, COMMON_ARGS);
-#endif
+
 	// Now rotate the block.  This puts PA precisely into position
 	if (rp > pb) {
 		CALL(rotate_block)(pa, pb, rp, es);
