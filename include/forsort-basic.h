@@ -171,8 +171,8 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 
 	// Find where to rotate
 	if (len > 12) {
-		// This is faster than the above
 		size_t pos = 0, mask = -2;
+
 		do {
 			size_t val = (len++ >> 1);
 			pos += val;
@@ -196,6 +196,14 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 // older block rotation it performed badly. It now appears that this is out
 // performing split_merge_in_place() AND requires 1/3 of the stack space.  It
 // isn't as fast as shift_merge_in_place() is though, being about 5% slower
+#if 0
+DATA_SET = [
+    8,   45,  117,  166,  177,  196,  209,  226,  227,  231,  234,  250,  283,  319,  355,  432,  618,  652,  765,  776,
+  825,  862,  958,  979,   58,   70,  103,  128,  191,  235,  236,  255,  288,  313,  320,  326,  416,  450,  460,  491,
+  507,  509,  519,  587,  604,  609,  649,  655,  670,  673,  685,  709,  782,  821,  836,  864,  906,  929,  993,
+];
+#endif
+
 static void
 NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
@@ -208,72 +216,87 @@ NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	// The stack_size is * 2 due to two pointers per stack entry.  Even if
 	// we're asked to merge 2^64 items, the stack will be 1024 bytes in
 	// size, if pointers are 8 bytes in size
-	size_t	stack_size = msb64(NITEM(pb - pa)) * 2;
+	size_t	stack_size = msb64(NITEM(pb - pa)) * 3;
 	size_t	bs, split_size, step;
 	_Alignas(64) VAR *stack_space[stack_size];
-	VAR	**work_stack = stack_space, *spa, *rp, *vb;
+	VAR	**work_stack = stack_space, *spa, *spb, *rp, *vb;
 
 rotate_again:
+	ASSERT(pe > pb);
+	ASSERT(pb > pa);
+
 	// Just bubble single items into place. We already know that *PB < *PA
 	if ((bs = (pb - pa)) == ES) {
-		pa = CALL(bubble_up)(pa, pe, COMMON_ARGS);
+		CALL(bubble_up)(pa, pe, COMMON_ARGS);
 		goto rotate_pop;
 	}
 
-	// Calculate our split size ahead of time.  Ensure that this formula
-	// never returns 0.  Due to single item bubbling, we're guaranteed
-	// to have at least two items.
+	assert(NITEM(bs) > 1);
+
+	// Split block into half
+	// PA->PB will point at first half
+	// SPA->SPB points at second half
 	split_size = (NITEM(bs) >> 1) * ES;
 
+	spa = pa + split_size;
+	spb = pb;
+	pb = spa;
+
+//	printf("split_size = %lu\n", split_size);
+
+	// Now process the 2nd half.  If it's just a single item, bubble it
+	// into place, use that position as the new pe, and restart the loop
+	if ((spb - spa) == ES) {
+		pe = CALL(bubble_up)(spa, pe, COMMON_ARGS);
+		if (IS_LT(pb, pb - ES))
+			goto rotate_again;
+		goto rotate_pop;
+	}
+
 	// Scan to find rotation point.  This means finding the largest item
-	// in PB->PE that is smaller than, but not equal to, *PA
+	// in SPB->PE that is smaller than, but not equal to, *SPA
 
 	// Start off scanning closely ahead, looking ahead exponentially further
 	// the longer we loop.  This helps the scan to work well with small
 	// gaps at the start of large ranges.
 	step = ES * 3;		// A start of ES * 3 experimentally works best
-	vb = pb;
-	rp = pb + step;
-	for ( ; (rp <= pe) && IS_LT(rp - ES, pa); step += step, vb = rp, rp += step);
+	vb = spb;
+	rp = spb + step;
+	for ( ; (rp <= pe) && IS_LT(rp - ES, spa); step += step, vb = rp, rp += step);
 
 	// Limit RP to the end of the data set
 	rp = (rp > pe) ? pe : rp;
 
 	// Now nail down the exact rotation point.  It's going to be somewhere
 	// in the inclusive range of VB->RP
-	rp = CALL(binary_search_rotate)(pa, vb, rp, COMMON_ARGS);
+	rp = CALL(binary_search_rotate)(spa, vb, rp, COMMON_ARGS);
 
-	// Now rotate the block.  This puts PA precisely into position
-	if (rp > pb) {
-		CALL(rotate_block)(pa, pb, rp, es);
-		pa += rp - pb;
-		pb = rp;
-		if (pb == pe)
-			goto rotate_pop;
+	if (rp > spb) {
+		// Now rotate the block.  This puts SPA precisely into position
+		CALL(rotate_block)(spa, spb, rp, es);
+		spa += (rp - spb);
+		spb = rp;
 	}
 
-	// At this point, pa is precisely where it needs to be
-	// Split the A block into two, and keep trying with the remainder
-	spa = pa + split_size;
+	// If SPA->SPB didn't get moved to the end, add it to the work stack
+	// It's faster if we defer the check of spb < spb - ES until after
+	// we pop the work item off the stack due to memory access patterns
+	if (spb < pe) {
+		*work_stack++ = spa + ES;
+		*work_stack++ = spb;
+		*work_stack++ = pe;
+	}
+
 	if (IS_LT(pb, pb - ES)) {
-		// Push a new split point to the work stack.  Since PA is
-		// already in position, push starting from the item after PA
-		if (split_size > ES) {
-			*work_stack++ = pa + ES;
-			*work_stack++ = spa;
-		}
-		pa = spa;
+		pe = spa;
 		goto rotate_again;
 	}
 
 rotate_pop:
 	while (work_stack != stack_space) {
-		// Because PA is always precisely in position, we can use
-		// it as our new PE when popping work off the stack
-		pe = pa;
+		pe = *--work_stack;
 		pb = *--work_stack;
 		pa = *--work_stack;
-
 		if (IS_LT(pb, pb - ES))
 			goto rotate_again;
 	}
@@ -622,10 +645,14 @@ NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	CALL(basic_top_down_sort)(pa, na, COMMON_ARGS);
 	CALL(basic_top_down_sort)(pb, nb, COMMON_ARGS);
 
-#if 1
+#if 0
 	CALL(shift_merge_in_place)(pa, pb, pe, COMMON_ARGS);
 #else
+//	printf("BEFORE\n");
+//	print_array(pa, NITEM(pe - pa));
 	CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+//	printf("AFTER\n");
+//	print_array(pa, NITEM(pe - pa));
 #endif
 } // basic_top_down_sort
 
