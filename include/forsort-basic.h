@@ -217,15 +217,17 @@ rotate_again:
 	// Just bubble single items into place. We already know that *PB < *PA
 	if ((bs = (pb - pa)) == ES) {
 		rp = CALL(binary_search_rotate)(pa, pb, pe, COMMON_ARGS);
-		if ((rp - pb) > (ES * 16)) {
+		if ((rp - pb) > (ES * 12)) {
 			CALL(rotate_block)(pa, pb, rp, es);
 		} else {
-#if 1
+#if 0
 			CALL(bubble_up)(pa, pe, COMMON_ARGS);
 #else
-			while (pa < rp) {
-				SWAP(pa, pa + ES);
-				pa += ES;
+			VAR	*pn = pa + ES;
+			while (pn < rp) {
+				SWAP(pa, pn);
+				pa = pn;
+				pn += ES;
 			}
 #endif
 		}
