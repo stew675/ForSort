@@ -201,11 +201,7 @@ NAME(merge_duplicates)(struct NAME(stable_state) *state, VAR **list, size_t n, V
 #endif
 	if (nm1 > (nw * WSRATIO)) {
 		// Use in-place merging
-#if LOW_STACK
 		CALL(rotate_merge_in_place)(m1, m2, pe, COMMON_ARGS);
-#else
-		CALL(shift_merge_in_place)(m1, m2, pe, COMMON_ARGS);
-#endif
 	} else {
 		// Do a faster work-space based merge
 		CALL(merge_workspace_constrained)(m1, nm1, m2, nm2, ws, nw, COMMON_ARGS);
@@ -295,7 +291,6 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 	printf("nm = %lu, nw = %lu, nr = %lu\n", nm, nw, state->rest_size);
 #endif
 
-#if LOW_STACK
 	if ((nm > 0) && (nm < nw)) {
 		CALL(rotate_merge_in_place)(md, ws, pr, COMMON_ARGS);
 		CALL(rotate_merge_in_place)(md, pr, pe, COMMON_ARGS);
@@ -304,16 +299,6 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 		if (nm > 0)
 			CALL(rotate_merge_in_place)(md, ws, pe, COMMON_ARGS);
 	}
-#else
-	if ((nm > 0) && (nm < nw)) {
-		CALL(shift_merge_in_place)(md, ws, pr, COMMON_ARGS);
-		CALL(shift_merge_in_place)(md, pr, pe, COMMON_ARGS);
-	} else {
-		CALL(shift_merge_in_place)(ws, pr, pe, COMMON_ARGS);
-		if (nm > 0)
-			CALL(shift_merge_in_place)(md, ws, pe, COMMON_ARGS);
-	}
-#endif
 	// and....we're done!
 } // stable_sort_finisher
 
@@ -467,11 +452,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		// Merge current workspace with the new workspace candidates
 		// We cannot use the faster merge algorithm here or we will
 		// end up breaking sort stability.
-#if LOW_STACK
 		CALL(rotate_merge_in_place)(ws, nws, pr, COMMON_ARGS);
-#else
-		CALL(shift_merge_in_place)(ws, nws, pr, COMMON_ARGS);
-#endif
 
 		// We may have picked up new duplicates.  Separate them out
 		nws = ws;
