@@ -110,9 +110,9 @@
 static inline void
 NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pb, size_t num, size_t es)
 {
-        VAR * restrict stop = pb + num;
+	VAR * restrict stop = pb + (num * ES);
 
-        while (pb != stop) {
+	while (pb != stop) {
 		SWAP(pa, pb);
 		pa += ES;
 		pb += ES;
@@ -151,9 +151,9 @@ NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 static inline void
 NAME(bridge_down)(VAR * restrict pc, VAR *pd, VAR *pe, size_t num, size_t es)
 {
-        VAR *stop = pc - (num * ES);
+	VAR *stop = pc - (num * ES);
 
-        while (pc != stop) {
+	while (pc != stop) {
 		pc -= ES;
 		pd -= ES;
 		pe -= ES;
@@ -166,9 +166,9 @@ NAME(bridge_down)(VAR * restrict pc, VAR *pd, VAR *pe, size_t num, size_t es)
 static inline void
 NAME(bridge_up)(VAR * restrict pa, VAR *pb, VAR *pc, size_t num, size_t es)
 {
-        VAR *stop = pc + (num * ES);
+	VAR *stop = pc + (num * ES);
 
-        while (pc != stop) {
+	while (pc != stop) {
 		SWAP(pc, pa);
 		SWAP(pa, pb);
 		pa += ES;
@@ -222,7 +222,7 @@ NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 // Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
 static inline void
 NAME(ring_positive)(VAR * restrict pa, VAR * restrict po,
-                     VAR * restrict pb, size_t num, size_t es)
+                    VAR * restrict pb, size_t num, size_t es)
 {
 	VAR	*stop = pb + (num * ES);
 
@@ -240,7 +240,7 @@ NAME(ring_positive)(VAR * restrict pa, VAR * restrict po,
 // in C goes to B, and everything in A goes to C.
 static inline void
 NAME(ring_negative)(VAR * restrict pa, VAR * restrict po,
-                     VAR * restrict pb, size_t num, size_t es)
+                    VAR * restrict pb, size_t num, size_t es)
 {
 	VAR	*stop = pb - (num * ES);
 

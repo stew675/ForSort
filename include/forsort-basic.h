@@ -146,7 +146,7 @@ NAME(bubble_one)(VAR *restrict pa, VAR *restrict pe, size_t es)
 
 	memcpy(buf, pa, es);
 	memmove(pa, pa + es, len);
-	memcpy(pe - es, buf, es);
+	memcpy(pe, buf, es);
 #else
 	VAR	t = *pa;
 	memmove(pa, pa + 1, len);
@@ -508,7 +508,7 @@ shift_again:
 	// point within PA->PB, centered around the PB pivot
 	sp = CALL(binary_search_split)(pb - bs, pb, COMMON_ARGS);
 
-       	// If there is nothing to swap then we're done here
+	// If there is nothing to swap then we're done here
 	if (sp == pb)
 		goto shift_pop;
 
