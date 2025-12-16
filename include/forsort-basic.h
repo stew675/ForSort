@@ -214,22 +214,18 @@ NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	VAR	**work_stack = stack_space, *spa, *spb, *rp;
 
 rotate_again:
-	// Just bubble single items into place. We already know that *PB < *PA
+	// Special case handling of single item merges
 	if ((bs = (pb - pa)) == ES) {
 		rp = CALL(binary_search_rotate)(pa, pb, pe, COMMON_ARGS);
-		if ((rp - pb) > (ES * 12)) {
+		if ((rp - pb) > (ES * 7)) {
+			// rotate_block() is faster for sufficiently large moves
 			CALL(rotate_block)(pa, pb, rp, es);
 		} else {
-#if 0
-			CALL(bubble_up)(pa, pe, COMMON_ARGS);
-#else
-			VAR	*pn = pa + ES;
-			while (pn < rp) {
-				SWAP(pa, pn);
-				pa = pn;
-				pn += ES;
-			}
-#endif
+			do {
+				SWAP(pa, pb);
+				pa = pb;
+				pb += ES;
+			} while (pb < rp);
 		}
 		goto rotate_pop;
 	}
