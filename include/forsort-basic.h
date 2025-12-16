@@ -135,6 +135,26 @@ NAME(bubble_up)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
 } // bubble_up
 
 
+static void
+NAME(bubble_one)(VAR *restrict pa, VAR *restrict pe, size_t es)
+{
+	pe -= ES;
+	size_t len = ((char *)pe) - ((char *)pa);
+
+#ifdef UNTYPED
+	char	buf[es];
+
+	memcpy(buf, pa, es);
+	memmove(pa, pa + es, len);
+	memcpy(pe - es, buf, es);
+#else
+	VAR	t = *pa;
+	memmove(pa, pa + 1, len);
+	*pe = t;
+#endif
+} // bubble_one
+
+
 #ifdef UNTYPED
 static VAR *
 NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe, COMMON_PARAMS)
@@ -218,8 +238,7 @@ rotate_again:
 	if ((bs = (pb - pa)) == ES) {
 		rp = CALL(binary_search_rotate)(pa, pb, pe, COMMON_ARGS);
 		if ((rp - pb) > (ES * 7)) {
-			// rotate_block() is faster for sufficiently large moves
-			CALL(rotate_block)(pa, pb, rp, es);
+			CALL(bubble_one)(pa, rp, es);
 		} else {
 			do {
 				SWAP(pa, pb);
