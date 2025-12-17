@@ -106,7 +106,7 @@
 // quickly up to even 80 items.  This is different to INSERT_SORT_MAX because
 // that value affects the high performance merge routines, whereas the basic
 // sort has a higher K-factor overhead, and so BASIC_INSERT_MAX can be higher
-#define	BASIC_INSERT_MAX	44
+#define	BASIC_INSERT_MAX	32
 
 // SKEW defines the split ratio when doing top-down division of the array
 // While shift_merge_in_place and split_merge_in_place can definitely merge
@@ -119,8 +119,7 @@
 // its initial working sets, it's best that this skew ratio is managed
 // independently from the main merge-sort skew.  Experimentally, a 41:59
 // split appears to offer the best compromise
-//#define	BASIC_SKEW		41
-#define	BASIC_SKEW		19
+#define	BASIC_SKEW		41
 
 // WSRATIO defines the split ratio when choosing how much of the array to
 // use as a makeshift workspace when no workspace is provided
