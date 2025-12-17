@@ -36,105 +36,6 @@
 //                    basic_sort() implementation
 //--------------------------------------------------------------------------
 
-#ifdef UNTYPED
-// Merges two sorted sub-arrays together using insertion sort
-// This is horribly inefficient for all but the smallest arrays
-// It is assumed upon entry that the first element of B is less
-// than the last element of A.  It is upon the caller to ensure
-// this condition
-// This is the generic char type implementation
-static void
-NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
-{
-	VAR	*tb = pe;
-
-	do {
-		pe = tb - ES; tb = pb - ES; pb = tb;
-		do {
-			SWAP(tb + ES, tb);
-			tb += ES;
-		} while ((tb != pe) && IS_LT(tb + ES, tb));
-	} while ((pb != pa) && IS_LT(pb, pb - ES));
-} // insertion_merge_in_place
-
-#else
-
-// Merges two sorted sub-arrays together using insertion sort
-// This is horribly inefficient for all but the smallest arrays
-// It is assumed upon entry that the first element of B is less
-// than the last element of A.  It is upon the caller to ensure
-// this condition
-// This is the type-specific implementation
-static void
-NAME(insertion_merge_in_place)(VAR * pa, VAR * pb, VAR * pe, COMMON_PARAMS)
-{
-	VAR	*tb = pe;
-
-	do {
-		pe = tb - 1; tb = pb - 1; pb = tb;
-
-		VAR	t[1] = {*tb}, *tc = tb + 1;
-
-		do {
-			*tb++ = *tc++;
-		} while ((tb != pe) && IS_LT(tc, t));
-
-		*tb = *t;
-	} while ((pb != pa) && IS_LT(pb, pb - ES));
-} // insertion_merge_in_place
-#endif
-
-
-static void
-NAME(swap_block)(VAR *restrict pa, VAR *restrict pb, size_t num, size_t es)
-{
-#if 1
-	VAR	*restrict stop = pa + (num * ES);
-
-	while (pa != stop) {
-		SWAP(pa, pb);
-		pb += ES, pa += ES;
-	}
-#else
-	for ( ; pa < pe; pa += ES, pb += ES)
-		SWAP(pa, pb);
-#endif
-} // swap_block
-
-
-// Assumes initial condition that *PA < *(PA - ES)
-static void
-NAME(bubble_down)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
-{
-	VAR	*restrict pn = pa - ES;
-
-	// Bubble Element Down
-	ASSERT(pa > pe);
-	do {
-		SWAP(pa, pn);
-		pa = pn;
-		pn -= ES;
-	} while ((pa != pe) && IS_LT(pa, pn));
-} // bubble_down
-
-
-// Assumes initial condition that *PA < *(PA + ES)
-static VAR *
-NAME(bubble_up)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
-{
-	VAR	*restrict pn = pa + ES;
-
-	// Bubble Element Up
-	ASSERT(pn < pe);
-	do {
-		SWAP(pa, pn);
-		pa = pn;
-		pn += ES;
-	} while ((pn != pe) && IS_LT(pn, pa));
-	return pa;
-} // bubble_up
-
-
 static void
 NAME(bubble_one)(VAR *restrict pa, VAR *restrict pe, size_t es)
 {
@@ -213,9 +114,7 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 
 // This algorithm appears to be viable now that I added the triple_shift_v2()
 // block rotation to Forsort.  I had tried this algorithm before, but with the
-// older block rotation it performed badly. It now appears that this is out
-// performing split_merge_in_place() AND requires 1/3 of the stack space.  It
-// isn't as fast as shift_merge_in_place() is though, being about 5% slower
+// older block rotation it performed badly.
 
 static void
 NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
@@ -337,9 +236,8 @@ NAME(basic_bottom_up_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 // Top-down merge sort with a bias to smaller left-side arrays as this appears
 // to help the in-place merge algorithm a little bit,  This makes it a hair
 // faster than the bottom-up merge version of basic_sort().  basic_sort()  is
-// slow (about half the speed of merge_sort_in_place) but when combined with
-// either shift_merge or split_merge, it is actually sort-stable, and the
-// stable_sort() function uses this to help find a set of unique items.
+// slow (about half the speed of merge_sort_in_place) but it is sort-stable,
+// and the stable_sort() function uses this to help find a set of unique items.
 static void
 NAME(basic_top_down_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
