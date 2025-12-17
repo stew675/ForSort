@@ -23,6 +23,16 @@
 
 #else
 
+#if 1
+#define	SWAP(_xa_, _xb_)			\
+	{					\
+		VAR xa = *(VAR *)(_xa_);	\
+		*(VAR *)(_xa_) = *(VAR *)(_xb_);\
+		*(VAR *)(_xb_) = xa;		\
+	}
+
+#else
+
 #define	SWAP(_xa_, _xb_)			\
 	{					\
 		VAR xa = *(VAR *)(_xa_);	\
@@ -30,6 +40,7 @@
 		*(VAR *)(_xb_) = xa;		\
 		*(VAR *)(_xa_) = xb;		\
 	}
+#endif
 #endif
 
 //--------------------------------------------------------------------------
@@ -76,7 +87,7 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 		} while (len & mask);
 
 		pb += (pos * es);
-		return pb + IS_LT(pb, pa) * es;
+		return pb + !!IS_LT(pb, pa) * es;
 	} else {
 		for ( ; (pb != pe) && IS_LT(pb, pa); pb += es);
 		return pb;
@@ -103,7 +114,7 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 		} while (len & mask);
 
 		pb += pos;
-		return pb + IS_LT(pb, pa);
+		return pb + !!IS_LT(pb, pa);
 	} else {
 		for ( ; (pb != pe) && IS_LT(pb, pa); pb++);
 		return pb;
@@ -114,8 +125,8 @@ NAME(binary_search_rotate)(VAR *restrict pa, VAR *restrict pb, VAR *restrict pe,
 
 // This algorithm appears to be viable now that I added the triple_shift_v2()
 // block rotation to Forsort.  I had tried this algorithm before, but with the
-// older block rotation it performed badly.
-
+// older block rotation it performed badly.  In fact this algorithm now
+// performs so well that I've retired the shift/split merge in place functions
 static void
 NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 {
@@ -125,9 +136,9 @@ NAME(rotate_merge_in_place)(VAR *pa, VAR *pb, VAR *pe, COMMON_PARAMS)
 	if (!IS_LT(pb, pb - ES))
 		return;
 
-	// The stack_size is * 2 due to two pointers per stack entry.  Even if
-	// we're asked to merge 2^64 items, the stack will be 1024 bytes in
-	// size, if pointers are 8 bytes in size
+	// The stack_size is * 3 due to three pointers per stack entry.  Even
+	// if we're asked to merge 2^64 items, the stack will be 1536 bytes
+	// in size (assuming pointers are 8 bytes in size)
 	size_t	bs, split_size, stack_size = msb64(NITEM(pb - pa)) * 3;
 	_Alignas(64) VAR *stack_space[stack_size];
 	VAR	**work_stack = stack_space, *spa, *spb, *rp;
@@ -136,7 +147,7 @@ rotate_again:
 	// Special case handling of single item merges
 	if ((bs = (pb - pa)) == ES) {
 		rp = CALL(binary_search_rotate)(pa, pb, pe, COMMON_ARGS);
-		if ((rp - pb) > (ES * 7)) {
+		if ((rp - pb) > (ES << 2)) {
 			CALL(bubble_one)(pa, rp, es);
 		} else {
 			do {

@@ -119,7 +119,7 @@
 // its initial working sets, it's best that this skew ratio is managed
 // independently from the main merge-sort skew.  Experimentally, a 41:59
 // split appears to offer the best compromise
-#define	BASIC_SKEW		19
+#define	BASIC_SKEW		30
 
 // WSRATIO defines the split ratio when choosing how much of the array to
 // use as a makeshift workspace when no workspace is provided
