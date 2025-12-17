@@ -200,17 +200,35 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 		if ((a_run | b_run) < sprint) {
 			// The following 8 lines implement this logic
 			// pb -= ES;
-			// if (IS_LT(pw - ES, pa - ES)) {
-			//	pa -= ES;
-			//	SWAP(pb, pa);
-			//	b_run = 0;
-			//	a_run++;
+			// if (branchless(IS_LT(pw - ES, pa - ES))) {
+			// 	pa -= ES;
+			// 	SWAP(pb, pa);
+			// 	b_run = 0;
+			// 	a_run++;
 			// } else {
-			//	pw -= ES;
-			//	SWAP(pb, pw);
-			//	a_run = 0;
-			//	b_run++;
+			// 	pw -= ES;
+			// 	SWAP(pb, pw);
+			// 	a_run = 0;
+			// 	b_run++;
 			// }
+#if 1
+			pw -= ES;
+			pa -= ES;
+			pb -= ES;
+
+			int	res = !(IS_LT(pw, pa));
+			int	nres = !res;
+			SWAP(pb, (branchless(res) ? pw : pa));
+
+			a_run += nres;
+			b_run += res;
+
+			pa += res * ES;
+			pw += nres * ES;
+
+			a_run *= nres;
+			b_run *= res;
+#else
 			VAR	*which[2] = {(pw - ES), (pa - ES)};
 			int	res = !!(IS_LT(pw - ES, pa - ES));
 			pb = pb - ES;
@@ -219,11 +237,12 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 			pw = pw - (!res * ES);
 			a_run = (a_run + res) * res;
 			b_run = (b_run + !res) * !res;
+#endif
 			continue;
 		}
 
 		do {
-			sprint -= !!(sprint > 2);
+			sprint -= (sprint > 2);
 
 			// Stuff from A is sprinting
 			if (a_run) {
@@ -300,6 +319,21 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 			//	a_run++;
 			//	b_run = 0;
 			// }
+#if 1
+			int	res = !(IS_LT(b, w));
+			int	nres = !res;
+
+			SWAP(a, (branchless(res) ? w : b));
+
+			w += res * ES;
+			b += nres * ES;
+
+			a_run += res;
+			b_run += nres;
+
+			a_run *= res;
+			b_run *= nres;
+#else
 			VAR	*which[2] = {w, b};
 			int	res = !!(IS_LT(b, w));
 			SWAP(a, which[res]);
@@ -307,12 +341,13 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 			w += !res * ES;
 			a_run = (a_run + !res) * !res;
 			b_run = (b_run + res) * res;
+#endif
 			a += ES;
 			continue;
 		}
 
 		do {
-			sprint -= !!(sprint > 2);
+			sprint -= (sprint > 2);
 
 			// Stuff from A/workspace is sprinting
 			VAR	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
