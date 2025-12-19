@@ -20,6 +20,16 @@
 
 #else
 
+#if 1
+#define	SWAP(_xa_, _xb_)				\
+	{						\
+		VAR xt = *(VAR *)(_xa_);		\
+		*(VAR *)(_xa_) = *(VAR *)(_xb_);	\
+		*(VAR *)(_xb_) = xt;			\
+	}
+
+#else
+
 #define	SWAP(_xa_, _xb_)				\
 	{						\
 		VAR xa = *(VAR *)(_xa_);		\
@@ -28,6 +38,7 @@
 		*(VAR *)(_xb_) = xa;			\
 	}
 
+#endif
 #endif
 
 //-----------------------------------------------------------------
@@ -211,7 +222,7 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 			// 	a_run = 0;
 			// 	b_run++;
 			// }
-#if 1
+
 			pw -= ES;
 			pa -= ES;
 			pb -= ES;
@@ -228,16 +239,6 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 
 			a_run *= nres;
 			b_run *= res;
-#else
-			VAR	*which[2] = {(pw - ES), (pa - ES)};
-			int	res = !!(IS_LT(pw - ES, pa - ES));
-			pb = pb - ES;
-			SWAP(pb, which[res]);
-			pa = pa - (res * ES);
-			pw = pw - (!res * ES);
-			a_run = (a_run + res) * res;
-			b_run = (b_run + !res) * !res;
-#endif
 			continue;
 		}
 
@@ -319,7 +320,7 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 			//	a_run++;
 			//	b_run = 0;
 			// }
-#if 1
+
 			int	res = !(IS_LT(b, w));
 			int	nres = !res;
 
@@ -333,15 +334,7 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 
 			a_run *= res;
 			b_run *= nres;
-#else
-			VAR	*which[2] = {w, b};
-			int	res = !!(IS_LT(b, w));
-			SWAP(a, which[res]);
-			b += res * ES;
-			w += !res * ES;
-			a_run = (a_run + !res) * !res;
-			b_run = (b_run + res) * res;
-#endif
+
 			a += ES;
 			continue;
 		}
