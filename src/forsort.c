@@ -126,7 +126,7 @@
 // use as a makeshift workspace when no workspace is provided
 // Experimentally anything from 3-20 works okay, but 9 appears optimal
 // Using 3 would mirror a closest approximation of classic merge sort
-#define	WSRATIO			9
+#define	WSRATIO			14
 
 // STABLE_WSRATIO controls the behaviour of the stable sorting "front end" to
 // the main algorithm.  It has to dig out unique values from the sort space
@@ -134,7 +134,7 @@
 // there's a trade-off between spending more time digging out uniques, as
 // opposed to just using what we can find.  A good value appears to be anywhere
 // from 1.5x to 3x of what WSRATIO is set to,
-#define	STABLE_WSRATIO		24
+#define	STABLE_WSRATIO		28
 
 // Set the following to 1 to enable low-stack mode, whereby we will not use
 // shift_merge_in_place(), and ONLY use split_merge_in_place algorithm.  This
@@ -440,8 +440,8 @@ forsort_inplace(void *a, const size_t n, const size_t es,
 		dynamic = 1;
 
 	if (dynamic) {
-		// Allocate a workspace that is 1/8 of the total array size
-		worksize = (n * es) / 8;
+		// Allocate a workspace that is 1/WSRATIO of the total array size
+		worksize = (n * es) / WSRATIO;
 		workspace = malloc(worksize);
 	}
 
