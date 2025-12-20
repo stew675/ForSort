@@ -463,11 +463,81 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 		CALL(merge_right)(a, na, b, nb, w, nw, COMMON_ARGS);
 } // merge_using_workspace
 
+static void
+NAME(merge_there_and_back)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *p3, size_t n3,
+                           VAR *p4, size_t n4, VAR *ws, size_t nw, COMMON_PARAMS)
+{
+	ASSERT((n1 + n2 + n3 + n4) <= nw);
+	ASSERT(p1 + n1 * ES == p2);
+	ASSERT(p2 + n2 * ES == p3);
+	ASSERT(p3 + n3 * ES == p4);
+
+	VAR *pw = ws, *pd = p1;
+	size_t nw1 = n1 + n2, nw2 = n3 + n4;
+
+	// Merge 1 & 2
+	for ( ; n1 && n2; pw += ES) {
+		int	res = !(IS_LT(p2, p1));
+		int	nres = !res;
+
+		SWAP(pw, (branchless(res) ? p1 : p2));
+		p1 += (res * ES);
+		p2 += (nres * ES);
+		n1 -= res;
+		n2 -= nres;
+	}
+
+	for ( ; n1; p1 += ES, pw += ES, n1--)
+		SWAP(pw, p1);
+
+	for ( ; n2; p2 += ES, pw += ES, n2--)
+		SWAP(pw, p2);
+
+	// Merge 3 & 4
+	for ( ; n3 && n4; pw += ES) {
+		int	res = !(IS_LT(p4, p3));
+		int	nres = !res;
+
+		SWAP(pw, (branchless(res) ? p3 : p4));
+		p3 += (res * ES);
+		p4 += (nres * ES);
+		n3 -= res;
+		n4 -= nres;
+	}
+
+	for ( ; n3; p3 += ES, pw += ES, n3--)
+		SWAP(pw, p3);
+
+	for ( ; n4; p4 += ES, pw += ES, n4--)
+		SWAP(pw, p4);
+
+	// Merge 1 & 3 back
+	p1 = ws;
+	p2 = ws + nw1 * ES;
+
+	// Merge 1 & 2
+	for ( ; nw1 && nw2; pd += ES) {
+		int	res = !(IS_LT(p2, p1));
+		int	nres = !res;
+
+		SWAP(pd, (branchless(res) ? p1 : p2));
+		p1 += (res * ES);
+		p2 += (nres * ES);
+		nw1 -= res;
+		nw2 -= nres;
+	}
+
+	for ( ; nw1; p1 += ES, pd += ES, nw1--)
+		SWAP(pd, p1);
+
+	for ( ; nw2; p2 += ES, pd += ES, nw2--)
+		SWAP(pd, p2);
+} // merge_there_and_back
 
 // This function's job to merge two arrays together, given whatever
 // size workspace is given.  It'll always make it work...eventually!
 static void
-NAME(merge_workspace_constrained) (VAR *pa, size_t na, VAR *pb, size_t nb,
+NAME(merge_workspace_constrained)(VAR *pa, size_t na, VAR *pb, size_t nb,
 			  VAR *ws, const size_t nw, COMMON_PARAMS)
 {
 	VAR	*pe = pb + (nb * ES);
@@ -540,11 +610,36 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 			   const size_t nw, COMMON_PARAMS)
 {
 	// Handle small array size inputs with insertion sort
-	if ((n <= INSERT_SORT_MAX) || (n <= 8))
+	if (n <= INSERT_SORT_MAX)
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
 	ASSERT(ws != NULL);
 	ASSERT(nw > 0);
+
+#if 1
+	if (n <= nw) {
+		VAR	*p1, *p2, *p3, *p4;
+		size_t	n1, n2, n3, n4;
+
+		n1 = n >> 2;
+		n2 = n1;
+		n3 = n1;
+		n4 = n - n1 * 3;
+
+		p1 = pa;
+		p2 = p1 + n1 * ES;
+		p3 = p2 + n2 * ES;
+		p4 = p3 + n3 * ES;
+
+		CALL(sort_using_workspace)(p1, n1, ws, nw, COMMON_ARGS);
+		CALL(sort_using_workspace)(p2, n2, ws, nw, COMMON_ARGS);
+		CALL(sort_using_workspace)(p3, n3, ws, nw, COMMON_ARGS);
+		CALL(sort_using_workspace)(p4, n4, ws, nw, COMMON_ARGS);
+
+		CALL(merge_there_and_back)(p1, n1, p2, n2, p3, n3, p4, n4, ws, nw, COMMON_ARGS);
+		return;
+	}
+#endif
 
 	// The standard merge-sort algorithm is mathematically best
 	// when splitting the work up completely evenly (50:50 split)

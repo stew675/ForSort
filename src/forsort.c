@@ -91,7 +91,8 @@
 // values around 20+ giving best speeds at the expense of more swaps/compares
 // Drop this to 8 if you want to minimise comparisons, but the overall
 // algorithm will run a bit slower if you do so.
-#define	INSERT_SORT_MAX		12
+//#define	INSERT_SORT_MAX		12
+#define	INSERT_SORT_MAX		16
 
 // A SKEW of 50 is a classic merge sort 50:50 split, which would be better
 // for larger element sizes, an expensive comparison function, for highly
@@ -119,7 +120,7 @@
 // its initial working sets, it's best that this skew ratio is managed
 // independently from the main merge-sort skew.  Experimentally, a 41:59
 // split appears to offer the best compromise
-#define	BASIC_SKEW		30
+#define	BASIC_SKEW		29
 
 // WSRATIO defines the split ratio when choosing how much of the array to
 // use as a makeshift workspace when no workspace is provided
