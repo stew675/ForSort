@@ -477,123 +477,6 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 		CALL(merge_right)(a, na, b, nb, w, nw, COMMON_ARGS);
 } // merge_using_workspace
 
-static void
-NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd, int jc, COMMON_PARAMS)
-{
-	ASSERT(n1 > 0);
-	ASSERT(n2 > 0);
-
-	VAR	*p1e = p1 + n1 * ES, *p2e = p2 + n2 * ES;
-
-	if (jc)
-		goto merge_done;
-
-	// Now merge rest of W into B. Set up sprint values
-	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
-	ASSERT(p1e == p2);
-
-	while ((p1 < p1e) && (p2 < p2e)) {
-		if ((a_run | b_run) < sprint) {
-			int	res = !(IS_LT(p2, p1));
-			int	nres = !res;
-
-			SWAP(pd, (branchless(res) ? p1 : p2));
-			p1 += (res * ES);
-			p2 += (nres * ES);
-
-			a_run += res;
-			b_run += nres;
-			a_run *= res;
-			b_run *= nres;
-
-			pd += ES;
-			continue;
-		}
-		do {
-			sprint -= (sprint > 2);
-
-			// Stuff from P1 is sprinting
-			VAR	*t1 = CALL(sprint_right)(p1, p1e, p2, LEAP_RIGHT, COMMON_ARGS);
-			a_run = NITEM(t1 - p1);
-#if 1
-			while (p1 < t1) {
-				SWAP(pd, p1);
-				pd += ES;
-				p1 += ES;
-			}
-			if (p1 >= p1e)
-				goto merge_done;
-#else
-			if (a_run) {
-				for (size_t num = a_run; num--; pd += ES, p1 += ES)
-					SWAP(p1, pd);
-				if (p1 >= p1e)
-					goto merge_done;
-			}
-#endif
-			// Stuff from P2 is sprinting
-			VAR	*t2 = CALL(sprint_left)(p2, p2e, p1, LEAP_RIGHT, COMMON_ARGS);
-			b_run = NITEM(t2 - p2);
-#if 1
-			while (p2 < t2) {
-				SWAP(pd, p2);
-				pd += ES;
-				p2 += ES;
-			}
-			if (p2 >= p2e)
-				goto merge_done;
-#else
-			if (b_run) {
-				for (size_t num = b_run; num--; pd += ES, p2 += ES)
-					SWAP(p2, pd);
-				if (p2 >= p2e)
-					goto merge_done;
-			}
-#endif
-		} while ((a_run >= SPRINT_ACTIVATE) || (b_run >= SPRINT_ACTIVATE));
-
-		// Reset sprint mode
-		sprint += SPRINT_EXIT_PENALTY;
-		a_run = 0;
-		b_run = 0;
-	}
-merge_done:
-	// Move over any remainders
-	for ( ; p1 < p1e; p1 += ES, pd += ES)
-		SWAP(pd, p1);
-
-	for ( ; p2 < p2e; p2 += ES, pd += ES)
-		SWAP(pd, p2);
-} // merge_four_sub
-
-
-static void
-NAME(merge_four)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *p3, size_t n3,
-                           VAR *p4, size_t n4, VAR *ws, size_t nw, COMMON_PARAMS)
-{
-	ASSERT((n1 + n2 + n3 + n4) <= nw);
-	ASSERT(p1 + n1 * ES == p2);
-	ASSERT(p2 + n2 * ES == p3);
-	ASSERT(p3 + n3 * ES == p4);
-
-	int jc2 = !IS_LT(p2, p2 - ES);		// Check if we can just copy only
-	int jc4 = !IS_LT(p4, p4 - ES);		// Check if we can just copy only
-
-	if (jc2 && jc4)
-		if (!IS_LT(p3, p3 - ES))	// Check if we need to do anything at all!
-			return;
-
-	size_t nw1 = n1 + n2, nw2 = n3 + n4;
-	VAR *pw1 = ws, *pw2 = ws + (nw1 * ES);
-
-	CALL(merge_four_sub)(p1, n1, p2, n2, pw1, nw1, jc2, COMMON_ARGS);
-	CALL(merge_four_sub)(p3, n3, p4, n4, pw2, nw2, jc4, COMMON_ARGS);
-
-	int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
-
-	CALL(merge_four_sub)(pw1, nw1, pw2, nw2, p1, nw1 + nw2, jc3, COMMON_ARGS);
-} // merge_four
-
 
 // This function's job to merge two arrays together, given whatever
 // size workspace is given.  It'll always make it work...eventually!
@@ -609,10 +492,10 @@ NAME(merge_workspace_constrained)(VAR *pa, size_t na, VAR *pb, size_t nb,
 
 		// RP now tracks the point of block rotation
 		// PB now points at the end of the part of A
-		// that fits into the available workspace 
+		// that fits into the available workspace
 		rp = pb;
 		pb = pa + nw * ES;
-			
+
 		// Find where in the B array we can split to rotate the
 		// remainder of A into.  Use binary search for speed
 		sp = rp + (pos * ES);
@@ -664,6 +547,107 @@ NAME(merge_workspace_constrained)(VAR *pa, size_t na, VAR *pb, size_t nb,
 	if (nb > 0)
 		CALL(merge_using_workspace)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
 } // merge_workspace_constrained
+
+
+static void
+NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
+                     int just_copy, COMMON_PARAMS)
+{
+	ASSERT(n1 > 0);
+	ASSERT(n2 > 0);
+
+	VAR	*p1e = p1 + n1 * ES, *p2e = p2 + n2 * ES;
+
+	// Check if we only need to just copy the data
+	if (just_copy)
+		goto merge_done;
+
+	// Now merge rest of W into B. Set up sprint values
+	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
+	ASSERT(p1e == p2);
+
+	while ((p1 < p1e) && (p2 < p2e)) {
+		if ((a_run | b_run) < sprint) {
+			int	res = !(IS_LT(p2, p1));
+			int	nres = !res;
+
+			SWAP(pd, (branchless(res) ? p1 : p2));
+			p1 += (res * ES);
+			p2 += (nres * ES);
+
+			a_run += res;
+			b_run += nres;
+
+			a_run *= res;
+			b_run *= nres;
+
+			pd += ES;
+			continue;
+		}
+
+		do {
+			sprint -= (sprint > 2);
+
+			// Stuff from P1 is sprinting
+			VAR	*t1 = CALL(sprint_right)(p1, p1e, p2, LEAP_RIGHT, COMMON_ARGS);
+			for (a_run = NITEM(t1 - p1); p1 < t1; pd += ES, p1 += ES)
+				SWAP(pd, p1);
+
+			if (p1 >= p1e)
+				goto merge_done;
+
+			// Stuff from P2 is sprinting
+			VAR	*t2 = CALL(sprint_left)(p2, p2e, p1, LEAP_RIGHT, COMMON_ARGS);
+			for (b_run = NITEM(t2 - p2); p2 < t2; pd += ES, p2 += ES)
+				SWAP(pd, p2);
+
+			if (p2 >= p2e)
+				goto merge_done;
+
+		} while ((a_run >= SPRINT_ACTIVATE) || (b_run >= SPRINT_ACTIVATE));
+
+		// Reset sprint mode
+		sprint += SPRINT_EXIT_PENALTY;
+		a_run = 0;
+		b_run = 0;
+	}
+
+merge_done:
+	// Move over any remainders
+	for ( ; p1 < p1e; p1 += ES, pd += ES)
+		SWAP(pd, p1);
+
+	for ( ; p2 < p2e; p2 += ES, pd += ES)
+		SWAP(pd, p2);
+} // merge_four_sub
+
+
+static void
+NAME(merge_four)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *p3, size_t n3,
+                           VAR *p4, size_t n4, VAR *ws, size_t nw, COMMON_PARAMS)
+{
+	ASSERT((n1 + n2 + n3 + n4) <= nw);
+	ASSERT(p1 + n1 * ES == p2);
+	ASSERT(p2 + n2 * ES == p3);
+	ASSERT(p3 + n3 * ES == p4);
+
+	int jc2 = !IS_LT(p2, p2 - ES);		// Check if we can just copy only
+	int jc4 = !IS_LT(p4, p4 - ES);		// Check if we can just copy only
+
+	if (jc2 && jc4)
+		if (!IS_LT(p3, p3 - ES))	// Check if we need to do anything at all!
+			return;
+
+	size_t nw1 = n1 + n2, nw2 = n3 + n4;
+	VAR *pw1 = ws, *pw2 = ws + (nw1 * ES);
+
+	CALL(merge_four_sub)(p1, n1, p2, n2, pw1, nw1, jc2, COMMON_ARGS);
+	CALL(merge_four_sub)(p3, n3, p4, n4, pw2, nw2, jc4, COMMON_ARGS);
+
+	int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
+
+	CALL(merge_four_sub)(pw1, nw1, pw2, nw2, p1, nw1 + nw2, jc3, COMMON_ARGS);
+} // merge_four
 
 
 static void
