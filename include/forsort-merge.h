@@ -568,6 +568,7 @@ NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
 
 	while ((p1 < p1e) && (p2 < p2e)) {
 		if ((a_run | b_run) < sprint) {
+#if 1
 			int	res = !(IS_LT(p2, p1));
 			int	nres = !res;
 
@@ -580,7 +581,17 @@ NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
 
 			a_run *= res;
 			b_run *= nres;
+#else
+			int	res = !!(IS_LT(p2, p1));
 
+			SWAP(pd, (branchless(res) ? p2 : p1));
+
+			p1 = branchless(res) ? p1 : p1 + ES;
+			p2 = branchless(res) ? p2 + ES : p2;
+
+			a_run = branchless(res) ? 0 : a_run + 1;
+			b_run = branchless(res) ? b_run + 1 : 0;
+#endif
 			pd += ES;
 			continue;
 		}
