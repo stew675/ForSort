@@ -345,22 +345,36 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 			// Stuff from A/workspace is sprinting
 			VAR	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
 			a_run = NITEM(tw - w);
+#if 1
+			for ( ; w < tw; w += ES, a += ES)
+				SWAP(a, w);
+			if (w >= pw)
+				goto merge_done;
+#else
 			if (a_run) {
 				for (size_t num = a_run; num--; w += ES, a += ES)
 					SWAP(a, w);
 				if (w >= pw)
 					goto merge_done;
 			}
+#endif
 
 			// Stuff from B is sprinting
 			VAR	*tb = CALL(sprint_left)(b, pe, w, LEAP_RIGHT, COMMON_ARGS);
 			b_run = NITEM(tb - b);
+#if 1
+			for ( ; b < tb; b += ES, a += ES)
+				SWAP(a, b);
+			if (b >= pe)
+				goto merge_done;
+#else
 			if (b_run) {
 				for (size_t num = b_run; num--; b += ES, a += ES)
 					SWAP(a, b);
 				if (b >= pe)
 					goto merge_done;
 			}
+#endif
 		} while ((a_run >= SPRINT_ACTIVATE) || (b_run >= SPRINT_ACTIVATE));
 
 		// Reset sprint mode
@@ -464,7 +478,90 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 } // merge_using_workspace
 
 static void
-NAME(merge_there_and_back)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *p3, size_t n3,
+NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd, COMMON_PARAMS)
+{
+	// Now merge rest of W into B. Set up sprint values
+	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
+	VAR	*p1e = p1 + n1 * ES, *p2e = p2 + n2 * ES;
+	ASSERT(p1e == p2);
+
+	while ((p1 < p1e) && (p2 < p2e)) {
+		if ((a_run | b_run) < sprint) {
+			int	res = !(IS_LT(p2, p1));
+			int	nres = !res;
+
+			SWAP(pd, (branchless(res) ? p1 : p2));
+			p1 += (res * ES);
+			p2 += (nres * ES);
+
+			a_run += res;
+			b_run += nres;
+			a_run *= res;
+			b_run *= nres;
+
+			pd += ES;
+			continue;
+		}
+		do {
+			sprint -= (sprint > 2);
+
+			// Stuff from P1 is sprinting
+			VAR	*t1 = CALL(sprint_right)(p1, p1e, p2, LEAP_RIGHT, COMMON_ARGS);
+			a_run = NITEM(t1 - p1);
+#if 1
+			while (p1 < t1) {
+				SWAP(pd, p1);
+				pd += ES;
+				p1 += ES;
+			}
+			if (p1 >= p1e)
+				goto merge_done;
+#else
+			if (a_run) {
+				for (size_t num = a_run; num--; pd += ES, p1 += ES)
+					SWAP(p1, pd);
+				if (p1 >= p1e)
+					goto merge_done;
+			}
+#endif
+			// Stuff from P2 is sprinting
+			VAR	*t2 = CALL(sprint_left)(p2, p2e, p1, LEAP_RIGHT, COMMON_ARGS);
+			b_run = NITEM(t2 - p2);
+#if 1
+			while (p2 < t2) {
+				SWAP(pd, p2);
+				pd += ES;
+				p2 += ES;
+			}
+			if (p2 >= p2e)
+				goto merge_done;
+#else
+			if (b_run) {
+				for (size_t num = b_run; num--; pd += ES, p2 += ES)
+					SWAP(p2, pd);
+				if (p2 >= p2e)
+					goto merge_done;
+			}
+#endif
+		} while ((a_run >= SPRINT_ACTIVATE) || (b_run >= SPRINT_ACTIVATE));
+
+		// Reset sprint mode
+		sprint += SPRINT_EXIT_PENALTY;
+		a_run = 0;
+		b_run = 0;
+	}
+merge_done:
+	// Move over any remainders
+	for ( ; p1 < p1e; p1 += ES, pd += ES)
+		SWAP(pd, p1);
+
+	for ( ; p2 < p2e; p2 += ES, pd += ES)
+		SWAP(pd, p2);
+} // merge_four_sub
+
+
+static void
+NAME(merge_four)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *p3, size_t n3,
                            VAR *p4, size_t n4, VAR *ws, size_t nw, COMMON_PARAMS)
 {
 	ASSERT((n1 + n2 + n3 + n4) <= nw);
@@ -472,67 +569,14 @@ NAME(merge_there_and_back)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *p3, size
 	ASSERT(p2 + n2 * ES == p3);
 	ASSERT(p3 + n3 * ES == p4);
 
-	VAR *pw = ws, *pd = p1;
 	size_t nw1 = n1 + n2, nw2 = n3 + n4;
+	VAR *pw1 = ws, *pw2 = ws + (nw1 * ES);
 
-	// Merge 1 & 2
-	for ( ; n1 && n2; pw += ES) {
-		int	res = !(IS_LT(p2, p1));
-		int	nres = !res;
+	CALL(merge_four_sub)(p1, n1, p2, n2, pw1, nw1, COMMON_ARGS);
+	CALL(merge_four_sub)(p3, n3, p4, n4, pw2, nw2, COMMON_ARGS);
+	CALL(merge_four_sub)(pw1, nw1, pw2, nw2, p1, nw1 + nw2, COMMON_ARGS);
+} // merge_four
 
-		SWAP(pw, (branchless(res) ? p1 : p2));
-		p1 += (res * ES);
-		p2 += (nres * ES);
-		n1 -= res;
-		n2 -= nres;
-	}
-
-	for ( ; n1; p1 += ES, pw += ES, n1--)
-		SWAP(pw, p1);
-
-	for ( ; n2; p2 += ES, pw += ES, n2--)
-		SWAP(pw, p2);
-
-	// Merge 3 & 4
-	for ( ; n3 && n4; pw += ES) {
-		int	res = !(IS_LT(p4, p3));
-		int	nres = !res;
-
-		SWAP(pw, (branchless(res) ? p3 : p4));
-		p3 += (res * ES);
-		p4 += (nres * ES);
-		n3 -= res;
-		n4 -= nres;
-	}
-
-	for ( ; n3; p3 += ES, pw += ES, n3--)
-		SWAP(pw, p3);
-
-	for ( ; n4; p4 += ES, pw += ES, n4--)
-		SWAP(pw, p4);
-
-	// Merge 1 & 3 back
-	p1 = ws;
-	p2 = ws + nw1 * ES;
-
-	// Merge 1 & 2
-	for ( ; nw1 && nw2; pd += ES) {
-		int	res = !(IS_LT(p2, p1));
-		int	nres = !res;
-
-		SWAP(pd, (branchless(res) ? p1 : p2));
-		p1 += (res * ES);
-		p2 += (nres * ES);
-		nw1 -= res;
-		nw2 -= nres;
-	}
-
-	for ( ; nw1; p1 += ES, pd += ES, nw1--)
-		SWAP(pd, p1);
-
-	for ( ; nw2; p2 += ES, pd += ES, nw2--)
-		SWAP(pd, p2);
-} // merge_there_and_back
 
 // This function's job to merge two arrays together, given whatever
 // size workspace is given.  It'll always make it work...eventually!
@@ -636,7 +680,7 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 		CALL(sort_using_workspace)(p3, n3, ws, nw, COMMON_ARGS);
 		CALL(sort_using_workspace)(p4, n4, ws, nw, COMMON_ARGS);
 
-		CALL(merge_there_and_back)(p1, n1, p2, n2, p3, n3, p4, n4, ws, nw, COMMON_ARGS);
+		CALL(merge_four)(p1, n1, p2, n2, p3, n3, p4, n4, ws, nw, COMMON_ARGS);
 		return;
 	}
 #endif
