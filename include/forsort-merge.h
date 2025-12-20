@@ -478,11 +478,18 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 } // merge_using_workspace
 
 static void
-NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd, COMMON_PARAMS)
+NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd, int jc, COMMON_PARAMS)
 {
+	ASSERT(n1 > 0);
+	ASSERT(n2 > 0);
+
+	VAR	*p1e = p1 + n1 * ES, *p2e = p2 + n2 * ES;
+
+	if (jc)
+		goto merge_done;
+
 	// Now merge rest of W into B. Set up sprint values
 	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
-	VAR	*p1e = p1 + n1 * ES, *p2e = p2 + n2 * ES;
 	ASSERT(p1e == p2);
 
 	while ((p1 < p1e) && (p2 < p2e)) {
@@ -569,12 +576,22 @@ NAME(merge_four)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *p3, size_t n3,
 	ASSERT(p2 + n2 * ES == p3);
 	ASSERT(p3 + n3 * ES == p4);
 
+	int jc2 = !IS_LT(p2, p2 - ES);		// Check if we can just copy only
+	int jc4 = !IS_LT(p4, p4 - ES);		// Check if we can just copy only
+
+	if (jc2 && jc4)
+		if (!IS_LT(p3, p3 - ES))	// Check if we need to do anything at all!
+			return;
+
 	size_t nw1 = n1 + n2, nw2 = n3 + n4;
 	VAR *pw1 = ws, *pw2 = ws + (nw1 * ES);
 
-	CALL(merge_four_sub)(p1, n1, p2, n2, pw1, nw1, COMMON_ARGS);
-	CALL(merge_four_sub)(p3, n3, p4, n4, pw2, nw2, COMMON_ARGS);
-	CALL(merge_four_sub)(pw1, nw1, pw2, nw2, p1, nw1 + nw2, COMMON_ARGS);
+	CALL(merge_four_sub)(p1, n1, p2, n2, pw1, nw1, jc2, COMMON_ARGS);
+	CALL(merge_four_sub)(p3, n3, p4, n4, pw2, nw2, jc4, COMMON_ARGS);
+
+	int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
+
+	CALL(merge_four_sub)(pw1, nw1, pw2, nw2, p1, nw1 + nw2, jc3, COMMON_ARGS);
 } // merge_four
 
 
