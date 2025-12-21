@@ -9,11 +9,10 @@ SRC=	forsort.c \
 	main.c \
 	nqsort.c \
 	timsort.c \
+	blitsort.c \
 	WikiSort.c \
 	timsort_r.c \
 	grail_sort.c 
-
-#	blitsort.c \
 
 INCDIR= include
 SRCDIR= src

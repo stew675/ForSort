@@ -20,7 +20,7 @@
 
 #else
 
-#if 1
+#if 0
 #define	SWAP(_xa_, _xb_)				\
 	{						\
 		VAR xt = *(VAR *)(_xa_);		\

@@ -84,7 +84,6 @@ wiki_compare(struct item p1, struct item p2)
 	return p1.value < p2.value;
 } // wiki_compare
 
-#if 0
 // Used to determine if the first uint32_t pointed at, is greater than
 // the second uint32_t that is pointed at
 static int __attribute__((noinline))
@@ -93,7 +92,6 @@ is_greater_than_uint32(const void *p1, const void *p2)
 	numcmps++;
 	return (((struct item *)p1)->value > ((struct item *)p2)->value);
 } // is_greater_than_uint32
-#endif
 
 // Used to compare two uint32_t values pointed at by the pointers given
 // Used to determine if the first uint32_t pointed at, is less than
@@ -222,7 +220,7 @@ parse_sort_type(char *opt)
 		return;
 	}
 
-#if 0
+#if 1
 	if (strcmp(opt, "bl") == 0) {
 		sortname = "BlitSort";
 		sorttype =  BLIT_SORT;
@@ -663,9 +661,9 @@ main(int argc, char *argv[])
 		case BENTLEY_QSORT:
 			nqsort(a, n, sizeof(*a), compare_uint32);
 			break;
-//		case BLIT_SORT:
-//			blitsort(a, n, sizeof(*a), is_greater_than_uint32);
-//			break;
+		case BLIT_SORT:
+			blitsort(a, n, sizeof(*a), is_greater_than_uint32);
+			break;
 		case INSERT_SORT:
 			insertion_sort(a, n, sizeof(*a), is_less_than_uint32);
 			break;

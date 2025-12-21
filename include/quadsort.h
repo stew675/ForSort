@@ -307,7 +307,7 @@ size_t FUNC(quad_swap)(VAR *array, size_t nmemb, CMPFUNC *cmp)
 
 		if (count--)
 		{
-			if ((v1 = cmp(pta + 0, pta + 1) > 0) | (v2 = cmp(pta + 2, pta + 3) > 0) | (v3 = cmp(pta + 4, pta + 5) > 0) | (v4 = cmp(pta + 6, pta + 7) > 0))
+			if ((int)(v1 = cmp(pta + 0, pta + 1) > 0) | (int)(v2 = cmp(pta + 2, pta + 3) > 0) | (int)(v3 = cmp(pta + 4, pta + 5) > 0) | (int)(v4 = cmp(pta + 6, pta + 7) > 0))
 			{
 				if (v1 + v2 + v3 + v4 == 4 && cmp(pta + 1, pta + 2) > 0 && cmp(pta + 3, pta + 4) > 0 && cmp(pta + 5, pta + 6) > 0)
 				{
@@ -332,7 +332,7 @@ size_t FUNC(quad_swap)(VAR *array, size_t nmemb, CMPFUNC *cmp)
 
 		if (count--)
 		{
-			if ((v1 = cmp(pta + 0, pta + 1) <= 0) | (v2 = cmp(pta + 2, pta + 3) <= 0) | (v3 = cmp(pta + 4, pta + 5) <= 0) | (v4 = cmp(pta + 6, pta + 7) <= 0))
+			if ((int)(v1 = cmp(pta + 0, pta + 1) <= 0) | (int)(v2 = cmp(pta + 2, pta + 3) <= 0) | (int)(v3 = cmp(pta + 4, pta + 5) <= 0) | (int)(v4 = cmp(pta + 6, pta + 7) <= 0))
 			{
 				// not reversed
 			}

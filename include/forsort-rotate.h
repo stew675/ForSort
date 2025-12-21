@@ -53,6 +53,14 @@
 
 #else
 
+#if 0
+#define	SWAP(_xa_, _xb_)				\
+	{						\
+		VAR xa = *(VAR *)(_xa_);		\
+		*(VAR *)(_xa_) = *(VAR *)(_xb_);	\
+		*(VAR *)(_xb_) = xa;			\
+	}
+#else
 #define	SWAP(_xa_, _xb_)				\
 	{						\
 		VAR xa = *(VAR *)(_xa_);		\
@@ -60,7 +68,7 @@
 		*(VAR *)(_xa_) = xb;			\
 		*(VAR *)(_xb_) = xa;			\
 	}
-
+#endif
 #endif
 
 //-----------------------------------------------------------------
