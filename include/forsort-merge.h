@@ -345,36 +345,18 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 			// Stuff from A/workspace is sprinting
 			VAR	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
 			a_run = NITEM(tw - w);
-#if 1
 			for ( ; w < tw; w += ES, a += ES)
 				SWAP(a, w);
 			if (w >= pw)
 				goto merge_done;
-#else
-			if (a_run) {
-				for (size_t num = a_run; num--; w += ES, a += ES)
-					SWAP(a, w);
-				if (w >= pw)
-					goto merge_done;
-			}
-#endif
 
 			// Stuff from B is sprinting
 			VAR	*tb = CALL(sprint_left)(b, pe, w, LEAP_RIGHT, COMMON_ARGS);
 			b_run = NITEM(tb - b);
-#if 1
 			for ( ; b < tb; b += ES, a += ES)
 				SWAP(a, b);
 			if (b >= pe)
 				goto merge_done;
-#else
-			if (b_run) {
-				for (size_t num = b_run; num--; b += ES, a += ES)
-					SWAP(a, b);
-				if (b >= pe)
-					goto merge_done;
-			}
-#endif
 		} while ((a_run >= SPRINT_ACTIVATE) || (b_run >= SPRINT_ACTIVATE));
 
 		// Reset sprint mode
@@ -550,7 +532,7 @@ NAME(merge_workspace_constrained)(VAR *pa, size_t na, VAR *pb, size_t nb,
 
 
 static void
-NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
+NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
                      int just_copy, COMMON_PARAMS)
 {
 	ASSERT(n1 > 0);
@@ -564,11 +546,9 @@ NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
 
 	// Now merge rest of W into B. Set up sprint values
 	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
-	ASSERT(p1e == p2);
 
 	while ((p1 < p1e) && (p2 < p2e)) {
 		if ((a_run | b_run) < sprint) {
-#if 1
 			int	res = !(IS_LT(p2, p1));
 			int	nres = !res;
 
@@ -581,17 +561,7 @@ NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
 
 			a_run *= res;
 			b_run *= nres;
-#else
-			int	res = !!(IS_LT(p2, p1));
 
-			SWAP(pd, (branchless(res) ? p2 : p1));
-
-			p1 = branchless(res) ? p1 : p1 + ES;
-			p2 = branchless(res) ? p2 + ES : p2;
-
-			a_run = branchless(res) ? 0 : a_run + 1;
-			b_run = branchless(res) ? b_run + 1 : 0;
-#endif
 			pd += ES;
 			continue;
 		}
@@ -630,7 +600,7 @@ merge_done:
 
 	for ( ; p2 < p2e; p2 += ES, pd += ES)
 		SWAP(pd, p2);
-} // merge_four_sub
+} // merge_two_to_target
 
 
 static void
@@ -652,14 +622,187 @@ NAME(merge_four)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *p3, size_t n3,
 	size_t nw1 = n1 + n2, nw2 = n3 + n4;
 	VAR *pw1 = ws, *pw2 = ws + (nw1 * ES);
 
-	CALL(merge_four_sub)(p1, n1, p2, n2, pw1, nw1, jc2, COMMON_ARGS);
-	CALL(merge_four_sub)(p3, n3, p4, n4, pw2, nw2, jc4, COMMON_ARGS);
+	CALL(merge_two_to_target)(p1, n1, p2, n2, pw1, nw1, jc2, COMMON_ARGS);
+	CALL(merge_two_to_target)(p3, n3, p4, n4, pw2, nw2, jc4, COMMON_ARGS);
 
 	int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
 
-	CALL(merge_four_sub)(pw1, nw1, pw2, nw2, p1, nw1 + nw2, jc3, COMMON_ARGS);
+	CALL(merge_two_to_target)(pw1, nw1, pw2, nw2, p1, nw1 + nw2, jc3, COMMON_ARGS);
 } // merge_four
 
+
+static void
+NAME(merge_three_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *p3, size_t n3,
+                      VAR *pd, size_t nd, int just_copy, COMMON_PARAMS)
+{
+	ASSERT(n1 > 0);
+	ASSERT(n2 > 0);
+
+	VAR	*p1e = p1 + n1 * ES, *p2e = p2 + n2 * ES, *p3e = p3 + n3 * ES;
+
+	if (IS_LT(p3, p2)) {
+		if (IS_LT(p3, p1)) {
+			if (IS_LT(p2, p1))
+				goto state321;
+			goto state312;
+		}
+		goto state132;
+	} else if (IS_LT(p2, p1)) {
+		if (IS_LT(p3, p1))
+			goto state231;
+		goto state213;
+	}
+
+	// Fall through to state123
+
+state123:	// p1 < p2 < p3
+	SWAP(pd, p1);
+	pd += ES;
+	n1--;
+	p1 += ES;
+	if (p1 == p1e)
+		goto state_p1_done;
+	if (IS_LT(p2, p1)) {
+		if (IS_LT(p3, p1))
+			goto state231;
+		goto state213;
+	}
+	goto state123;
+
+state132:	// p1 < p3 < p2
+	SWAP(pd, p1);
+	pd += ES;
+	n1--;
+	p1 += ES;
+	if (p1 == p1e)
+		goto state_p1_done;
+	if (IS_LT(p3, p1)) {
+		if (IS_LT(p2, p1))
+			goto state321;
+		goto state312;
+	}
+	goto state132;
+
+state213:	// p2 < p1 < p3
+	SWAP(pd, p2);
+	pd += ES;
+	n2--;
+	p2 += ES;
+	if (p2 == p2e)
+		goto state_p2_done;
+	if (IS_LT(p1, p2)) {
+		if (IS_LT(p3, p2))
+			goto state132;
+		goto state123;
+	}
+	goto state213;
+
+state231:	// p2 < p3 < p1
+	SWAP(pd, p2);
+	pd += ES;
+	n2--;
+	p2 += ES;
+	if (p2 == p2e)
+		goto state_p2_done;
+	if (IS_LT(p3, p2)) {
+		if (IS_LT(p1, p2))
+			goto state312;
+		goto state321;
+	}
+	goto state231;
+
+state312:	// p3 < p1 < p2
+	SWAP(pd, p3);
+	pd += ES;
+	n3--;
+	p3 += ES;
+	if (p3 == p3e)
+		goto state_p3_done;
+	if (IS_LT(p1, p3)) {
+		if (IS_LT(p2, p3))
+			goto state123;
+		goto state132;
+	}
+	goto state312;
+
+state321:	// p3 < p2 < p1
+	SWAP(pd, p3);
+	pd += ES;
+	n3--;
+	p3 += ES;
+	if (p3 == p3e)
+		goto state_p3_done;
+	if (IS_LT(p2, p3)) {
+		if (IS_LT(p1, p3))
+			goto state213;
+		goto state231;
+	}
+	goto state321;
+
+state_p1_done:
+	CALL(merge_two_to_target)(p2, n2, p3, n3, pd, n2 + n3, 0, COMMON_ARGS);
+	return;
+
+state_p2_done:
+	CALL(merge_two_to_target)(p1, n1, p3, n3, pd, n1 + n3, 0, COMMON_ARGS);
+	return;
+
+state_p3_done:
+	CALL(merge_two_to_target)(p1, n1, p2, n2, pd, n1 + n2, 0, COMMON_ARGS);
+} // merge_three_to_target
+
+
+// This is really merging 4, not 3, but it involves a 3-way merge into the
+// work-space, which is why it's named that
+static void
+NAME(merge_three)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *p3, size_t n3,
+                           VAR *p4, size_t n4, VAR *ws, size_t nw, COMMON_PARAMS)
+{
+	ASSERT((n1 + n2 + n3) <= nw);
+	ASSERT(p1 + n1 * ES == p2);
+	ASSERT(p2 + n2 * ES == p3);
+	ASSERT(p3 + n3 * ES == p4);
+
+#if 0
+	int jc2 = !IS_LT(p2, p2 - ES);		// Check if we can just copy only
+	int jc4 = !IS_LT(p4, p4 - ES);		// Check if we can just copy only
+
+	if (jc2 && jc4)
+		if (!IS_LT(p3, p3 - ES))	// Check if we need to do anything at all!
+			return;
+#endif
+
+	// Merge 1, 2, and 3 into work-space
+	CALL(merge_three_to_target)(p1, n1, p2, n2, p3, n3, ws, n1 + n2 + n3, 0, COMMON_ARGS);
+
+	// Merge ws and p4 back to p1 -> p4
+	CALL(merge_two_to_target)(ws, n1 + n2 + n3, p4, n4, p1, n1 + n2 + n3 + n4, 0, COMMON_ARGS);
+} // merge_three
+
+#if 0
+	if (n <= (nw + nw)) {
+		VAR	*p1, *p2, *p3, *p4;
+		size_t	n1, n2, n3, n4;
+
+		n1 = n / 12;
+		n2 = n / 6;
+		n3 = n / 4;
+		n4 = n - (n1 + n2 + n3);
+
+		p1 = pa;
+		p2 = p1 + n1 * ES;
+		p3 = p2 + n2 * ES;
+		p4 = p3 + n3 * ES;
+
+		CALL(sort_using_workspace)(p1, n1, ws, nw, COMMON_ARGS);
+		CALL(sort_using_workspace)(p2, n2, ws, nw, COMMON_ARGS);
+		CALL(sort_using_workspace)(p3, n3, ws, nw, COMMON_ARGS);
+		CALL(sort_using_workspace)(p4, n4, ws, nw, COMMON_ARGS);
+
+		CALL(merge_three)(p1, n1, p2, n2, p3, n3, p4, n4, ws, nw, COMMON_ARGS);
+		return;
+	}
+#endif
 
 static void
 NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
@@ -672,7 +815,31 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	ASSERT(ws != NULL);
 	ASSERT(nw > 0);
 
-#if 1
+#if 0
+	if (n <= (nw + nw)) {
+		VAR	*p1, *p2, *p3;
+		size_t	n1, n2, n3;
+
+		n1 = n >> 2;
+		n2 = n1;
+		n3 = n - (n1 + n2);
+
+		p1 = pa;
+		p2 = p1 + n1 * ES;
+		p3 = p2 + n2 * ES;
+
+		CALL(sort_using_workspace)(p1, n1, ws, nw, COMMON_ARGS);
+		CALL(sort_using_workspace)(p2, n2, ws, nw, COMMON_ARGS);
+		CALL(sort_using_workspace)(p3, n3, ws, nw, COMMON_ARGS);
+
+		int jc2 = !IS_LT(p2, p2 - ES);
+		CALL(merge_two_to_target)(p1, n1, p2, n2, ws, n1 + n2, jc2, COMMON_ARGS);
+
+		int jc3 = !IS_LT(p3, ws + (n1 + n2 - 1) * ES);
+		CALL(merge_two_to_target)(ws, n1 + n2, p3, n3, pa, n, jc3, COMMON_ARGS);
+		return;
+	}
+#else
 	if (n <= nw) {
 		VAR	*p1, *p2, *p3, *p4;
 		size_t	n1, n2, n3, n4;
