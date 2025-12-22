@@ -54,7 +54,7 @@
 // similar, but when I looked at TimSort code I saw a few extra good ideas and
 // brought them in.  Basically where you see sprinting, that's very similar to
 // TimSort's galloping
-//
+
 // We're looking for leftmost element within pa->pe that is greater than, or
 // equal to, what pt is pointing at
 static VAR *
@@ -345,36 +345,18 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 			// Stuff from A/workspace is sprinting
 			VAR	*tw = CALL(sprint_right)(w, pw, b, LEAP_RIGHT, COMMON_ARGS);
 			a_run = NITEM(tw - w);
-#if 1
 			for ( ; w < tw; w += ES, a += ES)
 				SWAP(a, w);
 			if (w >= pw)
 				goto merge_done;
-#else
-			if (a_run) {
-				for (size_t num = a_run; num--; w += ES, a += ES)
-					SWAP(a, w);
-				if (w >= pw)
-					goto merge_done;
-			}
-#endif
 
 			// Stuff from B is sprinting
 			VAR	*tb = CALL(sprint_left)(b, pe, w, LEAP_RIGHT, COMMON_ARGS);
 			b_run = NITEM(tb - b);
-#if 1
 			for ( ; b < tb; b += ES, a += ES)
 				SWAP(a, b);
 			if (b >= pe)
 				goto merge_done;
-#else
-			if (b_run) {
-				for (size_t num = b_run; num--; b += ES, a += ES)
-					SWAP(a, b);
-				if (b >= pe)
-					goto merge_done;
-			}
-#endif
 		} while ((a_run >= SPRINT_ACTIVATE) || (b_run >= SPRINT_ACTIVATE));
 
 		// Reset sprint mode
@@ -562,7 +544,7 @@ NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_
 	if (just_copy)
 		goto merge_done;
 
-	// Now merge rest of W into B. Set up sprint values
+	// Now merge P1 and P2 into PD
 	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
 
 	while ((p1 < p1e) && (p2 < p2e)) {
@@ -652,7 +634,11 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 	// First sort everything in pb into MS sized chunks
 	for (VAR *pt = pb, *pe = pa + n * ES; pt < pe; pt += (MS * ES))
+#if (MS == 5)
+		CALL(sort_five)(pt, COMMON_ARGS);
+#else
 		CALL(insertion_sort)(pt, MS, COMMON_ARGS);
+#endif
 
 	// Now bottom-up merge-sort pb
 
@@ -701,7 +687,7 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	}
 
 	// Handle merge sizes where the available work-space cannot fully hold two steps
-	// Doing a 4-way merge here improve CPU cache locality for a small speed boost
+	// Doing a 4-way merge here improves CPU cache locality for a small speed boost
 	for ( ; (step << 2) <= nb; step <<= 2) {
 		for (size_t pos = 0; pos < nb; pos += (step << 2)) {
 			VAR	*p1 = pb + pos * ES;
