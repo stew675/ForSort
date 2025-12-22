@@ -111,28 +111,31 @@ NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	{							\
 		VAR xa = *(VAR *)(_xa_);			\
 		VAR xb = *(VAR *)(_xb_);			\
-		int res = !IS_LT(_xb_, _xa_);			\
-		*(VAR *)(_xa_) = branchless(res) ? xa : xb;	\
-		*(VAR *)(_xb_) = branchless(res) ? xb : xa;	\
+		res = !!IS_LT(_xb_, _xa_);			\
+		*(VAR *)(_xa_) = branchless(res) ? xb : xa;	\
+		*(VAR *)(_xb_) = branchless(res) ? xa : xb;	\
 	}
 
 static void
 NAME(sort_five)(VAR *pa, COMMON_PARAMS)
 {
 	VAR	*p1 = pa, *p2 = pa + 1, *p3 = pa + 2, *p4 = pa + 3, *p5 = pa + 4;
+	int	res;
 
 #if 1
 	// Appears to be the best tradeoff for random and near-sorted performance
 	BRANCHLESS_SWAP(p1, p2);
 	BRANCHLESS_SWAP(p3, p4);
-	if (IS_LT(p3, p2)) {
-		SWAP(p2, p3);
+
+	BRANCHLESS_SWAP(p2, p3);
+	if (res) {
 		BRANCHLESS_SWAP(p1, p2);
 		BRANCHLESS_SWAP(p3, p4);
 		BRANCHLESS_SWAP(p2, p3);
 	}
-	if (IS_LT(p5, p4)) {
-		SWAP(p4, p5);
+
+	BRANCHLESS_SWAP(p4, p5);
+	if (res) {
 		if (IS_LT(p4, p2)) {
 			SWAP(p3, p4);
 			SWAP(p2, p3);
