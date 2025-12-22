@@ -550,7 +550,7 @@ NAME(merge_workspace_constrained)(VAR *pa, size_t na, VAR *pb, size_t nb,
 
 
 static void
-NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
+NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
                      int just_copy, COMMON_PARAMS)
 {
 	ASSERT(n1 > 0);
@@ -564,11 +564,9 @@ NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
 
 	// Now merge rest of W into B. Set up sprint values
 	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
-	ASSERT(p1e == p2);
 
 	while ((p1 < p1e) && (p2 < p2e)) {
 		if ((a_run | b_run) < sprint) {
-#if 1
 			int	res = !(IS_LT(p2, p1));
 			int	nres = !res;
 
@@ -581,17 +579,7 @@ NAME(merge_four_sub)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
 
 			a_run *= res;
 			b_run *= nres;
-#else
-			int	res = !!(IS_LT(p2, p1));
 
-			SWAP(pd, (branchless(res) ? p2 : p1));
-
-			p1 = branchless(res) ? p1 : p1 + ES;
-			p2 = branchless(res) ? p2 + ES : p2;
-
-			a_run = branchless(res) ? 0 : a_run + 1;
-			b_run = branchless(res) ? b_run + 1 : 0;
-#endif
 			pd += ES;
 			continue;
 		}
@@ -630,93 +618,116 @@ merge_done:
 
 	for ( ; p2 < p2e; p2 += ES, pd += ES)
 		SWAP(pd, p2);
-} // merge_four_sub
+} // merge_two_to_target
 
 
-static void
-NAME(merge_four)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *p3, size_t n3,
-                           VAR *p4, size_t n4, VAR *ws, size_t nw, COMMON_PARAMS)
-{
-	ASSERT((n1 + n2 + n3 + n4) <= nw);
-	ASSERT(p1 + n1 * ES == p2);
-	ASSERT(p2 + n2 * ES == p3);
-	ASSERT(p3 + n3 * ES == p4);
-
-	int jc2 = !IS_LT(p2, p2 - ES);		// Check if we can just copy only
-	int jc4 = !IS_LT(p4, p4 - ES);		// Check if we can just copy only
-
-	if (jc2 && jc4)
-		if (!IS_LT(p3, p3 - ES))	// Check if we need to do anything at all!
-			return;
-
-	size_t nw1 = n1 + n2, nw2 = n3 + n4;
-	VAR *pw1 = ws, *pw2 = ws + (nw1 * ES);
-
-	CALL(merge_four_sub)(p1, n1, p2, n2, pw1, nw1, jc2, COMMON_ARGS);
-	CALL(merge_four_sub)(p3, n3, p4, n4, pw2, nw2, jc4, COMMON_ARGS);
-
-	int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
-
-	CALL(merge_four_sub)(pw1, nw1, pw2, nw2, p1, nw1 + nw2, jc3, COMMON_ARGS);
-} // merge_four
-
-
+// This is a hybrid bottom-up merge with a dash of top-down recursive semantics
+// It will do a bottom-up merge-sort of sections that fit the constraints but
+// will recurse to also bottom-up merge-sort the sections that don't neatly fit
+// within an even multiple of the merge size MS
+#define MS 5
 static void
 NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 			   const size_t nw, COMMON_PARAMS)
 {
-	// Handle small array size inputs with insertion sort
-	if (n <= INSERT_SORT_MAX)
+	size_t	step;
+
+	if (n < (MS << 2))
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
 	ASSERT(ws != NULL);
 	ASSERT(nw > 0);
 
-#if 1
-	if (n <= nw) {
-		VAR	*p1, *p2, *p3, *p4;
-		size_t	n1, n2, n3, n4;
+	// Determine the maximum merge step size we can use in this call
+	for (step = MS; (step << 1) <= n; step <<= 1);
 
-		n1 = n >> 2;
-		n2 = n1;
-		n3 = n1;
-		n4 = n - n1 * 3;
+	// Split input into two.  That which we can merge as an
+	// even multiple sized chunk (pb), and the remainder (pa)
+	size_t	na = n - step, nb = step;
+	VAR	*pb = pa + na * ES;
 
-		p1 = pa;
-		p2 = p1 + n1 * ES;
-		p3 = p2 + n2 * ES;
-		p4 = p3 + n3 * ES;
+	// Recursively handle merge sorting the pa remainder
+	if (na > 0)
+		CALL(sort_using_workspace)(pa, na, ws, nw, COMMON_ARGS);
 
-		CALL(sort_using_workspace)(p1, n1, ws, nw, COMMON_ARGS);
-		CALL(sort_using_workspace)(p2, n2, ws, nw, COMMON_ARGS);
-		CALL(sort_using_workspace)(p3, n3, ws, nw, COMMON_ARGS);
-		CALL(sort_using_workspace)(p4, n4, ws, nw, COMMON_ARGS);
+	// First sort everything in pb into MS sized chunks
+	for (VAR *pt = pb, *pe = pa + n * ES; pt < pe; pt += (MS * ES))
+		CALL(insertion_sort)(pt, MS, COMMON_ARGS);
 
-		CALL(merge_four)(p1, n1, p2, n2, p3, n3, p4, n4, ws, nw, COMMON_ARGS);
-		return;
+	// Now bottom-up merge-sort pb
+
+	// Handle merge sizes where we're able to use the available work-space to merge four steps
+	for (step = MS; ((step << 2) <= nb) && ((step << 2) <= nw); step <<= 2) {
+		for (size_t pos = 0; pos < nb; pos += (step << 2)) {
+			VAR	*p1 = pb + pos * ES;
+			VAR	*p2 = p1 + step * ES;
+			VAR	*p3 = p2 + step * ES;
+			VAR	*p4 = p3 + step * ES;
+
+			int jc2 = !IS_LT(p2, p2 - ES);		// Check if we can just copy only
+			int jc4 = !IS_LT(p4, p4 - ES);		// Check if we can just copy only
+
+			if (jc2 && jc4)
+				if (!IS_LT(p3, p3 - ES))	// Check if we need to do anything at all!
+					continue;
+
+			size_t	step2 = step << 1, step4 = step << 2;
+			VAR *pw1 = ws, *pw2 = ws + (step2 * ES);
+
+			CALL(merge_two_to_target)(p1, step, p2, step, pw1, step2, jc2, COMMON_ARGS);
+			CALL(merge_two_to_target)(p3, step, p4, step, pw2, step2, jc4, COMMON_ARGS);
+
+			int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
+
+			CALL(merge_two_to_target)(pw1, step2, pw2, step2, p1, step4, jc3, COMMON_ARGS);
+		}
 	}
-#endif
 
-	// The standard merge-sort algorithm is mathematically best
-	// when splitting the work up completely evenly (50:50 split)
-	// In practise though, in a world of CPU's with caches, there
-	// may exist a more optimal split due to data localisation.
-	// This ratio is controlled by the MERGE_SKEW #define
-	size_t	na = (n * MERGE_SKEW) / 100;
-	size_t	nb = n - na;
+	// Handle merge sizes where we're able to use the available work-space to merge two steps
+	for ( ; ((step << 2) <= nb) && ((step << 1) <= nw); step <<= 2) {
+		for (size_t pos = 0; pos < nb; pos += (step << 2)) {
+			VAR	*p1 = pb + pos * ES;
+			VAR	*p2 = p1 + step * ES;
+			VAR	*p3 = p2 + step * ES;
+			VAR	*p4 = p3 + step * ES;
 
-	VAR	*pb = pa + (na * ES);
+			CALL(merge_workspace_constrained)(p3, step, p4, step, ws, nw, COMMON_ARGS);
+			int jc2 = !IS_LT(p2, p2 - ES);
+			CALL(merge_two_to_target)(p1, step, p2, step, ws, step << 1, jc2, COMMON_ARGS);
+			p2 = ws + (step + step - 1) * ES;
+			int jc3 = !IS_LT(p3, p2);
+			CALL(merge_two_to_target)(ws, step << 1, p3, step << 1, p1, step << 2, jc3, COMMON_ARGS);
+		}
+	}
 
-	// First sort A
-	CALL(sort_using_workspace)(pa, na, ws, nw, COMMON_ARGS);
+	// Handle merge sizes where the available work-space cannot fully hold two steps
+	// Doing a 4-way merge here improve CPU cache locality for a small speed boost
+	for ( ; (step << 2) <= nb; step <<= 2) {
+		for (size_t pos = 0; pos < nb; pos += (step << 2)) {
+			VAR	*p1 = pb + pos * ES;
+			VAR	*p2 = p1 + step * ES;
+			VAR	*p3 = p2 + step * ES;
+			VAR	*p4 = p3 + step * ES;
 
-	// Now sort B
-	CALL(sort_using_workspace)(pb, nb, ws, nw, COMMON_ARGS);
+			CALL(merge_workspace_constrained)(p1, step, p2, step, ws, nw, COMMON_ARGS);
+			CALL(merge_workspace_constrained)(p3, step, p4, step, ws, nw, COMMON_ARGS);
+			CALL(merge_workspace_constrained)(p1, step << 1, p3, step << 1, ws, nw, COMMON_ARGS);
+		}
+	}
 
-	// Use the constrained workspace algorithm to merge the array pair
-	CALL(merge_workspace_constrained)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
+	// Handle final 2-step merge if applicable
+	if (step < nb) {
+		VAR	*p1 = pb;
+		VAR	*p2 = pb + step * ES;
+
+		CALL(merge_workspace_constrained)(p1, step, p2, step, ws, nw, COMMON_ARGS);
+	}
+
+	// Use the constrained workspace algorithm to merge pa and pb together
+	if (na > 0)
+		CALL(merge_workspace_constrained)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
 } // sort_using_workspace
-
+#undef MS
 
 // Base merge-sort algorithm - I'm all 'bout that speed baby!
 // It logically follows that if this is given unique items to sort
