@@ -18,6 +18,13 @@
 
 #define	SWAP(_xa_, _xb_)	memswap((_xa_), (_xb_), ES)
 
+// TODO - make this actually branchless for untyped types
+#define	BRANCHLESS_SWAP(_xa_, _xb_)				\
+	{							\
+		if (IS_LT((_xb_), (_xa_)))			\
+			memswap((_xa_), (_xb_), ES);		\
+	}
+
 #else
 
 #if 0
@@ -38,8 +45,18 @@
 		*(VAR *)(_xb_) = xa;			\
 	}
 
+#define	BRANCHLESS_SWAP(_xa_, _xb_)				\
+	{							\
+		VAR xa = *(VAR *)(_xa_);			\
+		VAR xb = *(VAR *)(_xb_);			\
+		res = !IS_LT(_xb_, _xa_);			\
+		*(VAR *)(_xa_) = branchless(res) ? xa : xb;	\
+		*(VAR *)(_xb_) = branchless(res) ? xb : xa;	\
+	}
+
 #endif
 #endif
+
 
 //-----------------------------------------------------------------
 //                Start of merge_sort() code
@@ -248,11 +265,18 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 			// Stuff from A is sprinting
 			if (a_run) {
 				VAR *ta = CALL(sprint_right)(a, pa, pw - ES, LEAP_LEFT, COMMON_ARGS);
+#if 1
+				for (a_run = NITEM(pa - ta); pa != ta; ) {
+					pa -= ES;  pb -= ES;
+					SWAP(pa, pb);
+				}
+#else
 				a_run = NITEM(pa - ta);
 				for (size_t num = a_run; num--; ) {
 					pa -= ES;  pb -= ES;
 					SWAP(pa, pb);
 				}
+#endif
 				if (pa == a)
 					goto merge_done;
 				b_run += !b_run;
@@ -261,11 +285,18 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 			// Stuff from B/Workspace is sprinting
 			if (b_run) {
 				VAR *tw = CALL(sprint_left)(w, pw, pa - ES, LEAP_LEFT, COMMON_ARGS);
+#if 1
+				for(b_run = NITEM(pw - tw); pw != tw; ) {
+					pw -= ES;  pb -= ES;
+					SWAP(pw, pb);
+				}
+#else
 				b_run = NITEM(pw - tw);
 				for (size_t num = b_run; num--; ) {
 					pw -= ES;  pb -= ES;
 					SWAP(pw, pb);
 				}
+#endif
 				if (pw == w)
 					goto merge_done;
 				a_run += !a_run;
@@ -634,8 +665,12 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 	// First sort everything in pb into MS sized chunks
 	for (VAR *pt = pb, *pe = pa + n * ES; pt < pe; pt += (MS * ES))
-#if (MS == 5)
+#if (MS == 4)
+		CALL(sort_four)(pt, COMMON_ARGS);
+#elif (MS == 5)
 		CALL(sort_five)(pt, COMMON_ARGS);
+#elif (MS == 6)
+		CALL(sort_six)(pt, COMMON_ARGS);
 #else
 		CALL(insertion_sort)(pt, MS, COMMON_ARGS);
 #endif
@@ -759,6 +794,7 @@ NAME(merge_sort_in_place)(VAR * const pa, const size_t n, VAR * const ws,
 
 #undef SPRINT_ACTIVATE
 #undef SPRINT_EXIT_PENALTY
+#undef BRANCHLESS_SWAP
 #undef SWAP
 #undef CONCAT
 #undef MAKE_STR

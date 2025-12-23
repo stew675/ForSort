@@ -32,10 +32,22 @@ NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 } // insertion_sort_char
 
 static void
+NAME(sort_six)(VAR *pa, COMMON_PARAMS)
+{
+	return CALL(insertion_sort)(pa, 6, COMMON_ARGS);
+} // sort_six
+
+static void
 NAME(sort_five)(VAR *pa, COMMON_PARAMS)
 {
 	return CALL(insertion_sort)(pa, 5, COMMON_ARGS);
-}
+} // sort_five
+
+static void
+NAME(sort_four)(VAR *pa, COMMON_PARAMS)
+{
+	return CALL(insertion_sort)(pa, 4, COMMON_ARGS);
+} // sort_five
 
 #else
 
@@ -111,10 +123,53 @@ NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	{							\
 		VAR xa = *(VAR *)(_xa_);			\
 		VAR xb = *(VAR *)(_xb_);			\
-		res = !!IS_LT(_xb_, _xa_);			\
-		*(VAR *)(_xa_) = branchless(res) ? xb : xa;	\
-		*(VAR *)(_xb_) = branchless(res) ? xa : xb;	\
+		res = !IS_LT(_xb_, _xa_);			\
+		*(VAR *)(_xa_) = branchless(res) ? xa : xb;	\
+		*(VAR *)(_xb_) = branchless(res) ? xb : xa;	\
 	}
+
+static void
+NAME(sort_six)(VAR *pa, COMMON_PARAMS)
+{
+	VAR	*p1 = pa, *p2 = pa + 1, *p3 = pa + 2;
+	VAR	*p4 = pa + 3, *p5 = pa + 4, *p6 = pa + 5;
+	int	res;
+
+	int	res2 = 1;
+	BRANCHLESS_SWAP(p1, p2);
+	res2 &= res;
+	BRANCHLESS_SWAP(p3, p4);
+	res2 &= res;
+	BRANCHLESS_SWAP(p5, p6);
+	res2 &= res;
+	BRANCHLESS_SWAP(p2, p3);
+	res2 &= res;
+	BRANCHLESS_SWAP(p4, p5);
+	if (res & res2)
+		return;
+
+	res2 = 1;
+	BRANCHLESS_SWAP(p1, p2);
+	res2 &= res;
+	BRANCHLESS_SWAP(p3, p4);
+	res2 &= res;
+	BRANCHLESS_SWAP(p5, p6);
+	res2 &= res;
+	BRANCHLESS_SWAP(p2, p3);
+	res2 &= res;
+	BRANCHLESS_SWAP(p4, p5);
+	if (res & res2)
+		return;
+
+	BRANCHLESS_SWAP(p1, p2);
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p5, p6);
+
+	BRANCHLESS_SWAP(p2, p3);
+	BRANCHLESS_SWAP(p4, p5);
+
+	BRANCHLESS_SWAP(p3, p4);
+} // sort_six
 
 static void
 NAME(sort_five)(VAR *pa, COMMON_PARAMS)
@@ -123,43 +178,45 @@ NAME(sort_five)(VAR *pa, COMMON_PARAMS)
 	int	res;
 
 #if 1
+	int res2 = 1;
+	BRANCHLESS_SWAP(p1, p2);
+	res2 &= res;
+	BRANCHLESS_SWAP(p3, p4);
+	res2 &= res;
+	BRANCHLESS_SWAP(p2, p3);
+	res2 &= res;
+	BRANCHLESS_SWAP(p4, p5);
+	if (res & res2)
+		return;
+
+	res2 = 1;
+	BRANCHLESS_SWAP(p1, p2);
+	res2 &= res;
+	BRANCHLESS_SWAP(p3, p4);
+	res2 &= res;
+	BRANCHLESS_SWAP(p2, p3);
+	res2 &= res;
+	BRANCHLESS_SWAP(p4, p5);
+	if (res & res2)
+		return;
+
+	BRANCHLESS_SWAP(p1, p2);
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p2, p3);
+#else
 	// Appears to be the best tradeoff for random and near-sorted performance
 	BRANCHLESS_SWAP(p1, p2);
 	BRANCHLESS_SWAP(p3, p4);
 
 	BRANCHLESS_SWAP(p2, p3);
-	if (res) {
+	if (!res) {
 		BRANCHLESS_SWAP(p1, p2);
 		BRANCHLESS_SWAP(p3, p4);
 		BRANCHLESS_SWAP(p2, p3);
 	}
 
 	BRANCHLESS_SWAP(p4, p5);
-	if (res) {
-		if (IS_LT(p4, p2)) {
-			SWAP(p3, p4);
-			SWAP(p2, p3);
-			BRANCHLESS_SWAP(p1, p2);
-		} else {
-			BRANCHLESS_SWAP(p3, p4);
-		}
-	}
-#else
-	BRANCHLESS_SWAP(p1, p2);
-
-	if (IS_LT(p3, p2)) {
-		SWAP(p2, p3);
-		BRANCHLESS_SWAP(p1, p2);
-	}
-
-	if (IS_LT(p4, p3)) {
-		SWAP(p3, p4);
-		BRANCHLESS_SWAP(p2, p3);
-		BRANCHLESS_SWAP(p1, p2);
-	}
-
-	if (IS_LT(p5, p4)) {
-		SWAP(p4, p5);
+	if (!res) {
 		if (IS_LT(p4, p2)) {
 			SWAP(p3, p4);
 			SWAP(p2, p3);
@@ -170,6 +227,27 @@ NAME(sort_five)(VAR *pa, COMMON_PARAMS)
 	}
 #endif
 } // sort_five
+
+static void
+NAME(sort_four)(VAR *pa, COMMON_PARAMS)
+{
+	VAR	*p1 = pa, *p2 = pa + 1, *p3 = pa + 2, *p4 = pa + 3;
+	int	res;
+
+	int	res2 = 1;
+	BRANCHLESS_SWAP(p1, p2);
+	res2 &= res;
+	BRANCHLESS_SWAP(p3, p4);
+	res2 &= res;
+	BRANCHLESS_SWAP(p2, p3);
+	res2 &= res;
+	if (res & res2)
+		return;
+
+	BRANCHLESS_SWAP(p1, p2);
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p2, p3);
+} // sort_four
 
 #undef BRANCHLESS_SWAP
 #undef BINARY_INSERTION_MIN
