@@ -244,8 +244,8 @@ NAME(merge_left)(VAR *a, size_t na, VAR *b, size_t nb,
 			pa -= ES;
 			pb -= ES;
 
-			int	res = !(IS_LT(pw, pa));
-			int	nres = !res;
+			size_t	res = !(IS_LT(pw, pa));
+			size_t	nres = !res;
 			SWAP(pb, (branchless(res) ? pw : pa));
 
 			a_run += nres;
@@ -352,8 +352,8 @@ NAME(merge_right)(VAR *a, size_t na, VAR *b, size_t nb,
 			//	b_run = 0;
 			// }
 
-			int	res = !(IS_LT(b, w));
-			int	nres = !res;
+			size_t	res = !(IS_LT(b, w));
+			size_t	nres = !res;
 
 			SWAP(a, (branchless(res) ? w : b));
 
@@ -575,13 +575,26 @@ NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_
 	if (just_copy)
 		goto merge_done;
 
+	// Keep it simple for small merges
+	if ((n1 + n2) <= 40) {
+		do {
+			size_t res = !(IS_LT(p2, p1));
+
+			SWAP(pd, (branchless(res) ? p1 : p2));
+			p1 += res * ES;
+			p2 += !res * ES;
+			pd += ES;
+		} while ((p1 != p1e) && (p2 != p2e));
+		goto merge_done;
+	}
+
 	// Now merge P1 and P2 into PD
 	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
 
 	while ((p1 < p1e) && (p2 < p2e)) {
 		if ((a_run | b_run) < sprint) {
-			int	res = !(IS_LT(p2, p1));
-			int	nres = !res;
+			size_t	res = !(IS_LT(p2, p1));
+			size_t	nres = !res;
 
 			SWAP(pd, (branchless(res) ? p1 : p2));
 			p1 += (res * ES);
