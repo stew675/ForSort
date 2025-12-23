@@ -138,36 +138,44 @@ NAME(sort_six)(VAR *pa, COMMON_PARAMS)
 	int	res2 = 1;
 	BRANCHLESS_SWAP(p1, p2);
 	res2 &= res;
-	BRANCHLESS_SWAP(p3, p4);
-	res2 &= res;
-	BRANCHLESS_SWAP(p5, p6);
-	res2 &= res;
 	BRANCHLESS_SWAP(p2, p3);
 	res2 &= res;
+	BRANCHLESS_SWAP(p3, p4);
+	res2 &= res;
 	BRANCHLESS_SWAP(p4, p5);
+	res2 &= res;
+	BRANCHLESS_SWAP(p5, p6);
 	if (res & res2)
 		return;
+
+	// p6 now in place
 
 	res2 = 1;
-	BRANCHLESS_SWAP(p1, p2);
+	BRANCHLESS_SWAP(p4, p5);
 	res2 &= res;
 	BRANCHLESS_SWAP(p3, p4);
 	res2 &= res;
-	BRANCHLESS_SWAP(p5, p6);
-	res2 &= res;
 	BRANCHLESS_SWAP(p2, p3);
+	res2 &= res;
+	BRANCHLESS_SWAP(p1, p2);
+	if (res & res2)
+		return;
+
+	// p1 now in place
+
+	res2 = 1;
+	BRANCHLESS_SWAP(p2, p3);
+	res2 &= res;
+	BRANCHLESS_SWAP(p3, p4);
 	res2 &= res;
 	BRANCHLESS_SWAP(p4, p5);
 	if (res & res2)
 		return;
 
-	BRANCHLESS_SWAP(p1, p2);
+	// p5 now in place
+
 	BRANCHLESS_SWAP(p3, p4);
-	BRANCHLESS_SWAP(p5, p6);
-
 	BRANCHLESS_SWAP(p2, p3);
-	BRANCHLESS_SWAP(p4, p5);
-
 	BRANCHLESS_SWAP(p3, p4);
 } // sort_six
 
@@ -176,33 +184,25 @@ NAME(sort_five)(VAR *pa, COMMON_PARAMS)
 {
 	VAR	*p1 = pa, *p2 = pa + 1, *p3 = pa + 2, *p4 = pa + 3, *p5 = pa + 4;
 	int	res;
-
 #if 1
-	int res2 = 1;
+	// (Near) branchless stable sort of 5 items
 	BRANCHLESS_SWAP(p1, p2);
-	res2 &= res;
-	BRANCHLESS_SWAP(p3, p4);
+	int res2 = res;
+	BRANCHLESS_SWAP(p4, p5);
 	res2 &= res;
 	BRANCHLESS_SWAP(p2, p3);
 	res2 &= res;
-	BRANCHLESS_SWAP(p4, p5);
+	BRANCHLESS_SWAP(p3, p4);
 	if (res & res2)
 		return;
 
-	res2 = 1;
-	BRANCHLESS_SWAP(p1, p2);
-	res2 &= res;
-	BRANCHLESS_SWAP(p3, p4);
-	res2 &= res;
 	BRANCHLESS_SWAP(p2, p3);
-	res2 &= res;
-	BRANCHLESS_SWAP(p4, p5);
-	if (res & res2)
-		return;
+	BRANCHLESS_SWAP(p1, p2);	// p1 now guaranteed in place
+	BRANCHLESS_SWAP(p4, p5);	// p5 now guaranteed in place
 
-	BRANCHLESS_SWAP(p1, p2);
-	BRANCHLESS_SWAP(p3, p4);
 	BRANCHLESS_SWAP(p2, p3);
+	BRANCHLESS_SWAP(p3, p4);	// p4 now guaranteed in place
+	BRANCHLESS_SWAP(p2, p3);	// p2 and p3 now guaranteed in place
 #else
 	// Appears to be the best tradeoff for random and near-sorted performance
 	BRANCHLESS_SWAP(p1, p2);
@@ -237,15 +237,14 @@ NAME(sort_four)(VAR *pa, COMMON_PARAMS)
 	int	res2 = 1;
 	BRANCHLESS_SWAP(p1, p2);
 	res2 &= res;
-	BRANCHLESS_SWAP(p3, p4);
-	res2 &= res;
 	BRANCHLESS_SWAP(p2, p3);
 	res2 &= res;
+	BRANCHLESS_SWAP(p3, p4);
 	if (res & res2)
 		return;
 
+	BRANCHLESS_SWAP(p2, p3);
 	BRANCHLESS_SWAP(p1, p2);
-	BRANCHLESS_SWAP(p3, p4);
 	BRANCHLESS_SWAP(p2, p3);
 } // sort_four
 

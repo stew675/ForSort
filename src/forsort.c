@@ -196,7 +196,8 @@ enum {
 // Sort times are typically ~0.7x of when using an external comparison
 #if 0
 extern size_t numcmps;
-#define	IS_LT(_x_, _y_)	 (numcmps++, *(uint32_t *)(_x_) < *(uint32_t *)(_y_))
+//#define	IS_LT(_x_, _y_)	 (numcmps++, *(uint32_t *)(_x_) < *(uint32_t *)(_y_))
+#define	IS_LT(_x_, _y_)	 (*(uint32_t *)(_x_) < *(uint32_t *)(_y_))
 #else
 #define	IS_LT is_lt
 #endif
@@ -220,12 +221,13 @@ memswap(void * restrict p1, void * restrict p2, size_t n)
 		p2 = __mempcpy(p2, tmp, SWAP_GENERIC_SIZE);
 		n -= SWAP_GENERIC_SIZE;
 	}
-	while (n > 0) {
+	while (n) {
 		unsigned char t = ((unsigned char *)p1)[--n];
 		((unsigned char *)p1)[n] = ((unsigned char *)p2)[n];
 		((unsigned char *)p2)[n] = t;
 	}
 } // memswap
+
 
 static enum swap_type_t
 get_swap_type (void *const pbase, size_t size)

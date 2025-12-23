@@ -612,7 +612,6 @@ NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_
 			VAR	*t2 = CALL(sprint_left)(p2, p2e, p1, LEAP_RIGHT, COMMON_ARGS);
 			for (b_run = NITEM(t2 - p2); p2 < t2; pd += ES, p2 += ES)
 				SWAP(pd, p2);
-
 			if (p2 >= p2e)
 				goto merge_done;
 
