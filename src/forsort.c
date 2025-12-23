@@ -86,21 +86,6 @@
 
 //				TUNING KNOBS!
 //
-// INSERT_SORT_MAX defines the number of items below which we'll resort to
-// simply using Insertion Sort.  Anything from 8-30 seems reasonable, with
-// values around 20+ giving best speeds at the expense of more swaps/compares
-// Drop this to 8 if you want to minimise comparisons, but the overall
-// algorithm will run a bit slower if you do so.
-//#define	INSERT_SORT_MAX		12
-#define	INSERT_SORT_MAX		16
-
-// A SKEW of 50 is a classic merge sort 50:50 split, which would be better
-// for larger element sizes, an expensive comparison function, for highly
-// ordered inputs, or for low available stack memory deployments.
-// A very mild skew of 47:53 appears to help the CPU branch predictor just
-// enough to give a small boost for a small (~0.1%) increase in comparisons
-#define	MERGE_SKEW		50
-
 // BASIC_INSERT_MAX defines the number of items below which the basic_sort()
 // functionality will simply use Insertion Sort.  Above a certain amount, the
 // insertion sort switches from linear to binary search, and so can run fairly

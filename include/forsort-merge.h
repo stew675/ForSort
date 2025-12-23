@@ -747,7 +747,6 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	if (na > 0)
 		CALL(merge_workspace_constrained)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
 } // sort_using_workspace
-#undef MS
 
 // Base merge-sort algorithm - I'm all 'bout that speed baby!
 // It logically follows that if this is given unique items to sort
@@ -757,7 +756,7 @@ NAME(merge_sort_in_place)(VAR * const pa, const size_t n, VAR * const ws,
 	      const size_t nw, COMMON_PARAMS)
 {
 	// Handle small array size inputs with insertion sort
-	if ((n <= INSERT_SORT_MAX) || (n <= 8))
+	if ((n < (MS << 2)) || (n < 10))
 		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
 
 	// If we were handed a workspace, then just use that
@@ -793,6 +792,7 @@ NAME(merge_sort_in_place)(VAR * const pa, const size_t n, VAR * const ws,
 
 #undef SPRINT_ACTIVATE
 #undef SPRINT_EXIT_PENALTY
+#undef MS
 #undef BRANCHLESS_SWAP
 #undef SWAP
 #undef CONCAT
