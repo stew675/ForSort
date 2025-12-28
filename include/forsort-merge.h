@@ -639,8 +639,9 @@ NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_
 	// Check if we only need to just copy the data
 	if (just_copy)
 		goto merge_done;
-#if 1
-	// Keep it simple for small merges
+
+	// Keep it simple for small merges.  This gives a small
+	// speedup at the expensive of some extra comparisons
 	if ((n1 + n2) <= 40) {
 		do {
 			size_t res = !(IS_LT(p2, p1));
@@ -653,7 +654,7 @@ NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_
 		} while ((p1 != p1e) && (p2 != p2e));
 		goto merge_done;
 	}
-#endif
+
 	// Now merge P1 and P2 into PD
 	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
 
@@ -777,8 +778,7 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 			VAR *pw1 = ws, *pw2 = ws + (step2 * ES);
 
-			if (((disorder * 3) / 2) > num) {
-//			if (disorder > (num << 1)) {
+			if ((disorder * 5) > (num * 4)) {
 				d += CALL(bimerge_two_to_target)(p1, p2, step, pw1, jc2, COMMON_ARGS);
 				d += CALL(bimerge_two_to_target)(p3, p4, step, pw2, jc4, COMMON_ARGS);
 				int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
@@ -804,6 +804,7 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 			CALL(merge_workspace_constrained)(p3, step, p4, step, ws, nw, COMMON_ARGS);
 			int jc2 = !IS_LT(p2, p2 - ES);
+//			CALL(bimerge_two_to_target)(p1, p2, step, ws, jc2, COMMON_ARGS);
 			CALL(merge_two_to_target)(p1, step, p2, step, ws, step << 1, jc2, COMMON_ARGS);
 			p2 = ws + (step + step - 1) * ES;
 			int jc3 = !IS_LT(p3, p2);
