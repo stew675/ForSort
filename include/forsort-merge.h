@@ -571,21 +571,21 @@ NAME(copy_two_to_target)(VAR *restrict p1, VAR *restrict p2, size_t np,
 } // copy_two_to_target
 
 
-static void
+static size_t
 NAME(bimerge_two_to_target)(VAR *restrict p1, VAR *restrict p2, size_t np,
                             VAR *restrict ws, int just_copy, COMMON_PARAMS)
 {
 	if (just_copy) {
 		CALL(copy_two_to_target)(p1, p2, np, ws, COMMON_ARGS);
-		return;
+		return 0;
 	}
 
 	VAR	*restrict wp = ws, *restrict we = ws + (np + np - 1) * ES;
 	VAR	*restrict t1 = p1, *restrict t2 = p2 - ES;
 	VAR	*restrict t3 = p2, *restrict t4 = t2 + (np * ES);
-	size_t	res1, res2;
+	size_t	res1, res2, disorder = 0;
 
-	while ((t2 >= (t1 + ES)) & (t4 >= (t3 + ES))) {
+	while ((t2 > t1) & (t4 > t3)) {
 		res1 = !IS_LT(t3, t1);
 		res2 = !IS_LT(t4, t2);
 
@@ -593,9 +593,10 @@ NAME(bimerge_two_to_target)(VAR *restrict p1, VAR *restrict p2, size_t np,
 		SWAP(we, (branchless(res2) ? t4 : t2));
 
 		t1 += res1 * ES;
-		t3 += !res1 * ES;
 		t2 -= !res2 * ES;
+		t3 += !res1 * ES;
 		t4 -= res2 * ES;
+		disorder += (!res1 + !res2);
 		wp += ES;
 		we -= ES;
 	}
@@ -603,6 +604,7 @@ NAME(bimerge_two_to_target)(VAR *restrict p1, VAR *restrict p2, size_t np,
 	while ((t2 >= t1) & (t4 >= t3)) {
 		res1 = !IS_LT(t3, t1);
 		SWAP(wp, (branchless(res1) ? t1 : t3));
+		disorder += !res1;
 		t1 += res1 * ES;
 		t3 += !res1 * ES;
 		wp += ES;
@@ -615,28 +617,30 @@ NAME(bimerge_two_to_target)(VAR *restrict p1, VAR *restrict p2, size_t np,
 	}
 
 	while (t4 >= t3) {
-		SWAP(we, t4);
-		t4 -= ES;
-		we -= ES;
+		SWAP(wp, t3);
+		t3 += ES;
+		wp += ES;
 	}
+
+	return disorder;
 } // bimerge_two_to_target
 
 
-static void
+static size_t
 NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
                      int just_copy, COMMON_PARAMS)
 {
 	ASSERT(n1 > 0);
 	ASSERT(n2 > 0);
 
+	size_t	disorder = 0;
 	VAR	*p1e = p1 + n1 * ES, *p2e = p2 + n2 * ES;
 
 	// Check if we only need to just copy the data
 	if (just_copy)
 		goto merge_done;
-
+#if 1
 	// Keep it simple for small merges
-#if 0
 	if ((n1 + n2) <= 40) {
 		do {
 			size_t res = !(IS_LT(p2, p1));
@@ -645,6 +649,7 @@ NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_
 			p1 += res * ES;
 			p2 += !res * ES;
 			pd += ES;
+			disorder += !res;
 		} while ((p1 != p1e) && (p2 != p2e));
 		goto merge_done;
 	}
@@ -668,6 +673,7 @@ NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_
 			b_run *= nres;
 
 			pd += ES;
+			disorder += nres;
 			continue;
 		}
 
@@ -684,7 +690,7 @@ NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_
 
 			// Stuff from P2 is sprinting
 			VAR	*t2 = CALL(sprint_left)(p2, p2e, p1, LEAP_RIGHT, COMMON_ARGS);
-			for (b_run = NITEM(t2 - p2); p2 < t2; pd += ES, p2 += ES)
+			for (b_run = NITEM(t2 - p2); p2 < t2; pd += ES, p2 += ES, disorder++)
 				SWAP(pd, p2);
 			if (p2 >= p2e)
 				goto merge_done;
@@ -704,6 +710,8 @@ merge_done:
 
 	for ( ; p2 < p2e; p2 += ES, pd += ES)
 		SWAP(pd, p2);
+
+	return disorder;
 } // merge_two_to_target
 
 
@@ -729,7 +737,7 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 	// Split input into two.  That which we can merge as an
 	// even multiple sized chunk (pb), and the remainder (pa)
-	size_t	na = n - step, nb = step;
+	size_t	na = n - step, nb = step, disorder = 0, num = 0;
 	VAR	*pb = pa + na * ES;
 
 	// Recursively handle merge sorting the pa remainder
@@ -753,7 +761,7 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	// Handle merge sizes where we're able to use the available work-space to merge four steps
 	for (step = MS; ((step << 2) <= nb) && ((step << 2) <= nw); step <<= 2) {
 		for (size_t pos = 0; pos < nb; pos += (step << 2)) {
-			size_t	step2 = step << 1;
+			size_t	step2 = step << 1, step4 = step << 2, d = 0;
 
 			VAR	*p1 = pb + pos * ES;
 			VAR	*p2 = p1 + step * ES;
@@ -769,18 +777,20 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 			VAR *pw1 = ws, *pw2 = ws + (step2 * ES);
 
-			if (step <= 320) {
-				CALL(bimerge_two_to_target)(p1, p2, step, pw1, jc2, COMMON_ARGS);
-				CALL(bimerge_two_to_target)(p3, p4, step, pw2, jc4, COMMON_ARGS);
+			if (((disorder * 3) / 2) > num) {
+//			if (disorder > (num << 1)) {
+				d += CALL(bimerge_two_to_target)(p1, p2, step, pw1, jc2, COMMON_ARGS);
+				d += CALL(bimerge_two_to_target)(p3, p4, step, pw2, jc4, COMMON_ARGS);
 				int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
-				CALL(bimerge_two_to_target)(pw1, pw2, step2, p1, jc3, COMMON_ARGS);
+				d += CALL(bimerge_two_to_target)(pw1, pw2, step2, p1, jc3, COMMON_ARGS);
 			} else {
-				CALL(merge_two_to_target)(p1, step, p2, step, pw1, step2, jc2, COMMON_ARGS);
-				CALL(merge_two_to_target)(p3, step, p4, step, pw2, step2, jc4, COMMON_ARGS);
-				size_t	step4 = step << 2;
+				d += CALL(merge_two_to_target)(p1, step, p2, step, pw1, step2, jc2, COMMON_ARGS);
+				d += CALL(merge_two_to_target)(p3, step, p4, step, pw2, step2, jc4, COMMON_ARGS);
 				int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
-				CALL(merge_two_to_target)(pw1, step2, pw2, step2, p1, step4, jc3, COMMON_ARGS);
+				d += CALL(merge_two_to_target)(pw1, step2, pw2, step2, p1, step4, jc3, COMMON_ARGS);
 			}
+			disorder += d;
+			num += step4;
 		}
 	}
 
@@ -794,10 +804,7 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 			CALL(merge_workspace_constrained)(p3, step, p4, step, ws, nw, COMMON_ARGS);
 			int jc2 = !IS_LT(p2, p2 - ES);
-			if (step <= 320)
-				CALL(bimerge_two_to_target)(p1, p2, step, ws, jc2, COMMON_ARGS);
-			else
-				CALL(merge_two_to_target)(p1, step, p2, step, ws, step << 1, jc2, COMMON_ARGS);
+			CALL(merge_two_to_target)(p1, step, p2, step, ws, step << 1, jc2, COMMON_ARGS);
 			p2 = ws + (step + step - 1) * ES;
 			int jc3 = !IS_LT(p3, p2);
 			CALL(merge_two_to_target)(ws, step << 1, p3, step << 1, p1, step << 2, jc3, COMMON_ARGS);
