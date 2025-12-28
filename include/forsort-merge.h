@@ -563,6 +563,66 @@ NAME(merge_workspace_constrained)(VAR *pa, size_t na, VAR *pb, size_t nb,
 
 
 static void
+NAME(copy_two_to_target)(VAR *restrict p1, VAR *restrict p2, size_t np,
+                         VAR *restrict ws, COMMON_PARAMS)
+{
+	for (p2 += np * ES; p1 != p2; p1 += ES, ws += ES)
+		SWAP(ws, p1);
+} // copy_two_to_target
+
+
+static void
+NAME(bimerge_two_to_target)(VAR *restrict p1, VAR *restrict p2, size_t np,
+                            VAR *restrict ws, int just_copy, COMMON_PARAMS)
+{
+	if (just_copy) {
+		CALL(copy_two_to_target)(p1, p2, np, ws, COMMON_ARGS);
+		return;
+	}
+
+	VAR	*restrict wp = ws, *restrict we = ws + (np + np - 1) * ES;
+	VAR	*restrict t1 = p1, *restrict t2 = p2 - ES;
+	VAR	*restrict t3 = p2, *restrict t4 = t2 + (np * ES);
+	size_t	res1, res2;
+
+	while ((t2 >= (t1 + ES)) & (t4 >= (t3 + ES))) {
+		res1 = !IS_LT(t3, t1);
+		res2 = !IS_LT(t4, t2);
+
+		SWAP(wp, (branchless(res1) ? t1 : t3));
+		SWAP(we, (branchless(res2) ? t4 : t2));
+
+		t1 += res1 * ES;
+		t3 += !res1 * ES;
+		t2 -= !res2 * ES;
+		t4 -= res2 * ES;
+		wp += ES;
+		we -= ES;
+	}
+
+	while ((t2 >= t1) & (t4 >= t3)) {
+		res1 = !IS_LT(t3, t1);
+		SWAP(wp, (branchless(res1) ? t1 : t3));
+		t1 += res1 * ES;
+		t3 += !res1 * ES;
+		wp += ES;
+	}
+
+	while (t2 >= t1) {
+		SWAP(wp, t1);
+		t1 += ES;
+		wp += ES;
+	}
+
+	while (t4 >= t3) {
+		SWAP(we, t4);
+		t4 -= ES;
+		we -= ES;
+	}
+} // bimerge_two_to_target
+
+
+static void
 NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_t nd,
                      int just_copy, COMMON_PARAMS)
 {
@@ -576,6 +636,7 @@ NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_
 		goto merge_done;
 
 	// Keep it simple for small merges
+#if 0
 	if ((n1 + n2) <= 40) {
 		do {
 			size_t res = !(IS_LT(p2, p1));
@@ -587,7 +648,7 @@ NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_
 		} while ((p1 != p1e) && (p2 != p2e));
 		goto merge_done;
 	}
-
+#endif
 	// Now merge P1 and P2 into PD
 	size_t a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
 
@@ -692,9 +753,11 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	// Handle merge sizes where we're able to use the available work-space to merge four steps
 	for (step = MS; ((step << 2) <= nb) && ((step << 2) <= nw); step <<= 2) {
 		for (size_t pos = 0; pos < nb; pos += (step << 2)) {
+			size_t	step2 = step << 1;
+
 			VAR	*p1 = pb + pos * ES;
 			VAR	*p2 = p1 + step * ES;
-			VAR	*p3 = p2 + step * ES;
+			VAR	*p3 = p1 + step2 * ES;
 			VAR	*p4 = p3 + step * ES;
 
 			int jc2 = !IS_LT(p2, p2 - ES);		// Check if we can just copy only
@@ -704,15 +767,20 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 				if (!IS_LT(p3, p3 - ES))	// Check if we need to do anything at all!
 					continue;
 
-			size_t	step2 = step << 1, step4 = step << 2;
 			VAR *pw1 = ws, *pw2 = ws + (step2 * ES);
 
-			CALL(merge_two_to_target)(p1, step, p2, step, pw1, step2, jc2, COMMON_ARGS);
-			CALL(merge_two_to_target)(p3, step, p4, step, pw2, step2, jc4, COMMON_ARGS);
-
-			int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
-
-			CALL(merge_two_to_target)(pw1, step2, pw2, step2, p1, step4, jc3, COMMON_ARGS);
+			if (step <= 320) {
+				CALL(bimerge_two_to_target)(p1, p2, step, pw1, jc2, COMMON_ARGS);
+				CALL(bimerge_two_to_target)(p3, p4, step, pw2, jc4, COMMON_ARGS);
+				int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
+				CALL(bimerge_two_to_target)(pw1, pw2, step2, p1, jc3, COMMON_ARGS);
+			} else {
+				CALL(merge_two_to_target)(p1, step, p2, step, pw1, step2, jc2, COMMON_ARGS);
+				CALL(merge_two_to_target)(p3, step, p4, step, pw2, step2, jc4, COMMON_ARGS);
+				size_t	step4 = step << 2;
+				int jc3 = !IS_LT(pw2, pw2 - ES);	// Check if we can just copy only
+				CALL(merge_two_to_target)(pw1, step2, pw2, step2, p1, step4, jc3, COMMON_ARGS);
+			}
 		}
 	}
 
@@ -726,7 +794,10 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 			CALL(merge_workspace_constrained)(p3, step, p4, step, ws, nw, COMMON_ARGS);
 			int jc2 = !IS_LT(p2, p2 - ES);
-			CALL(merge_two_to_target)(p1, step, p2, step, ws, step << 1, jc2, COMMON_ARGS);
+			if (step <= 320)
+				CALL(bimerge_two_to_target)(p1, p2, step, ws, jc2, COMMON_ARGS);
+			else
+				CALL(merge_two_to_target)(p1, step, p2, step, ws, step << 1, jc2, COMMON_ARGS);
 			p2 = ws + (step + step - 1) * ES;
 			int jc3 = !IS_LT(p3, p2);
 			CALL(merge_two_to_target)(ws, step << 1, p3, step << 1, p1, step << 2, jc3, COMMON_ARGS);
