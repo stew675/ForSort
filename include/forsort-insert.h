@@ -210,8 +210,12 @@ NAME(sort_five)(VAR *p1, COMMON_PARAMS)
 		return;
 
 	BRANCHLESS_SWAP(p2, p3);
+	res2 = res;
 	BRANCHLESS_SWAP(p1, p2);	// p1 now guaranteed in place
+	res2 &= res;
 	BRANCHLESS_SWAP(p4, p5);	// p5 now guaranteed in place
+	if (res & res2)
+		return;
 
 	BRANCHLESS_SWAP(p2, p3);
 	BRANCHLESS_SWAP(p3, p4);	// p4 now guaranteed in place
@@ -272,12 +276,8 @@ NAME(sort_six)(VAR *p1, COMMON_PARAMS)
 		return;
 
 	BRANCHLESS_SWAP(p4, p5);
-	res2 = res;
 	BRANCHLESS_SWAP(p2, p3);
-	res2 &= res;
 	BRANCHLESS_SWAP(p3, p4);
-	if (res & res2)
-		return;
 
 	BRANCHLESS_SWAP(p4, p5);	// p5 guaranteed in place
 	BRANCHLESS_SWAP(p2, p3);	// p2 guaranteed in place
