@@ -813,6 +813,7 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	}
 
 	// Handle merge sizes where we're able to use the available work-space to merge two steps
+	int do_bimerge = ((disorder * 5) > (num * 4));
 	for ( ; ((step << 2) <= nb) && ((step << 1) <= nw); step <<= 2) {
 		for (size_t pos = 0; pos < nb; pos += (step << 2)) {
 			VAR	*p1 = pb + pos * ES;
@@ -822,7 +823,11 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 			CALL(merge_workspace_constrained)(p3, step, p4, step, ws, nw, COMMON_ARGS);
 			int jc2 = !IS_LT(p2, p2 - ES);
-			CALL(merge_two_to_target)(p1, step, p2, step, ws, step << 1, jc2, COMMON_ARGS);
+			if (do_bimerge) {
+				CALL(bimerge_two_to_target)(p1, p2, step, ws, jc2, COMMON_ARGS);
+			} else {
+				CALL(merge_two_to_target)(p1, step, p2, step, ws, step << 1, jc2, COMMON_ARGS);
+			}
 			p2 = ws + (step + step - 1) * ES;
 			int jc3 = !IS_LT(p3, p2);
 			CALL(merge_two_to_target)(ws, step << 1, p3, step << 1, p1, step << 2, jc3, COMMON_ARGS);
