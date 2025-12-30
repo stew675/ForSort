@@ -111,7 +111,7 @@
 // use as a makeshift workspace when no workspace is provided
 // Experimentally anything from 3-20 works okay, but 9 appears optimal
 // Using 3 would mirror a closest approximation of classic merge sort
-#define	WSRATIO			14
+#define	WSRATIO			6
 
 // STABLE_WSRATIO controls the behaviour of the stable sorting "front end" to
 // the main algorithm.  It has to dig out unique values from the sort space
