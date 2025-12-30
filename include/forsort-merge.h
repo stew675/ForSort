@@ -562,64 +562,52 @@ NAME(merge_workspace_constrained)(VAR *pa, size_t na, VAR *pb, size_t nb,
 } // merge_workspace_constrained
 
 
-static void
-NAME(copy_two_to_target)(VAR *restrict p1, VAR *restrict p2, size_t np,
-                         VAR *restrict ws, COMMON_PARAMS)
-{
-	for (p2 += np * ES; p1 != p2; p1 += ES, ws += ES)
-		SWAP(ws, p1);
-} // copy_two_to_target
-
-
 static size_t
 NAME(bimerge_two_to_target)(VAR *restrict p1, VAR *restrict p2, size_t np,
                             VAR *restrict ws, int just_copy, COMMON_PARAMS)
 {
 	if (just_copy) {
-		CALL(copy_two_to_target)(p1, p2, np, ws, COMMON_ARGS);
+		for (p2 += np * ES; p1 != p2; p1 += ES, ws += ES)
+			SWAP(ws, p1);
 		return 0;
 	}
 
 	VAR	*restrict wp = ws, *restrict we = ws + (np + np - 1) * ES;
 	VAR	*restrict t1 = p1, *restrict t2 = p2 - ES;
 	VAR	*restrict t3 = p2, *restrict t4 = t2 + (np * ES);
-	size_t	res1, res2, disorder = 0;
-
-	while ((t2 > t1) & (t4 > t3)) {
-		res1 = !IS_LT(t3, t1);
-		res2 = !IS_LT(t4, t2);
-
-		SWAP(wp, (branchless(res1) ? t1 : t3));
-		SWAP(we, (branchless(res2) ? t4 : t2));
-
-		t1 += res1 * ES;
-		t2 -= !res2 * ES;
-		t3 += !res1 * ES;
-		t4 -= res2 * ES;
-		disorder += (!res1 + !res2);
-		wp += ES;
-		we -= ES;
-	}
+	size_t	res, disorder = np + np;
 
 	while ((t2 >= t1) & (t4 >= t3)) {
-		res1 = !IS_LT(t3, t1);
-		SWAP(wp, (branchless(res1) ? t1 : t3));
-		disorder += !res1;
-		t1 += res1 * ES;
-		t3 += !res1 * ES;
+		res = !IS_LT(t3, t1);
+		disorder -= res;
+		SWAP(wp, (branchless(res) ? t1 : t3));
+		t1 += res * ES;
+		t3 += !res * ES;
+		int rev = branchless(res) ? (t2 >= t1) : (t4 >= t3);
 		wp += ES;
+
+		if (rev) {
+			res = !IS_LT(t4, t2);
+			disorder -= res;
+			SWAP(we, (branchless(res) ? t4 : t2));
+			t2 -= !res * ES;
+			t4 -= res * ES;
+			we -= ES;
+		}
 	}
 
 	while (t2 >= t1) {
 		SWAP(wp, t1);
 		t1 += ES;
 		wp += ES;
+		disorder--;
 	}
 
 	while (t4 >= t3) {
 		SWAP(wp, t3);
 		t3 += ES;
 		wp += ES;
+		disorder--;
 	}
 
 	return disorder;
@@ -804,7 +792,6 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 			CALL(merge_workspace_constrained)(p3, step, p4, step, ws, nw, COMMON_ARGS);
 			int jc2 = !IS_LT(p2, p2 - ES);
-//			CALL(bimerge_two_to_target)(p1, p2, step, ws, jc2, COMMON_ARGS);
 			CALL(merge_two_to_target)(p1, step, p2, step, ws, step << 1, jc2, COMMON_ARGS);
 			p2 = ws + (step + step - 1) * ES;
 			int jc3 = !IS_LT(p3, p2);
