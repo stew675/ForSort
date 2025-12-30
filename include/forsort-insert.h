@@ -61,6 +61,12 @@ NAME(sort_three)(VAR *pa, COMMON_PARAMS)
 	return CALL(insertion_sort)(pa, 3, COMMON_ARGS);
 } // sort_five
 
+static void
+NAME(sort_two)(VAR *pa, COMMON_PARAMS)
+{
+	return CALL(insertion_sort)(pa, 2, COMMON_ARGS);
+} // sort_five
+
 #else
 
 // Type specific object size handling
@@ -141,9 +147,19 @@ NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 	}
 
 static void
-NAME(sort_three)(VAR *pa, COMMON_PARAMS)
+NAME(sort_two)(VAR *p1, COMMON_PARAMS)
 {
-	VAR	*p1 = pa, *p2 = pa + 1, *p3 = pa + 2;
+	VAR	*p2 = p1 + 1;
+	int	res;
+
+	BRANCHLESS_SWAP(p1, p2);
+} // sort_two
+
+
+static void
+NAME(sort_three)(VAR *p1, COMMON_PARAMS)
+{
+	VAR	*p2 = p1 + 1, *p3 = p1 + 2;
 	int	res, res2;
 
 	BRANCHLESS_SWAP(p1, p2);
@@ -156,9 +172,9 @@ NAME(sort_three)(VAR *pa, COMMON_PARAMS)
 
 
 static void
-NAME(sort_four)(VAR *pa, COMMON_PARAMS)
+NAME(sort_four)(VAR *p1, COMMON_PARAMS)
 {
-	VAR	*p1 = pa, *p2 = pa + 1, *p3 = pa + 2, *p4 = pa + 3;
+	VAR	*p2 = p1 + 1, *p3 = p1 + 2, *p4 = p1 + 3;
 	int	res, res2;
 
 	BRANCHLESS_SWAP(p1, p2);
@@ -176,9 +192,10 @@ NAME(sort_four)(VAR *pa, COMMON_PARAMS)
 
 
 static void
-NAME(sort_five)(VAR *pa, COMMON_PARAMS)
+NAME(sort_five)(VAR *p1, COMMON_PARAMS)
 {
-	VAR	*p1 = pa, *p2 = pa + 1, *p3 = pa + 2, *p4 = pa + 3, *p5 = pa + 4;
+	VAR	*p2 = p1 + 1, *p3 = p1 + 2;
+	VAR	*p4 = p1 + 3, *p5 = p1 + 4;
 	int	res;
 #if 1
 	// (Near) branchless stable sort of 5 items
@@ -226,10 +243,10 @@ NAME(sort_five)(VAR *pa, COMMON_PARAMS)
 
 
 static void
-NAME(sort_six)(VAR *pa, COMMON_PARAMS)
+NAME(sort_six)(VAR *p1, COMMON_PARAMS)
 {
-	VAR	*p1 = pa, *p2 = pa + 1, *p3 = pa + 2;
-	VAR	*p4 = pa + 3, *p5 = pa + 4, *p6 = pa + 5;
+	VAR	*p2 = p1 + 1, *p3 = p1 + 2, *p4 = p1 + 3;
+	VAR	*p5 = p1 + 4, *p6 = p1 + 5;
 	int	res, res2;
 
 	BRANCHLESS_SWAP(p1, p2);
@@ -268,10 +285,10 @@ NAME(sort_six)(VAR *pa, COMMON_PARAMS)
 } // sort_six
 
 static void
-NAME(sort_seven)(VAR *pa, COMMON_PARAMS)
+NAME(sort_seven)(VAR *p1, COMMON_PARAMS)
 {
-	VAR	*p1 = pa, *p2 = pa + 1, *p3 = pa + 2, *p4 = pa + 3;
-	VAR	*p5 = pa + 4, *p6 = pa + 5, *p7 = pa + 6;
+	VAR	*p2 = p1 + 1, *p3 = p1 + 2, *p4 = p1 + 3;
+	VAR	*p5 = p1 + 4, *p6 = p1 + 5, *p7 = p1 + 6;
 	int	res, res2;
 
 	BRANCHLESS_SWAP(p1, p2);
