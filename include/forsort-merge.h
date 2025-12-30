@@ -726,6 +726,7 @@ merge_done:
 // It will do a bottom-up merge-sort of sections that fit the constraints but
 // will recurse to also bottom-up merge-sort the sections that don't neatly fit
 // within an even multiple of the merge size MS
+// It turns out that 5 is pretty much the best choice for everything
 #define MS 5
 static void
 NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
@@ -753,7 +754,9 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 	// First sort everything in pb into MS sized chunks
 	for (VAR *pt = pb, *pe = pa + n * ES; pt < pe; pt += (MS * ES))
-#if (MS == 3)
+#if (MS == 2)
+		CALL(sort_two)(pt, COMMON_ARGS);
+#elif (MS == 3)
 		CALL(sort_three)(pt, COMMON_ARGS);
 #elif (MS == 4)
 		CALL(sort_four)(pt, COMMON_ARGS);
