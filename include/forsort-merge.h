@@ -575,18 +575,36 @@ NAME(bimerge_two_to_target)(VAR *restrict p1, VAR *restrict p2, size_t np,
 	VAR	*restrict wp = ws, *restrict we = ws + (np + np - 1) * ES;
 	VAR	*restrict t1 = p1, *restrict t2 = p2 - ES;
 	VAR	*restrict t3 = p2, *restrict t4 = t2 + (np * ES);
-	size_t	res, disorder = np + np;
+	size_t	disorder = np + np;
+
+	while ((t2 > t1) & (t4 > t3)) {
+		int res1 = !IS_LT(t3, t1);
+		SWAP(wp, (branchless(res1) ? t1 : t3));
+		disorder -= res1;
+		t1 += res1 * ES;
+		t3 += !res1 * ES;
+
+		int res2 = !IS_LT(t4, t2);
+		SWAP(we, (branchless(res2) ? t4 : t2));
+		disorder -= res2;
+		t4 -= res2 * ES;
+		t2 -= !res2 * ES;
+
+		wp += ES;
+		we -= ES;
+	}
 
 	while ((t2 >= t1) & (t4 >= t3)) {
-		res = !IS_LT(t3, t1);
+		int res = !IS_LT(t3, t1);
 		SWAP(wp, (branchless(res) ? t1 : t3));
 		disorder -= res;
 		t1 += res * ES;
 		t3 += !res * ES;
 		wp += ES;
-		int rev = branchless(res) ? (t2 >= t1) : (t4 >= t3);
 
-		if (rev) {
+		res = branchless(res) ? (t2 >= t1) : (t4 >= t3);
+
+		if (res) {
 			res = !IS_LT(t4, t2);
 			SWAP(we, (branchless(res) ? t4 : t2));
 			disorder -= res;
