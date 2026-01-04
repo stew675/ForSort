@@ -197,7 +197,8 @@ NAME(sort_five)(VAR *p1, COMMON_PARAMS)
 	VAR	*p2 = p1 + 1, *p3 = p1 + 2;
 	VAR	*p4 = p1 + 3, *p5 = p1 + 4;
 	int	res;
-#if 1
+
+#if 0
 	// (Near) branchless stable sort of 5 items
 	BRANCHLESS_SWAP(p1, p2);
 	int res2 = res;
@@ -224,7 +225,6 @@ NAME(sort_five)(VAR *p1, COMMON_PARAMS)
 	// Appears to be the best tradeoff for random and near-sorted performance
 	BRANCHLESS_SWAP(p1, p2);
 	BRANCHLESS_SWAP(p3, p4);
-
 	BRANCHLESS_SWAP(p2, p3);
 	if (!res) {
 		BRANCHLESS_SWAP(p1, p2);
@@ -234,13 +234,9 @@ NAME(sort_five)(VAR *p1, COMMON_PARAMS)
 
 	BRANCHLESS_SWAP(p4, p5);
 	if (!res) {
-		if (IS_LT(p4, p2)) {
-			SWAP(p3, p4);
-			SWAP(p2, p3);
-			BRANCHLESS_SWAP(p1, p2);
-		} else {
-			BRANCHLESS_SWAP(p3, p4);
-		}
+		BRANCHLESS_SWAP(p3, p4);
+		BRANCHLESS_SWAP(p2, p3);
+		BRANCHLESS_SWAP(p1, p2);
 	}
 #endif
 } // sort_five
@@ -253,6 +249,48 @@ NAME(sort_six)(VAR *p1, COMMON_PARAMS)
 	VAR	*p5 = p1 + 4, *p6 = p1 + 5;
 	int	res, res2;
 
+#if 0
+	// Conditional Sort first three
+	BRANCHLESS_SWAP(p1, p2);
+	res2 = res;
+	BRANCHLESS_SWAP(p2, p3);
+	if (!(res & res2))
+		BRANCHLESS_SWAP(p1, p2);
+
+	// Conditional Sort second three
+	BRANCHLESS_SWAP(p4, p5);
+	res2 = res;
+	BRANCHLESS_SWAP(p5, p6);
+	if (!(res & res2))
+		BRANCHLESS_SWAP(p4, p5);
+
+	// Determine if fully sorted
+	BRANCHLESS_SWAP(p3, p4);
+	if (res)
+		return;
+
+	BRANCHLESS_SWAP(p2, p3);
+	res2 = res;
+	BRANCHLESS_SWAP(p4, p5);
+	res2 &= res;
+	BRANCHLESS_SWAP(p3, p4);
+	if (res & res2)
+		return;
+
+	BRANCHLESS_SWAP(p1, p2);
+	res2 = res;
+	BRANCHLESS_SWAP(p5, p6);
+	if (res & res2)
+		return;
+
+	BRANCHLESS_SWAP(p2, p3);
+	res2 = res;
+	BRANCHLESS_SWAP(p4, p5);
+	if (res & res2)
+		return;
+
+	BRANCHLESS_SWAP(p3, p4);
+#else
 	BRANCHLESS_SWAP(p1, p2);
 	res2 = res;
 	BRANCHLESS_SWAP(p5, p6);
@@ -282,6 +320,7 @@ NAME(sort_six)(VAR *p1, COMMON_PARAMS)
 	BRANCHLESS_SWAP(p4, p5);	// p5 guaranteed in place
 	BRANCHLESS_SWAP(p2, p3);	// p2 guaranteed in place
 	BRANCHLESS_SWAP(p3, p4);	// p3/p4 guaranteed in place
+#endif
 } // sort_six
 
 static void
