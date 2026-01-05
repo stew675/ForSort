@@ -147,8 +147,44 @@ NAME(extract_uniques)(VAR * const a, const size_t n, VAR *hints, COMMON_PARAMS)
 
 	// First find where to split at, which basically means, find the
 	// end of any duplicate run that we may find ourselves in
+#if 1
+	// The following is essentially a delayed expand/collapse binary
+	// search.  We scan linearly for a bit before expanding the search
+	// range.  Once we overshoot we start to collapse the search range
+	// until we arrive at the target.  This provides a bias towards
+	// exiting quickly for short run sequences while still remaning
+	// efficient for larger runs
+	do {
+		size_t step = ES, loops = 0;
+
+		while ((pb + step) < pe) {
+			if (IS_LT(pb - ES, pb + (step - ES)))
+				break;
+			pb += step;
+			if (++loops > 2)
+				step += step;
+		}
+
+		if (step == ES)
+			break;
+
+		while (step > ES) {
+			if ((pb + step) < pe) {
+				if (IS_LT(pb - ES, pb + (step - ES)))
+					break;
+				pb += step;
+			}
+			step >>= 1;
+		}
+
+		while ((pb < pe) && !IS_LT(pb - ES, pb))
+			pb += ES;
+	} while (0);
+#else
+	// Original linear run search code
 	while ((pb < pe) && !IS_LT(pb - ES, pb))
 		pb += ES;
+#endif
 
 	// If we couldn't find a sub-split, just process what we have
 	if (pb == pe)
