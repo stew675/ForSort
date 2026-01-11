@@ -160,13 +160,14 @@ static void
 NAME(sort_three)(VAR *p1, COMMON_PARAMS)
 {
 	VAR	*p2 = p1 + 1, *p3 = p1 + 2;
-	int	res, res2;
+	int	res;
 
 	BRANCHLESS_SWAP(p1, p2);
-	res2 = res;
+
 	BRANCHLESS_SWAP(p2, p3);
-	if (res & res2)
+	if (res)
 		return;
+
 	BRANCHLESS_SWAP(p1, p2);
 } // sort_three
 
@@ -175,18 +176,17 @@ static void
 NAME(sort_four)(VAR *p1, COMMON_PARAMS)
 {
 	VAR	*p2 = p1 + 1, *p3 = p1 + 2, *p4 = p1 + 3;
-	int	res, res2;
+	int	res;
 
 	BRANCHLESS_SWAP(p1, p2);
-	res2 = res;
 	BRANCHLESS_SWAP(p3, p4);
-	res2 &= res;
+
 	BRANCHLESS_SWAP(p2, p3);
-	if (res & res2)
+	if (res)
 		return;
 
-	BRANCHLESS_SWAP(p3, p4);	// p4 guaranteed in place
 	BRANCHLESS_SWAP(p1, p2);	// p1 guaranteed in place
+	BRANCHLESS_SWAP(p3, p4);	// p4 guaranteed in place
 	BRANCHLESS_SWAP(p2, p3);	// p2/p3 guaranteed in place
 } // sort_four
 
@@ -247,78 +247,36 @@ NAME(sort_six)(VAR *p1, COMMON_PARAMS)
 	VAR	*p5 = p1 + 4, *p6 = p1 + 5;
 	int	res, res2;
 
-#if 0
-	// Conditional Sort first three
 	BRANCHLESS_SWAP(p1, p2);
-	res2 = res;
-	BRANCHLESS_SWAP(p2, p3);
-	if (!(res & res2))
-		BRANCHLESS_SWAP(p1, p2);
-
-	// Conditional Sort second three
-	BRANCHLESS_SWAP(p4, p5);
-	res2 = res;
+	BRANCHLESS_SWAP(p3, p4);
 	BRANCHLESS_SWAP(p5, p6);
-	if (!(res & res2))
-		BRANCHLESS_SWAP(p4, p5);
 
-	// Determine if fully sorted
+	BRANCHLESS_SWAP(p2, p3);
+	res2 = res;
+	BRANCHLESS_SWAP(p4, p5);
+	if (res & res2)
+		return;
+
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p2, p3);
+	BRANCHLESS_SWAP(p4, p5);
+
+	BRANCHLESS_SWAP(p1, p2);	// p1 guaranteed in place
+	res2 = res;
+	BRANCHLESS_SWAP(p5, p6);	// p6 guaranteed in place
+	if (res & res2)
+		return;
+
+	BRANCHLESS_SWAP(p2, p3);
+	BRANCHLESS_SWAP(p4, p5);
+
 	BRANCHLESS_SWAP(p3, p4);
 	if (res)
 		return;
 
-	BRANCHLESS_SWAP(p2, p3);
-	res2 = res;
-	BRANCHLESS_SWAP(p4, p5);
-	res2 &= res;
-	BRANCHLESS_SWAP(p3, p4);
-	if (res & res2)
-		return;
-
-	BRANCHLESS_SWAP(p1, p2);
-	res2 = res;
-	BRANCHLESS_SWAP(p5, p6);
-	if (res & res2)
-		return;
-
-	BRANCHLESS_SWAP(p2, p3);
-	res2 = res;
-	BRANCHLESS_SWAP(p4, p5);
-	if (res & res2)
-		return;
-
-	BRANCHLESS_SWAP(p3, p4);
-#else
-	BRANCHLESS_SWAP(p1, p2);
-	res2 = res;
-	BRANCHLESS_SWAP(p5, p6);
-	res2 &= res;
-	BRANCHLESS_SWAP(p2, p3);
-	res2 &= res;
-	BRANCHLESS_SWAP(p4, p5);
-	res2 &= res;
-	BRANCHLESS_SWAP(p3, p4);
-	if (res & res2)
-		return;
-
-	BRANCHLESS_SWAP(p4, p5);
-	res2 = res;
-	BRANCHLESS_SWAP(p2, p3);
-	res2 &= res;
-	BRANCHLESS_SWAP(p5, p6);	// p6 guaranteed in place
-	res2 &= res;
-	BRANCHLESS_SWAP(p1, p2);	// p1 guaranteed in place
-	if (res & res2)
-		return;
-
-	BRANCHLESS_SWAP(p4, p5);
-	BRANCHLESS_SWAP(p2, p3);
-	BRANCHLESS_SWAP(p3, p4);
-
 	BRANCHLESS_SWAP(p4, p5);	// p5 guaranteed in place
 	BRANCHLESS_SWAP(p2, p3);	// p2 guaranteed in place
 	BRANCHLESS_SWAP(p3, p4);	// p3/p4 guaranteed in place
-#endif
 } // sort_six
 
 static void
