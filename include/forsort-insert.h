@@ -198,7 +198,7 @@ NAME(sort_five)(VAR *p1, COMMON_PARAMS)
 	VAR	*p4 = p1 + 3, *p5 = p1 + 4;
 	int	res;
 
-#if 1
+#if 0
 	// (Near) branchless stable sort of 5 items
 	BRANCHLESS_SWAP(p1, p2);
 	BRANCHLESS_SWAP(p4, p5);
@@ -215,25 +215,14 @@ NAME(sort_five)(VAR *p1, COMMON_PARAMS)
 	if (res & res2)
 		return;
 
-#if 1
 	BRANCHLESS_SWAP(p3, p4);
 	BRANCHLESS_SWAP(p2, p3);	// P2 now guaranteed in place
-//	if (res)
-//		return;
-
 	BRANCHLESS_SWAP(p3, p4);	// P3 & P4 now guaranteed in place
-#else
-	BRANCHLESS_SWAP(p2, p3);
-	BRANCHLESS_SWAP(p3, p4);	// P4 now guaranteed in place
-	if (res)
-		return;
-
-	BRANCHLESS_SWAP(p2, p3);	// P2 and P3 now guaranteed in place
-#endif
 #else
 	// Appears to be the best tradeoff for random and near-sorted performance
 	BRANCHLESS_SWAP(p1, p2);
 	BRANCHLESS_SWAP(p3, p4);
+
 	BRANCHLESS_SWAP(p2, p3);
 	if (!res) {
 		BRANCHLESS_SWAP(p1, p2);
