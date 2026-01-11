@@ -198,29 +198,38 @@ NAME(sort_five)(VAR *p1, COMMON_PARAMS)
 	VAR	*p4 = p1 + 3, *p5 = p1 + 4;
 	int	res;
 
-#if 0
+#if 1
 	// (Near) branchless stable sort of 5 items
 	BRANCHLESS_SWAP(p1, p2);
-	int res2 = res;
 	BRANCHLESS_SWAP(p4, p5);
-	res2 &= res;
 	BRANCHLESS_SWAP(p2, p3);
-	res2 &= res;
+	int res2 = res;
 	BRANCHLESS_SWAP(p3, p4);
 	if (res & res2)
 		return;
 
 	BRANCHLESS_SWAP(p2, p3);
 	res2 = res;
-	BRANCHLESS_SWAP(p1, p2);	// p1 now guaranteed in place
-	res2 &= res;
-	BRANCHLESS_SWAP(p4, p5);	// p5 now guaranteed in place
+	BRANCHLESS_SWAP(p4, p5);	// P5 now guaranteed in place
+	BRANCHLESS_SWAP(p1, p2);	// P1 now guaranteed in place
 	if (res & res2)
 		return;
 
+#if 1
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p2, p3);	// P2 now guaranteed in place
+//	if (res)
+//		return;
+
+	BRANCHLESS_SWAP(p3, p4);	// P3 & P4 now guaranteed in place
+#else
 	BRANCHLESS_SWAP(p2, p3);
-	BRANCHLESS_SWAP(p3, p4);	// p4 now guaranteed in place
-	BRANCHLESS_SWAP(p2, p3);	// p2 and p3 now guaranteed in place
+	BRANCHLESS_SWAP(p3, p4);	// P4 now guaranteed in place
+	if (res)
+		return;
+
+	BRANCHLESS_SWAP(p2, p3);	// P2 and P3 now guaranteed in place
+#endif
 #else
 	// Appears to be the best tradeoff for random and near-sorted performance
 	BRANCHLESS_SWAP(p1, p2);
