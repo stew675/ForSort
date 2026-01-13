@@ -32,16 +32,23 @@ NAME(insertion_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 } // insertion_sort_char
 
 static void
-NAME(sort_seven)(VAR *pa, COMMON_PARAMS)
+NAME(sort_two)(VAR *pa, COMMON_PARAMS)
 {
-	return CALL(insertion_sort)(pa, 7, COMMON_ARGS);
-} // sort_six
+	if (IS_LT(pa + es, pa))
+		SWAP(pa, pa + es);
+} // sort_two
 
 static void
-NAME(sort_six)(VAR *pa, COMMON_PARAMS)
+NAME(sort_three)(VAR *pa, COMMON_PARAMS)
 {
-	return CALL(insertion_sort)(pa, 6, COMMON_ARGS);
-} // sort_six
+	return CALL(insertion_sort)(pa, 3, COMMON_ARGS);
+} // sort_three
+
+static void
+NAME(sort_four)(VAR *pa, COMMON_PARAMS)
+{
+	return CALL(insertion_sort)(pa, 4, COMMON_ARGS);
+} // sort_four
 
 static void
 NAME(sort_five)(VAR *pa, COMMON_PARAMS)
@@ -50,22 +57,16 @@ NAME(sort_five)(VAR *pa, COMMON_PARAMS)
 } // sort_five
 
 static void
-NAME(sort_four)(VAR *pa, COMMON_PARAMS)
+NAME(sort_six)(VAR *pa, COMMON_PARAMS)
 {
-	return CALL(insertion_sort)(pa, 4, COMMON_ARGS);
-} // sort_five
+	return CALL(insertion_sort)(pa, 6, COMMON_ARGS);
+} // sort_six
 
 static void
-NAME(sort_three)(VAR *pa, COMMON_PARAMS)
+NAME(sort_seven)(VAR *pa, COMMON_PARAMS)
 {
-	return CALL(insertion_sort)(pa, 3, COMMON_ARGS);
-} // sort_five
-
-static void
-NAME(sort_two)(VAR *pa, COMMON_PARAMS)
-{
-	return CALL(insertion_sort)(pa, 2, COMMON_ARGS);
-} // sort_five
+	return CALL(insertion_sort)(pa, 7, COMMON_ARGS);
+} // sort_seven
 
 #else
 
@@ -198,27 +199,6 @@ NAME(sort_five)(VAR *p1, COMMON_PARAMS)
 	VAR	*p4 = p1 + 3, *p5 = p1 + 4;
 	int	res;
 
-#if 0
-	// (Near) branchless stable sort of 5 items
-	BRANCHLESS_SWAP(p1, p2);
-	BRANCHLESS_SWAP(p4, p5);
-	BRANCHLESS_SWAP(p2, p3);
-	int res2 = res;
-	BRANCHLESS_SWAP(p3, p4);
-	if (res & res2)
-		return;
-
-	BRANCHLESS_SWAP(p2, p3);
-	res2 = res;
-	BRANCHLESS_SWAP(p4, p5);	// P5 now guaranteed in place
-	BRANCHLESS_SWAP(p1, p2);	// P1 now guaranteed in place
-	if (res & res2)
-		return;
-
-	BRANCHLESS_SWAP(p3, p4);
-	BRANCHLESS_SWAP(p2, p3);	// P2 now guaranteed in place
-	BRANCHLESS_SWAP(p3, p4);	// P3 & P4 now guaranteed in place
-#else
 	// Appears to be the best tradeoff for random and near-sorted performance
 	BRANCHLESS_SWAP(p1, p2);
 	BRANCHLESS_SWAP(p3, p4);
@@ -236,7 +216,6 @@ NAME(sort_five)(VAR *p1, COMMON_PARAMS)
 		BRANCHLESS_SWAP(p2, p3);
 		BRANCHLESS_SWAP(p1, p2);
 	}
-#endif
 } // sort_five
 
 
@@ -245,14 +224,41 @@ NAME(sort_six)(VAR *p1, COMMON_PARAMS)
 {
 	VAR	*p2 = p1 + 1, *p3 = p1 + 2, *p4 = p1 + 3;
 	VAR	*p5 = p1 + 4, *p6 = p1 + 5;
-	int	res, res2;
-
+	int	res;
+#if 1
+	// Appears to be the best tradeoff for random and near-sorted performance
 	BRANCHLESS_SWAP(p1, p2);
 	BRANCHLESS_SWAP(p3, p4);
 	BRANCHLESS_SWAP(p5, p6);
 
 	BRANCHLESS_SWAP(p2, p3);
-	res2 = res;
+	if (!res) {
+		BRANCHLESS_SWAP(p1, p2);
+		BRANCHLESS_SWAP(p3, p4);
+		BRANCHLESS_SWAP(p2, p3);
+	}
+
+	BRANCHLESS_SWAP(p4, p5);
+	if (!res) {
+		BRANCHLESS_SWAP(p5, p6);
+		BRANCHLESS_SWAP(p3, p4);
+		if (!res) {
+			BRANCHLESS_SWAP(p2, p3);
+			BRANCHLESS_SWAP(p4, p5);
+			BRANCHLESS_SWAP(p1, p2);
+			BRANCHLESS_SWAP(p3, p4);
+			BRANCHLESS_SWAP(p2, p3);
+		} else {
+			BRANCHLESS_SWAP(p4, p5);
+		}
+	}
+#else
+	BRANCHLESS_SWAP(p1, p2);
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p5, p6);
+
+	BRANCHLESS_SWAP(p2, p3);
+	int res2 = res;
 	BRANCHLESS_SWAP(p4, p5);
 	if (res & res2)
 		return;
@@ -277,6 +283,7 @@ NAME(sort_six)(VAR *p1, COMMON_PARAMS)
 	BRANCHLESS_SWAP(p4, p5);	// p5 guaranteed in place
 	BRANCHLESS_SWAP(p2, p3);	// p2 guaranteed in place
 	BRANCHLESS_SWAP(p3, p4);	// p3/p4 guaranteed in place
+#endif
 } // sort_six
 
 static void
@@ -333,6 +340,7 @@ NAME(sort_seven)(VAR *p1, COMMON_PARAMS)
 
 #undef BRANCHLESS_SWAP
 #undef BINARY_INSERTION_MIN
+
 #endif
 
 //--------------------------------------------------------------------------
