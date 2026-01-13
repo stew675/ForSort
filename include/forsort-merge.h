@@ -732,7 +732,7 @@ merge_done:
 // will recurse to also bottom-up merge-sort the sections that don't neatly fit
 // within an even multiple of the merge size MS
 // It turns out that 5 is pretty much the best choice for everything
-#define MS 8
+#define MS 5
 static void
 NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 			   const size_t nw, COMMON_PARAMS)
