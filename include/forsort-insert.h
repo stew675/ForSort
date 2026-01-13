@@ -68,6 +68,12 @@ NAME(sort_seven)(VAR *pa, COMMON_PARAMS)
 	return CALL(insertion_sort)(pa, 7, COMMON_ARGS);
 } // sort_seven
 
+static void
+NAME(sort_eight)(VAR *pa, COMMON_PARAMS)
+{
+	return CALL(insertion_sort)(pa, 8, COMMON_ARGS);
+} // sort_eight
+
 #else
 
 // Type specific object size handling
@@ -383,6 +389,95 @@ NAME(sort_seven)(VAR *p1, COMMON_PARAMS)
 	BRANCHLESS_SWAP(p4, p5);	// p4/p5 in place
 #endif
 } // sort_seven
+
+// An implementation of an adaptive and (mostly) branchless
+// sorting-network style sort of 8 items.  This takes at
+// most 25 comparisons, and as few as just 7.  For mostly
+// sorted inputs the comparisons should still remain fairly
+// small in number.
+
+static void
+NAME(sort_eight)(VAR *p1, COMMON_PARAMS)
+{
+	VAR	*p2 = p1 + 1, *p3 = p1 + 2, *p4 = p1 + 3;
+	VAR	*p5 = p1 + 4, *p6 = p1 + 5, *p7 = p1 + 6;
+	VAR	*p8 = p1 + 7;
+	int	res;
+
+	// We first start by sorting the lower 4 and top 4 separately
+	BRANCHLESS_SWAP(p1, p2);
+	BRANCHLESS_SWAP(p5, p6);
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p7, p8);
+
+	// Finalise lower 4
+	BRANCHLESS_SWAP(p2, p3);
+	if (!res) {
+		BRANCHLESS_SWAP(p1, p2);
+		BRANCHLESS_SWAP(p3, p4);
+		BRANCHLESS_SWAP(p2, p3);
+	}
+
+	// Finalise upper 4
+	BRANCHLESS_SWAP(p6, p7);
+	if (!res) {
+		BRANCHLESS_SWAP(p5, p6);
+		BRANCHLESS_SWAP(p7, p8);
+		BRANCHLESS_SWAP(p6, p7);
+	}
+
+	// Merge P5 into P1->P4.  We can return early here if P4 <= P5
+	BRANCHLESS_SWAP(p4, p5);
+	if (res)
+		return;
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p2, p3);
+	BRANCHLESS_SWAP(p1, p2);
+
+	// Here we check if P7 < P4.  Making this check here
+	// breaks the merge of the remaining P6/P7/P8 triplet
+	// into two evenly sized operations of (up to) 8
+	// comparisons each
+
+	if (IS_LT(p7, p4)) {
+		// Merge in P6
+		SWAP(p5, p6);
+		SWAP(p4, p5);
+		BRANCHLESS_SWAP(p3, p4);
+		BRANCHLESS_SWAP(p2, p3);
+
+		// Merge in P7
+		SWAP(p6, p7);
+		SWAP(p5, p6);
+		BRANCHLESS_SWAP(p4, p5);
+		BRANCHLESS_SWAP(p3, p4);
+
+		// Merge in P8
+		BRANCHLESS_SWAP(p7, p8);
+		if (res)
+			return;
+		BRANCHLESS_SWAP(p6, p7);
+		BRANCHLESS_SWAP(p5, p6);
+		BRANCHLESS_SWAP(p4, p5);
+	} else {
+		// Merge in P6.  Here we have an opportunity
+		// to do an early return
+		BRANCHLESS_SWAP(p5, p6);
+		if (res)
+			return;
+		BRANCHLESS_SWAP(p4, p5);
+		BRANCHLESS_SWAP(p3, p4);
+		BRANCHLESS_SWAP(p2, p3);
+
+		// Merge in P7/P8
+		BRANCHLESS_SWAP(p6, p7);
+		if (res)
+			return;
+		BRANCHLESS_SWAP(p5, p6);
+		BRANCHLESS_SWAP(p7, p8);
+		BRANCHLESS_SWAP(p6, p7);
+	}
+} // sort_eight
 
 #undef BRANCHLESS_SWAP
 #undef BINARY_INSERTION_MIN

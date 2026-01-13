@@ -732,7 +732,7 @@ merge_done:
 // will recurse to also bottom-up merge-sort the sections that don't neatly fit
 // within an even multiple of the merge size MS
 // It turns out that 5 is pretty much the best choice for everything
-#define MS 5
+#define MS 8
 static void
 NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 			   const size_t nw, COMMON_PARAMS)
@@ -771,6 +771,8 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 		CALL(sort_six)(pt, COMMON_ARGS);
 #elif (MS == 7)
 		CALL(sort_seven)(pt, COMMON_ARGS);
+#elif (MS == 8)
+		CALL(sort_eight)(pt, COMMON_ARGS);
 #else
 		CALL(insertion_sort)(pt, MS, COMMON_ARGS);
 #endif
