@@ -238,20 +238,23 @@ NAME(sort_six)(VAR *p1, COMMON_PARAMS)
 		BRANCHLESS_SWAP(p2, p3);
 	}
 
+	// Insert P5 into the sorted 4
 	BRANCHLESS_SWAP(p4, p5);
-	if (!res) {
-		BRANCHLESS_SWAP(p5, p6);
-		BRANCHLESS_SWAP(p3, p4);
-		if (!res) {
-			BRANCHLESS_SWAP(p4, p5);
-			BRANCHLESS_SWAP(p2, p3);
-			if (!res) {
-				BRANCHLESS_SWAP(p3, p4);
-				BRANCHLESS_SWAP(p1, p2);
-				BRANCHLESS_SWAP(p2, p3);
-			}
-		}
-	}
+	if (res)
+		return;
+
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p2, p3);
+	BRANCHLESS_SWAP(p1, p2);
+
+	// Insert P6 into P2->P5
+	BRANCHLESS_SWAP(p5, p6);
+	if (res)
+		return;
+
+	BRANCHLESS_SWAP(p4, p5);
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p2, p3);
 #else
 	BRANCHLESS_SWAP(p1, p2);
 	BRANCHLESS_SWAP(p3, p4);
@@ -293,10 +296,10 @@ NAME(sort_seven)(VAR *p1, COMMON_PARAMS)
 	VAR	*p5 = p1 + 4, *p6 = p1 + 5, *p7 = p1 + 6;
 	int	res;
 #if 1
-	// Sort the initial 4
+	// Sort the initial 4, and the last 2
 	BRANCHLESS_SWAP(p1, p2);
 	BRANCHLESS_SWAP(p3, p4);
-	BRANCHLESS_SWAP(p5, p6);
+	BRANCHLESS_SWAP(p6, p7);
 
 	BRANCHLESS_SWAP(p2, p3);
 	if (!res) {
@@ -305,36 +308,35 @@ NAME(sort_seven)(VAR *p1, COMMON_PARAMS)
 		BRANCHLESS_SWAP(p2, p3);
 	}
 
-	// Conditionally insert P5 and P6.  Use the knowledge that
-	// P5 <= P6 to adaptively merge.  We can bypass checking
-	// P6 if P5 is already in place
+	// Insert P5 into the sorted 4
 	BRANCHLESS_SWAP(p4, p5);
 	if (!res) {
-		BRANCHLESS_SWAP(p5, p6);
 		BRANCHLESS_SWAP(p3, p4);
-		if (!res) {
-			BRANCHLESS_SWAP(p4, p5);
-			BRANCHLESS_SWAP(p2, p3);
-			if (!res) {
-				BRANCHLESS_SWAP(p3, p4);
-				BRANCHLESS_SWAP(p1, p2);
-				BRANCHLESS_SWAP(p2, p3);
-			}
-		}
+		BRANCHLESS_SWAP(p2, p3);
+		BRANCHLESS_SWAP(p1, p2);
 	}
 
-	// Insert P7.  Since its initial order is unknown
-	// its position can be anywhere
+	// Conditionally insert P6 and P7.  Use the knowledge that
+	// P6 <= P7 to adaptively merge.  We can bypass checking
+	// P7 if P6 is already in place
+	BRANCHLESS_SWAP(p5, p6);
+	if (res)
+		return;
+
+	// Conditionally insert down to P3 and return early if done
 	BRANCHLESS_SWAP(p6, p7);
-	if (!res) {
-		BRANCHLESS_SWAP(p5, p6);
-		BRANCHLESS_SWAP(p4, p5);
-		if (!res) {
-			BRANCHLESS_SWAP(p3, p4);
-			BRANCHLESS_SWAP(p2, p3);
-			BRANCHLESS_SWAP(p1, p2);
-		}
-	}
+	BRANCHLESS_SWAP(p4, p5);
+	BRANCHLESS_SWAP(p5, p6);
+	BRANCHLESS_SWAP(p3, p4);
+	if (res)
+		return;
+
+	// Final insertion sequence to complete the sort
+	BRANCHLESS_SWAP(p4, p5);
+	BRANCHLESS_SWAP(p2, p3);
+	BRANCHLESS_SWAP(p1, p2);
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p2, p3);
 #else
 	BRANCHLESS_SWAP(p1, p2);
 	int res2 = res;
