@@ -243,13 +243,13 @@ NAME(sort_six)(VAR *p1, COMMON_PARAMS)
 		BRANCHLESS_SWAP(p5, p6);
 		BRANCHLESS_SWAP(p3, p4);
 		if (!res) {
-			BRANCHLESS_SWAP(p2, p3);
 			BRANCHLESS_SWAP(p4, p5);
-			BRANCHLESS_SWAP(p1, p2);
-			BRANCHLESS_SWAP(p3, p4);
 			BRANCHLESS_SWAP(p2, p3);
-		} else {
-			BRANCHLESS_SWAP(p4, p5);
+			if (!res) {
+				BRANCHLESS_SWAP(p3, p4);
+				BRANCHLESS_SWAP(p1, p2);
+				BRANCHLESS_SWAP(p2, p3);
+			}
 		}
 	}
 #else
@@ -291,10 +291,53 @@ NAME(sort_seven)(VAR *p1, COMMON_PARAMS)
 {
 	VAR	*p2 = p1 + 1, *p3 = p1 + 2, *p4 = p1 + 3;
 	VAR	*p5 = p1 + 4, *p6 = p1 + 5, *p7 = p1 + 6;
-	int	res, res2;
-
+	int	res;
+#if 1
+	// Sort the initial 4
 	BRANCHLESS_SWAP(p1, p2);
-	res2 = res;
+	BRANCHLESS_SWAP(p3, p4);
+	BRANCHLESS_SWAP(p5, p6);
+
+	BRANCHLESS_SWAP(p2, p3);
+	if (!res) {
+		BRANCHLESS_SWAP(p1, p2);
+		BRANCHLESS_SWAP(p3, p4);
+		BRANCHLESS_SWAP(p2, p3);
+	}
+
+	// Conditionally insert P5 and P6.  Use the knowledge that
+	// P5 <= P6 to adaptively merge.  We can bypass checking
+	// P6 if P5 is already in place
+	BRANCHLESS_SWAP(p4, p5);
+	if (!res) {
+		BRANCHLESS_SWAP(p5, p6);
+		BRANCHLESS_SWAP(p3, p4);
+		if (!res) {
+			BRANCHLESS_SWAP(p4, p5);
+			BRANCHLESS_SWAP(p2, p3);
+			if (!res) {
+				BRANCHLESS_SWAP(p3, p4);
+				BRANCHLESS_SWAP(p1, p2);
+				BRANCHLESS_SWAP(p2, p3);
+			}
+		}
+	}
+
+	// Insert P7.  Since its initial order is unknown
+	// its position can be anywhere
+	BRANCHLESS_SWAP(p6, p7);
+	if (!res) {
+		BRANCHLESS_SWAP(p5, p6);
+		BRANCHLESS_SWAP(p4, p5);
+		if (!res) {
+			BRANCHLESS_SWAP(p3, p4);
+			BRANCHLESS_SWAP(p2, p3);
+			BRANCHLESS_SWAP(p1, p2);
+		}
+	}
+#else
+	BRANCHLESS_SWAP(p1, p2);
+	int res2 = res;
 	BRANCHLESS_SWAP(p6, p7);
 	res2 &= res;
 	BRANCHLESS_SWAP(p2, p3);
@@ -336,6 +379,7 @@ NAME(sort_seven)(VAR *p1, COMMON_PARAMS)
 	BRANCHLESS_SWAP(p4, p5);
 	BRANCHLESS_SWAP(p3, p4);	// p3 now in place
 	BRANCHLESS_SWAP(p4, p5);	// p4/p5 in place
+#endif
 } // sort_seven
 
 #undef BRANCHLESS_SWAP
