@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <time.h>
-#include <x86intrin.h>
 #include "timsort.h"
 
 #define DATA_SET_REVERSED	0x04
@@ -168,13 +167,6 @@ test_stability(struct item a[], size_t n)
 			}
 #endif
 } // test_stability
-
-static inline uint64_t
-get_cycles()
-{
-	_mm_lfence();
-	return __rdtsc();
-}
 
 static void
 usage(char *prog, const char *msg)
@@ -624,7 +616,6 @@ main(int argc, char *argv[])
 	}
 
 	double	total_time = 0;
-	size_t	total_c = 0;
 	size_t	num_runs = 0;
 
 	// Let's finally do this thing!
@@ -638,7 +629,6 @@ main(int argc, char *argv[])
 		}
 
 		struct timespec start, end;
-		uint64_t startc = 0, endc = 0;
 
 		if (num_runs == 0) {
 			if (quick_test) {
@@ -652,7 +642,6 @@ main(int argc, char *argv[])
 		}
 
 		clock_gettime(CLOCK_MONOTONIC, &start);
-		startc = get_cycles();
 
 		switch (sorttype) {
 		case GLIBC_QSORT:
@@ -690,13 +679,11 @@ main(int argc, char *argv[])
 			exit(1);
 		}
 
-		endc = get_cycles();
 		clock_gettime(CLOCK_MONOTONIC, &end);
 
 		double tim = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
 
 		total_time += tim;
-		total_c += (endc - startc);
 
 		num_runs++;
 		if (quick_test)
@@ -720,12 +707,10 @@ main(int argc, char *argv[])
 	test_stability(a, n);
 
 	// Stats time!
-//	double tim = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
 	printf("\n");
 	printf("Total number of runs     : %lu\n", num_runs);
 	printf("Avg Time taken to sort   : %.9fs\n", total_time / num_runs);
 	printf("Avg Number of Compares   : %lu\n", numcmps/ num_runs);
-	printf("Avg Number of CPU Cycles : %lu\n", total_c / num_runs);
 	printf("Data Is Sorted           : %s\n", correct ? "TRUE" : "FALSE");
 #if USE32BIT
 	printf("Sort is Stable           : %s\n", "UNKNOWN");
@@ -733,8 +718,6 @@ main(int argc, char *argv[])
 	printf("Sort is Stable           : %s\n", stable ? "TRUE" : "FALSE");
 #endif
 	printf("Avg ns per item          : %.3fns\n", ((total_time / num_runs) * 1000000000) / n);
-	printf(" ");
-	printf(" ");
 	printf("\n");
 
 	free(a);

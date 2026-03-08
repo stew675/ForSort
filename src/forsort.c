@@ -194,22 +194,28 @@ extern size_t numcmps;
 // Generic unaligned/odd-byte swap handling
 // TODO - This thing is pretty slow....fix it!
 static inline void
-memswap(void * restrict p1, void * restrict p2, size_t n)
+memswap(void * restrict vp1, void * restrict vp2, size_t n)
 {
 	enum { SWAP_GENERIC_SIZE = 32 };
 
-	unsigned char tmp[SWAP_GENERIC_SIZE];
+	unsigned char tmp[SWAP_GENERIC_SIZE], t;
+	unsigned char * restrict p1 = vp1;
+	unsigned char * restrict p2 = vp2;
 
 	while (n > SWAP_GENERIC_SIZE) {
-		mempcpy(tmp, p1, SWAP_GENERIC_SIZE);
-		p1 = __mempcpy(p1, p2, SWAP_GENERIC_SIZE);
-		p2 = __mempcpy(p2, tmp, SWAP_GENERIC_SIZE);
+		memcpy(tmp, p1, SWAP_GENERIC_SIZE);
+		memcpy(p1, p2, SWAP_GENERIC_SIZE);
+		memcpy(p2, tmp, SWAP_GENERIC_SIZE);
+
+		p1 += SWAP_GENERIC_SIZE;
+		p2 += SWAP_GENERIC_SIZE;
 		n -= SWAP_GENERIC_SIZE;
 	}
+
 	while (n) {
-		unsigned char t = ((unsigned char *)p1)[--n];
-		((unsigned char *)p1)[n] = ((unsigned char *)p2)[n];
-		((unsigned char *)p2)[n] = t;
+		t = p1[--n];
+		p1[n] = p2[n];
+		p2[n] = t;
 	}
 } // memswap
 

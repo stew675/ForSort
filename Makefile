@@ -30,8 +30,8 @@ BIN=ts
 
 #CC= gcc
 CC=clang
-CC_OPT_FLAGS= -O3 -mtune=native
-LD_OPT_FLAGS= -O3 -mtune=native
+CC_OPT_FLAGS= -O3 -mtune=native -flto -fno-semantic-interposition
+LD_OPT_FLAGS= -O3 -mtune=native -flto -fno-semantic-interposition
 DEBUG_FLAGS= -Wall # -g -pg --profile -fprofile-arcs -ftest-coverage
 LIBS=
 
