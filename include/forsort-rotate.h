@@ -20,7 +20,7 @@
 //
 // For blocks starting out with vastly different sizes it will collapse the
 // rotation space by twice the size of the smaller array per loop.  This nets
-// a significant speed boost over the regular successive swap Gries-Mills as 
+// a significant speed boost over the regular successive swap Gries-Mills as
 // it quickly collapses the rotation space with every cycle.
 //
 // To work around the degenerate case of the two arrays differening by only a
@@ -38,6 +38,12 @@
 // performant for the Forsort algorithm's typical block swap patterns.  I am
 // not claiming that this is the fastest algorithm for all use cases. It is just
 // apparently the fastest for ForSort.
+
+// Attempt to determine in a portable fashion if we are able to make use of
+// AVX512 for bulk data moves.  Compile with -mavx512f to activate
+#if defined(__AVX512F__)
+#include <immintrin.h>
+#endif
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
@@ -113,55 +119,20 @@
 #define MIN_STREAM_ITEMS  (STREAM_BUF_SIZE / sizeof(VAR))
 #endif
 
-// Swaps two blocks of equal size.  Contents of PA are swapped
-// with the contents of PB. Terminates when PA reaches PE
-static inline void
-NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pb, size_t num, size_t es)
-{
-	VAR * restrict stop = pb + (num * ES);
+// The following 4 functions are completely optional.  They exist to handle
+// the degenerate scenario of rotating a tiny block with a larger block
+//
+// While bridge_up and bridge_down may look superficially similar to both
+// ring_up and ring_down, the bridge functions handle memory regions that
+// are potentially overlapping, and so we must handle them differently in
+// terms of compiler-level optimization directives, and possible AVX512 use
 
-	while (pb != stop) {
-		SWAP(pa, pb);
-		pa += ES;
-		pb += ES;
-	}
-} // two_way_swap_block
-
-
-// Completely optional function to handle degenerate scenario of rotating a
-// tiny block with a larger block
 static void
-NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
-{
-	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
-	char	_buf[STREAM_BUF_SIZE];
-	void	*buf = (void *)_buf;
-	VAR	*pc = pa + (nb * ES);
-
-	// Steps are:
-	// 1.  Copy out the smaller of the two arrays into the buffer entirely
-	// 2.  Move the larger of the arrays over to where the smaller was
-	// 3.  Copy the smaller array data back to the hole created by the move
-	//
-	// Must use actual 'es' within the mem*() calls to get sizes in bytes
-	if (na < nb) {
-		memcpy(buf, pa, na * es);
-		memmove(pa, pb, nb * es);
-		memcpy(pc, buf, na * es);
-	} else if (nb < na) {
-		memcpy(buf, pb, nb * es);
-		memmove(pc, pa, na * es);
-		memcpy(pa, buf, nb * es);
-	}
-} // rotate_small
-
-
-static inline void
 NAME(bridge_down)(VAR * restrict pc, VAR *pd, VAR *pe, size_t num, size_t es)
 {
 	VAR *stop = pc - (num * ES);
 
-	while (pc != stop) {
+	while (pc > stop) {
 		pc -= ES;
 		pd -= ES;
 		pe -= ES;
@@ -171,12 +142,12 @@ NAME(bridge_down)(VAR * restrict pc, VAR *pd, VAR *pe, size_t num, size_t es)
 } // bridge_down
 
 
-static inline void
+static void
 NAME(bridge_up)(VAR * restrict pa, VAR *pb, VAR *pc, size_t num, size_t es)
 {
 	VAR *stop = pc + (num * ES);
 
-	while (pc != stop) {
+	while (pc < stop) {
 		SWAP(pc, pa);
 		SWAP(pa, pb);
 		pa += ES;
@@ -222,19 +193,105 @@ NAME(rotate_overlap)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 } // rotate_overlap
 
 
-// The following 3 functions, and the SWAP macro,  are the only functions
-// actually required for the block rotate algorithm to do its thing.  The
-// rotate_small() and rotate_overlap() functions act more as optional
-// "helpers" to handle a small handful of degenerate corner cases.
+static void
+NAME(rotate_small)(VAR *pa, VAR *pb, VAR *pe, size_t es)
+{
+	size_t	na = NITEM(pb - pa), nb = NITEM(pe - pb);
+	char	_buf[STREAM_BUF_SIZE];
+	void	*buf = (void *)_buf;
+	VAR	*pc = pa + (nb * ES);
 
-// Swaps PA with PB, and then PB with PC. Terminates when PA reaches PE
-static inline void
+	// Steps are:
+	// 1.  Copy out the smaller of the two arrays into the buffer entirely
+	// 2.  Move the larger of the arrays over to where the smaller was
+	// 3.  Copy the smaller array data back to the hole created by the move
+	//
+	// Must use actual 'es' within the mem*() calls to get sizes in bytes
+	if (na < nb) {
+		memcpy(buf, pa, na * es);
+		memmove(pa, pb, nb * es);
+		memcpy(pc, buf, na * es);
+	} else if (nb < na) {
+		memcpy(buf, pb, nb * es);
+		memmove(pc, pa, na * es);
+		memcpy(pa, buf, nb * es);
+	}
+} // rotate_small
+
+
+// Swaps two blocks of equal size.  Contents of PA are swapped
+// with the contents of PB. Terminates when PA reaches PE
+static void
+NAME(two_way_swap_block)(VAR * restrict pa, VAR * restrict pb, size_t num, size_t es)
+{
+	VAR * restrict stop = pb + (num * ES);
+
+#if defined(__AVX512F__) && !defined(UNTYPED)
+	num = (num * es) >> 6;			// Get number of 64-byte blocks
+
+	// We only use AVX-512 if we have at least one full 64-byte block
+	if (num) {
+		char * restrict cpa = (char *)pa;
+		char * restrict cpb = (char *)pb;
+
+		for (size_t i = 0; i < num; i++) {
+			// Fill 2 x AVX512 registers
+			__m512i v_pa = _mm512_loadu_si512((const void*)cpa);
+			__m512i v_pb = _mm512_loadu_si512((const void*)cpb);
+
+			// Execute the 2-way swap via the AVX512 registers
+			_mm512_storeu_si512((void*)cpa, v_pb);
+			_mm512_storeu_si512((void*)cpb, v_pa);
+
+			cpa += 64; cpb += 64;
+		}
+
+		// Re-sync the original pointers for the scalar cleanup
+		pa = (VAR *)cpa; pb = (VAR *)cpb;
+	}
+#endif
+	while (pb < stop) {
+		SWAP(pa, pb);
+		pa += ES;
+		pb += ES;
+	}
+} // two_way_swap_block
+
+
+static void
 NAME(ring_positive)(VAR * restrict pa, VAR * restrict po,
-                    VAR * restrict pb, size_t num, size_t es)
+		    VAR * restrict pb, size_t num, size_t es)
 {
 	VAR	*stop = pb + (num * ES);
 
-	while (pb != stop) {
+#if defined(__AVX512F__) && !defined(UNTYPED)
+	num = (num * es) >> 6;			// Get number of 64-byte blocks
+
+	// We only use AVX-512 if we have at least one full 64-byte block
+	if (num) {
+		char * restrict cpa = (char *)pa;
+		char * restrict cpo = (char *)po;
+		char * restrict cpb = (char *)pb;
+
+		for (size_t i = 0; i < num; i++) {
+			// Fill 3 x AVX512 registers
+			__m512i v_pa = _mm512_loadu_si512((const void*)cpa);
+			__m512i v_po = _mm512_loadu_si512((const void*)cpo);
+			__m512i v_pb = _mm512_loadu_si512((const void*)cpb);
+
+			// Execute the 3-way rotation via registers
+			_mm512_storeu_si512((void*)cpa, v_po);
+			_mm512_storeu_si512((void*)cpo, v_pb);
+			_mm512_storeu_si512((void*)cpb, v_pa);
+
+			cpa += 64; cpo += 64; cpb += 64;
+		}
+
+		// Re-sync the original pointers for the scalar cleanup
+		pa = (VAR *)cpa; po = (VAR *)cpo; pb = (VAR *)cpb;
+	}
+#endif
+	while (pb < stop) {
 		SWAP(pa, po);
 		SWAP(po, pb);
 		pa += ES;
@@ -244,15 +301,40 @@ NAME(ring_positive)(VAR * restrict pa, VAR * restrict po,
 } // ring_positive
 
 
-// When given 3 blocks of equal size, everything in B goes to A, everything
-// in C goes to B, and everything in A goes to C.
-static inline void
+static void
 NAME(ring_negative)(VAR * restrict pa, VAR * restrict po,
-                    VAR * restrict pb, size_t num, size_t es)
+		    VAR * restrict pb, size_t num, size_t es)
 {
 	VAR	*stop = pb - (num * ES);
 
-	while (pb != stop) {
+#if defined(__AVX512F__) && !defined(UNTYPED)
+	num = (num * es) >> 6;			// Get number of 64-byte blocks
+
+	// We only use AVX-512 if we have at least one full 64-byte block
+	if (num) {
+		char * restrict cpa = (char *)pa;
+		char * restrict cpo = (char *)po;
+		char * restrict cpb = (char *)pb;
+
+		for (size_t i = 0; i < num; i++) {
+			cpa -= 64; cpo -= 64; cpb -= 64;
+
+			// Fill 3 x AVX512 registers
+			__m512i v_pa = _mm512_loadu_si512((const void*)cpa);
+			__m512i v_po = _mm512_loadu_si512((const void*)cpo);
+			__m512i v_pb = _mm512_loadu_si512((const void*)cpb);
+
+			// Execute the 3-way rotation via registers
+			_mm512_storeu_si512((void*)cpa, v_pb);
+			_mm512_storeu_si512((void*)cpo, v_pa);
+			_mm512_storeu_si512((void*)cpb, v_po);
+		}
+
+		// Re-sync the original pointers for the scalar cleanup
+		pa = (VAR *)cpa; po = (VAR *)cpo; pb = (VAR *)cpb;
+	}
+#endif
+	while (pb > stop) {
 		pa -= ES;
 		po -= ES;
 		pb -= ES;
@@ -262,6 +344,7 @@ NAME(ring_negative)(VAR * restrict pa, VAR * restrict po,
 } // ring_negative
 
 
+// The heart of it all
 static void
 NAME(rotate_block)(VAR *pa, VAR *pb, VAR *pe, size_t es)
 {
