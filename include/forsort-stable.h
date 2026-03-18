@@ -247,6 +247,39 @@ NAME(merge_duplicates)(struct NAME(stable_state) *state, VAR **list, size_t n, V
 	return m1;
 } // merge_duplicates
 
+static void
+NAME(merge_duplicates_final)(struct NAME(stable_state) *state, COMMON_PARAMS)
+{
+	VAR	*ws = state->work_space;
+
+#ifdef	DEBUG_UNIQUE_PROCESSING
+	printf("Num Merged = %lu, Num Free = %lu\n", state->num_merged, state->num_free);
+#endif
+	// Merge up the free duplicates
+	if (state->num_free > 0) {
+		VAR	**list = state->free_dups;
+		size_t	n = state->num_free;
+		VAR	*mf = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
+
+		// If merged dups is full, there will never be any unmerged frees
+		// If there are unmerged frees, then merged dups won't be full.
+		// Therefore, the following operation is perfectly bounded
+		ASSERT(state->num_merged < MAX_DUPS);
+		state->merged_dups[state->num_merged++] = mf;
+		state->free_dups[0] = NULL;
+		state->num_free = 0;
+	}
+
+	// Merge up the merged duplicates
+	if (state->num_merged > 1) {
+		VAR	**list = state->merged_dups;
+		size_t	n = state->num_merged;
+
+		state->merged_dups[0] = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
+		state->num_merged = 1;
+	}
+} // merge_duplicates_final
+
 
 // Maintains the set of duplicate entries.  When a duplicate entry is added
 // to the free list, it checks against the length of the merged list.
@@ -278,33 +311,7 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 {
 	VAR	*ws = state->work_space;
 	size_t	nw = state->work_size;
-
-#ifdef	DEBUG_UNIQUE_PROCESSING
-	printf("Num Merged = %lu, Num Free = %lu\n", state->num_merged, state->num_free);
-#endif
-	// Merge up the free duplicates
-	if (state->num_free > 0) {
-		VAR	**list = state->free_dups;
-		size_t	n = state->num_free;
-		VAR	*mf = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
-
-		// If merged dups is full, there will never be any unmerged frees
-		// If there are unmerged frees, then merged dups won't be full.
-		// Therefore, the following operation is perfectly bounded
-		ASSERT(state->num_merged < MAX_DUPS);
-		state->merged_dups[state->num_merged++] = mf;
-		state->free_dups[0] = NULL;
-		state->num_free = 0;
-	}
-
-	// Merge up the merged duplicates
-	VAR	*md = NULL;
-	if (state->num_merged > 0) {
-		VAR	**list = state->merged_dups;
-		size_t	n = state->num_merged;
-
-		md = CALL(merge_duplicates)(state, list, n, ws, COMMON_ARGS);
-	}
+	VAR	*md = state->merged_dups[0];
 
 	// Sort our workspace now (if it's required)
 	if (state->work_sorted == false)
@@ -373,9 +380,6 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	nr = n - nw;
 	pr = pa + (nw * ES);	// Pointer to rest
 
-	// Determine how much workspace we're really aiming for
-	size_t	wstarget = nr / STABLE_WSRATIO;
-
 	// First sort our candidate work-space chunk
 	size_t reversals = CALL(basic_sort)(pa, nw, COMMON_ARGS);
 
@@ -425,6 +429,9 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		state->free_dups[0] = pa;
 		state->num_free = 1;
 	}
+
+	// Determine how much workspace we're really aiming for
+	size_t	wstarget = nr / STABLE_WSRATIO;
 
 	// If we couldn't find enough work-space we'll keep trying until our
 	// duplicate management storage fills up. Despite this seeming excessive,
@@ -518,6 +525,9 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		if ((nr < ((n * 3)>>2)) && (nw >= (nr >> 7)))
 			break;
 	}
+
+	// Merge up all the duplicates into one clump
+	CALL(merge_duplicates_final)(state, COMMON_ARGS);
 
 	// Now sort the remaining unsorted data
 

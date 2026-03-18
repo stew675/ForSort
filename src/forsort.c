@@ -103,7 +103,7 @@
 // is observed to perform about 5-10% better than a 1:1 ratio.  Since the
 // stable merge-in-place algorithm relies heavily on this basic sort to form
 // its initial working sets, it's best that this skew ratio is managed
-// independently from the main merge-sort skew.  Experimentally, a 41:59
+// independently from the main merge-sort skew.  Experimentally, a 29:71
 // split appears to offer the best compromise
 #define	BASIC_SKEW		29
 
@@ -119,7 +119,7 @@
 // there's a trade-off between spending more time digging out uniques, as
 // opposed to just using what we can find.  A good value appears to be anywhere
 // from 1.5x to 3x of what WSRATIO is set to,
-#define	STABLE_WSRATIO		28
+#define	STABLE_WSRATIO		29
 
 // Set the following to 1 to enable low-stack mode, whereby we will not use
 // shift_merge_in_place(), and ONLY use split_merge_in_place algorithm.  This
