@@ -152,7 +152,7 @@ def generate_summary_by_size(data: List[Dict], include_skipped: bool = False) ->
         lines.append(f"### {variant.replace('_', ' ').title()}")
         lines.append("")
         lines.append("| Sort Type | " + " | ".join(f"{n} items" for n in sizes) + " |")
-        lines.append("|-----------|" + "|".join("-----------|" for _ in sizes))
+        lines.append("|-----------|" + "".join("-" * 10 + "|" for _ in sizes))
         
         # Build ns_per_item matrix for this variant
         matrix = {}  # sort_type -> {size -> ns_value}
