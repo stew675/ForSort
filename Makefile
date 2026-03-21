@@ -56,8 +56,14 @@ $(BIN): $(OBJ)
 $(OBJDIR):
 	mkdir -p $@
 
-.PHONY: clean
+.PHONY: clean benchmark results
 
 clean:
 	rm -f $(OBJDIR)/*.o gmon.out $(SRCDIR)/*~ core $(INCDIR)/*~ $(BIN) $(OBJDIR)/*.gcda $(OBJDIR)/*.gcno
 	(test -d $(OBJDIR) && rmdir $(OBJDIR)) || true
+
+benchmark:
+	./benchmark.sh
+
+results: benchmark
+	./generate_results.sh
