@@ -93,7 +93,7 @@ echo "" >> "$OUTPUT_FILE"
 # Create separator row
 printf "|-----------|" >> "$OUTPUT_FILE"
 for n in $ITEM_COUNTS; do
-    printf "-----------|" >> "$OUTPUT_FILE"
+    printf '%s' "-----------|" >> "$OUTPUT_FILE"
 done
 echo "" >> "$OUTPUT_FILE"
 
@@ -103,10 +103,10 @@ for sort in $SORT_TYPES; do
     for n in $ITEM_COUNTS; do
         # Get ns_per_item for random variant
         value=$(grep "^$sort," "$INPUT_FILE" | grep ",random," | grep ",$n," | cut -d',' -f9)
-        if [[ -n "$value" ]]; then
+        if [[ -n "$value" && "$value" != "SKIPPED" ]]; then
             printf " %.1f |" "$value" >> "$OUTPUT_FILE"
         else
-            printf " - |" >> "$OUTPUT_FILE"
+            printf '%s |' " - " >> "$OUTPUT_FILE"
         fi
     done
     echo "" >> "$OUTPUT_FILE"
@@ -126,7 +126,7 @@ echo "" >> "$OUTPUT_FILE"
 # Create separator row
 printf "|-----------|" >> "$OUTPUT_FILE"
 for n in $ITEM_COUNTS; do
-    printf "-----------|" >> "$OUTPUT_FILE"
+    printf '%s' "-----------|" >> "$OUTPUT_FILE"
 done
 echo "" >> "$OUTPUT_FILE"
 
@@ -139,7 +139,7 @@ for sort in $SORT_TYPES; do
         if [[ -n "$value" ]]; then
             printf " %s |" "$value" >> "$OUTPUT_FILE"
         else
-            printf " - |" >> "$OUTPUT_FILE"
+            printf '%s |' " - " >> "$OUTPUT_FILE"
         fi
     done
     echo "" >> "$OUTPUT_FILE"
