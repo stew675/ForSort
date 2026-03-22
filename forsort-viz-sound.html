@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForSort Stable Algorithm Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        .canvas-container {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            background: #1e1e1e;
+            border-radius: 4px;
+        }
+
+        .controls {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .control-section {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #444;
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-divider {
+            width: 2px;
+            height: 40px;
+            background: #555;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+        .control-divider.hidden {
+            display: none;
+        }
+
+        label {
+            font-weight: 600;
+            min-width: 100px;
+        }
+
+        button {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #357abd;
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        button.generate {
+            background: #27ae60;
+        }
+
+        button.generate:hover {
+            background: #229954;
+        }
+
+        select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background: #3a3a3a;
+            color: #e0e0e0;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .stats {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: #3a3a3a;
+            padding: 12px;
+            border-radius: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .phase-indicator {
+            background: #3a3a3a;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #4a90e2;
+        }
+
+        .legend {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .legend-title {
+            font-weight: 700;
+            color: #ffd700;
+            white-space: nowrap;
+        }
+
+        .legend-grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 3px;
+            border: 1px solid #555;
+        }
+
+        .speed-display {
+            min-width: 80px;
+            text-align: right;
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #3a3a3a;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a90e2, #ffd700);
+            transition: width 0.1s linear;
+        }
+
+        .play-hint-arrow {
+            display: none;
+            color: #ffd700;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0 10px;
+            animation: pulse-arrow 1s ease-in-out infinite;
+            width: 22px;
+            text-align: center;
+        }
+
+        .play-hint-arrow.show {
+            display: inline-block;
+        }
+
+        @keyframes pulse-arrow {
+            0%, 100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            50% {
+                opacity: 0.4;
+                transform: translateX(5px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ForSort Stable Algorithm Visualizer</h1>
+
+        <div class="legend">
+            <div class="legend-title">Color Legend:</div>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #808080;"></div>
+                    <span>Main Array / Rest</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ffd700;"></div>
+                    <span>Workspace (Uniques)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4169e1;"></div>
+                    <span>Duplicates</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff8c00;"></div>
+                    <span>Active Rotation (Triple Shift V2)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #87ceeb;"></div>
+                    <span>Comparison Flash</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff4444;"></div>
+                    <span>Swap Flash</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #00ff00;"></div>
+                    <span>Verified Sorted</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="visualizer" width="1760" height="400"></canvas>
+        </div>
+
+        <div class="stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Array Size</div>
+                    <div class="stat-value" id="stat-size">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Comparisons</div>
+                    <div class="stat-value" id="stat-comparisons">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Swaps</div>
+                    <div class="stat-value" id="stat-swaps">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Step</div>
+                    <div class="stat-value" id="stat-step">0 / 0</div>
+                </div>
+                <div class="stat-item phase-indicator">
+                    <div class="stat-label">Current Phase</div>
+                    <div id="stat-phase">Ready</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-section">
+                <div class="control-row">
+                    <label>Array Size:</label>
+                    <select id="size-select">
+                        <option value="256">256</option>
+                        <option value="512" selected>512</option>
+                        <option value="1024">1024</option>
+                        <option value="2048">2048</option>
+                    </select>
+
+                    <label style="margin-left: 20px;">Data Type:</label>
+                    <select id="data-type">
+                        <option value="unique">All Unique Values</option>
+                        <option value="duplicates">~30 Duplicates/Value</option>
+                    </select>
+
+                    <label style="margin-left: 20px;">Algorithm:</label>
+                    <select id="algorithm-select">
+                        <option value="stable">ForSort Stable</option>
+                        <option value="basic">ForSort Basic</option>
+                    </select>
+
+                    <button class="generate" id="generate-btn">Generate & Sort</button>
+
+                    <div class="control-divider" id="control-divider"></div>
+                    <span class="play-hint-arrow" id="play-hint">➜</span>
+
+                    <button id="play-btn" disabled>Play</button>
+                    <button id="pause-btn" disabled>Pause</button>
+                    <button id="step-back-btn" disabled>Step Back</button>
+                    <button id="step-forward-btn" disabled>Step Forward</button>
+                    <button id="reset-btn" disabled>Reset</button>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <div class="control-row">
+                    <label>Speed:</label>
+                    <input type="range" id="speed-slider" min="1" max="100" value="50">
+                    <span class="speed-display" id="speed-display">50x</span>
+
+                    <label style="margin-left: 40px;">
+                        <input type="checkbox" id="audio-toggle" checked>
+                        Sound Effects
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===================================================================
+        // VISUALIZATION STATE
+        // ===================================================================
+
+        const canvas = document.getElementById('visualizer');
+        const ctx = canvas.getContext('2d');
+
+        let visualState = {
+            initialArray: null,
+            size: 0,
+            timeline: [],
+            currentStep: 0,
+            isPlaying: false,
+            speed: 50,
+            regions: {},
+            animationFrame: null,
+            lastFrameTime: 0,
+            audioEnabled: true
+        };
+
+        // Audio context for sound effects
+        let audioContext = null;
+        let gainNode = null;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                gainNode = audioContext.createGain();
+                gainNode.connect(audioContext.destination);
+                gainNode.gain.value = 0.1; // Quiet volume
+            }
+        }
+
+        function playTone(value1, value2, maxValue, waveType = 'sine') {
+            if (!visualState.audioEnabled || !audioContext) return;
+
+            // Map values to frequency range (200 Hz to 800 Hz)
+            const avgValue = (value1 + value2) / 2;
+            const normalizedValue = avgValue / maxValue;
+            const frequency = 200 + (normalizedValue * 600);
+
+            // Create oscillator for tone
+            const oscillator = audioContext.createOscillator();
+            const toneGain = audioContext.createGain();
+
+            oscillator.connect(toneGain);
+            toneGain.connect(gainNode);
+
+            oscillator.frequency.value = frequency;
+            oscillator.type = waveType;
+
+            // Swaps are +4dB louder than comparisons (~1.58x amplitude)
+            const peakGain = waveType === 'triangle' ? 0.47 : 0.3;
+
+            // Quick fade in/out for smooth tone
+            const now = audioContext.currentTime;
+            toneGain.gain.setValueAtTime(0, now);
+            toneGain.gain.linearRampToValueAtTime(peakGain, now + 0.01);
+            toneGain.gain.linearRampToValueAtTime(0, now + 0.05);
+
+            oscillator.start(now);
+            oscillator.stop(now + 0.05);
+        }
+
+        // ===================================================================
+        // FORSORT ALGORITHM WITH INSTRUMENTATION
+        // ===================================================================
+
+        const STABLE_WSRATIO = 28;
+        const MAX_DUPS = 27;
+        const BASIC_INSERT_MAX = 24;
+        const BASIC_SKEW = 29;
+        const MS = 5;
+        const SPRINT_ACTIVATE = 7;
+        const SPRINT_EXIT_PENALTY = 2;
+        const LEAP_LEFT = 0;
+        const LEAP_RIGHT = 1;
+        const WSRATIO = 6;
+
+        let array = null;
+        let comparisons = 0;
+        let swaps = 0;
+        let stableState = null;
+        let timeline = [];
+        let currentPhase = 'Initializing';
+        let regionTracking = {};
+
+        function recordEvent(type, data) {
+            timeline.push({
+                type,
+                step: timeline.length,
+                comparisons,
+                swaps,
+                phase: currentPhase,
+                regions: JSON.parse(JSON.stringify(regionTracking)),
+                ...data
+            });
+        }
+
+        function setPhase(phase) {
+            currentPhase = phase;
+            recordEvent('phase', { phaseName: phase });
+        }
+
+        function setRegion(name, start, end, type = 'active') {
+            regionTracking[name] = { start, end, type };
+            recordEvent('region', { regionName: name, start, end, regionType: type });
+        }
+
+        function clearRegion(name) {
+            delete regionTracking[name];
+            recordEvent('region_clear', { regionName: name });
+        }
+
+        function IS_LT(i, j) {
+            comparisons++;
+            recordEvent('compare', { indices: [i, j], values: [array[i], array[j]] });
+            return array[i] < array[j];
+        }
+
+        function SWAP(i, j) {
+            if (i === j) return;
+            swaps++;
+            const temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+            recordEvent('swap', { indices: [i, j], values: [array[i], array[j]] });
+        }
+
+        function ARRAY_SET(i, value) {
+            if (array[i] === value) return;
+            array[i] = value;
+            recordEvent('set', { index: i, value: value });
+        }
+
+        // ===================================================================
+        // ROTATE_BLOCK
+        // ===================================================================
+
+        function twoWaySwapBlock(pa, pb, num) {
+            for (let i = 0; i < num; i++) {
+                SWAP(pa + i, pb + i);
+            }
+        }
+
+        function ringPositive(pa, po, pb, num) {
+            for (let i = 0; i < num; i++) {
+                SWAP(pa + i, po + i);
+                SWAP(po + i, pb + i);
+            }
+        }
+
+        function ringNegative(pa, po, pb, num) {
+            for (let i = 0; i < num; i++) {
+                SWAP(pb - 1 - i, po - 1 - i);
+                SWAP(po - 1 - i, pa - 1 - i);
+            }
+        }
+
+        function rotateSmall(pa, pb, pe) {
+            const na = pb - pa;
+            const nb = pe - pb;
+            const temp = new Int32Array(Math.max(na, nb));
+
+            if (na < nb) {
+                for (let i = 0; i < na; i++) temp[i] = array[pa + i];
+                for (let i = 0; i < nb; i++) ARRAY_SET(pa + i, array[pb + i]);
+                for (let i = 0; i < na; i++) ARRAY_SET(pa + nb + i, temp[i]);
+            } else if (nb < na) {
+                for (let i = 0; i < nb; i++) temp[i] = array[pb + i];
+                for (let i = na - 1; i >= 0; i--) ARRAY_SET(pa + nb + i, array[pa + i]);
+                for (let i = 0; i < nb; i++) ARRAY_SET(pa + i, temp[i]);
+            }
+            recordEvent('rotate_small', { pa, pb, pe });
+        }
+
+        function rotateBlock(pa, pb, pe) {
+            setRegion('rotation', pa, pe, 'rotation');
+            let na = pb - pa;
+            let nb = pe - pb;
+            const MIN_STREAM = 8;
+
+            while (na > 0) {
+                nb = pe - pb;
+                na = pb - pa;
+
+                if (na < nb) {
+                    let no = nb - na;
+
+                    if ((na <= MIN_STREAM) || (no <= MIN_STREAM)) {
+                        rotateSmall(pa, pb, pe);
+                        clearRegion('rotation');
+                        return;
+                    }
+
+                    while (na > no) {
+                        ringPositive(pa, pb, pe - na, no);
+                        pa += no;
+                        na -= no;
+                    }
+                    ringPositive(pa, pb, pe - na, na);
+                    pa = pb;
+                    pe = pb + no;
+                    pb = pb + na;
+                } else if (na === nb) {
+                    twoWaySwapBlock(pa, pb, na);
+                    clearRegion('rotation');
+                    return;
+                } else if (nb === 0) {
+                    clearRegion('rotation');
+                    return;
+                } else {
+                    let no = na - nb;
+
+                    if ((nb <= MIN_STREAM) || (no <= MIN_STREAM)) {
+                        rotateSmall(pa, pb, pe);
+                        clearRegion('rotation');
+                        return;
+                    }
+
+                    while (nb > no) {
+                        ringNegative(pa + nb, pb, pe, no);
+                        pe -= no;
+                        nb -= no;
+                    }
+                    ringNegative(pa + nb, pb, pe, nb);
+                    pe = pb;
+                    pa = pb - no;
+                    pb = pb - nb;
+                }
+            }
+            clearRegion('rotation');
+        }
+
+        // ===================================================================
+        // INSERTION SORT
+        // ===================================================================
+
+        function insertionSort(start, n) {
+            const end = start + n;
+            for (let ta = start + 1; ta < end; ta++) {
+                let tb = ta;
+                while (tb > start && IS_LT(tb, tb - 1)) {
+                    SWAP(tb, tb - 1);
+                    tb--;
+                }
+            }
+        }
+
+        // ===================================================================
+        // SPRINT FUNCTIONS
+        // ===================================================================
+
+        function sprintLeft(pa, pe, pt, direction) {
+            let max = pe - pa;
+            let min = 0, pos;
+            let sp;
+
+            if (direction === LEAP_LEFT) {
+                for (pos = 0; pos < max; pos = (pos << 1) + 1) {
+                    sp = pe - (pos + 1);
+                    if (IS_LT(sp, pt)) break;
+                }
+                if (pos > max) {
+                    max = pos >> 1;
+                } else {
+                    min = max - pos;
+                    max = min + (pos >> 1);
+                }
+            } else {
+                for (pos = 0; pos < max; pos = (pos << 1) + 1) {
+                    sp = pa + pos;
+                    if (!IS_LT(sp, pt)) break;
+                }
+                if (pos > max) {
+                    min = max - (pos >> 1);
+                } else {
+                    min = (pos >> 1) + (pos ? 1 : 0);
+                    max = pos;
+                }
+            }
+
+            while (min < max) {
+                const pos = (min + max) >> 1;
+                sp = pa + pos;
+
+                if (IS_LT(sp, pt)) {
+                    min = pos + 1;
+                } else {
+                    max = pos;
+                }
+            }
+            return pa + min;
+        }
+
+        function sprintRight(pa, pe, pt, direction) {
+            let max = pe - pa;
+            let min = 0, pos = 0;
+            let sp;
+
+            if (direction === LEAP_RIGHT) {
+                for (pos = 0; pos < max; pos = (pos << 1) + 1) {
+                    sp = pa + pos;
+                    if (IS_LT(pt, sp)) break;
+                }
+                if (pos > max) {
+                    min = max - (pos >> 1);
+                } else {
+                    min = (pos >> 1) + (pos ? 1 : 0);
+                    max = pos;
+                }
+            } else {
+                for (pos = 0; pos < max; pos = (pos << 1) + 1) {
+                    sp = pe - (pos + 1);
+                    if (!IS_LT(pt, sp)) break;
+                }
+                if (pos > max) {
+                    max = pos >> 1;
+                } else {
+                    min = max - pos;
+                    max = min + (pos >> 1);
+                }
+            }
+
+            while (min < max) {
+                const pos = (min + max) >> 1;
+                sp = pa + pos;
+
+                if (IS_LT(pt, sp)) {
+                    max = pos;
+                } else {
+                    min = pos + 1;
+                }
+            }
+            return pa + min;
+        }
+
+        // ===================================================================
+        // MERGE_LEFT
+        // ===================================================================
+
+        function mergeLeft(a, na, b, nb, w, nw) {
+            if (nb > nw) {
+                throw new Error(`mergeLeft: nb=${nb} > nw=${nw}`);
+            }
+
+            let a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
+            const pe = b + nb;
+            let pw = w;
+            let pb = pe, pa = b;
+
+            // Copy B to workspace
+            for (let tb = b; tb < b + nb; tb++, pw++) {
+                SWAP(pw, tb);
+            }
+
+            pa--;
+            pb--;
+            SWAP(pb, pa);
+
+            while (pa > a && pw > w) {
+                if ((a_run | b_run) < sprint) {
+                    pw--;
+                    pa--;
+                    pb--;
+
+                    const res = IS_LT(pw, pa) ? 0 : 1;
+                    const nres = 1 - res;
+                    SWAP(pb, res ? pw : pa);
+
+                    a_run += nres;
+                    b_run += res;
+                    pa += res;
+                    pw += nres;
+                    a_run *= nres;
+                    b_run *= res;
+                    continue;
+                }
+
+                do {
+                    sprint -= (sprint > 2) ? 1 : 0;
+
+                    if (a_run) {
+                        const ta = sprintRight(a, pa, pw - 1, LEAP_LEFT);
+                        a_run = pa - ta;
+                        while (pa != ta) {
+                            pa--;
+                            pb--;
+                            SWAP(pa, pb);
+                        }
+                        if (pa === a) break;
+                        b_run += b_run ? 0 : 1;
+                    }
+
+                    if (b_run) {
+                        const tw = sprintLeft(w, pw, pa - 1, LEAP_LEFT);
+                        b_run = pw - tw;
+                        while (pw != tw) {
+                            pw--;
+                            pb--;
+                            SWAP(pw, pb);
+                        }
+                        if (pw === w) break;
+                        a_run += a_run ? 0 : 1;
+                    }
+                } while (a_run >= SPRINT_ACTIVATE || b_run >= SPRINT_ACTIVATE);
+
+                sprint += SPRINT_EXIT_PENALTY;
+                a_run = 0;
+                b_run = 0;
+            }
+
+            while (w < pw) {
+                SWAP(a, w);
+                a++;
+                w++;
+            }
+        }
+
+        // ===================================================================
+        // MERGE_RIGHT
+        // ===================================================================
+
+        function mergeRight(a, na, b, nb, w, nw) {
+            if (na > nw) {
+                throw new Error(`mergeRight: na=${na} > nw=${nw}`);
+            }
+
+            const pe = b + nb;
+            let pw = w;
+
+            for (let ta = a; ta < a + na; ta++, pw++) {
+                SWAP(pw, ta);
+            }
+
+            SWAP(a, b);
+            a++;
+            b++;
+
+            let a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
+
+            while (b < pe && w < pw) {
+                if ((a_run | b_run) < sprint) {
+                    const res = IS_LT(b, w) ? 0 : 1;
+                    const nres = 1 - res;
+
+                    SWAP(a, res ? w : b);
+                    w += res;
+                    b += nres;
+                    a_run += res;
+                    b_run += nres;
+                    a_run *= res;
+                    b_run *= nres;
+                    a++;
+                    continue;
+                }
+
+                do {
+                    sprint -= (sprint > 2) ? 1 : 0;
+
+                    const tw = sprintRight(w, pw, b, LEAP_RIGHT);
+                    a_run = tw - w;
+                    for (; w < tw; w++, a++) {
+                        SWAP(a, w);
+                    }
+                    if (w >= pw) break;
+
+                    const tb = sprintLeft(b, pe, w, LEAP_RIGHT);
+                    b_run = tb - b;
+                    for (; b < tb; b++, a++) {
+                        SWAP(a, b);
+                    }
+                    if (b >= pe) break;
+                } while (a_run >= SPRINT_ACTIVATE || b_run >= SPRINT_ACTIVATE);
+
+                sprint += SPRINT_EXIT_PENALTY;
+                a_run = 0;
+                b_run = 0;
+            }
+
+            while (w < pw) {
+                SWAP(a, w);
+                a++;
+                w++;
+            }
+        }
+
+        // ===================================================================
+        // MERGE_USING_WORKSPACE
+        // ===================================================================
+
+        function mergeUsingWorkspace(a, na, b, nb, w, nw) {
+            if (!IS_LT(b, b - 1)) {
+                return;
+            }
+
+            const pe = b + nb;
+
+            if (!IS_LT(b, a)) {
+                if (na > 10) {
+                    let min = 1, max = na;
+
+                    while (min < max) {
+                        const pos = (min + max) >> 1;
+                        const sp = a + pos;
+
+                        if (IS_LT(b, sp)) {
+                            max = pos;
+                        } else {
+                            min = pos + 1;
+                        }
+                    }
+                    a = a + min;
+                    na -= min;
+                } else {
+                    do {
+                        a++;
+                        na--;
+                    } while (na > 0 && !IS_LT(b, a));
+                }
+            }
+
+            if (na === 0) return;
+
+            let sp = pe - 1;
+            const tb = b - 1;
+            if (!IS_LT(sp, tb)) {
+                if (nb > 10) {
+                    let min = 0, max = nb;
+
+                    while (min < max) {
+                        const pos = (min + max) >> 1;
+                        sp = b + pos;
+
+                        if (IS_LT(sp, tb)) {
+                            min = pos + 1;
+                        } else {
+                            max = pos;
+                        }
+                    }
+                    nb = min;
+                } else {
+                    do {
+                        sp--;
+                        nb--;
+                    } while (nb > 0 && !IS_LT(sp, tb));
+                }
+            }
+
+            if (nb === 0) return;
+
+            if (nb < na) {
+                mergeLeft(a, na, b, nb, w, nw);
+            } else {
+                mergeRight(a, na, b, nb, w, nw);
+            }
+        }
+
+        // ===================================================================
+        // MERGE_WORKSPACE_CONSTRAINED
+        // ===================================================================
+
+        function mergeWorkspaceConstrained(pa, na, pb, nb, ws, nw) {
+            const pe = pb + nb;
+
+            while (na > nw) {
+                let min = 0, max = nb;
+                const rp = pb;
+                pb = pa + nw;
+
+                while (min < max) {
+                    const pos = (min + max) >> 1;
+                    const sp = rp + pos;
+
+                    if (IS_LT(sp, pb - 1)) {
+                        min = pos + 1;
+                    } else {
+                        max = pos;
+                    }
+                }
+
+                const sp = rp + min;
+                rotateBlock(pb, rp, sp);
+
+                const newRp = pb + (sp - rp);
+
+                na = nw;
+                nb = newRp - pb;
+
+                if (nb > 0) {
+                    mergeUsingWorkspace(pa, na, pb, nb, ws, nw);
+                }
+
+                pa = newRp;
+                pb = sp;
+                na = sp - newRp;
+                nb = pe - sp;
+            }
+
+            if (na > 0 && nb > 0) {
+                mergeUsingWorkspace(pa, na, pb, nb, ws, nw);
+            }
+        }
+
+        // ===================================================================
+        // MERGE_TWO_TO_TARGET
+        // ===================================================================
+
+        function mergeTwoToTarget(p1, n1, p2, n2, pd, nd, just_copy) {
+            const p1e = p1 + n1, p2e = p2 + n2;
+            let disorder = 0;
+
+            if (just_copy) {
+                for (let i = 0; i < n1; i++) {
+                    ARRAY_SET(pd + i, array[p1 + i]);
+                }
+                for (let i = 0; i < n2; i++) {
+                    ARRAY_SET(pd + n1 + i, array[p2 + i]);
+                }
+                return 0;
+            }
+
+            if (n1 + n2 <= 40) {
+                while (p1 < p1e && p2 < p2e) {
+                    const res = IS_LT(p2, p1) ? 0 : 1;
+                    SWAP(pd, res ? p1 : p2);
+                    p1 += res;
+                    p2 += 1 - res;
+                    pd++;
+                    disorder += 1 - res;
+                }
+                while (p1 < p1e) SWAP(pd++, p1++);
+                while (p2 < p2e) SWAP(pd++, p2++);
+                return disorder;
+            }
+
+            let a_run = 0, b_run = 0, sprint = SPRINT_ACTIVATE;
+
+            while (p1 < p1e && p2 < p2e) {
+                if ((a_run | b_run) < sprint) {
+                    const res = IS_LT(p2, p1) ? 0 : 1;
+                    const nres = 1 - res;
+
+                    SWAP(pd, res ? p1 : p2);
+                    p1 += res;
+                    p2 += nres;
+
+                    a_run += res;
+                    b_run += nres;
+                    a_run *= res;
+                    b_run *= nres;
+
+                    pd++;
+                    disorder += nres;
+                    continue;
+                }
+
+                do {
+                    sprint -= (sprint > 2) ? 1 : 0;
+
+                    const t1 = sprintRight(p1, p1e, p2, LEAP_RIGHT);
+                    a_run = t1 - p1;
+                    for (; p1 < t1; pd++, p1++) {
+                        SWAP(pd, p1);
+                    }
+                    if (p1 >= p1e) break;
+
+                    const t2 = sprintLeft(p2, p2e, p1, LEAP_RIGHT);
+                    b_run = t2 - p2;
+                    for (; p2 < t2; pd++, p2++, disorder++) {
+                        SWAP(pd, p2);
+                    }
+                    if (p2 >= p2e) break;
+                } while (a_run >= SPRINT_ACTIVATE || b_run >= SPRINT_ACTIVATE);
+
+                sprint += SPRINT_EXIT_PENALTY;
+                a_run = 0;
+                b_run = 0;
+            }
+
+            while (p1 < p1e) SWAP(pd++, p1++);
+            while (p2 < p2e) SWAP(pd++, p2++);
+
+            return disorder;
+        }
+
+        // ===================================================================
+        // SORT_USING_WORKSPACE
+        // ===================================================================
+
+        function sortUsingWorkspace(pa, n, ws, nw) {
+            if (n < (MS << 2)) {
+                insertionSort(pa, n);
+                return;
+            }
+
+            let step;
+            for (step = MS; (step << 1) <= n; step <<= 1);
+
+            const na = n - step;
+            const nb = step;
+            const pb = pa + na;
+
+            if (na > 0) {
+                sortUsingWorkspace(pa, na, ws, nw);
+            }
+
+            for (let pt = pb, pe = pa + n; pt < pe; pt += MS) {
+                insertionSort(pt, MS);
+            }
+
+            let disorder = 0, num = 0;
+
+            for (step = MS; ((step << 2) <= nb) && ((step << 2) <= nw); step <<= 2) {
+                for (let pos = 0; pos < nb; pos += (step << 2)) {
+                    const step2 = step << 1, step4 = step << 2;
+                    const p1 = pb + pos;
+                    const p2 = p1 + step;
+                    const p3 = p1 + step2;
+                    const p4 = p3 + step;
+
+                    const jc2 = !IS_LT(p2, p2 - 1);
+                    const jc4 = !IS_LT(p4, p4 - 1);
+
+                    if (jc2 && jc4 && !IS_LT(p3, p3 - 1)) continue;
+
+                    const pw1 = ws, pw2 = ws + step2;
+                    let d = 0;
+
+                    d += mergeTwoToTarget(p1, step, p2, step, pw1, step2, jc2);
+                    d += mergeTwoToTarget(p3, step, p4, step, pw2, step2, jc4);
+                    const jc3 = !IS_LT(pw2, pw2 - 1);
+                    d += mergeTwoToTarget(pw1, step2, pw2, step2, p1, step4, jc3);
+
+                    disorder += d;
+                    num += step4;
+                }
+            }
+
+            for (; ((step << 2) <= nb) && ((step << 1) <= nw); step <<= 2) {
+                for (let pos = 0; pos < nb; pos += (step << 2)) {
+                    const p1 = pb + pos;
+                    const p2 = p1 + step;
+                    const p3 = p2 + step;
+                    const p4 = p3 + step;
+
+                    mergeWorkspaceConstrained(p3, step, p4, step, ws, nw);
+                    const jc2 = !IS_LT(p2, p2 - 1);
+                    mergeTwoToTarget(p1, step, p2, step, ws, step << 1, jc2);
+
+                    const p2new = ws + (step + step - 1);
+                    const jc3 = !IS_LT(p3, p2new);
+                    mergeTwoToTarget(ws, step << 1, p3, step << 1, p1, step << 2, jc3);
+                }
+            }
+
+            for (; (step << 2) <= nb; step <<= 2) {
+                for (let pos = 0; pos < nb; pos += (step << 2)) {
+                    const p1 = pb + pos;
+                    const p2 = p1 + step;
+                    const p3 = p2 + step;
+                    const p4 = p3 + step;
+
+                    mergeWorkspaceConstrained(p1, step, p2, step, ws, nw);
+                    mergeWorkspaceConstrained(p3, step, p4, step, ws, nw);
+                    mergeWorkspaceConstrained(p1, step << 1, p3, step << 1, ws, nw);
+                }
+            }
+
+            if (step < nb) {
+                mergeWorkspaceConstrained(pb, step, pb + step, step, ws, nw);
+            }
+
+            if (na > 0) {
+                mergeWorkspaceConstrained(pa, na, pb, nb, ws, nw);
+            }
+        }
+
+        // ===================================================================
+        // MERGE_SORT_IN_PLACE
+        // ===================================================================
+
+        function mergeSortInPlace(pa, n, ws, nw) {
+            if (n < (MS << 2) || n < 10) {
+                insertionSort(pa, n);
+                return;
+            }
+
+            if (ws !== null && nw > 0) {
+                sortUsingWorkspace(pa, n, ws, nw);
+                return;
+            }
+
+            let na = Math.floor(n / WSRATIO);
+            if (na < 4) na = 4;
+
+            const pe = pa + n;
+            const pb = pa + na;
+            const nb = n - na;
+
+            sortUsingWorkspace(pb, nb, pa, na);
+            mergeSortInPlace(pa, na, null, 0);
+
+            rotateMergeInPlace(pa, pb, pe);
+        }
+
+        // ===================================================================
+        // BINARY SEARCH & ROTATE_MERGE_IN_PLACE
+        // ===================================================================
+
+        function binarySearchRotate(pa, pb, pe) {
+            let len = pe - pb;
+
+            if (len > 12) {
+                let min = 0, max = len;
+
+                while (min < max) {
+                    const mid = (min + max) >> 1;
+
+                    if (IS_LT(pb + mid, pa)) {
+                        min = mid + 1;
+                    } else {
+                        max = mid;
+                    }
+                }
+
+                return pb + min;
+            } else {
+                while (pb < pe && IS_LT(pb, pa)) {
+                    pb++;
+                }
+                return pb;
+            }
+        }
+
+        function rotateMergeInPlace(pa, pb, pe) {
+            if (!IS_LT(pb, pb - 1)) {
+                return;
+            }
+
+            const workStack = [];
+
+            while (true) {
+                const bs = pb - pa;
+
+                if (bs <= 0) {
+                    if (workStack.length === 0) break;
+                    pe = workStack.pop();
+                    pb = workStack.pop();
+                    pa = workStack.pop();
+                    if (!IS_LT(pb, pb - 1)) continue;
+                }
+
+                if (bs === 1) {
+                    const rp = binarySearchRotate(pa, pb, pe);
+                    if (rp - pb > 4) {
+                        const temp = array[pa];
+
+                        for (let i = pa; i < rp - 1; i++) {
+                            ARRAY_SET(i, array[i + 1]);
+                        }
+                        ARRAY_SET(rp - 1, temp);
+                    } else {
+                        let pos = pa;
+                        while (pb < rp) {
+                            SWAP(pos, pb);
+                            pos = pb;
+                            pb++;
+                        }
+                    }
+
+                    if (workStack.length === 0) break;
+                    pe = workStack.pop();
+                    pb = workStack.pop();
+                    pa = workStack.pop();
+                    if (!IS_LT(pb, pb - 1)) continue;
+                }
+
+                const splitSize = bs >> 1;
+                const spa = pa + splitSize;
+                const spb = pb;
+                pb = spa;
+
+                const rp = binarySearchRotate(spa, spb, pe);
+
+                let newSpa = spa;
+                let newSpb = spb;
+                if (rp > spb) {
+                    rotateBlock(spa, spb, rp);
+                    newSpa = spa + (rp - spb);
+                    newSpb = rp;
+                }
+
+                if (newSpb < pe && (newSpb - newSpa) > 1) {
+                    workStack.push(newSpa + 1, newSpb, pe);
+                }
+
+                if (IS_LT(pb, pb - 1)) {
+                    pe = newSpa;
+                    continue;
+                }
+
+                if (workStack.length === 0) break;
+                pe = workStack.pop();
+                pb = workStack.pop();
+                pa = workStack.pop();
+            }
+        }
+
+        // ===================================================================
+        // BASIC_SORT
+        // ===================================================================
+
+        function basicTopDownSort(pa, n) {
+            if (n <= BASIC_INSERT_MAX || n <= 8) {
+                insertionSort(pa, n);
+                return;
+            }
+
+            const na = Math.floor((n * BASIC_SKEW) / 100);
+            const nb = n - na;
+            const pb = pa + na;
+            const pe = pa + n;
+
+            basicTopDownSort(pa, na);
+            basicTopDownSort(pb, nb);
+
+            rotateMergeInPlace(pa, pb, pe);
+        }
+
+        function basicSort(pa, n) {
+            setPhase(`Basic Sort [${pa}..${pa+n})`);
+            setRegion('basic_sort', pa, pa + n, 'sorting');
+            basicTopDownSort(pa, n);
+            clearRegion('basic_sort');
+
+            // Verification pass
+            setPhase('Verification');
+            for (let i = pa; i < pa + n; i++) {
+                if (i === pa || array[i] >= array[i-1]) {
+                    recordEvent('verify', { index: i, status: 'ok' });
+                } else {
+                    recordEvent('verify', { index: i, status: 'error' });
+                }
+            }
+
+            setPhase('Complete');
+        }
+
+        // ===================================================================
+        // EXTRACT_UNIQUES
+        // ===================================================================
+
+        function extractUniqueSub(a, pe, ph) {
+            let pu = a;
+            if (ph === null || ph > pe) ph = pe;
+
+            for (let pa = a + 1; pa < ph; pa++) {
+                if (IS_LT(pa - 1, pa)) continue;
+
+                let dp = pa - 1;
+
+                pa++;
+                while (pa < ph && !IS_LT(pa - 1, pa)) {
+                    pa++;
+                }
+                pa--;
+
+                if ((pa - dp) > 1) {
+                    if (dp > pu) {
+                        rotateBlock(pu, dp, pa);
+                    }
+                    pu += (pa - dp);
+                } else {
+                    while (dp > pu) {
+                        SWAP(dp, dp - 1);
+                        dp--;
+                    }
+                    pu++;
+                }
+            }
+
+            if (ph < pe) {
+                rotateBlock(pu, ph, pe);
+                pu += (pe - ph);
+            }
+
+            return pu;
+        }
+
+        function extractUniques(a, n, hints) {
+            setPhase(`Extract Uniques [${a}..${a+n})`);
+            setRegion('extract_uniques', a, a + n, 'extracting');
+
+            const pe = a + n;
+
+            if (n < 40) {
+                const result = extractUniqueSub(a, pe, hints);
+                clearRegion('extract_uniques');
+                return result;
+            }
+
+            if (hints === null || hints > pe) hints = pe;
+
+            let pa = a;
+            let na = (n + 3) >> 2;
+            let pb = pa + na;
+            const ps = pb;
+
+            let step = 1, loops = 0;
+            while (pb + step < pe) {
+                if (IS_LT(pb - 1, pb + step - 1)) break;
+                pb += step;
+                if (++loops > 2) step += step;
+            }
+
+            if (step > 1) {
+                while (step > 1) {
+                    if (pb + step < pe) {
+                        if (IS_LT(pb - 1, pb + step - 1)) break;
+                        pb += step;
+                    }
+                    step >>= 1;
+                }
+                while (pb < pe && !IS_LT(pb - 1, pb)) pb++;
+            }
+
+            if (pb === pe) {
+                const result = extractUniqueSub(a, pe, ps);
+                clearRegion('extract_uniques');
+                return result;
+            }
+
+            na = pb - pa;
+            const nb = n - na;
+
+            const hintsA = (hints < pb) ? pe : hints;
+            const apu = extractUniques(pa, na, ps);
+            const bpu = extractUniques(pb, nb, hints);
+
+            if (bpu > pb) {
+                rotateBlock(apu, pb, bpu);
+            }
+            const result = apu + (bpu - pb);
+
+            clearRegion('extract_uniques');
+            return result;
+        }
+
+        // ===================================================================
+        // MERGE_DUPLICATES & STABLE_SORT_FINISHER
+        // ===================================================================
+
+        function mergeDuplicates(list, listStart, n, pe) {
+            if (n === 1) {
+                return list[listStart];
+            }
+
+            const n1 = Math.floor((n + 1) / 3);
+            const n2 = n - n1;
+
+            const m1 = mergeDuplicates(list, listStart, n1, list[listStart + n1]);
+            const m2 = mergeDuplicates(list, listStart + n1, n2, pe);
+
+            const nm1 = list[listStart + n1] - m1;
+            const nm2 = pe - m2;
+
+            const ws = stableState.workStart;
+            const nw = stableState.workSize;
+
+            if (nm1 > nw * WSRATIO) {
+                rotateMergeInPlace(m1, m2, pe);
+            } else {
+                mergeWorkspaceConstrained(m1, nm1, m2, nm2, ws, nw);
+            }
+
+            return m1;
+        }
+
+        function stableSortFinisher() {
+            setPhase('Stable Sort Finisher');
+
+            const ws = stableState.workStart;
+            const nw = stableState.workSize;
+            const n = array.length;
+
+            if (stableState.numFree > 0) {
+                const list = stableState.freeDups;
+                const numFree = stableState.numFree;
+                const mf = mergeDuplicates(list, 0, numFree, ws);
+
+                stableState.mergedDups[stableState.numMerged++] = mf;
+                stableState.freeDups[0] = null;
+                stableState.numFree = 0;
+            }
+
+            let md = null;
+            if (stableState.numMerged > 0) {
+                const list = stableState.mergedDups;
+                const numMerged = stableState.numMerged;
+                md = mergeDuplicates(list, 0, numMerged, ws);
+            }
+
+            if (stableState.workSorted === false) {
+                mergeSortInPlace(ws, nw, null, 0);
+            }
+
+            const pr = stableState.restStart;
+            const nm = md !== null ? (ws - md) : 0;
+
+            if (nm > 0 && nw > 0 && nm < nw) {
+                rotateMergeInPlace(md, ws, pr);
+                if (pr < n) {
+                    rotateMergeInPlace(md, pr, n);
+                }
+            } else if (nw > 0 && pr < n) {
+                rotateMergeInPlace(ws, pr, n);
+                if (nm > 0) {
+                    rotateMergeInPlace(md, ws, n);
+                }
+            }
+        }
+
+        // ===================================================================
+        // STABLE_SORT
+        // ===================================================================
+
+        function stableSort(n) {
+            setPhase('Initialization');
+
+            stableState = {
+                mergedDups: new Array(MAX_DUPS).fill(null),
+                freeDups: new Array(MAX_DUPS).fill(null),
+                workStart: 0,
+                workSize: 0,
+                restStart: 0,
+                restSize: n,
+                numMerged: 0,
+                numFree: 0,
+                workSorted: true
+            };
+
+            if (n < 75) {
+                basicSort(0, n);
+                return;
+            }
+
+            setPhase('Phase 1: Initial Workspace Extraction');
+
+            let nw = (n >> 7) + STABLE_WSRATIO;
+            if (nw > (n >> 2)) nw = n >> 2;
+            let nr = n - nw;
+            let pr = nw;
+
+            const wstarget = Math.floor(nr / STABLE_WSRATIO);
+
+            basicSort(0, nw);
+
+            let ws = extractUniques(0, nw, null);
+            nw = pr - ws;
+
+            stableState.workStart = ws;
+            stableState.workSize = nw;
+            stableState.restStart = pr;
+            stableState.restSize = nr;
+
+            setRegion('workspace', ws, pr, 'workspace');
+            setRegion('rest', pr, n, 'rest');
+
+            if (ws > 0) {
+                setRegion('duplicates', 0, ws, 'duplicates');
+                if ((ws - 0) > (pr - ws)) {
+                    stableState.mergedDups[0] = 0;
+                    stableState.numMerged = 1;
+                } else {
+                    stableState.freeDups[0] = 0;
+                    stableState.numFree = 1;
+                }
+            }
+
+            setPhase('Phase 2: Additional Workspace Extraction');
+
+            let iterations = 0;
+            while (nw < wstarget && stableState.numMerged < MAX_DUPS && iterations < 5) {
+                const nd = ws - 0;
+                let ratio = nw / (nw + nd);
+                let grab = Math.floor((wstarget - nw) / ratio);
+                grab = Math.floor((grab * 9) / 8);
+
+                if (grab < (nr >> 5)) grab = nr >> 5;
+                if (grab > nw * STABLE_WSRATIO) grab = nw * STABLE_WSRATIO;
+                if (grab > (nr >> 3)) grab = nr >> 3;
+                if (grab < 10) break;
+
+                const nws = pr;
+                nr -= grab;
+                pr += grab;
+
+                stableState.restStart = pr;
+                stableState.restSize = nr;
+
+                setRegion('rest', pr, n, 'rest');
+
+                basicSort(nws, grab);
+                rotateMergeInPlace(ws, nws, pr);
+
+                const newWs = extractUniques(ws, nw + grab, null);
+                nw = pr - newWs;
+
+                stableState.workStart = newWs;
+                stableState.workSize = nw;
+
+                setRegion('workspace', newWs, pr, 'workspace');
+
+                if (newWs > ws && stableState.numFree < MAX_DUPS) {
+                    stableState.freeDups[stableState.numFree++] = ws;
+                }
+
+                if (newWs > 0) {
+                    setRegion('duplicates', 0, newWs, 'duplicates');
+                }
+
+                ws = newWs;
+
+                if (nr < (n >> 4)) break;
+                if ((nr < ((n * 3) >> 2)) && (nw >= (nr >> 7))) break;
+
+                iterations++;
+            }
+
+            setPhase('Phase 3: Sort Rest');
+
+            if ((nw < wstarget) && (nw < (nr >> 7))) {
+                basicSort(pr, nr);
+            } else {
+                mergeSortInPlace(pr, nr, ws, nw);
+                stableState.workSorted = false;
+            }
+
+            setPhase('Phase 4: Final Merge');
+            stableSortFinisher();
+
+            setPhase('Phase 5: Verification');
+            for (let i = 0; i < n; i++) {
+                if (i === 0 || array[i] >= array[i-1]) {
+                    recordEvent('verify', { index: i, status: 'ok' });
+                } else {
+                    recordEvent('verify', { index: i, status: 'error' });
+                }
+            }
+
+            setPhase('Complete');
+        }
+
+        // ===================================================================
+        // DATA GENERATION
+        // ===================================================================
+
+        function generateData(size, withDuplicates) {
+            array = new Int32Array(size);
+
+            if (withDuplicates) {
+                // ~30 duplicates per value
+                const uniqueCount = Math.floor(size / 30);
+                const values = [];
+                for (let i = 0; i < uniqueCount; i++) {
+                    values.push(i + 1); // Start from 1 instead of 0
+                }
+
+                // Fill array with duplicates
+                for (let i = 0; i < size; i++) {
+                    array[i] = values[Math.floor(Math.random() * uniqueCount)];
+                }
+            } else {
+                // All unique values, starting from 1
+                for (let i = 0; i < size; i++) {
+                    array[i] = i + 1;
+                }
+            }
+
+            // Shuffle
+            for (let i = size - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // ===================================================================
+        // VISUALIZATION RENDERING
+        // ===================================================================
+
+        function getRegionColor(index, regions) {
+            // Priority order: rotation > workspace > duplicates > rest
+            if (regions.rotation && index >= regions.rotation.start && index < regions.rotation.end) {
+                return '#ff8c00'; // Orange for active rotation
+            }
+            if (regions.workspace && index >= regions.workspace.start && index < regions.workspace.end) {
+                return '#ffd700'; // Gold for workspace
+            }
+            if (regions.duplicates && index >= regions.duplicates.start && index < regions.duplicates.end) {
+                return '#4169e1'; // Blue for duplicates
+            }
+            if (regions.rest && index >= regions.rest.start && index < regions.rest.end) {
+                return '#808080'; // Grey for rest
+            }
+            return '#808080'; // Default grey
+        }
+
+        function reconstructArrayAtStep(step) {
+            // Start with the original shuffled array
+            const reconstructed = new Int32Array(visualState.initialArray);
+
+            // Replay all modifications up to this step
+            for (let i = 0; i <= step; i++) {
+                const event = visualState.timeline[i];
+                if (event.type === 'swap') {
+                    const [idx1, idx2] = event.indices;
+                    const temp = reconstructed[idx1];
+                    reconstructed[idx1] = reconstructed[idx2];
+                    reconstructed[idx2] = temp;
+                } else if (event.type === 'set') {
+                    reconstructed[event.index] = event.value;
+                }
+            }
+
+            return reconstructed;
+        }
+
+        function renderVisualization(step) {
+            if (!visualState.initialArray) return;
+
+            const event = visualState.timeline[step];
+            if (!event) return;
+
+            // Reconstruct array state at this step
+            const currentArray = reconstructArrayAtStep(step);
+
+            const width = canvas.width;
+            const height = canvas.height;
+            const barWidth = width / visualState.size;
+            const maxValue = Math.max(...currentArray);
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Check if we're in verification phase
+            const inVerificationPhase = event.phase === 'Phase 5: Verification' || event.phase === 'Complete';
+
+            // Play sound for comparisons, swaps, and array sets
+            if (visualState.isPlaying) {
+                if (event.type === 'compare' && event.indices.length === 2) {
+                    const [idx1, idx2] = event.indices;
+                    playTone(currentArray[idx1], currentArray[idx2], maxValue, 'sine');
+                } else if (event.type === 'swap' && event.indices.length === 2) {
+                    const [idx1, idx2] = event.indices;
+                    playTone(currentArray[idx1], currentArray[idx2], maxValue, 'triangle');
+                } else if (event.type === 'set') {
+                    // Array sets (used in rotateSmall) - play tone based on the value being written
+                    const value = currentArray[event.index];
+                    playTone(value, value, maxValue, 'triangle');
+                }
+            }
+
+            // Draw bars
+            for (let i = 0; i < visualState.size; i++) {
+                const value = currentArray[i];
+                const barHeight = (value / maxValue) * (height - 40);
+                const x = i * barWidth;
+                const y = height - barHeight;
+
+                // Get region color
+                let color = getRegionColor(i, event.regions);
+
+                // Flash colors for comparisons and swaps
+                if (event.type === 'compare' && event.indices.includes(i)) {
+                    color = '#87ceeb'; // Pale blue for comparison
+                } else if (event.type === 'swap' && event.indices.includes(i)) {
+                    color = '#ff4444'; // Red for swap
+                } else if (inVerificationPhase) {
+                    // In verification phase, show green for all verified sorted elements
+                    if (i === 0 || currentArray[i] >= currentArray[i-1]) {
+                        color = '#00ff00'; // Green for verified sorted
+                    } else {
+                        color = '#ff0000'; // Red for out of order
+                    }
+                }
+
+                ctx.fillStyle = color;
+                ctx.fillRect(x, y, Math.max(barWidth - 1, 1), barHeight);
+            }
+
+            // Update stats
+            document.getElementById('stat-size').textContent = visualState.size;
+            document.getElementById('stat-comparisons').textContent = event.comparisons.toLocaleString();
+            document.getElementById('stat-swaps').textContent = event.swaps.toLocaleString();
+            document.getElementById('stat-step').textContent = `${step} / ${visualState.timeline.length - 1}`;
+            document.getElementById('stat-phase').textContent = event.phase;
+
+            const progress = (step / (visualState.timeline.length - 1)) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+
+        // ===================================================================
+        // PLAYBACK CONTROL
+        // ===================================================================
+
+        function playAnimation() {
+            if (!visualState.isPlaying) return;
+
+            const now = performance.now();
+            const elapsed = now - visualState.lastFrameTime;
+            const stepsPerFrame = Math.max(1, Math.floor(visualState.speed / 10));
+
+            if (elapsed > 16) { // ~60fps
+                visualState.lastFrameTime = now;
+
+                visualState.currentStep += stepsPerFrame;
+
+                if (visualState.currentStep >= visualState.timeline.length) {
+                    visualState.currentStep = visualState.timeline.length - 1;
+                    visualState.isPlaying = false;
+                    updateControls();
+                }
+
+                renderVisualization(visualState.currentStep);
+            }
+
+            if (visualState.isPlaying) {
+                visualState.animationFrame = requestAnimationFrame(playAnimation);
+            }
+        }
+
+        function updateControls() {
+            const hasData = visualState.timeline.length > 0;
+            const isPlaying = visualState.isPlaying;
+            const atStart = visualState.currentStep === 0;
+            const atEnd = visualState.currentStep >= visualState.timeline.length - 1;
+
+            document.getElementById('play-btn').disabled = !hasData || isPlaying || atEnd;
+            document.getElementById('pause-btn').disabled = !isPlaying;
+            document.getElementById('step-back-btn').disabled = !hasData || isPlaying || atStart;
+            document.getElementById('step-forward-btn').disabled = !hasData || isPlaying || atEnd;
+            document.getElementById('reset-btn').disabled = !hasData || atStart;
+
+            // Show/hide play hint arrow and toggle divider
+            const playHint = document.getElementById('play-hint');
+            const divider = document.getElementById('control-divider');
+            if (hasData && atStart && !isPlaying) {
+                playHint.classList.add('show');
+                divider.classList.add('hidden');
+            } else {
+                playHint.classList.remove('show');
+                divider.classList.remove('hidden');
+            }
+        }
+
+        // ===================================================================
+        // EVENT HANDLERS
+        // ===================================================================
+
+        document.getElementById('generate-btn').addEventListener('click', () => {
+            const size = parseInt(document.getElementById('size-select').value);
+            const dataType = document.getElementById('data-type').value;
+            const algorithm = document.getElementById('algorithm-select').value;
+            const withDuplicates = dataType === 'duplicates';
+
+            // Reset state
+            comparisons = 0;
+            swaps = 0;
+            timeline = [];
+            regionTracking = {};
+            currentPhase = 'Initializing';
+
+            // Generate and sort
+            generateData(size, withDuplicates);
+
+            // Store initial state for visualization
+            visualState.initialArray = new Int32Array(array);
+            visualState.size = size;
+
+            // Record initial state
+            recordEvent('initial', { array: new Int32Array(array) });
+
+            // Run the appropriate sort algorithm
+            if (algorithm === 'stable') {
+                stableSort(size);
+            } else {
+                basicSort(0, size);
+            }
+
+            // Store timeline
+            visualState.timeline = timeline;
+            visualState.currentStep = 0;
+            visualState.isPlaying = false;
+
+            // Render initial state
+            renderVisualization(0);
+            updateControls();
+        });
+
+        document.getElementById('play-btn').addEventListener('click', () => {
+            initAudio(); // Initialize audio context on user interaction
+            visualState.isPlaying = true;
+            visualState.lastFrameTime = performance.now();
+            updateControls();
+            playAnimation();
+        });
+
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            visualState.isPlaying = false;
+            if (visualState.animationFrame) {
+                cancelAnimationFrame(visualState.animationFrame);
+            }
+            updateControls();
+        });
+
+        document.getElementById('step-back-btn').addEventListener('click', () => {
+            if (visualState.currentStep > 0) {
+                visualState.currentStep--;
+                renderVisualization(visualState.currentStep);
+                updateControls();
+            }
+        });
+
+        document.getElementById('step-forward-btn').addEventListener('click', () => {
+            if (visualState.currentStep < visualState.timeline.length - 1) {
+                visualState.currentStep++;
+                renderVisualization(visualState.currentStep);
+                updateControls();
+            }
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            visualState.currentStep = 0;
+            visualState.isPlaying = false;
+            renderVisualization(0);
+            updateControls();
+        });
+
+        document.getElementById('speed-slider').addEventListener('input', (e) => {
+            visualState.speed = parseInt(e.target.value);
+            document.getElementById('speed-display').textContent = `${visualState.speed}x`;
+        });
+
+        document.getElementById('audio-toggle').addEventListener('change', (e) => {
+            visualState.audioEnabled = e.target.checked;
+            if (visualState.audioEnabled && !audioContext) {
+                initAudio();
+            }
+        });
+
+        // Initial render
+        updateControls();
+    </script>
+</body>
+</html>
