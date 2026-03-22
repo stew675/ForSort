@@ -5,34 +5,35 @@
 
 # Sort types to test
 SORT_TYPES=(
-    "fb:Basic Forsort In-Place (Stable)"
-    "fi:Adaptive Forsort In-Place (Unstable)"
-    "fiw:Adaptive Forsort In-Place Stable (with workspace)"
-    "fs:Stable Forsort In-Place (Stable)"
-    "gs:Grail Sort In-Place (Stable)"
-    "gq:GLibc Quick Sort In-Place (Stability Not Guaranteed)"
+    "fb:ForSort Basic Fully In-Place        (Stable)"
+    "fi:ForSort Unstable Fully In-Place     (Unstable)"
+    "fs:ForSort Stable Fully In-Place       (Stable)"
+    "fw:ForSort With Allocated Workspace    (Stable)"
+    "gs:GrailSort Fully In-Place            (Stable)"
+    "gq:GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed)"
     "nq:Bentley/McIlroy Quick Sort In-Place (Unstable)"
-    "ti:TimSort (Stable)"
-    "wi:WikiSort (Stable)"
-    "is:Insertion Sort (Stable)"
+    "ti:TimSort with Allocated Workspace    (Stable)"
+    "wi:WikiSort Fully In-Place             (Stable)"
+    "is:Insertion Sort Fully In-Place       (Stable)"
 )
 
 # Test variants to run for each sort type
 # Format: "variant_name:options"
 TEST_VARIANTS=(
-    "random:-a 42"
-    "ordered:-a 42 -o"
-    "reversed:-a 42 -o -r"
-    "unique:-a 42 -u"
+    "random_duplicates:-a 42 -l n"
+    "random_unique:-a 42 -u"
+    "25_percent_disordered:-a 42 -d 25"
+    "10_percent_disordered:-a 42 -d 10"
+    "5_percent_disordered:-a 42 -d 5"
+    "1_percent_disordered:-a 42 -d 1"
+    "ordered_duplicates:-a 42 -l n -o"
     "ordered_unique:-a 42 -o -u"
+    "reversed_duplicates:-a 42 -l n -o -r"
     "reversed_unique:-a 42 -o -u -r"
-    "1_percent_disorder:-a 42 -d 1"
-    "5_percent_disorder:-a 42 -d 5"
-    "25_percent_disorder:-a 42 -d 25"
-    "limited_range:-a 42 -l n"
 )
 
-NUM_ITEMS=(1000 10000 100000 1000000 10000000 100000000)
+NUM_ITEMS=(1000 10000 100000 1000000 10000000)
+# 100000000)
 
 OUTPUT_FILE="benchmark_results.csv"
 
@@ -59,14 +60,11 @@ for sort_entry in "${SORT_TYPES[@]}"; do
                 echo "$sort_code,$sort_name,$n,$variant_name,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED" >> "$OUTPUT_FILE"
                 continue
             fi
+
             echo -n "  Running with $n items... "
             
-            # Run the benchmark (fiw uses stable variant with auto workspace)
-            if [[ "$sort_code" == "fiw" ]]; then
-                output=$(./ts $variant_opts fi -w 1 "$n" 2>&1)
-            else
-                output=$(./ts $variant_opts "$sort_code" "$n" 2>&1)
-            fi
+            # Run the benchmark
+            output=$(./ts $variant_opts "$sort_code" "$n" 2>&1)
             
             # Parse the output
             avg_time=$(echo "$output" | grep "Avg Time taken to sort" | sed 's/.*: *\([0-9.]*\)s.*/\1/')

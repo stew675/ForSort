@@ -70,6 +70,7 @@ enum {
 	FORSORT_INPLACE,
 	FORSORT_BASIC,
 	FORSORT_STABLE,
+	FORSORT_WORKSPACE,
 	SORT_UNKNOWN
 };
 
@@ -189,16 +190,17 @@ usage(char *prog, const char *msg)
 	fprintf(stderr, "  -w <num>      Optional workspace size (in elements) to pass to the sorting algorithm\n");
 	fprintf(stderr, "                A value of 1 asks the sort to allocate its own workspace (if it supports doing so)\n");
 	fprintf(stderr, "\nAvailable Sort Types:\n");
-//	fprintf(stderr, "   bl   - Blit Sort In-Place                     (Stable)\n");
-	fprintf(stderr, "   fb   - Basic Forsort In-Place                 (Stable)\n");
-	fprintf(stderr, "   fi   - Adaptive Forsort In-Place              (Unstable)\n");
-	fprintf(stderr, "   fs   - Stable Forsort In-Place                (Stable)\n");
-	fprintf(stderr, "   is   - Insertion Sort                         (Stable)\n");
-	fprintf(stderr, "   gs   - Grail Sort In-Place                    (Stable)\n");
-	fprintf(stderr, "   gq   - GLibc Quick Sort In-Place              (Stability Not Guaranteed)\n");
-	fprintf(stderr, "   nq   - Bentley/McIlroy Quick Sort In-Place    (Unstable)\n");
-	fprintf(stderr, "   ti   - TimSort                                (Stable)\n");
-	fprintf(stderr, "   wi   - WikiSort                               (Stable)\n");
+//	fprintf(stderr, "   bl   - Blit Sort In-Place                           (Stable)\n");
+	fprintf(stderr, "   fb   - Basic Forsort In-Place                       (Stable)\n");
+	fprintf(stderr, "   fi   - Adaptive Forsort In-Place                    (Unstable)\n");
+	fprintf(stderr, "   fs   - Stable Forsort In-Place                      (Stable)\n");
+	fprintf(stderr, "   fw   - Forsort plus 1/8th Pre-Allocated Workspace   (Stable)\n");
+	fprintf(stderr, "   is   - Insertion Sort                               (Stable)\n");
+	fprintf(stderr, "   gs   - Grail Sort In-Place                          (Stable)\n");
+	fprintf(stderr, "   gq   - GLibc Quick Sort In-Place                    (Stability Not Guaranteed)\n");
+	fprintf(stderr, "   nq   - Bentley/McIlroy Quick Sort In-Place          (Unstable)\n");
+	fprintf(stderr, "   ti   - TimSort                                      (Stable)\n");
+	fprintf(stderr, "   wi   - WikiSort                                     (Stable)\n");
 	exit(-1);
 } // usage
 
@@ -265,7 +267,15 @@ parse_sort_type(char *opt)
 	if (strcmp(opt, "fi") == 0) {
 		sortname = "Adaptive Forsort In Place";
 		sorttype =  FORSORT_INPLACE;
+		return;
+	}
+
+	if (strcmp(opt, "fw") == 0) {
+		sortname = "Forsort With Work-Space";
+		sorttype =  FORSORT_WORKSPACE;
 		supports_workspace = true;
+		if (worksize == 0)
+			worksize = 1;
 		return;
 	}
 
@@ -669,6 +679,9 @@ main(int argc, char *argv[])
 			forsort_basic(a, n, sizeof(*a), is_less_than_uint32);
 			break;
 		case FORSORT_INPLACE:
+			forsort_inplace(a, n, sizeof(*a), is_less_than_uint32, NULL, 0);
+			break;
+		case FORSORT_WORKSPACE:
 			forsort_inplace(a, n, sizeof(*a), is_less_than_uint32, workspace, worksize);
 			break;
 		case FORSORT_STABLE:

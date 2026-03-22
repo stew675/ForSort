@@ -66,4 +66,4 @@ benchmark:
 	./benchmark.sh
 
 results: benchmark
-	./generate_results.sh
+	python ./generate_results.py
