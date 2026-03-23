@@ -2013,15 +2013,15 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Sort Type | Name | Expected | Verified (1M random) |
 |-----------|------|----------|---------------------|
-| fb | Forsort Basic In-Place | Stable | N/A |
-| fi | Forsort Unstable In-Place | Unstable | N/A |
-| fw | Forsort With Workspace | Stable | N/A |
-| fs | Forsort Stable In-Place | Stable | N/A |
-| gs | Grail Sort In-Place | Stable | N/A |
-| gq | GLibc Quick Sort | Unstable | N/A |
-| nq | Bentley/McIlroy Quick Sort | Unstable | N/A |
-| ti | TimSort | Stable | N/A |
-| wi | WikiSort | Stable | N/A |
+| fb | Forsort Basic In-Place | Stable | Yes |
+| fi | Forsort Unstable In-Place | Unstable | No |
+| fw | Forsort With Workspace | Stable | Yes |
+| fs | Forsort Stable In-Place | Stable | Yes |
+| gs | Grail Sort In-Place | Stable | Yes |
+| gq | GLibc Quick Sort | Unstable | Yes |
+| nq | Bentley/McIlroy Quick Sort | Unstable | No |
+| ti | TimSort | Stable | Yes |
+| wi | WikiSort | Stable | Yes |
 | is | Insertion Sort | Stable | N/A |
 
 ---
