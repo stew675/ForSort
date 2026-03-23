@@ -388,7 +388,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 #endif
 
 	// Quickly handle various reversed or sorted input corner-cases
-	if ((reversals == 0) || (reversals >= (size_t)(nw * 0.99))) {
+	if ((reversals == 0) || (reversals >= (size_t)(nw * 0.97))) {
 		// Rest of input may benefit from reversal processing
 
 #ifdef	DEBUG_UNIQUE_PROCESSING

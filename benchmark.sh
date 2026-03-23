@@ -14,8 +14,9 @@ SORT_TYPES=(
     "nq:Bentley/McIlroy Quick Sort In-Place (Unstable)"
     "ti:TimSort with Allocated Workspace    (Stable)"
     "wi:WikiSort Fully In-Place             (Stable)"
-    "is:Insertion Sort Fully In-Place       (Stable)"
 )
+
+#    "is:Insertion Sort Fully In-Place       (Stable)"
 
 # Test variants to run for each sort type
 # Format: "variant_name:options"
@@ -32,7 +33,7 @@ TEST_VARIANTS=(
     "reversed_unique:-a 42 -o -u -r"
 )
 
-NUM_ITEMS=(1000 10000 100000 1000000 10000000 100000000)
+NUM_ITEMS=(100 1000 10000 100000 1000000 10000000 100000000)
 
 OUTPUT_FILE="benchmark_results.csv"
 
