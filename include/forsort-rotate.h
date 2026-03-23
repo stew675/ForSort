@@ -154,7 +154,7 @@ NAME(bridge_up)(VAR * restrict pa, VAR *pb, VAR *pc, size_t num, size_t es)
 		pb += ES;
 		pc += ES;
 	}
-} // bridge_down
+} // bridge_up
 
 
 // Uses a limited amount of stack space to rotate two blocks that overlap by
