@@ -32,8 +32,7 @@ TEST_VARIANTS=(
     "reversed_unique:-a 42 -o -u -r"
 )
 
-NUM_ITEMS=(1000 10000 100000 1000000 10000000)
-# 100000000)
+NUM_ITEMS=(1000 10000 100000 1000000 10000000 100000000)
 
 OUTPUT_FILE="benchmark_results.csv"
 
@@ -64,7 +63,7 @@ for sort_entry in "${SORT_TYPES[@]}"; do
             echo -n "  Running with $n items... "
             
             # Run the benchmark
-            output=$(./ts $variant_opts "$sort_code" "$n" 2>&1)
+            output=$(./ts $variant_opts "$sort_code" -x "$n" 2>&1)
             
             # Parse the output
             avg_time=$(echo "$output" | grep "Avg Time taken to sort" | sed 's/.*: *\([0-9.]*\)s.*/\1/')

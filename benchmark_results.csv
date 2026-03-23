@@ -1,501 +1,601 @@
 sort_type,sort_name,num_items,test_variant,avg_time_sec,avg_comparisons,sorted,stable,ns_per_item
-fb,ForSort Basic Fully In-Place        (Stable),1000,random_duplicates,0.000060895,15144,TRUE,TRUE,60.895
-fb,ForSort Basic Fully In-Place        (Stable),10000,random_duplicates,0.000734447,207099,TRUE,TRUE,73.445
-fb,ForSort Basic Fully In-Place        (Stable),100000,random_duplicates,0.009258692,2642972,TRUE,TRUE,92.587
-fb,ForSort Basic Fully In-Place        (Stable),1000000,random_duplicates,0.112674130,31924599,TRUE,TRUE,112.674
-fb,ForSort Basic Fully In-Place        (Stable),10000000,random_duplicates,1.237487885,373483234,TRUE,TRUE,123.749
-fb,ForSort Basic Fully In-Place        (Stable),1000,random_unique,0.000059933,15138,TRUE,TRUE,59.933
-fb,ForSort Basic Fully In-Place        (Stable),10000,random_unique,0.000717976,207075,TRUE,TRUE,71.798
-fb,ForSort Basic Fully In-Place        (Stable),100000,random_unique,0.009262529,2645089,TRUE,TRUE,92.625
-fb,ForSort Basic Fully In-Place        (Stable),1000000,random_unique,0.105689299,31940258,TRUE,TRUE,105.689
-fb,ForSort Basic Fully In-Place        (Stable),10000000,random_unique,1.246419495,373634696,TRUE,TRUE,124.642
-fb,ForSort Basic Fully In-Place        (Stable),1000,25_percent_disordered,0.000040717,9126,TRUE,TRUE,40.717
-fb,ForSort Basic Fully In-Place        (Stable),10000,25_percent_disordered,0.000471039,126347,TRUE,TRUE,47.104
-fb,ForSort Basic Fully In-Place        (Stable),100000,25_percent_disordered,0.005485176,1535002,TRUE,TRUE,54.852
-fb,ForSort Basic Fully In-Place        (Stable),1000000,25_percent_disordered,0.061599833,17971590,TRUE,TRUE,61.600
-fb,ForSort Basic Fully In-Place        (Stable),10000000,25_percent_disordered,0.724721859,205423876,TRUE,TRUE,72.472
-fb,ForSort Basic Fully In-Place        (Stable),1000,10_percent_disordered,0.000023705,5943,TRUE,TRUE,23.705
-fb,ForSort Basic Fully In-Place        (Stable),10000,10_percent_disordered,0.000267105,79904,TRUE,TRUE,26.710
-fb,ForSort Basic Fully In-Place        (Stable),100000,10_percent_disordered,0.002948617,947643,TRUE,TRUE,29.486
-fb,ForSort Basic Fully In-Place        (Stable),1000000,10_percent_disordered,0.033806516,10708135,TRUE,TRUE,33.807
-fb,ForSort Basic Fully In-Place        (Stable),10000000,10_percent_disordered,0.394309576,118907223,TRUE,TRUE,39.431
-fb,ForSort Basic Fully In-Place        (Stable),1000,5_percent_disordered,0.000014798,4435,TRUE,TRUE,14.798
-fb,ForSort Basic Fully In-Place        (Stable),10000,5_percent_disordered,0.000178167,60447,TRUE,TRUE,17.817
-fb,ForSort Basic Fully In-Place        (Stable),100000,5_percent_disordered,0.002655300,735032,TRUE,TRUE,26.553
-fb,ForSort Basic Fully In-Place        (Stable),1000000,5_percent_disordered,0.024074536,8177254,TRUE,TRUE,24.075
-fb,ForSort Basic Fully In-Place        (Stable),10000000,5_percent_disordered,0.278074604,89509650,TRUE,TRUE,27.807
-fb,ForSort Basic Fully In-Place        (Stable),1000,1_percent_disordered,0.000005801,2212,TRUE,TRUE,5.801
-fb,ForSort Basic Fully In-Place        (Stable),10000,1_percent_disordered,0.000077897,32359,TRUE,TRUE,7.790
-fb,ForSort Basic Fully In-Place        (Stable),100000,1_percent_disordered,0.000934865,431804,TRUE,TRUE,9.349
-fb,ForSort Basic Fully In-Place        (Stable),1000000,1_percent_disordered,0.011450740,4912080,TRUE,TRUE,11.451
-fb,ForSort Basic Fully In-Place        (Stable),10000000,1_percent_disordered,0.132453030,52321148,TRUE,TRUE,13.245
-fb,ForSort Basic Fully In-Place        (Stable),1000,ordered_duplicates,0.000001082,999,TRUE,TRUE,1.082
-fb,ForSort Basic Fully In-Place        (Stable),10000,ordered_duplicates,0.000007985,9999,TRUE,TRUE,0.799
-fb,ForSort Basic Fully In-Place        (Stable),100000,ordered_duplicates,0.000077036,99999,TRUE,TRUE,0.770
-fb,ForSort Basic Fully In-Place        (Stable),1000000,ordered_duplicates,0.000780153,999999,TRUE,TRUE,0.780
-fb,ForSort Basic Fully In-Place        (Stable),10000000,ordered_duplicates,0.008055760,9999999,TRUE,TRUE,0.806
-fb,ForSort Basic Fully In-Place        (Stable),1000,ordered_unique,0.000001062,999,TRUE,TRUE,1.062
-fb,ForSort Basic Fully In-Place        (Stable),10000,ordered_unique,0.000007965,9999,TRUE,TRUE,0.797
-fb,ForSort Basic Fully In-Place        (Stable),100000,ordered_unique,0.000076836,99999,TRUE,TRUE,0.768
-fb,ForSort Basic Fully In-Place        (Stable),1000000,ordered_unique,0.000946928,999999,TRUE,TRUE,0.947
-fb,ForSort Basic Fully In-Place        (Stable),10000000,ordered_unique,0.008086007,9999999,TRUE,TRUE,0.809
-fb,ForSort Basic Fully In-Place        (Stable),1000,reversed_duplicates,0.000029295,8586,TRUE,TRUE,29.295
-fb,ForSort Basic Fully In-Place        (Stable),10000,reversed_duplicates,0.000243249,87160,TRUE,TRUE,24.325
-fb,ForSort Basic Fully In-Place        (Stable),100000,reversed_duplicates,0.002474508,874719,TRUE,TRUE,24.745
-fb,ForSort Basic Fully In-Place        (Stable),1000000,reversed_duplicates,0.028186461,8713098,TRUE,TRUE,28.186
-fb,ForSort Basic Fully In-Place        (Stable),10000000,reversed_duplicates,0.323675058,87246533,TRUE,TRUE,32.368
-fb,ForSort Basic Fully In-Place        (Stable),1000,reversed_unique,0.000002885,1998,TRUE,TRUE,2.885
-fb,ForSort Basic Fully In-Place        (Stable),10000,reversed_unique,0.000020979,19998,TRUE,TRUE,2.098
-fb,ForSort Basic Fully In-Place        (Stable),100000,reversed_unique,0.000197753,199998,TRUE,TRUE,1.978
-fb,ForSort Basic Fully In-Place        (Stable),1000000,reversed_unique,0.002018160,1999998,TRUE,TRUE,2.018
-fb,ForSort Basic Fully In-Place        (Stable),10000000,reversed_unique,0.021334533,19999998,TRUE,TRUE,2.133
-fi,ForSort Unstable Fully In-Place     (Unstable),1000,random_duplicates,0.000032230,10166,TRUE,FALSE,32.230
-fi,ForSort Unstable Fully In-Place     (Unstable),10000,random_duplicates,0.000242758,133040,TRUE,FALSE,24.276
-fi,ForSort Unstable Fully In-Place     (Unstable),100000,random_duplicates,0.002660383,1648605,TRUE,FALSE,26.604
-fi,ForSort Unstable Fully In-Place     (Unstable),1000000,random_duplicates,0.029815326,20000785,TRUE,FALSE,29.815
-fi,ForSort Unstable Fully In-Place     (Unstable),10000000,random_duplicates,0.336261433,232288484,TRUE,FALSE,33.626
-fi,ForSort Unstable Fully In-Place     (Unstable),1000,random_unique,0.000030137,10128,TRUE,TRUE,30.137
-fi,ForSort Unstable Fully In-Place     (Unstable),10000,random_unique,0.000239823,133036,TRUE,TRUE,23.982
-fi,ForSort Unstable Fully In-Place     (Unstable),100000,random_unique,0.002590271,1649183,TRUE,TRUE,25.903
-fi,ForSort Unstable Fully In-Place     (Unstable),1000000,random_unique,0.029914322,20003927,TRUE,TRUE,29.914
-fi,ForSort Unstable Fully In-Place     (Unstable),10000000,random_unique,0.331976464,232334009,TRUE,TRUE,33.198
-fi,ForSort Unstable Fully In-Place     (Unstable),1000,25_percent_disordered,0.000029947,7835,TRUE,TRUE,29.947
-fi,ForSort Unstable Fully In-Place     (Unstable),10000,25_percent_disordered,0.000245734,104888,TRUE,TRUE,24.573
-fi,ForSort Unstable Fully In-Place     (Unstable),100000,25_percent_disordered,0.002811940,1268232,TRUE,TRUE,28.119
-fi,ForSort Unstable Fully In-Place     (Unstable),1000000,25_percent_disordered,0.027826110,15090266,TRUE,FALSE,27.826
-fi,ForSort Unstable Fully In-Place     (Unstable),10000000,25_percent_disordered,0.300361469,173895640,TRUE,FALSE,30.036
-fi,ForSort Unstable Fully In-Place     (Unstable),1000,10_percent_disordered,0.000023905,5175,TRUE,TRUE,23.905
-fi,ForSort Unstable Fully In-Place     (Unstable),10000,10_percent_disordered,0.000189809,70201,TRUE,TRUE,18.981
-fi,ForSort Unstable Fully In-Place     (Unstable),100000,10_percent_disordered,0.001961594,831423,TRUE,TRUE,19.616
-fi,ForSort Unstable Fully In-Place     (Unstable),1000000,10_percent_disordered,0.020662023,10035648,TRUE,FALSE,20.662
-fi,ForSort Unstable Fully In-Place     (Unstable),10000000,10_percent_disordered,0.227382463,115392550,TRUE,FALSE,22.738
-fi,ForSort Unstable Fully In-Place     (Unstable),1000,5_percent_disordered,0.000017533,3455,TRUE,TRUE,17.533
-fi,ForSort Unstable Fully In-Place     (Unstable),10000,5_percent_disordered,0.000147248,49717,TRUE,TRUE,14.725
-fi,ForSort Unstable Fully In-Place     (Unstable),100000,5_percent_disordered,0.002212147,656475,TRUE,TRUE,22.121
-fi,ForSort Unstable Fully In-Place     (Unstable),1000000,5_percent_disordered,0.016837462,7699280,TRUE,FALSE,16.837
-fi,ForSort Unstable Fully In-Place     (Unstable),10000000,5_percent_disordered,0.173810859,87825094,TRUE,FALSE,17.381
-fi,ForSort Unstable Fully In-Place     (Unstable),1000,1_percent_disordered,0.000008756,1496,TRUE,TRUE,8.756
-fi,ForSort Unstable Fully In-Place     (Unstable),10000,1_percent_disordered,0.000061466,22792,TRUE,TRUE,6.147
-fi,ForSort Unstable Fully In-Place     (Unstable),100000,1_percent_disordered,0.000776436,308065,TRUE,TRUE,7.764
-fi,ForSort Unstable Fully In-Place     (Unstable),1000000,1_percent_disordered,0.008448553,3524638,TRUE,FALSE,8.449
-fi,ForSort Unstable Fully In-Place     (Unstable),10000000,1_percent_disordered,0.095334504,44268314,TRUE,FALSE,9.533
-fi,ForSort Unstable Fully In-Place     (Unstable),1000,ordered_duplicates,0.000003276,1052,TRUE,TRUE,3.276
-fi,ForSort Unstable Fully In-Place     (Unstable),10000,ordered_duplicates,0.000011782,10091,TRUE,TRUE,1.178
-fi,ForSort Unstable Fully In-Place     (Unstable),100000,ordered_duplicates,0.000106281,100167,TRUE,TRUE,1.063
-fi,ForSort Unstable Fully In-Place     (Unstable),1000000,ordered_duplicates,0.001071844,1000212,TRUE,TRUE,1.072
-fi,ForSort Unstable Fully In-Place     (Unstable),10000000,ordered_duplicates,0.009370352,10000304,TRUE,TRUE,0.937
-fi,ForSort Unstable Fully In-Place     (Unstable),1000,ordered_unique,0.000003196,1052,TRUE,TRUE,3.196
-fi,ForSort Unstable Fully In-Place     (Unstable),10000,ordered_unique,0.000011572,10091,TRUE,TRUE,1.157
-fi,ForSort Unstable Fully In-Place     (Unstable),100000,ordered_unique,0.000105810,100167,TRUE,TRUE,1.058
-fi,ForSort Unstable Fully In-Place     (Unstable),1000000,ordered_unique,0.001064710,1000212,TRUE,TRUE,1.065
-fi,ForSort Unstable Fully In-Place     (Unstable),10000000,ordered_unique,0.009572313,10000304,TRUE,TRUE,0.957
-fi,ForSort Unstable Fully In-Place     (Unstable),1000,reversed_duplicates,0.000019988,6543,TRUE,FALSE,19.988
-fi,ForSort Unstable Fully In-Place     (Unstable),10000,reversed_duplicates,0.000133352,93311,TRUE,FALSE,13.335
-fi,ForSort Unstable Fully In-Place     (Unstable),100000,reversed_duplicates,0.001546931,1195859,TRUE,FALSE,15.469
-fi,ForSort Unstable Fully In-Place     (Unstable),1000000,reversed_duplicates,0.019615817,15717682,TRUE,FALSE,19.616
-fi,ForSort Unstable Fully In-Place     (Unstable),10000000,reversed_duplicates,0.243414350,190726110,TRUE,FALSE,24.341
-fi,ForSort Unstable Fully In-Place     (Unstable),1000,reversed_unique,0.000015940,6407,TRUE,TRUE,15.940
-fi,ForSort Unstable Fully In-Place     (Unstable),10000,reversed_unique,0.000115939,93366,TRUE,TRUE,11.594
-fi,ForSort Unstable Fully In-Place     (Unstable),100000,reversed_unique,0.001411836,1201428,TRUE,TRUE,14.118
-fi,ForSort Unstable Fully In-Place     (Unstable),1000000,reversed_unique,0.018841204,15784214,TRUE,TRUE,18.841
-fi,ForSort Unstable Fully In-Place     (Unstable),10000000,reversed_unique,0.235160168,191369358,TRUE,TRUE,23.516
-fs,ForSort Stable Fully In-Place       (Stable),1000,random_duplicates,0.000035988,10564,TRUE,TRUE,35.988
-fs,ForSort Stable Fully In-Place       (Stable),10000,random_duplicates,0.000253498,133710,TRUE,TRUE,25.350
-fs,ForSort Stable Fully In-Place       (Stable),100000,random_duplicates,0.003280357,1702536,TRUE,TRUE,32.804
-fs,ForSort Stable Fully In-Place       (Stable),1000000,random_duplicates,0.030405300,20136481,TRUE,TRUE,30.405
-fs,ForSort Stable Fully In-Place       (Stable),10000000,random_duplicates,0.348358849,235476695,TRUE,TRUE,34.836
-fs,ForSort Stable Fully In-Place       (Stable),1000,random_unique,0.000034325,10446,TRUE,TRUE,34.325
-fs,ForSort Stable Fully In-Place       (Stable),10000,random_unique,0.000250162,133652,TRUE,TRUE,25.016
-fs,ForSort Stable Fully In-Place       (Stable),100000,random_unique,0.002802602,1703019,TRUE,TRUE,28.026
-fs,ForSort Stable Fully In-Place       (Stable),1000000,random_unique,0.031216676,20144554,TRUE,TRUE,31.217
-fs,ForSort Stable Fully In-Place       (Stable),10000000,random_unique,0.342748457,235566350,TRUE,TRUE,34.275
-fs,ForSort Stable Fully In-Place       (Stable),1000,25_percent_disordered,0.000032220,8302,TRUE,TRUE,32.220
-fs,ForSort Stable Fully In-Place       (Stable),10000,25_percent_disordered,0.000260241,106432,TRUE,TRUE,26.024
-fs,ForSort Stable Fully In-Place       (Stable),100000,25_percent_disordered,0.002745003,1266212,TRUE,TRUE,27.450
-fs,ForSort Stable Fully In-Place       (Stable),1000000,25_percent_disordered,0.028702736,14945609,TRUE,TRUE,28.703
-fs,ForSort Stable Fully In-Place       (Stable),10000000,25_percent_disordered,0.312029848,171498604,TRUE,TRUE,31.203
-fs,ForSort Stable Fully In-Place       (Stable),1000,10_percent_disordered,0.000021650,5165,TRUE,TRUE,21.650
-fs,ForSort Stable Fully In-Place       (Stable),10000,10_percent_disordered,0.000201010,68128,TRUE,TRUE,20.101
-fs,ForSort Stable Fully In-Place       (Stable),100000,10_percent_disordered,0.002024453,806980,TRUE,TRUE,20.245
-fs,ForSort Stable Fully In-Place       (Stable),1000000,10_percent_disordered,0.020604506,9523259,TRUE,TRUE,20.605
-fs,ForSort Stable Fully In-Place       (Stable),10000000,10_percent_disordered,0.226306165,111378588,TRUE,TRUE,22.631
-fs,ForSort Stable Fully In-Place       (Stable),1000,5_percent_disordered,0.000016200,3521,TRUE,TRUE,16.200
-fs,ForSort Stable Fully In-Place       (Stable),10000,5_percent_disordered,0.000153870,50742,TRUE,TRUE,15.387
-fs,ForSort Stable Fully In-Place       (Stable),100000,5_percent_disordered,0.002029939,599475,TRUE,TRUE,20.299
-fs,ForSort Stable Fully In-Place       (Stable),1000000,5_percent_disordered,0.016525614,7242401,TRUE,TRUE,16.526
-fs,ForSort Stable Fully In-Place       (Stable),10000000,5_percent_disordered,0.176965856,86531834,TRUE,TRUE,17.697
-fs,ForSort Stable Fully In-Place       (Stable),1000,1_percent_disordered,0.000009448,2744,TRUE,TRUE,9.448
-fs,ForSort Stable Fully In-Place       (Stable),10000,1_percent_disordered,0.000065714,24197,TRUE,TRUE,6.571
-fs,ForSort Stable Fully In-Place       (Stable),100000,1_percent_disordered,0.001215515,318465,TRUE,TRUE,12.155
-fs,ForSort Stable Fully In-Place       (Stable),1000000,1_percent_disordered,0.008806007,3612221,TRUE,TRUE,8.806
-fs,ForSort Stable Fully In-Place       (Stable),10000000,1_percent_disordered,0.096200361,45723521,TRUE,TRUE,9.620
-fs,ForSort Stable Fully In-Place       (Stable),1000,ordered_duplicates,0.000001362,999,TRUE,TRUE,1.362
-fs,ForSort Stable Fully In-Place       (Stable),10000,ordered_duplicates,0.000009919,9999,TRUE,TRUE,0.992
-fs,ForSort Stable Fully In-Place       (Stable),100000,ordered_duplicates,0.000104037,99999,TRUE,TRUE,1.040
-fs,ForSort Stable Fully In-Place       (Stable),1000000,ordered_duplicates,0.000994908,999999,TRUE,TRUE,0.995
-fs,ForSort Stable Fully In-Place       (Stable),10000000,ordered_duplicates,0.009933326,9999999,TRUE,TRUE,0.993
-fs,ForSort Stable Fully In-Place       (Stable),1000,ordered_unique,0.000001232,999,TRUE,TRUE,1.232
-fs,ForSort Stable Fully In-Place       (Stable),10000,ordered_unique,0.000009969,9999,TRUE,TRUE,0.997
-fs,ForSort Stable Fully In-Place       (Stable),100000,ordered_unique,0.000095961,99999,TRUE,TRUE,0.960
-fs,ForSort Stable Fully In-Place       (Stable),1000000,ordered_unique,0.001026037,999999,TRUE,TRUE,1.026
-fs,ForSort Stable Fully In-Place       (Stable),10000000,ordered_unique,0.010017896,9999999,TRUE,TRUE,1.002
-fs,ForSort Stable Fully In-Place       (Stable),1000,reversed_duplicates,0.000022783,5921,TRUE,TRUE,22.783
-fs,ForSort Stable Fully In-Place       (Stable),10000,reversed_duplicates,0.000137209,82441,TRUE,TRUE,13.721
-fs,ForSort Stable Fully In-Place       (Stable),100000,reversed_duplicates,0.001531638,1050201,TRUE,TRUE,15.316
-fs,ForSort Stable Fully In-Place       (Stable),1000000,reversed_duplicates,0.018672878,13913561,TRUE,TRUE,18.673
-fs,ForSort Stable Fully In-Place       (Stable),10000000,reversed_duplicates,0.234135963,177392059,TRUE,TRUE,23.414
-fs,ForSort Stable Fully In-Place       (Stable),1000,reversed_unique,0.000007304,2551,TRUE,TRUE,7.304
-fs,ForSort Stable Fully In-Place       (Stable),10000,reversed_unique,0.000025829,21910,TRUE,TRUE,2.583
-fs,ForSort Stable Fully In-Place       (Stable),100000,reversed_unique,0.000234443,210306,TRUE,TRUE,2.344
-fs,ForSort Stable Fully In-Place       (Stable),1000000,reversed_unique,0.002804055,2088913,TRUE,TRUE,2.804
-fs,ForSort Stable Fully In-Place       (Stable),10000000,reversed_unique,0.029273504,20867892,TRUE,TRUE,2.927
-fw,ForSort With Allocated Workspace    (Stable),1000,random_duplicates,0.000025298,9545,TRUE,TRUE,25.298
-fw,ForSort With Allocated Workspace    (Stable),10000,random_duplicates,0.000200058,126206,TRUE,TRUE,20.006
-fw,ForSort With Allocated Workspace    (Stable),100000,random_duplicates,0.002400710,1622428,TRUE,TRUE,24.007
-fw,ForSort With Allocated Workspace    (Stable),1000000,random_duplicates,0.027004530,19344227,TRUE,TRUE,27.005
-fw,ForSort With Allocated Workspace    (Stable),10000000,random_duplicates,0.301173910,225441758,TRUE,TRUE,30.117
-fw,ForSort With Allocated Workspace    (Stable),1000,random_unique,0.000028473,9543,TRUE,TRUE,28.473
-fw,ForSort With Allocated Workspace    (Stable),10000,random_unique,0.000201210,126191,TRUE,TRUE,20.121
-fw,ForSort With Allocated Workspace    (Stable),100000,random_unique,0.002323778,1622478,TRUE,TRUE,23.238
-fw,ForSort With Allocated Workspace    (Stable),1000000,random_unique,0.027024058,19344337,TRUE,TRUE,27.024
-fw,ForSort With Allocated Workspace    (Stable),10000000,random_unique,0.306675017,225441805,TRUE,TRUE,30.668
-fw,ForSort With Allocated Workspace    (Stable),1000,25_percent_disordered,0.000027021,7428,TRUE,TRUE,27.021
-fw,ForSort With Allocated Workspace    (Stable),10000,25_percent_disordered,0.000226608,101352,TRUE,TRUE,22.661
-fw,ForSort With Allocated Workspace    (Stable),100000,25_percent_disordered,0.002536379,1236866,TRUE,TRUE,25.364
-fw,ForSort With Allocated Workspace    (Stable),1000000,25_percent_disordered,0.027081475,14553714,TRUE,TRUE,27.081
-fw,ForSort With Allocated Workspace    (Stable),10000000,25_percent_disordered,0.289375908,165645932,TRUE,TRUE,28.938
-fw,ForSort With Allocated Workspace    (Stable),1000,10_percent_disordered,0.000018976,4638,TRUE,TRUE,18.976
-fw,ForSort With Allocated Workspace    (Stable),10000,10_percent_disordered,0.000173848,65993,TRUE,TRUE,17.385
-fw,ForSort With Allocated Workspace    (Stable),100000,10_percent_disordered,0.001844099,791210,TRUE,TRUE,18.441
-fw,ForSort With Allocated Workspace    (Stable),1000000,10_percent_disordered,0.019578709,9348531,TRUE,TRUE,19.579
-fw,ForSort With Allocated Workspace    (Stable),10000000,10_percent_disordered,0.212190237,108062257,TRUE,TRUE,21.219
-fw,ForSort With Allocated Workspace    (Stable),1000,5_percent_disordered,0.000013365,3122,TRUE,TRUE,13.365
-fw,ForSort With Allocated Workspace    (Stable),10000,5_percent_disordered,0.000142850,46217,TRUE,TRUE,14.285
-fw,ForSort With Allocated Workspace    (Stable),100000,5_percent_disordered,0.001450919,625323,TRUE,TRUE,14.509
-fw,ForSort With Allocated Workspace    (Stable),1000000,5_percent_disordered,0.016025099,7201084,TRUE,TRUE,16.025
-fw,ForSort With Allocated Workspace    (Stable),10000000,5_percent_disordered,0.169781293,83058524,TRUE,TRUE,16.978
-fw,ForSort With Allocated Workspace    (Stable),1000,1_percent_disordered,0.000006493,1355,TRUE,TRUE,6.493
-fw,ForSort With Allocated Workspace    (Stable),10000,1_percent_disordered,0.000056546,21323,TRUE,TRUE,5.655
-fw,ForSort With Allocated Workspace    (Stable),100000,1_percent_disordered,0.000724769,293036,TRUE,TRUE,7.248
-fw,ForSort With Allocated Workspace    (Stable),1000000,1_percent_disordered,0.008751585,3374464,TRUE,TRUE,8.752
-fw,ForSort With Allocated Workspace    (Stable),10000000,1_percent_disordered,0.100680716,42894715,TRUE,TRUE,10.068
-fw,ForSort With Allocated Workspace    (Stable),1000,ordered_duplicates,0.000003657,1028,TRUE,TRUE,3.657
-fw,ForSort With Allocated Workspace    (Stable),10000,ordered_duplicates,0.000011742,10049,TRUE,TRUE,1.174
-fw,ForSort With Allocated Workspace    (Stable),100000,ordered_duplicates,0.000133101,100078,TRUE,TRUE,1.331
-fw,ForSort With Allocated Workspace    (Stable),1000000,ordered_duplicates,0.001532153,1000058,TRUE,TRUE,1.532
-fw,ForSort With Allocated Workspace    (Stable),10000000,ordered_duplicates,0.008960379,10000089,TRUE,TRUE,0.896
-fw,ForSort With Allocated Workspace    (Stable),1000,ordered_unique,0.000003707,1028,TRUE,TRUE,3.707
-fw,ForSort With Allocated Workspace    (Stable),10000,ordered_unique,0.000011331,10049,TRUE,TRUE,1.133
-fw,ForSort With Allocated Workspace    (Stable),100000,ordered_unique,0.000126038,100078,TRUE,TRUE,1.260
-fw,ForSort With Allocated Workspace    (Stable),1000000,ordered_unique,0.001726660,1000058,TRUE,TRUE,1.727
-fw,ForSort With Allocated Workspace    (Stable),10000000,ordered_unique,0.008944910,10000089,TRUE,TRUE,0.894
-fw,ForSort With Allocated Workspace    (Stable),1000,reversed_duplicates,0.000016000,6577,TRUE,TRUE,16.000
-fw,ForSort With Allocated Workspace    (Stable),10000,reversed_duplicates,0.000133151,97308,TRUE,TRUE,13.315
-fw,ForSort With Allocated Workspace    (Stable),100000,reversed_duplicates,0.001697792,1228527,TRUE,TRUE,16.978
-fw,ForSort With Allocated Workspace    (Stable),1000000,reversed_duplicates,0.019803654,16347747,TRUE,TRUE,19.804
-fw,ForSort With Allocated Workspace    (Stable),10000000,reversed_duplicates,0.241298834,197268472,TRUE,TRUE,24.130
-fw,ForSort With Allocated Workspace    (Stable),1000,reversed_unique,0.000014167,6614,TRUE,TRUE,14.167
-fw,ForSort With Allocated Workspace    (Stable),10000,reversed_unique,0.000109617,98010,TRUE,TRUE,10.962
-fw,ForSort With Allocated Workspace    (Stable),100000,reversed_unique,0.001428768,1235508,TRUE,TRUE,14.288
-fw,ForSort With Allocated Workspace    (Stable),1000000,reversed_unique,0.018490554,16420327,TRUE,TRUE,18.491
-fw,ForSort With Allocated Workspace    (Stable),10000000,reversed_unique,0.224052013,197985849,TRUE,TRUE,22.405
-gs,GrailSort Fully In-Place            (Stable),1000,random_duplicates,0.000047550,10486,TRUE,TRUE,47.550
-gs,GrailSort Fully In-Place            (Stable),10000,random_duplicates,0.000663763,138958,TRUE,TRUE,66.376
-gs,GrailSort Fully In-Place            (Stable),100000,random_duplicates,0.005676929,1691595,TRUE,TRUE,56.769
-gs,GrailSort Fully In-Place            (Stable),1000000,random_duplicates,0.065866130,20156763,TRUE,TRUE,65.866
-gs,GrailSort Fully In-Place            (Stable),10000000,random_duplicates,0.778015711,236936715,TRUE,TRUE,77.802
-gs,GrailSort Fully In-Place            (Stable),1000,random_unique,0.000045986,10421,TRUE,TRUE,45.986
-gs,GrailSort Fully In-Place            (Stable),10000,random_unique,0.000481489,138659,TRUE,TRUE,48.149
-gs,GrailSort Fully In-Place            (Stable),100000,random_unique,0.006292341,1692166,TRUE,TRUE,62.923
-gs,GrailSort Fully In-Place            (Stable),1000000,random_unique,0.065258528,20154575,TRUE,TRUE,65.259
-gs,GrailSort Fully In-Place            (Stable),10000000,random_unique,0.785473930,236874687,TRUE,TRUE,78.547
-gs,GrailSort Fully In-Place            (Stable),1000,25_percent_disordered,0.000033703,9042,TRUE,TRUE,33.703
-gs,GrailSort Fully In-Place            (Stable),10000,25_percent_disordered,0.000390237,127531,TRUE,TRUE,39.024
-gs,GrailSort Fully In-Place            (Stable),100000,25_percent_disordered,0.004474117,1633206,TRUE,TRUE,44.741
-gs,GrailSort Fully In-Place            (Stable),1000000,25_percent_disordered,0.051964205,19780452,TRUE,TRUE,51.964
-gs,GrailSort Fully In-Place            (Stable),10000000,25_percent_disordered,0.627543945,232407212,TRUE,TRUE,62.754
-gs,GrailSort Fully In-Place            (Stable),1000,10_percent_disordered,0.000022603,6681,TRUE,TRUE,22.603
-gs,GrailSort Fully In-Place            (Stable),10000,10_percent_disordered,0.000244321,105591,TRUE,TRUE,24.432
-gs,GrailSort Fully In-Place            (Stable),100000,10_percent_disordered,0.003564610,1432235,TRUE,TRUE,35.646
-gs,GrailSort Fully In-Place            (Stable),1000000,10_percent_disordered,0.040173433,17976361,TRUE,TRUE,40.173
-gs,GrailSort Fully In-Place            (Stable),10000000,10_percent_disordered,0.492080045,215643949,TRUE,TRUE,49.208
-gs,GrailSort Fully In-Place            (Stable),1000,5_percent_disordered,0.000018024,5713,TRUE,TRUE,18.024
-gs,GrailSort Fully In-Place            (Stable),10000,5_percent_disordered,0.000193215,89970,TRUE,TRUE,19.322
-gs,GrailSort Fully In-Place            (Stable),100000,5_percent_disordered,0.002788014,1280038,TRUE,TRUE,27.880
-gs,GrailSort Fully In-Place            (Stable),1000000,5_percent_disordered,0.035557172,16672002,TRUE,TRUE,35.557
-gs,GrailSort Fully In-Place            (Stable),10000000,5_percent_disordered,0.431433972,201569842,TRUE,TRUE,43.143
-gs,GrailSort Fully In-Place            (Stable),1000,1_percent_disordered,0.000015038,4933,TRUE,TRUE,15.038
-gs,GrailSort Fully In-Place            (Stable),10000,1_percent_disordered,0.000121309,60937,TRUE,TRUE,12.131
-gs,GrailSort Fully In-Place            (Stable),100000,1_percent_disordered,0.001592407,904672,TRUE,TRUE,15.924
-gs,GrailSort Fully In-Place            (Stable),1000000,1_percent_disordered,0.025149416,13144367,TRUE,TRUE,25.149
-gs,GrailSort Fully In-Place            (Stable),10000000,1_percent_disordered,0.332520029,167107953,TRUE,TRUE,33.252
-gs,GrailSort Fully In-Place            (Stable),1000,ordered_duplicates,0.000015299,5139,TRUE,TRUE,15.299
-gs,GrailSort Fully In-Place            (Stable),10000,ordered_duplicates,0.000109246,55113,TRUE,TRUE,10.925
-gs,GrailSort Fully In-Place            (Stable),100000,ordered_duplicates,0.001381645,616261,TRUE,TRUE,13.816
-gs,GrailSort Fully In-Place            (Stable),1000000,ordered_duplicates,0.013657462,7043925,TRUE,TRUE,13.657
-gs,GrailSort Fully In-Place            (Stable),10000000,ordered_duplicates,0.169602813,79282702,TRUE,TRUE,16.960
-gs,GrailSort Fully In-Place            (Stable),1000,ordered_unique,0.000011632,4790,TRUE,TRUE,11.632
-gs,GrailSort Fully In-Place            (Stable),10000,ordered_unique,0.000092084,53332,TRUE,TRUE,9.208
-gs,GrailSort Fully In-Place            (Stable),100000,ordered_unique,0.001079609,608786,TRUE,TRUE,10.796
-gs,GrailSort Fully In-Place            (Stable),1000000,ordered_unique,0.014642688,7019410,TRUE,TRUE,14.643
-gs,GrailSort Fully In-Place            (Stable),10000000,ordered_unique,0.158224827,79189929,TRUE,TRUE,15.822
-gs,GrailSort Fully In-Place            (Stable),1000,reversed_duplicates,0.000021140,5709,TRUE,TRUE,21.140
-gs,GrailSort Fully In-Place            (Stable),10000,reversed_duplicates,0.000151867,60858,TRUE,TRUE,15.187
-gs,GrailSort Fully In-Place            (Stable),100000,reversed_duplicates,0.002412733,653093,TRUE,TRUE,24.127
-gs,GrailSort Fully In-Place            (Stable),1000000,reversed_duplicates,0.018808596,7771207,TRUE,TRUE,18.809
-gs,GrailSort Fully In-Place            (Stable),10000000,reversed_duplicates,0.198444009,84024780,TRUE,TRUE,19.844
-gs,GrailSort Fully In-Place            (Stable),1000,reversed_unique,0.000014207,5112,TRUE,TRUE,14.207
-gs,GrailSort Fully In-Place            (Stable),10000,reversed_unique,0.000101952,57076,TRUE,TRUE,10.195
-gs,GrailSort Fully In-Place            (Stable),100000,reversed_unique,0.001073572,627299,TRUE,TRUE,10.736
-gs,GrailSort Fully In-Place            (Stable),1000000,reversed_unique,0.013368642,7551070,TRUE,TRUE,13.369
-gs,GrailSort Fully In-Place            (Stable),10000000,reversed_unique,0.157961778,81979307,TRUE,TRUE,15.796
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,random_duplicates,0.000049904,8702,TRUE,TRUE,49.904
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,random_duplicates,0.000624800,120379,TRUE,TRUE,62.480
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,random_duplicates,0.007808995,1536166,TRUE,TRUE,78.090
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,random_duplicates,0.094364803,18671395,TRUE,TRUE,94.365
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,random_duplicates,1.122142440,220067417,TRUE,TRUE,112.214
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,random_unique,0.000049794,8699,TRUE,TRUE,49.794
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,random_unique,0.000685734,120381,TRUE,TRUE,68.573
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,random_unique,0.008748561,1536166,TRUE,TRUE,87.486
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,random_unique,0.097034233,18671395,TRUE,TRUE,97.034
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,random_unique,1.082702133,220067428,TRUE,TRUE,108.270
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,25_percent_disordered,0.000052820,8064,TRUE,TRUE,52.820
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,25_percent_disordered,0.000391048,115721,TRUE,TRUE,39.105
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,25_percent_disordered,0.005795081,1511072,TRUE,TRUE,57.951
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,25_percent_disordered,0.058319220,18502661,TRUE,TRUE,58.319
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,25_percent_disordered,0.720792319,218019265,TRUE,TRUE,72.079
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,10_percent_disordered,0.000022843,6406,TRUE,TRUE,22.843
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,10_percent_disordered,0.000514401,102041,TRUE,TRUE,51.440
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,10_percent_disordered,0.004321891,1389495,TRUE,TRUE,43.219
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,10_percent_disordered,0.042707481,17436475,TRUE,TRUE,42.707
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,10_percent_disordered,0.473511623,207836717,TRUE,TRUE,47.351
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,5_percent_disordered,0.000019016,5673,TRUE,TRUE,19.016
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,5_percent_disordered,0.000394525,91579,TRUE,TRUE,39.453
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,5_percent_disordered,0.003304841,1299870,TRUE,TRUE,33.048
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,5_percent_disordered,0.036999764,16530918,TRUE,TRUE,37.000
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,5_percent_disordered,0.401947926,199491157,TRUE,TRUE,40.195
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,1_percent_disordered,0.000014738,5016,TRUE,TRUE,14.738
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,1_percent_disordered,0.000208564,69350,TRUE,TRUE,20.856
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,1_percent_disordered,0.001981592,1046328,TRUE,TRUE,19.816
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,1_percent_disordered,0.028012444,14447185,TRUE,TRUE,28.012
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,1_percent_disordered,0.338004308,178719900,TRUE,TRUE,33.800
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,ordered_duplicates,0.000012103,4932,TRUE,TRUE,12.103
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,ordered_duplicates,0.000125157,64608,TRUE,TRUE,12.516
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,ordered_duplicates,0.001525019,815024,TRUE,TRUE,15.250
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,ordered_duplicates,0.018723444,9884992,TRUE,TRUE,18.723
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,ordered_duplicates,0.218990385,114434624,TRUE,TRUE,21.899
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,ordered_unique,0.000012304,4932,TRUE,TRUE,12.304
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,ordered_unique,0.000126449,64608,TRUE,TRUE,12.645
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,ordered_unique,0.001719353,815024,TRUE,TRUE,17.194
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,ordered_unique,0.017866645,9884992,TRUE,TRUE,17.867
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,ordered_unique,0.206565356,114434624,TRUE,TRUE,20.657
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,reversed_duplicates,0.000046508,5231,TRUE,TRUE,46.508
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,reversed_duplicates,0.000595294,70389,TRUE,TRUE,59.529
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,reversed_duplicates,0.002533033,866253,TRUE,TRUE,25.330
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,reversed_duplicates,0.036613179,10249850,TRUE,TRUE,36.613
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,reversed_duplicates,0.466244958,120240926,TRUE,TRUE,46.624
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,reversed_unique,0.000014267,5044,TRUE,TRUE,14.267
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,reversed_unique,0.000157838,69008,TRUE,TRUE,15.784
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,reversed_unique,0.001869504,853904,TRUE,TRUE,18.695
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,reversed_unique,0.022182005,10066432,TRUE,TRUE,22.182
-gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,reversed_unique,0.254004954,118788160,TRUE,TRUE,25.400
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,random_duplicates,0.000040036,9551,TRUE,FALSE,40.036
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,random_duplicates,0.000491047,130174,TRUE,FALSE,49.105
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,random_duplicates,0.006363596,1640156,TRUE,FALSE,63.636
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,random_duplicates,0.073787402,20553611,TRUE,FALSE,73.787
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,random_duplicates,0.877276720,237131562,TRUE,FALSE,87.728
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,random_unique,0.000038713,10449,TRUE,TRUE,38.713
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,random_unique,0.000498862,137009,TRUE,TRUE,49.886
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,random_unique,0.006393101,1717336,TRUE,TRUE,63.931
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,random_unique,0.075926289,20868688,TRUE,TRUE,75.926
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,random_unique,0.876564928,244066204,TRUE,TRUE,87.656
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,25_percent_disordered,0.000023384,9211,TRUE,TRUE,23.384
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,25_percent_disordered,0.000297432,126774,TRUE,TRUE,29.743
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,25_percent_disordered,0.004098078,1625332,TRUE,FALSE,40.981
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,25_percent_disordered,0.045268794,19802661,TRUE,FALSE,45.269
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,25_percent_disordered,0.523906357,233347510,TRUE,FALSE,52.391
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,10_percent_disordered,0.000015700,8551,TRUE,TRUE,15.700
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,10_percent_disordered,0.000221134,120049,TRUE,TRUE,22.113
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,10_percent_disordered,0.002987777,1537075,TRUE,FALSE,29.878
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,10_percent_disordered,0.030134638,18757448,TRUE,FALSE,30.135
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,10_percent_disordered,0.343228960,221620434,TRUE,FALSE,34.323
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,5_percent_disordered,0.000013325,8389,TRUE,TRUE,13.325
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,5_percent_disordered,0.000156305,116444,TRUE,TRUE,15.630
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,5_percent_disordered,0.002065691,1515354,TRUE,FALSE,20.657
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,5_percent_disordered,0.025590989,18492866,TRUE,FALSE,25.591
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,5_percent_disordered,0.292568040,218696014,TRUE,FALSE,29.257
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,1_percent_disordered,0.000011361,8304,TRUE,TRUE,11.361
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,1_percent_disordered,0.000161311,112554,TRUE,TRUE,16.131
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,1_percent_disordered,0.002497195,1516043,TRUE,TRUE,24.972
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,1_percent_disordered,0.020196505,18248470,TRUE,FALSE,20.197
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,1_percent_disordered,0.235930683,214985800,TRUE,FALSE,23.593
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,ordered_duplicates,0.000012374,7959,TRUE,FALSE,12.374
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,ordered_duplicates,0.000129595,109572,TRUE,FALSE,12.960
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,ordered_duplicates,0.002064004,1479069,TRUE,FALSE,20.640
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,ordered_duplicates,0.021078479,17945563,TRUE,FALSE,21.078
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,ordered_duplicates,0.226096302,209619989,TRUE,FALSE,22.610
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,ordered_unique,0.000009588,8192,TRUE,TRUE,9.588
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,ordered_unique,0.000116300,111539,TRUE,TRUE,11.630
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,ordered_unique,0.001587362,1524583,TRUE,TRUE,15.874
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,ordered_unique,0.018703565,18196618,TRUE,TRUE,18.704
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,ordered_unique,0.207612912,211572877,TRUE,TRUE,20.761
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,reversed_duplicates,0.000019327,11921,TRUE,FALSE,19.327
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,reversed_duplicates,0.000215988,165488,TRUE,FALSE,21.599
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,reversed_duplicates,0.003244994,1775969,TRUE,FALSE,32.450
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,reversed_duplicates,0.026704001,21898144,TRUE,FALSE,26.704
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,reversed_duplicates,0.306184177,264937278,TRUE,FALSE,30.618
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,reversed_unique,0.000018124,14222,TRUE,TRUE,18.124
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,reversed_unique,0.000224013,192779,TRUE,TRUE,22.401
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,reversed_unique,0.003019207,1935567,TRUE,TRUE,30.192
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,reversed_unique,0.026991293,24025703,TRUE,TRUE,26.991
-nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,reversed_unique,0.315696319,290683459,TRUE,TRUE,31.570
-ti,TimSort with Allocated Workspace    (Stable),1000,random_duplicates,0.000049243,8670,TRUE,TRUE,49.243
-ti,TimSort with Allocated Workspace    (Stable),10000,random_duplicates,0.000611415,120348,TRUE,TRUE,61.142
-ti,TimSort with Allocated Workspace    (Stable),100000,random_duplicates,0.007721569,1531448,TRUE,TRUE,77.216
-ti,TimSort with Allocated Workspace    (Stable),1000000,random_duplicates,0.090253491,18290244,TRUE,TRUE,90.253
-ti,TimSort with Allocated Workspace    (Stable),10000000,random_duplicates,1.074393132,213811853,TRUE,TRUE,107.439
-ti,TimSort with Allocated Workspace    (Stable),1000,random_unique,0.000049995,8667,TRUE,TRUE,49.995
-ti,TimSort with Allocated Workspace    (Stable),10000,random_unique,0.000610253,120349,TRUE,TRUE,61.025
-ti,TimSort with Allocated Workspace    (Stable),100000,random_unique,0.008101536,1531408,TRUE,TRUE,81.015
-ti,TimSort with Allocated Workspace    (Stable),1000000,random_unique,0.090447047,18290499,TRUE,TRUE,90.447
-ti,TimSort with Allocated Workspace    (Stable),10000000,random_unique,1.089873136,213807264,TRUE,TRUE,108.987
-ti,TimSort with Allocated Workspace    (Stable),1000,25_percent_disordered,0.000034886,7010,TRUE,TRUE,34.886
-ti,TimSort with Allocated Workspace    (Stable),10000,25_percent_disordered,0.000391409,96274,TRUE,TRUE,39.141
-ti,TimSort with Allocated Workspace    (Stable),100000,25_percent_disordered,0.005054293,1092617,TRUE,TRUE,50.543
-ti,TimSort with Allocated Workspace    (Stable),1000000,25_percent_disordered,0.052463028,12434342,TRUE,TRUE,52.463
-ti,TimSort with Allocated Workspace    (Stable),10000000,25_percent_disordered,0.594535740,139122422,TRUE,TRUE,59.454
-ti,TimSort with Allocated Workspace    (Stable),1000,10_percent_disordered,0.000022933,4835,TRUE,TRUE,22.933
-ti,TimSort with Allocated Workspace    (Stable),10000,10_percent_disordered,0.000225676,56262,TRUE,TRUE,22.568
-ti,TimSort with Allocated Workspace    (Stable),100000,10_percent_disordered,0.002985758,677520,TRUE,TRUE,29.858
-ti,TimSort with Allocated Workspace    (Stable),1000000,10_percent_disordered,0.028208739,7705166,TRUE,TRUE,28.209
-ti,TimSort with Allocated Workspace    (Stable),10000000,10_percent_disordered,0.320621459,80899342,TRUE,TRUE,32.062
-ti,TimSort with Allocated Workspace    (Stable),1000,5_percent_disordered,0.000015800,3759,TRUE,TRUE,15.800
-ti,TimSort with Allocated Workspace    (Stable),10000,5_percent_disordered,0.000153880,41101,TRUE,TRUE,15.388
-ti,TimSort with Allocated Workspace    (Stable),100000,5_percent_disordered,0.001718906,522910,TRUE,TRUE,17.189
-ti,TimSort with Allocated Workspace    (Stable),1000000,5_percent_disordered,0.019532120,6025478,TRUE,TRUE,19.532
-ti,TimSort with Allocated Workspace    (Stable),10000000,5_percent_disordered,0.222994811,59750966,TRUE,TRUE,22.299
-ti,TimSort with Allocated Workspace    (Stable),1000,1_percent_disordered,0.000007625,2235,TRUE,TRUE,7.625
-ti,TimSort with Allocated Workspace    (Stable),10000,1_percent_disordered,0.000054994,20318,TRUE,TRUE,5.499
-ti,TimSort with Allocated Workspace    (Stable),100000,1_percent_disordered,0.000696616,254708,TRUE,TRUE,6.966
-ti,TimSort with Allocated Workspace    (Stable),1000000,1_percent_disordered,0.008580260,3191636,TRUE,TRUE,8.580
-ti,TimSort with Allocated Workspace    (Stable),10000000,1_percent_disordered,0.090624875,29034572,TRUE,TRUE,9.062
-ti,TimSort with Allocated Workspace    (Stable),1000,ordered_duplicates,0.000001673,999,TRUE,TRUE,1.673
-ti,TimSort with Allocated Workspace    (Stable),10000,ordered_duplicates,0.000008606,9999,TRUE,TRUE,0.861
-ti,TimSort with Allocated Workspace    (Stable),100000,ordered_duplicates,0.000077756,99999,TRUE,TRUE,0.778
-ti,TimSort with Allocated Workspace    (Stable),1000000,ordered_duplicates,0.000872517,999999,TRUE,TRUE,0.873
-ti,TimSort with Allocated Workspace    (Stable),10000000,ordered_duplicates,0.008220862,9999999,TRUE,TRUE,0.822
-ti,TimSort with Allocated Workspace    (Stable),1000,ordered_unique,0.000001713,999,TRUE,TRUE,1.713
-ti,TimSort with Allocated Workspace    (Stable),10000,ordered_unique,0.000008607,9999,TRUE,TRUE,0.861
-ti,TimSort with Allocated Workspace    (Stable),100000,ordered_unique,0.000077707,99999,TRUE,TRUE,0.777
-ti,TimSort with Allocated Workspace    (Stable),1000000,ordered_unique,0.000922522,999999,TRUE,TRUE,0.923
-ti,TimSort with Allocated Workspace    (Stable),10000000,ordered_unique,0.007823401,9999999,TRUE,TRUE,0.782
-ti,TimSort with Allocated Workspace    (Stable),1000,reversed_duplicates,0.000018555,4514,TRUE,TRUE,18.555
-ti,TimSort with Allocated Workspace    (Stable),10000,reversed_duplicates,0.000118183,39979,TRUE,TRUE,11.818
-ti,TimSort with Allocated Workspace    (Stable),100000,reversed_duplicates,0.001237757,423392,TRUE,TRUE,12.378
-ti,TimSort with Allocated Workspace    (Stable),1000000,reversed_duplicates,0.011769794,4401865,TRUE,TRUE,11.770
-ti,TimSort with Allocated Workspace    (Stable),10000000,reversed_duplicates,0.136563583,39874238,TRUE,TRUE,13.656
-ti,TimSort with Allocated Workspace    (Stable),1000,reversed_unique,0.000001884,999,TRUE,TRUE,1.884
-ti,TimSort with Allocated Workspace    (Stable),10000,reversed_unique,0.000010169,9999,TRUE,TRUE,1.017
-ti,TimSort with Allocated Workspace    (Stable),100000,reversed_unique,0.000092184,99999,TRUE,TRUE,0.922
-ti,TimSort with Allocated Workspace    (Stable),1000000,reversed_unique,0.001031017,999999,TRUE,TRUE,1.031
-ti,TimSort with Allocated Workspace    (Stable),10000000,reversed_unique,0.009994701,9999999,TRUE,TRUE,0.999
-wi,WikiSort Fully In-Place             (Stable),1000,random_duplicates,0.000040196,9532,TRUE,TRUE,40.196
-wi,WikiSort Fully In-Place             (Stable),10000,random_duplicates,0.000512999,143437,TRUE,TRUE,51.300
-wi,WikiSort Fully In-Place             (Stable),100000,random_duplicates,0.006396878,1828864,TRUE,TRUE,63.969
-wi,WikiSort Fully In-Place             (Stable),1000000,random_duplicates,0.075892618,22375013,TRUE,TRUE,75.893
-wi,WikiSort Fully In-Place             (Stable),10000000,random_duplicates,0.924820731,266882917,TRUE,TRUE,92.482
-wi,WikiSort Fully In-Place             (Stable),1000,random_unique,0.000038934,9528,TRUE,TRUE,38.934
-wi,WikiSort Fully In-Place             (Stable),10000,random_unique,0.000508450,143420,TRUE,TRUE,50.845
-wi,WikiSort Fully In-Place             (Stable),100000,random_unique,0.006312328,1828495,TRUE,TRUE,63.123
-wi,WikiSort Fully In-Place             (Stable),1000000,random_unique,0.075122574,22370399,TRUE,TRUE,75.123
-wi,WikiSort Fully In-Place             (Stable),10000000,random_unique,0.905138788,266816725,TRUE,TRUE,90.514
-wi,WikiSort Fully In-Place             (Stable),1000,25_percent_disordered,0.000026821,8846,TRUE,TRUE,26.821
-wi,WikiSort Fully In-Place             (Stable),10000,25_percent_disordered,0.000326507,132042,TRUE,TRUE,32.651
-wi,WikiSort Fully In-Place             (Stable),100000,25_percent_disordered,0.004124969,1724079,TRUE,TRUE,41.250
-wi,WikiSort Fully In-Place             (Stable),1000000,25_percent_disordered,0.047478989,21143567,TRUE,TRUE,47.479
-wi,WikiSort Fully In-Place             (Stable),10000000,25_percent_disordered,0.578092182,249353467,TRUE,TRUE,57.809
-wi,WikiSort Fully In-Place             (Stable),1000,10_percent_disordered,0.000018355,6814,TRUE,TRUE,18.355
-wi,WikiSort Fully In-Place             (Stable),10000,10_percent_disordered,0.000211479,109711,TRUE,TRUE,21.148
-wi,WikiSort Fully In-Place             (Stable),100000,10_percent_disordered,0.002617630,1484398,TRUE,TRUE,26.176
-wi,WikiSort Fully In-Place             (Stable),1000000,10_percent_disordered,0.031419466,18764583,TRUE,TRUE,31.419
-wi,WikiSort Fully In-Place             (Stable),10000000,10_percent_disordered,0.398904032,222638416,TRUE,TRUE,39.890
-wi,WikiSort Fully In-Place             (Stable),1000,5_percent_disordered,0.000015219,5635,TRUE,TRUE,15.219
-wi,WikiSort Fully In-Place             (Stable),10000,5_percent_disordered,0.000167677,94710,TRUE,TRUE,16.768
-wi,WikiSort Fully In-Place             (Stable),100000,5_percent_disordered,0.002117215,1321121,TRUE,TRUE,21.172
-wi,WikiSort Fully In-Place             (Stable),1000000,5_percent_disordered,0.026923713,17053388,TRUE,TRUE,26.924
-wi,WikiSort Fully In-Place             (Stable),10000000,5_percent_disordered,0.338012264,204484322,TRUE,TRUE,33.801
-wi,WikiSort Fully In-Place             (Stable),1000,1_percent_disordered,0.000009077,2792,TRUE,TRUE,9.077
-wi,WikiSort Fully In-Place             (Stable),10000,1_percent_disordered,0.000081995,47827,TRUE,TRUE,8.200
-wi,WikiSort Fully In-Place             (Stable),100000,1_percent_disordered,0.001344985,936287,TRUE,TRUE,13.450
-wi,WikiSort Fully In-Place             (Stable),1000000,1_percent_disordered,0.018066082,13269948,TRUE,TRUE,18.066
-wi,WikiSort Fully In-Place             (Stable),10000000,1_percent_disordered,0.228560388,161674690,TRUE,TRUE,22.856
-wi,WikiSort Fully In-Place             (Stable),1000,ordered_duplicates,0.000005831,2530,TRUE,TRUE,5.831
-wi,WikiSort Fully In-Place             (Stable),10000,ordered_duplicates,0.000034765,23719,TRUE,TRUE,3.477
-wi,WikiSort Fully In-Place             (Stable),100000,ordered_duplicates,0.000271052,240768,TRUE,TRUE,2.711
-wi,WikiSort Fully In-Place             (Stable),1000000,ordered_duplicates,0.002634434,2596537,TRUE,TRUE,2.634
-wi,WikiSort Fully In-Place             (Stable),10000000,ordered_duplicates,0.021190620,20127971,TRUE,TRUE,2.119
-wi,WikiSort Fully In-Place             (Stable),1000,ordered_unique,0.000005610,2530,TRUE,TRUE,5.610
-wi,WikiSort Fully In-Place             (Stable),10000,ordered_unique,0.000031369,23662,TRUE,TRUE,3.137
-wi,WikiSort Fully In-Place             (Stable),100000,ordered_unique,0.000260662,240530,TRUE,TRUE,2.607
-wi,WikiSort Fully In-Place             (Stable),1000000,ordered_unique,0.002570724,2595342,TRUE,TRUE,2.571
-wi,WikiSort Fully In-Place             (Stable),10000000,ordered_unique,0.020464349,20122509,TRUE,TRUE,2.046
-wi,WikiSort Fully In-Place             (Stable),1000,reversed_duplicates,0.000013797,4824,TRUE,TRUE,13.797
-wi,WikiSort Fully In-Place             (Stable),10000,reversed_duplicates,0.000118494,51458,TRUE,TRUE,11.849
-wi,WikiSort Fully In-Place             (Stable),100000,reversed_duplicates,0.001564701,537302,TRUE,TRUE,15.647
-wi,WikiSort Fully In-Place             (Stable),1000000,reversed_duplicates,0.012768959,6525364,TRUE,TRUE,12.769
-wi,WikiSort Fully In-Place             (Stable),10000000,reversed_duplicates,0.147893978,63017582,TRUE,TRUE,14.789
-wi,WikiSort Fully In-Place             (Stable),1000,reversed_unique,0.000007875,3287,TRUE,TRUE,7.875
-wi,WikiSort Fully In-Place             (Stable),10000,reversed_unique,0.000051126,25008,TRUE,TRUE,5.113
-wi,WikiSort Fully In-Place             (Stable),100000,reversed_unique,0.000546527,284046,TRUE,TRUE,5.465
-wi,WikiSort Fully In-Place             (Stable),1000000,reversed_unique,0.006306860,3273489,TRUE,TRUE,6.307
-wi,WikiSort Fully In-Place             (Stable),10000000,reversed_unique,0.069244068,21498750,TRUE,TRUE,6.924
-is,Insertion Sort Fully In-Place       (Stable),1000,random_duplicates,0.000050174,10897,TRUE,TRUE,50.174
-is,Insertion Sort Fully In-Place       (Stable),10000,random_duplicates,0.001155662,143533,TRUE,TRUE,115.566
-is,Insertion Sort Fully In-Place       (Stable),100000,random_duplicates,0.096717451,1768738,TRUE,TRUE,967.175
+fb,ForSort Basic Fully In-Place        (Stable),1000,random_duplicates,0.000048660,15097,TRUE,TRUE,48.660
+fb,ForSort Basic Fully In-Place        (Stable),10000,random_duplicates,0.000680777,208374,TRUE,TRUE,68.078
+fb,ForSort Basic Fully In-Place        (Stable),100000,random_duplicates,0.008710394,2642006,TRUE,TRUE,87.104
+fb,ForSort Basic Fully In-Place        (Stable),1000000,random_duplicates,0.106266426,31919011,TRUE,TRUE,106.266
+fb,ForSort Basic Fully In-Place        (Stable),10000000,random_duplicates,1.243011421,373451538,TRUE,TRUE,124.301
+fb,ForSort Basic Fully In-Place        (Stable),100000000,random_duplicates,14.610756403,4273768630,TRUE,TRUE,146.108
+fb,ForSort Basic Fully In-Place        (Stable),1000,random_unique,0.000048408,15120,TRUE,TRUE,48.408
+fb,ForSort Basic Fully In-Place        (Stable),10000,random_unique,0.000682100,208537,TRUE,TRUE,68.210
+fb,ForSort Basic Fully In-Place        (Stable),100000,random_unique,0.008769205,2643502,TRUE,TRUE,87.692
+fb,ForSort Basic Fully In-Place        (Stable),1000000,random_unique,0.105957559,31933798,TRUE,TRUE,105.958
+fb,ForSort Basic Fully In-Place        (Stable),10000000,random_unique,1.248617548,373600354,TRUE,TRUE,124.862
+fb,ForSort Basic Fully In-Place        (Stable),100000000,random_unique,14.613546595,4275253950,TRUE,TRUE,146.135
+fb,ForSort Basic Fully In-Place        (Stable),1000,25_percent_disordered,0.000030659,9141,TRUE,TRUE,30.659
+fb,ForSort Basic Fully In-Place        (Stable),10000,25_percent_disordered,0.000427209,124782,TRUE,TRUE,42.721
+fb,ForSort Basic Fully In-Place        (Stable),100000,25_percent_disordered,0.005283970,1537056,TRUE,TRUE,52.840
+fb,ForSort Basic Fully In-Place        (Stable),1000000,25_percent_disordered,0.062222154,17999085,TRUE,TRUE,62.222
+fb,ForSort Basic Fully In-Place        (Stable),10000000,25_percent_disordered,0.718578560,205430665,TRUE,TRUE,71.858
+fb,ForSort Basic Fully In-Place        (Stable),100000000,25_percent_disordered,8.342982036,2304584977,TRUE,TRUE,83.430
+fb,ForSort Basic Fully In-Place        (Stable),1000,10_percent_disordered,0.000015372,5767,TRUE,TRUE,15.372
+fb,ForSort Basic Fully In-Place        (Stable),10000,10_percent_disordered,0.000234643,79242,TRUE,TRUE,23.464
+fb,ForSort Basic Fully In-Place        (Stable),100000,10_percent_disordered,0.002945675,949054,TRUE,TRUE,29.457
+fb,ForSort Basic Fully In-Place        (Stable),1000000,10_percent_disordered,0.034386446,10738391,TRUE,TRUE,34.386
+fb,ForSort Basic Fully In-Place        (Stable),10000000,10_percent_disordered,0.396755191,119004161,TRUE,TRUE,39.676
+fb,ForSort Basic Fully In-Place        (Stable),100000000,10_percent_disordered,4.667011102,1303198586,TRUE,TRUE,46.670
+fb,ForSort Basic Fully In-Place        (Stable),1000,5_percent_disordered,0.000009034,4094,TRUE,TRUE,9.034
+fb,ForSort Basic Fully In-Place        (Stable),10000,5_percent_disordered,0.000159515,60799,TRUE,TRUE,15.951
+fb,ForSort Basic Fully In-Place        (Stable),100000,5_percent_disordered,0.002053931,735010,TRUE,TRUE,20.539
+fb,ForSort Basic Fully In-Place        (Stable),1000000,5_percent_disordered,0.024257738,8208435,TRUE,TRUE,24.258
+fb,ForSort Basic Fully In-Place        (Stable),10000000,5_percent_disordered,0.280431050,89624605,TRUE,TRUE,28.043
+fb,ForSort Basic Fully In-Place        (Stable),100000000,5_percent_disordered,3.298381317,967963232,TRUE,TRUE,32.984
+fb,ForSort Basic Fully In-Place        (Stable),1000,1_percent_disordered,0.000003006,2203,TRUE,TRUE,3.006
+fb,ForSort Basic Fully In-Place        (Stable),10000,1_percent_disordered,0.000057857,32456,TRUE,TRUE,5.786
+fb,ForSort Basic Fully In-Place        (Stable),100000,1_percent_disordered,0.000915719,434229,TRUE,TRUE,9.157
+fb,ForSort Basic Fully In-Place        (Stable),1000000,1_percent_disordered,0.011257612,4900221,TRUE,TRUE,11.258
+fb,ForSort Basic Fully In-Place        (Stable),10000000,1_percent_disordered,0.131149290,52344010,TRUE,TRUE,13.115
+fb,ForSort Basic Fully In-Place        (Stable),100000000,1_percent_disordered,1.551855373,550843510,TRUE,TRUE,15.519
+fb,ForSort Basic Fully In-Place        (Stable),1000,ordered_duplicates,0.000000987,999,TRUE,TRUE,0.987
+fb,ForSort Basic Fully In-Place        (Stable),10000,ordered_duplicates,0.000009632,9999,TRUE,TRUE,0.963
+fb,ForSort Basic Fully In-Place        (Stable),100000,ordered_duplicates,0.000088269,99999,TRUE,TRUE,0.883
+fb,ForSort Basic Fully In-Place        (Stable),1000000,ordered_duplicates,0.000835467,999999,TRUE,TRUE,0.835
+fb,ForSort Basic Fully In-Place        (Stable),10000000,ordered_duplicates,0.008005439,9999999,TRUE,TRUE,0.801
+fb,ForSort Basic Fully In-Place        (Stable),100000000,ordered_duplicates,0.079188564,99999999,TRUE,TRUE,0.792
+fb,ForSort Basic Fully In-Place        (Stable),1000,ordered_unique,0.000001001,999,TRUE,TRUE,1.001
+fb,ForSort Basic Fully In-Place        (Stable),10000,ordered_unique,0.000009732,9999,TRUE,TRUE,0.973
+fb,ForSort Basic Fully In-Place        (Stable),100000,ordered_unique,0.000085710,99999,TRUE,TRUE,0.857
+fb,ForSort Basic Fully In-Place        (Stable),1000000,ordered_unique,0.000882807,999999,TRUE,TRUE,0.883
+fb,ForSort Basic Fully In-Place        (Stable),10000000,ordered_unique,0.008038721,9999999,TRUE,TRUE,0.804
+fb,ForSort Basic Fully In-Place        (Stable),100000000,ordered_unique,0.079182811,99999999,TRUE,TRUE,0.792
+fb,ForSort Basic Fully In-Place        (Stable),1000,reversed_duplicates,0.000019726,8563,TRUE,TRUE,19.726
+fb,ForSort Basic Fully In-Place        (Stable),10000,reversed_duplicates,0.000216448,86922,TRUE,TRUE,21.645
+fb,ForSort Basic Fully In-Place        (Stable),100000,reversed_duplicates,0.002407025,874234,TRUE,TRUE,24.070
+fb,ForSort Basic Fully In-Place        (Stable),1000000,reversed_duplicates,0.028012811,8712753,TRUE,TRUE,28.013
+fb,ForSort Basic Fully In-Place        (Stable),10000000,reversed_duplicates,0.322745722,87261055,TRUE,TRUE,32.275
+fb,ForSort Basic Fully In-Place        (Stable),100000000,reversed_duplicates,5.363953906,871236419,TRUE,TRUE,53.640
+fb,ForSort Basic Fully In-Place        (Stable),1000,reversed_unique,0.000002156,1998,TRUE,TRUE,2.156
+fb,ForSort Basic Fully In-Place        (Stable),10000,reversed_unique,0.000021475,19998,TRUE,TRUE,2.148
+fb,ForSort Basic Fully In-Place        (Stable),100000,reversed_unique,0.000205189,199998,TRUE,TRUE,2.052
+fb,ForSort Basic Fully In-Place        (Stable),1000000,reversed_unique,0.002096470,1999998,TRUE,TRUE,2.096
+fb,ForSort Basic Fully In-Place        (Stable),10000000,reversed_unique,0.020509149,19999998,TRUE,TRUE,2.051
+fb,ForSort Basic Fully In-Place        (Stable),100000000,reversed_unique,0.222671659,199999998,TRUE,TRUE,2.227
+fi,ForSort Unstable Fully In-Place     (Unstable),1000,random_duplicates,0.000020354,10215,TRUE,FALSE,20.354
+fi,ForSort Unstable Fully In-Place     (Unstable),10000,random_duplicates,0.000225370,133040,TRUE,FALSE,22.537
+fi,ForSort Unstable Fully In-Place     (Unstable),100000,random_duplicates,0.002618686,1649126,TRUE,FALSE,26.187
+fi,ForSort Unstable Fully In-Place     (Unstable),1000000,random_duplicates,0.029347805,20001793,TRUE,FALSE,29.348
+fi,ForSort Unstable Fully In-Place     (Unstable),10000000,random_duplicates,0.332753702,232277822,TRUE,FALSE,33.275
+fi,ForSort Unstable Fully In-Place     (Unstable),100000000,random_duplicates,3.879304971,2634697879,TRUE,FALSE,38.793
+fi,ForSort Unstable Fully In-Place     (Unstable),1000,random_unique,0.000020401,10218,TRUE,TRUE,20.401
+fi,ForSort Unstable Fully In-Place     (Unstable),10000,random_unique,0.000226158,133079,TRUE,TRUE,22.616
+fi,ForSort Unstable Fully In-Place     (Unstable),100000,random_unique,0.002602045,1649581,TRUE,TRUE,26.020
+fi,ForSort Unstable Fully In-Place     (Unstable),1000000,random_unique,0.029466759,20006177,TRUE,TRUE,29.467
+fi,ForSort Unstable Fully In-Place     (Unstable),10000000,random_unique,0.330000697,232321330,TRUE,TRUE,33.000
+fi,ForSort Unstable Fully In-Place     (Unstable),100000000,random_unique,3.865571791,2635143637,TRUE,TRUE,38.656
+fi,ForSort Unstable Fully In-Place     (Unstable),1000,25_percent_disordered,0.000018543,7689,TRUE,TRUE,18.543
+fi,ForSort Unstable Fully In-Place     (Unstable),10000,25_percent_disordered,0.000222509,104343,TRUE,TRUE,22.251
+fi,ForSort Unstable Fully In-Place     (Unstable),100000,25_percent_disordered,0.002509973,1269646,TRUE,TRUE,25.100
+fi,ForSort Unstable Fully In-Place     (Unstable),1000000,25_percent_disordered,0.027202919,15100948,TRUE,FALSE,27.203
+fi,ForSort Unstable Fully In-Place     (Unstable),10000000,25_percent_disordered,0.300758452,174363379,TRUE,FALSE,30.076
+fi,ForSort Unstable Fully In-Place     (Unstable),100000000,25_percent_disordered,3.420504731,1935889512,TRUE,FALSE,34.205
+fi,ForSort Unstable Fully In-Place     (Unstable),1000,10_percent_disordered,0.000012366,4835,TRUE,TRUE,12.366
+fi,ForSort Unstable Fully In-Place     (Unstable),10000,10_percent_disordered,0.000167564,69599,TRUE,TRUE,16.756
+fi,ForSort Unstable Fully In-Place     (Unstable),100000,10_percent_disordered,0.001885012,837033,TRUE,TRUE,18.850
+fi,ForSort Unstable Fully In-Place     (Unstable),1000000,10_percent_disordered,0.020488689,10065646,TRUE,FALSE,20.489
+fi,ForSort Unstable Fully In-Place     (Unstable),10000000,10_percent_disordered,0.221293916,115617274,TRUE,FALSE,22.129
+fi,ForSort Unstable Fully In-Place     (Unstable),100000000,10_percent_disordered,2.546713125,1271696181,TRUE,FALSE,25.467
+fi,ForSort Unstable Fully In-Place     (Unstable),1000,5_percent_disordered,0.000007580,3137,TRUE,TRUE,7.580
+fi,ForSort Unstable Fully In-Place     (Unstable),10000,5_percent_disordered,0.000126536,50062,TRUE,TRUE,12.654
+fi,ForSort Unstable Fully In-Place     (Unstable),100000,5_percent_disordered,0.001480247,643591,TRUE,TRUE,14.802
+fi,ForSort Unstable Fully In-Place     (Unstable),1000000,5_percent_disordered,0.016023132,7721762,TRUE,FALSE,16.023
+fi,ForSort Unstable Fully In-Place     (Unstable),10000000,5_percent_disordered,0.173395372,88606072,TRUE,FALSE,17.340
+fi,ForSort Unstable Fully In-Place     (Unstable),100000000,5_percent_disordered,2.020743975,982170604,TRUE,FALSE,20.207
+fi,ForSort Unstable Fully In-Place     (Unstable),1000,1_percent_disordered,0.000002301,1344,TRUE,TRUE,2.301
+fi,ForSort Unstable Fully In-Place     (Unstable),10000,1_percent_disordered,0.000047333,22033,TRUE,TRUE,4.733
+fi,ForSort Unstable Fully In-Place     (Unstable),100000,1_percent_disordered,0.000745210,311115,TRUE,TRUE,7.452
+fi,ForSort Unstable Fully In-Place     (Unstable),1000000,1_percent_disordered,0.008497932,3573466,TRUE,FALSE,8.498
+fi,ForSort Unstable Fully In-Place     (Unstable),10000000,1_percent_disordered,0.095427426,44731145,TRUE,FALSE,9.543
+fi,ForSort Unstable Fully In-Place     (Unstable),100000000,1_percent_disordered,1.226233482,550340981,TRUE,FALSE,12.262
+fi,ForSort Unstable Fully In-Place     (Unstable),1000,ordered_duplicates,0.000001194,1052,TRUE,TRUE,1.194
+fi,ForSort Unstable Fully In-Place     (Unstable),10000,ordered_duplicates,0.000009593,10091,TRUE,TRUE,0.959
+fi,ForSort Unstable Fully In-Place     (Unstable),100000,ordered_duplicates,0.000106170,100167,TRUE,TRUE,1.062
+fi,ForSort Unstable Fully In-Place     (Unstable),1000000,ordered_duplicates,0.001032374,1000212,TRUE,TRUE,1.032
+fi,ForSort Unstable Fully In-Place     (Unstable),10000000,ordered_duplicates,0.009316000,10000304,TRUE,TRUE,0.932
+fi,ForSort Unstable Fully In-Place     (Unstable),100000000,ordered_duplicates,0.147268071,100000429,TRUE,TRUE,1.473
+fi,ForSort Unstable Fully In-Place     (Unstable),1000,ordered_unique,0.000001196,1052,TRUE,TRUE,1.196
+fi,ForSort Unstable Fully In-Place     (Unstable),10000,ordered_unique,0.000009614,10091,TRUE,TRUE,0.961
+fi,ForSort Unstable Fully In-Place     (Unstable),100000,ordered_unique,0.000106152,100167,TRUE,TRUE,1.062
+fi,ForSort Unstable Fully In-Place     (Unstable),1000000,ordered_unique,0.001045806,1000212,TRUE,TRUE,1.046
+fi,ForSort Unstable Fully In-Place     (Unstable),10000000,ordered_unique,0.009353298,10000304,TRUE,TRUE,0.935
+fi,ForSort Unstable Fully In-Place     (Unstable),100000000,ordered_unique,0.148088338,100000429,TRUE,TRUE,1.481
+fi,ForSort Unstable Fully In-Place     (Unstable),1000,reversed_duplicates,0.000009428,6498,TRUE,FALSE,9.428
+fi,ForSort Unstable Fully In-Place     (Unstable),10000,reversed_duplicates,0.000121062,93307,TRUE,FALSE,12.106
+fi,ForSort Unstable Fully In-Place     (Unstable),100000,reversed_duplicates,0.001527859,1195728,TRUE,FALSE,15.279
+fi,ForSort Unstable Fully In-Place     (Unstable),1000000,reversed_duplicates,0.019543367,15717552,TRUE,FALSE,19.543
+fi,ForSort Unstable Fully In-Place     (Unstable),10000000,reversed_duplicates,0.240367175,190717993,TRUE,FALSE,24.037
+fi,ForSort Unstable Fully In-Place     (Unstable),100000000,reversed_duplicates,3.553149719,2171397613,TRUE,FALSE,35.531
+fi,ForSort Unstable Fully In-Place     (Unstable),1000,reversed_unique,0.000007632,6407,TRUE,TRUE,7.632
+fi,ForSort Unstable Fully In-Place     (Unstable),10000,reversed_unique,0.000106906,93366,TRUE,TRUE,10.691
+fi,ForSort Unstable Fully In-Place     (Unstable),100000,reversed_unique,0.001400427,1201428,TRUE,TRUE,14.004
+fi,ForSort Unstable Fully In-Place     (Unstable),1000000,reversed_unique,0.019020390,15784214,TRUE,TRUE,19.020
+fi,ForSort Unstable Fully In-Place     (Unstable),10000000,reversed_unique,0.243104683,191369358,TRUE,TRUE,24.310
+fi,ForSort Unstable Fully In-Place     (Unstable),100000000,reversed_unique,3.383844351,2176935091,TRUE,TRUE,33.838
+fs,ForSort Stable Fully In-Place       (Stable),1000,random_duplicates,0.000023847,10478,TRUE,TRUE,23.847
+fs,ForSort Stable Fully In-Place       (Stable),10000,random_duplicates,0.000238217,133561,TRUE,TRUE,23.822
+fs,ForSort Stable Fully In-Place       (Stable),100000,random_duplicates,0.002736018,1701468,TRUE,TRUE,27.360
+fs,ForSort Stable Fully In-Place       (Stable),1000000,random_duplicates,0.030155750,20136370,TRUE,TRUE,30.156
+fs,ForSort Stable Fully In-Place       (Stable),10000000,random_duplicates,0.336778259,235467084,TRUE,TRUE,33.678
+fs,ForSort Stable Fully In-Place       (Stable),100000000,random_duplicates,4.245442846,2742131801,TRUE,TRUE,42.454
+fs,ForSort Stable Fully In-Place       (Stable),1000,random_unique,0.000023645,10464,TRUE,TRUE,23.645
+fs,ForSort Stable Fully In-Place       (Stable),10000,random_unique,0.000236383,133577,TRUE,TRUE,23.638
+fs,ForSort Stable Fully In-Place       (Stable),100000,random_unique,0.002727420,1701948,TRUE,TRUE,27.274
+fs,ForSort Stable Fully In-Place       (Stable),1000000,random_unique,0.030167176,20144097,TRUE,TRUE,30.167
+fs,ForSort Stable Fully In-Place       (Stable),10000000,random_unique,0.339439458,235553320,TRUE,TRUE,33.944
+fs,ForSort Stable Fully In-Place       (Stable),100000000,random_unique,4.358097904,2743841495,TRUE,TRUE,43.581
+fs,ForSort Stable Fully In-Place       (Stable),1000,25_percent_disordered,0.000021510,8173,TRUE,TRUE,21.510
+fs,ForSort Stable Fully In-Place       (Stable),10000,25_percent_disordered,0.000240037,105425,TRUE,TRUE,24.004
+fs,ForSort Stable Fully In-Place       (Stable),100000,25_percent_disordered,0.002666944,1267521,TRUE,TRUE,26.669
+fs,ForSort Stable Fully In-Place       (Stable),1000000,25_percent_disordered,0.028830623,14974558,TRUE,TRUE,28.831
+fs,ForSort Stable Fully In-Place       (Stable),10000000,25_percent_disordered,0.314948811,171186457,TRUE,TRUE,31.495
+fs,ForSort Stable Fully In-Place       (Stable),100000000,25_percent_disordered,3.659809780,1924373356,TRUE,TRUE,36.598
+fs,ForSort Stable Fully In-Place       (Stable),1000,10_percent_disordered,0.000012203,5039,TRUE,TRUE,12.203
+fs,ForSort Stable Fully In-Place       (Stable),10000,10_percent_disordered,0.000173895,67719,TRUE,TRUE,17.389
+fs,ForSort Stable Fully In-Place       (Stable),100000,10_percent_disordered,0.001949305,807830,TRUE,TRUE,19.493
+fs,ForSort Stable Fully In-Place       (Stable),1000000,10_percent_disordered,0.020828117,9541829,TRUE,TRUE,20.828
+fs,ForSort Stable Fully In-Place       (Stable),10000000,10_percent_disordered,0.225134624,111448176,TRUE,TRUE,22.513
+fs,ForSort Stable Fully In-Place       (Stable),100000000,10_percent_disordered,2.656512948,1225557917,TRUE,TRUE,26.565
+fs,ForSort Stable Fully In-Place       (Stable),1000,5_percent_disordered,0.000007412,3431,TRUE,TRUE,7.412
+fs,ForSort Stable Fully In-Place       (Stable),10000,5_percent_disordered,0.000130504,50985,TRUE,TRUE,13.050
+fs,ForSort Stable Fully In-Place       (Stable),100000,5_percent_disordered,0.001499149,599708,TRUE,TRUE,14.991
+fs,ForSort Stable Fully In-Place       (Stable),1000000,5_percent_disordered,0.016236009,7266918,TRUE,TRUE,16.236
+fs,ForSort Stable Fully In-Place       (Stable),10000000,5_percent_disordered,0.174509268,86683679,TRUE,TRUE,17.451
+fs,ForSort Stable Fully In-Place       (Stable),100000000,5_percent_disordered,2.064685960,974518742,TRUE,TRUE,20.647
+fs,ForSort Stable Fully In-Place       (Stable),1000,1_percent_disordered,0.000003039,2189,TRUE,TRUE,3.039
+fs,ForSort Stable Fully In-Place       (Stable),10000,1_percent_disordered,0.000049710,24636,TRUE,TRUE,4.971
+fs,ForSort Stable Fully In-Place       (Stable),100000,1_percent_disordered,0.000762608,321287,TRUE,TRUE,7.626
+fs,ForSort Stable Fully In-Place       (Stable),1000000,1_percent_disordered,0.008434186,3657630,TRUE,TRUE,8.434
+fs,ForSort Stable Fully In-Place       (Stable),10000000,1_percent_disordered,0.094945570,45672892,TRUE,TRUE,9.495
+fs,ForSort Stable Fully In-Place       (Stable),100000000,1_percent_disordered,1.246258164,547276621,TRUE,TRUE,12.463
+fs,ForSort Stable Fully In-Place       (Stable),1000,ordered_duplicates,0.000000989,999,TRUE,TRUE,0.989
+fs,ForSort Stable Fully In-Place       (Stable),10000,ordered_duplicates,0.000009751,9999,TRUE,TRUE,0.975
+fs,ForSort Stable Fully In-Place       (Stable),100000,ordered_duplicates,0.000097324,99999,TRUE,TRUE,0.973
+fs,ForSort Stable Fully In-Place       (Stable),1000000,ordered_duplicates,0.001039642,999999,TRUE,TRUE,1.040
+fs,ForSort Stable Fully In-Place       (Stable),10000000,ordered_duplicates,0.009841889,9999999,TRUE,TRUE,0.984
+fs,ForSort Stable Fully In-Place       (Stable),100000000,ordered_duplicates,0.097827504,99999999,TRUE,TRUE,0.978
+fs,ForSort Stable Fully In-Place       (Stable),1000,ordered_unique,0.000000989,999,TRUE,TRUE,0.989
+fs,ForSort Stable Fully In-Place       (Stable),10000,ordered_unique,0.000009755,9999,TRUE,TRUE,0.975
+fs,ForSort Stable Fully In-Place       (Stable),100000,ordered_unique,0.000097400,99999,TRUE,TRUE,0.974
+fs,ForSort Stable Fully In-Place       (Stable),1000000,ordered_unique,0.001000915,999999,TRUE,TRUE,1.001
+fs,ForSort Stable Fully In-Place       (Stable),10000000,ordered_unique,0.009942179,9999999,TRUE,TRUE,0.994
+fs,ForSort Stable Fully In-Place       (Stable),100000000,ordered_unique,0.098091316,99999999,TRUE,TRUE,0.981
+fs,ForSort Stable Fully In-Place       (Stable),1000,reversed_duplicates,0.000010407,5887,TRUE,TRUE,10.407
+fs,ForSort Stable Fully In-Place       (Stable),10000,reversed_duplicates,0.000120959,82496,TRUE,TRUE,12.096
+fs,ForSort Stable Fully In-Place       (Stable),100000,reversed_duplicates,0.001445057,1049640,TRUE,TRUE,14.451
+fs,ForSort Stable Fully In-Place       (Stable),1000000,reversed_duplicates,0.018580167,13911789,TRUE,TRUE,18.580
+fs,ForSort Stable Fully In-Place       (Stable),10000000,reversed_duplicates,0.244501067,177389869,TRUE,TRUE,24.450
+fs,ForSort Stable Fully In-Place       (Stable),100000000,reversed_duplicates,3.641450785,2027882293,TRUE,TRUE,36.415
+fs,ForSort Stable Fully In-Place       (Stable),1000,reversed_unique,0.000002939,2551,TRUE,TRUE,2.939
+fs,ForSort Stable Fully In-Place       (Stable),10000,reversed_unique,0.000022749,21910,TRUE,TRUE,2.275
+fs,ForSort Stable Fully In-Place       (Stable),100000,reversed_unique,0.000239048,210306,TRUE,TRUE,2.390
+fs,ForSort Stable Fully In-Place       (Stable),1000000,reversed_unique,0.002508083,2088913,TRUE,TRUE,2.508
+fs,ForSort Stable Fully In-Place       (Stable),10000000,reversed_unique,0.027745473,20867892,TRUE,TRUE,2.775
+fs,ForSort Stable Fully In-Place       (Stable),100000000,reversed_unique,0.563042267,208655473,TRUE,TRUE,5.630
+fw,ForSort With Allocated Workspace    (Stable),1000,random_duplicates,0.000016563,9578,TRUE,TRUE,16.563
+fw,ForSort With Allocated Workspace    (Stable),10000,random_duplicates,0.000185404,126146,TRUE,TRUE,18.540
+fw,ForSort With Allocated Workspace    (Stable),100000,random_duplicates,0.002277720,1621744,TRUE,TRUE,22.777
+fw,ForSort With Allocated Workspace    (Stable),1000000,random_duplicates,0.025646217,19344423,TRUE,TRUE,25.646
+fw,ForSort With Allocated Workspace    (Stable),10000000,random_duplicates,0.290592420,225429372,TRUE,TRUE,29.059
+fw,ForSort With Allocated Workspace    (Stable),100000000,random_duplicates,3.629485644,2621029714,TRUE,TRUE,36.295
+fw,ForSort With Allocated Workspace    (Stable),1000,random_unique,0.000016543,9575,TRUE,TRUE,16.543
+fw,ForSort With Allocated Workspace    (Stable),10000,random_unique,0.000185095,126139,TRUE,TRUE,18.509
+fw,ForSort With Allocated Workspace    (Stable),100000,random_unique,0.002282541,1621737,TRUE,TRUE,22.825
+fw,ForSort With Allocated Workspace    (Stable),1000000,random_unique,0.025601732,19344483,TRUE,TRUE,25.602
+fw,ForSort With Allocated Workspace    (Stable),10000000,random_unique,0.293111952,225429382,TRUE,TRUE,29.311
+fw,ForSort With Allocated Workspace    (Stable),100000000,random_unique,3.639563970,2621029170,TRUE,TRUE,36.396
+fw,ForSort With Allocated Workspace    (Stable),1000,25_percent_disordered,0.000016768,7393,TRUE,TRUE,16.768
+fw,ForSort With Allocated Workspace    (Stable),10000,25_percent_disordered,0.000206849,100883,TRUE,TRUE,20.685
+fw,ForSort With Allocated Workspace    (Stable),100000,25_percent_disordered,0.002369943,1237300,TRUE,TRUE,23.699
+fw,ForSort With Allocated Workspace    (Stable),1000000,25_percent_disordered,0.025973321,14555100,TRUE,TRUE,25.973
+fw,ForSort With Allocated Workspace    (Stable),10000000,25_percent_disordered,0.286638305,166155567,TRUE,TRUE,28.664
+fw,ForSort With Allocated Workspace    (Stable),100000000,25_percent_disordered,3.425709885,1862655030,TRUE,TRUE,34.257
+fw,ForSort With Allocated Workspace    (Stable),1000,10_percent_disordered,0.000010669,4437,TRUE,TRUE,10.669
+fw,ForSort With Allocated Workspace    (Stable),10000,10_percent_disordered,0.000152752,65570,TRUE,TRUE,15.275
+fw,ForSort With Allocated Workspace    (Stable),100000,10_percent_disordered,0.001778930,793764,TRUE,TRUE,17.789
+fw,ForSort With Allocated Workspace    (Stable),1000000,10_percent_disordered,0.019163416,9378919,TRUE,TRUE,19.163
+fw,ForSort With Allocated Workspace    (Stable),10000000,10_percent_disordered,0.207427254,108136956,TRUE,TRUE,20.743
+fw,ForSort With Allocated Workspace    (Stable),100000000,10_percent_disordered,2.530893564,1190163424,TRUE,TRUE,25.309
+fw,ForSort With Allocated Workspace    (Stable),1000,5_percent_disordered,0.000006403,2843,TRUE,TRUE,6.403
+fw,ForSort With Allocated Workspace    (Stable),10000,5_percent_disordered,0.000113875,46482,TRUE,TRUE,11.388
+fw,ForSort With Allocated Workspace    (Stable),100000,5_percent_disordered,0.001382960,611739,TRUE,TRUE,13.830
+fw,ForSort With Allocated Workspace    (Stable),1000000,5_percent_disordered,0.015051820,7222003,TRUE,TRUE,15.052
+fw,ForSort With Allocated Workspace    (Stable),10000000,5_percent_disordered,0.163603943,83711153,TRUE,TRUE,16.360
+fw,ForSort With Allocated Workspace    (Stable),100000000,5_percent_disordered,2.001956525,925918048,TRUE,TRUE,20.020
+fw,ForSort With Allocated Workspace    (Stable),1000,1_percent_disordered,0.000002052,1255,TRUE,TRUE,2.052
+fw,ForSort With Allocated Workspace    (Stable),10000,1_percent_disordered,0.000041538,20647,TRUE,TRUE,4.154
+fw,ForSort With Allocated Workspace    (Stable),100000,1_percent_disordered,0.000692749,295456,TRUE,TRUE,6.927
+fw,ForSort With Allocated Workspace    (Stable),1000000,1_percent_disordered,0.008107045,3357826,TRUE,TRUE,8.107
+fw,ForSort With Allocated Workspace    (Stable),10000000,1_percent_disordered,0.091738614,42850992,TRUE,TRUE,9.174
+fw,ForSort With Allocated Workspace    (Stable),100000000,1_percent_disordered,1.291136746,515983732,TRUE,TRUE,12.911
+fw,ForSort With Allocated Workspace    (Stable),1000,ordered_duplicates,0.000001227,1028,TRUE,TRUE,1.227
+fw,ForSort With Allocated Workspace    (Stable),10000,ordered_duplicates,0.000009257,10049,TRUE,TRUE,0.926
+fw,ForSort With Allocated Workspace    (Stable),100000,ordered_duplicates,0.000106027,100078,TRUE,TRUE,1.060
+fw,ForSort With Allocated Workspace    (Stable),1000000,ordered_duplicates,0.001151456,1000058,TRUE,TRUE,1.151
+fw,ForSort With Allocated Workspace    (Stable),10000000,ordered_duplicates,0.009158089,10000089,TRUE,TRUE,0.916
+fw,ForSort With Allocated Workspace    (Stable),100000000,ordered_duplicates,0.208217315,100000101,TRUE,TRUE,2.082
+fw,ForSort With Allocated Workspace    (Stable),1000,ordered_unique,0.000001239,1028,TRUE,TRUE,1.239
+fw,ForSort With Allocated Workspace    (Stable),10000,ordered_unique,0.000009238,10049,TRUE,TRUE,0.924
+fw,ForSort With Allocated Workspace    (Stable),100000,ordered_unique,0.000105909,100078,TRUE,TRUE,1.059
+fw,ForSort With Allocated Workspace    (Stable),1000000,ordered_unique,0.001147869,1000058,TRUE,TRUE,1.148
+fw,ForSort With Allocated Workspace    (Stable),10000000,ordered_unique,0.009082028,10000089,TRUE,TRUE,0.908
+fw,ForSort With Allocated Workspace    (Stable),100000000,ordered_unique,0.211584476,100000101,TRUE,TRUE,2.116
+fw,ForSort With Allocated Workspace    (Stable),1000,reversed_duplicates,0.000008236,6564,TRUE,TRUE,8.236
+fw,ForSort With Allocated Workspace    (Stable),10000,reversed_duplicates,0.000114954,97316,TRUE,TRUE,11.495
+fw,ForSort With Allocated Workspace    (Stable),100000,reversed_duplicates,0.001434386,1228341,TRUE,TRUE,14.344
+fw,ForSort With Allocated Workspace    (Stable),1000000,reversed_duplicates,0.018784212,16348383,TRUE,TRUE,18.784
+fw,ForSort With Allocated Workspace    (Stable),10000000,reversed_duplicates,0.224815546,197266392,TRUE,TRUE,22.482
+fw,ForSort With Allocated Workspace    (Stable),100000000,reversed_duplicates,3.066291528,2232942602,TRUE,TRUE,30.663
+fw,ForSort With Allocated Workspace    (Stable),1000,reversed_unique,0.000007158,6614,TRUE,TRUE,7.158
+fw,ForSort With Allocated Workspace    (Stable),10000,reversed_unique,0.000102956,98010,TRUE,TRUE,10.296
+fw,ForSort With Allocated Workspace    (Stable),100000,reversed_unique,0.001337821,1235508,TRUE,TRUE,13.378
+fw,ForSort With Allocated Workspace    (Stable),1000000,reversed_unique,0.018072363,16420327,TRUE,TRUE,18.072
+fw,ForSort With Allocated Workspace    (Stable),10000000,reversed_unique,0.219546673,197985849,TRUE,TRUE,21.955
+fw,ForSort With Allocated Workspace    (Stable),100000000,reversed_unique,3.072165532,2240136721,TRUE,TRUE,30.722
+gs,GrailSort Fully In-Place            (Stable),1000,random_duplicates,0.000038502,10536,TRUE,TRUE,38.502
+gs,GrailSort Fully In-Place            (Stable),10000,random_duplicates,0.000475614,138673,TRUE,TRUE,47.561
+gs,GrailSort Fully In-Place            (Stable),100000,random_duplicates,0.005613263,1692380,TRUE,TRUE,56.133
+gs,GrailSort Fully In-Place            (Stable),1000000,random_duplicates,0.065398538,20162205,TRUE,TRUE,65.399
+gs,GrailSort Fully In-Place            (Stable),10000000,random_duplicates,0.779831996,236958802,TRUE,TRUE,77.983
+gs,GrailSort Fully In-Place            (Stable),100000000,random_duplicates,9.161776953,2655245492,TRUE,TRUE,91.618
+gs,GrailSort Fully In-Place            (Stable),1000,random_unique,0.000038142,10506,TRUE,TRUE,38.142
+gs,GrailSort Fully In-Place            (Stable),10000,random_unique,0.000474713,138630,TRUE,TRUE,47.471
+gs,GrailSort Fully In-Place            (Stable),100000,random_unique,0.005609075,1692299,TRUE,TRUE,56.091
+gs,GrailSort Fully In-Place            (Stable),1000000,random_unique,0.065176848,20161687,TRUE,TRUE,65.177
+gs,GrailSort Fully In-Place            (Stable),10000000,random_unique,0.779063544,236954845,TRUE,TRUE,77.906
+gs,GrailSort Fully In-Place            (Stable),100000000,random_unique,9.164548158,2655129547,TRUE,TRUE,91.645
+gs,GrailSort Fully In-Place            (Stable),1000,25_percent_disordered,0.000026104,9002,TRUE,TRUE,26.104
+gs,GrailSort Fully In-Place            (Stable),10000,25_percent_disordered,0.000345587,126395,TRUE,TRUE,34.559
+gs,GrailSort Fully In-Place            (Stable),100000,25_percent_disordered,0.004304851,1631763,TRUE,TRUE,43.049
+gs,GrailSort Fully In-Place            (Stable),1000000,25_percent_disordered,0.052070848,19798612,TRUE,TRUE,52.071
+gs,GrailSort Fully In-Place            (Stable),10000000,25_percent_disordered,0.620847348,232215059,TRUE,TRUE,62.085
+gs,GrailSort Fully In-Place            (Stable),100000000,25_percent_disordered,7.349677664,2634592105,TRUE,TRUE,73.497
+gs,GrailSort Fully In-Place            (Stable),1000,10_percent_disordered,0.000015313,6633,TRUE,TRUE,15.313
+gs,GrailSort Fully In-Place            (Stable),10000,10_percent_disordered,0.000238182,106234,TRUE,TRUE,23.818
+gs,GrailSort Fully In-Place            (Stable),100000,10_percent_disordered,0.003129099,1432892,TRUE,TRUE,31.291
+gs,GrailSort Fully In-Place            (Stable),1000000,10_percent_disordered,0.040058520,18052628,TRUE,TRUE,40.059
+gs,GrailSort Fully In-Place            (Stable),10000000,10_percent_disordered,0.493310994,215571686,TRUE,TRUE,49.331
+gs,GrailSort Fully In-Place            (Stable),100000000,10_percent_disordered,6.015076110,2494360434,TRUE,TRUE,60.151
+gs,GrailSort Fully In-Place            (Stable),1000,5_percent_disordered,0.000011314,5504,TRUE,TRUE,11.314
+gs,GrailSort Fully In-Place            (Stable),10000,5_percent_disordered,0.000184987,90191,TRUE,TRUE,18.499
+gs,GrailSort Fully In-Place            (Stable),100000,5_percent_disordered,0.002579098,1279975,TRUE,TRUE,25.791
+gs,GrailSort Fully In-Place            (Stable),1000000,5_percent_disordered,0.034508873,16617516,TRUE,TRUE,34.509
+gs,GrailSort Fully In-Place            (Stable),10000000,5_percent_disordered,0.431371921,201499966,TRUE,TRUE,43.137
+gs,GrailSort Fully In-Place            (Stable),100000000,5_percent_disordered,5.435377744,2358494172,TRUE,TRUE,54.354
+gs,GrailSort Fully In-Place            (Stable),1000,1_percent_disordered,0.000008536,4877,TRUE,TRUE,8.536
+gs,GrailSort Fully In-Place            (Stable),10000,1_percent_disordered,0.000114445,61178,TRUE,TRUE,11.444
+gs,GrailSort Fully In-Place            (Stable),100000,1_percent_disordered,0.001592541,912868,TRUE,TRUE,15.925
+gs,GrailSort Fully In-Place            (Stable),1000000,1_percent_disordered,0.024661259,13140131,TRUE,TRUE,24.661
+gs,GrailSort Fully In-Place            (Stable),10000000,1_percent_disordered,0.332001863,166962457,TRUE,TRUE,33.200
+gs,GrailSort Fully In-Place            (Stable),100000000,1_percent_disordered,4.326902303,2022530075,TRUE,TRUE,43.269
+gs,GrailSort Fully In-Place            (Stable),1000,ordered_duplicates,0.000010008,5216,TRUE,TRUE,10.008
+gs,GrailSort Fully In-Place            (Stable),10000,ordered_duplicates,0.000107847,55104,TRUE,TRUE,10.785
+gs,GrailSort Fully In-Place            (Stable),100000,ordered_duplicates,0.001162827,616161,TRUE,TRUE,11.628
+gs,GrailSort Fully In-Place            (Stable),1000000,ordered_duplicates,0.013554668,7043630,TRUE,TRUE,13.555
+gs,GrailSort Fully In-Place            (Stable),10000000,ordered_duplicates,0.170277717,79282160,TRUE,TRUE,17.028
+gs,GrailSort Fully In-Place            (Stable),100000000,ordered_duplicates,2.305556910,840542710,TRUE,TRUE,23.056
+gs,GrailSort Fully In-Place            (Stable),1000,ordered_unique,0.000007579,4790,TRUE,TRUE,7.579
+gs,GrailSort Fully In-Place            (Stable),10000,ordered_unique,0.000092392,53332,TRUE,TRUE,9.239
+gs,GrailSort Fully In-Place            (Stable),100000,ordered_unique,0.001034039,608786,TRUE,TRUE,10.340
+gs,GrailSort Fully In-Place            (Stable),1000000,ordered_unique,0.012645737,7019410,TRUE,TRUE,12.646
+gs,GrailSort Fully In-Place            (Stable),10000000,ordered_unique,0.164972749,79189929,TRUE,TRUE,16.497
+gs,GrailSort Fully In-Place            (Stable),100000000,ordered_unique,2.232538003,840185031,TRUE,TRUE,22.325
+gs,GrailSort Fully In-Place            (Stable),1000,reversed_duplicates,0.000013487,5699,TRUE,TRUE,13.487
+gs,GrailSort Fully In-Place            (Stable),10000,reversed_duplicates,0.000143115,60796,TRUE,TRUE,14.311
+gs,GrailSort Fully In-Place            (Stable),100000,reversed_duplicates,0.001502752,653665,TRUE,TRUE,15.028
+gs,GrailSort Fully In-Place            (Stable),1000000,reversed_duplicates,0.017386303,7770801,TRUE,TRUE,17.386
+gs,GrailSort Fully In-Place            (Stable),10000000,reversed_duplicates,0.201964860,84028558,TRUE,TRUE,20.196
+gs,GrailSort Fully In-Place            (Stable),100000000,reversed_duplicates,2.742132355,916681093,TRUE,TRUE,27.421
+gs,GrailSort Fully In-Place            (Stable),1000,reversed_unique,0.000007808,5112,TRUE,TRUE,7.808
+gs,GrailSort Fully In-Place            (Stable),10000,reversed_unique,0.000095130,57076,TRUE,TRUE,9.513
+gs,GrailSort Fully In-Place            (Stable),100000,reversed_unique,0.001055258,627299,TRUE,TRUE,10.553
+gs,GrailSort Fully In-Place            (Stable),1000000,reversed_unique,0.013230791,7551070,TRUE,TRUE,13.231
+gs,GrailSort Fully In-Place            (Stable),10000000,reversed_unique,0.161042160,81979307,TRUE,TRUE,16.104
+gs,GrailSort Fully In-Place            (Stable),100000000,reversed_unique,2.296826958,896694624,TRUE,TRUE,22.968
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,random_duplicates,0.000048985,8703,TRUE,TRUE,48.985
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,random_duplicates,0.000652450,120413,TRUE,TRUE,65.245
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,random_duplicates,0.007709124,1536077,TRUE,TRUE,77.091
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,random_duplicates,0.092146498,18672439,TRUE,TRUE,92.146
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,random_duplicates,1.096587015,220066877,TRUE,TRUE,109.659
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000000,random_duplicates,12.680917931,2532644916,TRUE,TRUE,126.809
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,random_unique,0.000049021,8703,TRUE,TRUE,49.021
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,random_unique,0.000657336,120413,TRUE,TRUE,65.734
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,random_unique,0.007711163,1536078,TRUE,TRUE,77.112
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,random_unique,0.092130698,18672439,TRUE,TRUE,92.131
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,random_unique,1.092386182,220066878,TRUE,TRUE,109.239
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000000,random_unique,12.671754261,2532644915,TRUE,TRUE,126.718
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,25_percent_disordered,0.000030044,7947,TRUE,TRUE,30.044
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,25_percent_disordered,0.000404457,115309,TRUE,TRUE,40.446
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,25_percent_disordered,0.004801646,1507255,TRUE,TRUE,48.016
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,25_percent_disordered,0.057117962,18497245,TRUE,TRUE,57.118
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,25_percent_disordered,0.690500288,218008909,TRUE,TRUE,69.050
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000000,25_percent_disordered,8.142842687,2514385833,TRUE,TRUE,81.428
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,10_percent_disordered,0.000019315,6438,TRUE,TRUE,19.315
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,10_percent_disordered,0.000273921,102551,TRUE,TRUE,27.392
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,10_percent_disordered,0.003289419,1388167,TRUE,TRUE,32.894
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,10_percent_disordered,0.039627085,17422395,TRUE,TRUE,39.627
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,10_percent_disordered,0.478988276,208005685,TRUE,TRUE,47.899
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000000,10_percent_disordered,5.789545085,2425087751,TRUE,TRUE,57.895
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,5_percent_disordered,0.000014660,5560,TRUE,TRUE,14.660
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,5_percent_disordered,0.000224280,92078,TRUE,TRUE,22.428
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,5_percent_disordered,0.002772315,1297217,TRUE,TRUE,27.723
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,5_percent_disordered,0.033981658,16566537,TRUE,TRUE,33.982
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,5_percent_disordered,0.409348233,199438755,TRUE,TRUE,40.935
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000000,5_percent_disordered,4.968551217,2341899008,TRUE,TRUE,49.686
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,1_percent_disordered,0.000010467,4983,TRUE,TRUE,10.467
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,1_percent_disordered,0.000143611,69193,TRUE,TRUE,14.361
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,1_percent_disordered,0.002060893,1052791,TRUE,TRUE,20.609
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,1_percent_disordered,0.026639107,14446341,TRUE,TRUE,26.639
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,1_percent_disordered,0.327420037,178609052,TRUE,TRUE,32.742
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000000,1_percent_disordered,3.983222307,2138192604,TRUE,TRUE,39.832
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,ordered_duplicates,0.000009840,4932,TRUE,TRUE,9.840
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,ordered_duplicates,0.000117840,64608,TRUE,TRUE,11.784
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,ordered_duplicates,0.001405061,815024,TRUE,TRUE,14.051
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,ordered_duplicates,0.017082282,9884992,TRUE,TRUE,17.082
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,ordered_duplicates,0.200381412,114434624,TRUE,TRUE,20.038
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000000,ordered_duplicates,2.396573075,1314447104,TRUE,TRUE,23.966
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,ordered_unique,0.000009826,4932,TRUE,TRUE,9.826
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,ordered_unique,0.000117727,64608,TRUE,TRUE,11.773
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,ordered_unique,0.001398905,815024,TRUE,TRUE,13.989
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,ordered_unique,0.017093656,9884992,TRUE,TRUE,17.094
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,ordered_unique,0.200827225,114434624,TRUE,TRUE,20.083
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000000,ordered_unique,2.432246432,1314447104,TRUE,TRUE,24.322
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,reversed_duplicates,0.000023947,5237,TRUE,TRUE,23.947
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,reversed_duplicates,0.000313827,70411,TRUE,TRUE,31.383
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,reversed_duplicates,0.003615501,866156,TRUE,TRUE,36.155
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,reversed_duplicates,0.036315567,10249892,TRUE,TRUE,36.316
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,reversed_duplicates,0.432054839,120242863,TRUE,TRUE,43.205
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000000,reversed_duplicates,5.059735799,1363129113,TRUE,TRUE,50.597
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000,reversed_unique,0.000011723,5044,TRUE,TRUE,11.723
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000,reversed_unique,0.000144699,69008,TRUE,TRUE,14.470
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000,reversed_unique,0.001702158,853904,TRUE,TRUE,17.022
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),1000000,reversed_unique,0.019797313,10066432,TRUE,TRUE,19.797
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),10000000,reversed_unique,0.249777290,118788160,TRUE,TRUE,24.978
+gq,GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed),100000000,reversed_unique,3.160901496,1351335168,TRUE,TRUE,31.609
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,random_duplicates,0.000036351,9401,TRUE,FALSE,36.351
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,random_duplicates,0.000490068,130137,TRUE,FALSE,49.007
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,random_duplicates,0.006132836,1663179,TRUE,FALSE,61.328
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,random_duplicates,0.073489670,20262071,TRUE,FALSE,73.490
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,random_duplicates,0.856509726,238426327,TRUE,FALSE,85.651
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000000,random_duplicates,9.770257411,2749060430,TRUE,FALSE,97.703
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,random_unique,0.000037560,10086,TRUE,TRUE,37.560
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,random_unique,0.000502751,137009,TRUE,TRUE,50.275
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,random_unique,0.006261659,1731512,TRUE,TRUE,62.617
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,random_unique,0.074916287,20938662,TRUE,TRUE,74.916
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,random_unique,0.870931728,245146777,TRUE,TRUE,87.093
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000000,random_unique,9.944102438,2820363361,TRUE,TRUE,99.441
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,25_percent_disordered,0.000020656,9187,TRUE,TRUE,20.656
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,25_percent_disordered,0.000285343,127121,TRUE,TRUE,28.534
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,25_percent_disordered,0.003639950,1622471,TRUE,TRUE,36.399
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,25_percent_disordered,0.044335403,19738342,TRUE,FALSE,44.335
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,25_percent_disordered,0.521032147,232464629,TRUE,FALSE,52.103
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000000,25_percent_disordered,5.990400107,2673076661,TRUE,FALSE,59.904
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,10_percent_disordered,0.000012846,8522,TRUE,TRUE,12.846
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,10_percent_disordered,0.000183627,119573,TRUE,TRUE,18.363
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,10_percent_disordered,0.002374697,1538407,TRUE,TRUE,23.747
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,10_percent_disordered,0.029121617,18775482,TRUE,FALSE,29.122
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,10_percent_disordered,0.343359787,221669671,TRUE,FALSE,34.336
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000000,10_percent_disordered,3.969756048,2556114832,TRUE,FALSE,39.698
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,5_percent_disordered,0.000010946,8358,TRUE,TRUE,10.946
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,5_percent_disordered,0.000152488,116696,TRUE,TRUE,15.249
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,5_percent_disordered,0.002009068,1517055,TRUE,TRUE,20.091
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,5_percent_disordered,0.024672363,18502531,TRUE,FALSE,24.672
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,5_percent_disordered,0.290364632,218637153,TRUE,FALSE,29.036
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000000,5_percent_disordered,3.359759096,2520850711,TRUE,FALSE,33.598
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,1_percent_disordered,0.000009466,8249,TRUE,TRUE,9.466
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,1_percent_disordered,0.000123817,112921,TRUE,TRUE,12.382
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,1_percent_disordered,0.001655133,1515721,TRUE,TRUE,16.551
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,1_percent_disordered,0.020031550,18248981,TRUE,FALSE,20.032
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,1_percent_disordered,0.233829431,215110068,TRUE,FALSE,23.383
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000000,1_percent_disordered,2.714225867,2503124446,TRUE,FALSE,27.142
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,ordered_duplicates,0.000010431,7953,TRUE,FALSE,10.431
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,ordered_duplicates,0.000127397,109630,TRUE,FALSE,12.740
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,ordered_duplicates,0.001747035,1479358,TRUE,FALSE,17.470
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,ordered_duplicates,0.020062442,17946378,TRUE,FALSE,20.062
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,ordered_duplicates,0.219305391,209616775,TRUE,FALSE,21.931
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000000,ordered_duplicates,2.597615824,2472882034,TRUE,FALSE,25.976
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,ordered_unique,0.000008885,8192,TRUE,TRUE,8.885
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,ordered_unique,0.000115730,111539,TRUE,TRUE,11.573
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,ordered_unique,0.001576996,1524583,TRUE,TRUE,15.770
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,ordered_unique,0.018470486,18196618,TRUE,TRUE,18.470
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,ordered_unique,0.208888187,211572877,TRUE,TRUE,20.889
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000000,ordered_unique,2.445536555,2525165841,TRUE,TRUE,24.455
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,reversed_duplicates,0.000016413,12038,TRUE,FALSE,16.413
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,reversed_duplicates,0.000213023,166725,TRUE,FALSE,21.302
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,reversed_duplicates,0.002205730,1775198,TRUE,FALSE,22.057
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,reversed_duplicates,0.026172660,21892802,TRUE,FALSE,26.173
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,reversed_duplicates,0.304685565,264938580,TRUE,FALSE,30.469
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000000,reversed_duplicates,3.101003496,2805414470,TRUE,FALSE,31.010
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000,reversed_unique,0.000017114,14222,TRUE,TRUE,17.114
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000,reversed_unique,0.000225963,192779,TRUE,TRUE,22.596
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000,reversed_unique,0.002163364,1935567,TRUE,TRUE,21.634
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),1000000,reversed_unique,0.026054586,24025703,TRUE,TRUE,26.055
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),10000000,reversed_unique,0.310016405,290683459,TRUE,TRUE,31.002
+nq,Bentley/McIlroy Quick Sort In-Place (Unstable),100000000,reversed_unique,2.968740131,2921036489,TRUE,TRUE,29.687
+ti,TimSort with Allocated Workspace    (Stable),1000,random_duplicates,0.000043824,8680,TRUE,TRUE,43.824
+ti,TimSort with Allocated Workspace    (Stable),10000,random_duplicates,0.000597111,120355,TRUE,TRUE,59.711
+ti,TimSort with Allocated Workspace    (Stable),100000,random_duplicates,0.007416420,1531076,TRUE,TRUE,74.164
+ti,TimSort with Allocated Workspace    (Stable),1000000,random_duplicates,0.088694587,18299291,TRUE,TRUE,88.695
+ti,TimSort with Allocated Workspace    (Stable),10000000,random_duplicates,1.049124157,213810303,TRUE,TRUE,104.912
+ti,TimSort with Allocated Workspace    (Stable),100000000,random_duplicates,12.128933030,2435412938,TRUE,TRUE,121.289
+ti,TimSort with Allocated Workspace    (Stable),1000,random_unique,0.000043832,8680,TRUE,TRUE,43.832
+ti,TimSort with Allocated Workspace    (Stable),10000,random_unique,0.000600834,120355,TRUE,TRUE,60.083
+ti,TimSort with Allocated Workspace    (Stable),100000,random_unique,0.007429093,1531074,TRUE,TRUE,74.291
+ti,TimSort with Allocated Workspace    (Stable),1000000,random_unique,0.088720540,18299314,TRUE,TRUE,88.721
+ti,TimSort with Allocated Workspace    (Stable),10000000,random_unique,1.050459084,213810880,TRUE,TRUE,105.046
+ti,TimSort with Allocated Workspace    (Stable),100000000,random_unique,12.125734075,2435415718,TRUE,TRUE,121.257
+ti,TimSort with Allocated Workspace    (Stable),1000,25_percent_disordered,0.000024827,7036,TRUE,TRUE,24.827
+ti,TimSort with Allocated Workspace    (Stable),10000,25_percent_disordered,0.000354083,93930,TRUE,TRUE,35.408
+ti,TimSort with Allocated Workspace    (Stable),100000,25_percent_disordered,0.004318139,1094067,TRUE,TRUE,43.181
+ti,TimSort with Allocated Workspace    (Stable),1000000,25_percent_disordered,0.049750762,12452072,TRUE,TRUE,49.751
+ti,TimSort with Allocated Workspace    (Stable),10000000,25_percent_disordered,0.584222610,139283095,TRUE,TRUE,58.422
+ti,TimSort with Allocated Workspace    (Stable),100000000,25_percent_disordered,6.724278612,1534831256,TRUE,TRUE,67.243
+ti,TimSort with Allocated Workspace    (Stable),1000,10_percent_disordered,0.000013116,4668,TRUE,TRUE,13.116
+ti,TimSort with Allocated Workspace    (Stable),10000,10_percent_disordered,0.000194810,56009,TRUE,TRUE,19.481
+ti,TimSort with Allocated Workspace    (Stable),100000,10_percent_disordered,0.002357887,678052,TRUE,TRUE,23.579
+ti,TimSort with Allocated Workspace    (Stable),1000000,10_percent_disordered,0.026931705,7732409,TRUE,TRUE,26.932
+ti,TimSort with Allocated Workspace    (Stable),10000000,10_percent_disordered,0.309353580,80925243,TRUE,TRUE,30.935
+ti,TimSort with Allocated Workspace    (Stable),100000000,10_percent_disordered,3.548974833,885349200,TRUE,TRUE,35.490
+ti,TimSort with Allocated Workspace    (Stable),1000,5_percent_disordered,0.000008408,3567,TRUE,TRUE,8.408
+ti,TimSort with Allocated Workspace    (Stable),10000,5_percent_disordered,0.000129288,41460,TRUE,TRUE,12.929
+ti,TimSort with Allocated Workspace    (Stable),100000,5_percent_disordered,0.001646669,521645,TRUE,TRUE,16.467
+ti,TimSort with Allocated Workspace    (Stable),1000000,5_percent_disordered,0.019032607,6045702,TRUE,TRUE,19.033
+ti,TimSort with Allocated Workspace    (Stable),10000000,5_percent_disordered,0.213320203,59828908,TRUE,TRUE,21.332
+ti,TimSort with Allocated Workspace    (Stable),100000000,5_percent_disordered,2.442566222,659631595,TRUE,TRUE,24.426
+ti,TimSort with Allocated Workspace    (Stable),1000,1_percent_disordered,0.000003621,2045,TRUE,TRUE,3.621
+ti,TimSort with Allocated Workspace    (Stable),10000,1_percent_disordered,0.000044559,20070,TRUE,TRUE,4.456
+ti,TimSort with Allocated Workspace    (Stable),100000,1_percent_disordered,0.000656595,255911,TRUE,TRUE,6.566
+ti,TimSort with Allocated Workspace    (Stable),1000000,1_percent_disordered,0.008472522,3178270,TRUE,TRUE,8.473
+ti,TimSort with Allocated Workspace    (Stable),10000000,1_percent_disordered,0.090973151,29069681,TRUE,TRUE,9.097
+ti,TimSort with Allocated Workspace    (Stable),100000000,1_percent_disordered,1.072557498,324457797,TRUE,TRUE,10.726
+ti,TimSort with Allocated Workspace    (Stable),1000,ordered_duplicates,0.000000827,999,TRUE,TRUE,0.827
+ti,TimSort with Allocated Workspace    (Stable),10000,ordered_duplicates,0.000007950,9999,TRUE,TRUE,0.795
+ti,TimSort with Allocated Workspace    (Stable),100000,ordered_duplicates,0.000079289,99999,TRUE,TRUE,0.793
+ti,TimSort with Allocated Workspace    (Stable),1000000,ordered_duplicates,0.000823320,999999,TRUE,TRUE,0.823
+ti,TimSort with Allocated Workspace    (Stable),10000000,ordered_duplicates,0.008083803,9999999,TRUE,TRUE,0.808
+ti,TimSort with Allocated Workspace    (Stable),100000000,ordered_duplicates,0.078552610,99999999,TRUE,TRUE,0.786
+ti,TimSort with Allocated Workspace    (Stable),1000,ordered_unique,0.000000816,999,TRUE,TRUE,0.816
+ti,TimSort with Allocated Workspace    (Stable),10000,ordered_unique,0.000007855,9999,TRUE,TRUE,0.786
+ti,TimSort with Allocated Workspace    (Stable),100000,ordered_unique,0.000078191,99999,TRUE,TRUE,0.782
+ti,TimSort with Allocated Workspace    (Stable),1000000,ordered_unique,0.000842035,999999,TRUE,TRUE,0.842
+ti,TimSort with Allocated Workspace    (Stable),10000000,ordered_unique,0.008030856,9999999,TRUE,TRUE,0.803
+ti,TimSort with Allocated Workspace    (Stable),100000000,ordered_unique,0.078627547,99999999,TRUE,TRUE,0.786
+ti,TimSort with Allocated Workspace    (Stable),1000,reversed_duplicates,0.000009586,4456,TRUE,TRUE,9.586
+ti,TimSort with Allocated Workspace    (Stable),10000,reversed_duplicates,0.000094371,39936,TRUE,TRUE,9.437
+ti,TimSort with Allocated Workspace    (Stable),100000,reversed_duplicates,0.000985618,423415,TRUE,TRUE,9.856
+ti,TimSort with Allocated Workspace    (Stable),1000000,reversed_duplicates,0.010314809,4402853,TRUE,TRUE,10.315
+ti,TimSort with Allocated Workspace    (Stable),10000000,reversed_duplicates,0.119832743,39878005,TRUE,TRUE,11.983
+ti,TimSort with Allocated Workspace    (Stable),100000000,reversed_duplicates,1.604083224,418702981,TRUE,TRUE,16.041
+ti,TimSort with Allocated Workspace    (Stable),1000,reversed_unique,0.000000959,999,TRUE,TRUE,0.959
+ti,TimSort with Allocated Workspace    (Stable),10000,reversed_unique,0.000009206,9999,TRUE,TRUE,0.921
+ti,TimSort with Allocated Workspace    (Stable),100000,reversed_unique,0.000092458,99999,TRUE,TRUE,0.925
+ti,TimSort with Allocated Workspace    (Stable),1000000,reversed_unique,0.001058713,999999,TRUE,TRUE,1.059
+ti,TimSort with Allocated Workspace    (Stable),10000000,reversed_unique,0.009786140,9999999,TRUE,TRUE,0.979
+ti,TimSort with Allocated Workspace    (Stable),100000000,reversed_unique,0.106418345,99999999,TRUE,TRUE,1.064
+wi,WikiSort Fully In-Place             (Stable),1000,random_duplicates,0.000032695,9514,TRUE,TRUE,32.695
+wi,WikiSort Fully In-Place             (Stable),10000,random_duplicates,0.000506137,143380,TRUE,TRUE,50.614
+wi,WikiSort Fully In-Place             (Stable),100000,random_duplicates,0.006244588,1828877,TRUE,TRUE,62.446
+wi,WikiSort Fully In-Place             (Stable),1000000,random_duplicates,0.074782356,22373179,TRUE,TRUE,74.782
+wi,WikiSort Fully In-Place             (Stable),10000000,random_duplicates,0.915883656,266877152,TRUE,TRUE,91.588
+wi,WikiSort Fully In-Place             (Stable),100000000,random_duplicates,10.810110215,3064238700,TRUE,TRUE,108.101
+wi,WikiSort Fully In-Place             (Stable),1000,random_unique,0.000032977,9510,TRUE,TRUE,32.977
+wi,WikiSort Fully In-Place             (Stable),10000,random_unique,0.000502342,143339,TRUE,TRUE,50.234
+wi,WikiSort Fully In-Place             (Stable),100000,random_unique,0.006196196,1828536,TRUE,TRUE,61.962
+wi,WikiSort Fully In-Place             (Stable),1000000,random_unique,0.074389976,22370389,TRUE,TRUE,74.390
+wi,WikiSort Fully In-Place             (Stable),10000000,random_unique,0.919381912,266849832,TRUE,TRUE,91.938
+wi,WikiSort Fully In-Place             (Stable),100000000,random_unique,10.809300069,3063957721,TRUE,TRUE,108.093
+wi,WikiSort Fully In-Place             (Stable),1000,25_percent_disordered,0.000019029,8748,TRUE,TRUE,19.029
+wi,WikiSort Fully In-Place             (Stable),10000,25_percent_disordered,0.000308217,131331,TRUE,TRUE,30.822
+wi,WikiSort Fully In-Place             (Stable),100000,25_percent_disordered,0.003900897,1718054,TRUE,TRUE,39.009
+wi,WikiSort Fully In-Place             (Stable),1000000,25_percent_disordered,0.046473560,21147516,TRUE,TRUE,46.474
+wi,WikiSort Fully In-Place             (Stable),10000000,25_percent_disordered,0.568817018,249329827,TRUE,TRUE,56.882
+wi,WikiSort Fully In-Place             (Stable),100000000,25_percent_disordered,6.787143739,2854508858,TRUE,TRUE,67.871
+wi,WikiSort Fully In-Place             (Stable),1000,10_percent_disordered,0.000011494,7000,TRUE,TRUE,11.494
+wi,WikiSort Fully In-Place             (Stable),10000,10_percent_disordered,0.000196741,110229,TRUE,TRUE,19.674
+wi,WikiSort Fully In-Place             (Stable),100000,10_percent_disordered,0.002600019,1482357,TRUE,TRUE,26.000
+wi,WikiSort Fully In-Place             (Stable),1000000,10_percent_disordered,0.031813414,18763332,TRUE,TRUE,31.813
+wi,WikiSort Fully In-Place             (Stable),10000000,10_percent_disordered,0.393791366,222839482,TRUE,TRUE,39.379
+wi,WikiSort Fully In-Place             (Stable),100000000,10_percent_disordered,4.854466001,2589528798,TRUE,TRUE,48.545
+wi,WikiSort Fully In-Place             (Stable),1000,5_percent_disordered,0.000007685,5001,TRUE,TRUE,7.685
+wi,WikiSort Fully In-Place             (Stable),10000,5_percent_disordered,0.000153154,95321,TRUE,TRUE,15.315
+wi,WikiSort Fully In-Place             (Stable),100000,5_percent_disordered,0.002080903,1317946,TRUE,TRUE,20.809
+wi,WikiSort Fully In-Place             (Stable),1000000,5_percent_disordered,0.026356784,17098338,TRUE,TRUE,26.357
+wi,WikiSort Fully In-Place             (Stable),10000000,5_percent_disordered,0.331360048,204435712,TRUE,TRUE,33.136
+wi,WikiSort Fully In-Place             (Stable),100000000,5_percent_disordered,4.138039596,2411282096,TRUE,TRUE,41.380
+wi,WikiSort Fully In-Place             (Stable),1000,1_percent_disordered,0.000003296,2798,TRUE,TRUE,3.296
+wi,WikiSort Fully In-Place             (Stable),10000,1_percent_disordered,0.000067006,45926,TRUE,TRUE,6.701
+wi,WikiSort Fully In-Place             (Stable),100000,1_percent_disordered,0.001324750,949667,TRUE,TRUE,13.247
+wi,WikiSort Fully In-Place             (Stable),1000000,1_percent_disordered,0.017679174,13258987,TRUE,TRUE,17.679
+wi,WikiSort Fully In-Place             (Stable),10000000,1_percent_disordered,0.227842050,161734923,TRUE,TRUE,22.784
+wi,WikiSort Fully In-Place             (Stable),100000000,1_percent_disordered,3.046304073,1990181595,TRUE,TRUE,30.463
+wi,WikiSort Fully In-Place             (Stable),1000,ordered_duplicates,0.000002525,2530,TRUE,TRUE,2.525
+wi,WikiSort Fully In-Place             (Stable),10000,ordered_duplicates,0.000028564,23734,TRUE,TRUE,2.856
+wi,WikiSort Fully In-Place             (Stable),100000,ordered_duplicates,0.000262902,240807,TRUE,TRUE,2.629
+wi,WikiSort Fully In-Place             (Stable),1000000,ordered_duplicates,0.002602327,2596569,TRUE,TRUE,2.602
+wi,WikiSort Fully In-Place             (Stable),10000000,ordered_duplicates,0.020928711,20127952,TRUE,TRUE,2.093
+wi,WikiSort Fully In-Place             (Stable),100000000,ordered_duplicates,0.241426721,223294335,TRUE,TRUE,2.414
+wi,WikiSort Fully In-Place             (Stable),1000,ordered_unique,0.000002526,2530,TRUE,TRUE,2.526
+wi,WikiSort Fully In-Place             (Stable),10000,ordered_unique,0.000025764,23662,TRUE,TRUE,2.576
+wi,WikiSort Fully In-Place             (Stable),100000,ordered_unique,0.000250058,240530,TRUE,TRUE,2.501
+wi,WikiSort Fully In-Place             (Stable),1000000,ordered_unique,0.002533910,2595342,TRUE,TRUE,2.534
+wi,WikiSort Fully In-Place             (Stable),10000000,ordered_unique,0.020395639,20122509,TRUE,TRUE,2.040
+wi,WikiSort Fully In-Place             (Stable),100000000,ordered_unique,0.237512367,223275953,TRUE,TRUE,2.375
+wi,WikiSort Fully In-Place             (Stable),1000,reversed_duplicates,0.000007726,4601,TRUE,TRUE,7.726
+wi,WikiSort Fully In-Place             (Stable),10000,reversed_duplicates,0.000099491,44661,TRUE,TRUE,9.949
+wi,WikiSort Fully In-Place             (Stable),100000,reversed_duplicates,0.001124081,566125,TRUE,TRUE,11.241
+wi,WikiSort Fully In-Place             (Stable),1000000,reversed_duplicates,0.012299724,6207660,TRUE,TRUE,12.300
+wi,WikiSort Fully In-Place             (Stable),10000000,reversed_duplicates,0.154961954,68281610,TRUE,TRUE,15.496
+wi,WikiSort Fully In-Place             (Stable),100000000,reversed_duplicates,2.092436747,744007323,TRUE,TRUE,20.924
+wi,WikiSort Fully In-Place             (Stable),1000,reversed_unique,0.000003530,3287,TRUE,TRUE,3.530
+wi,WikiSort Fully In-Place             (Stable),10000,reversed_unique,0.000044537,25008,TRUE,TRUE,4.454
+wi,WikiSort Fully In-Place             (Stable),100000,reversed_unique,0.000513483,284046,TRUE,TRUE,5.135
+wi,WikiSort Fully In-Place             (Stable),1000000,reversed_unique,0.006065014,3273489,TRUE,TRUE,6.065
+wi,WikiSort Fully In-Place             (Stable),10000000,reversed_unique,0.069511696,21498750,TRUE,TRUE,6.951
+wi,WikiSort Fully In-Place             (Stable),100000000,reversed_unique,1.278887250,266513829,TRUE,TRUE,12.789
+is,Insertion Sort Fully In-Place       (Stable),1000,random_duplicates,0.000048942,10907,TRUE,TRUE,48.942
+is,Insertion Sort Fully In-Place       (Stable),10000,random_duplicates,0.001174321,143506,TRUE,TRUE,117.432
+is,Insertion Sort Fully In-Place       (Stable),100000,random_duplicates,0.097658717,1768772,TRUE,TRUE,976.587
 is,Insertion Sort Fully In-Place       (Stable),1000000,random_duplicates,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
 is,Insertion Sort Fully In-Place       (Stable),10000000,random_duplicates,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
-is,Insertion Sort Fully In-Place       (Stable),1000,random_unique,0.000050676,10897,TRUE,TRUE,50.676
-is,Insertion Sort Fully In-Place       (Stable),10000,random_unique,0.001162425,143533,TRUE,TRUE,116.243
-is,Insertion Sort Fully In-Place       (Stable),100000,random_unique,0.097150227,1768738,TRUE,TRUE,971.502
+is,Insertion Sort Fully In-Place       (Stable),100000000,random_duplicates,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
+is,Insertion Sort Fully In-Place       (Stable),1000,random_unique,0.000048529,10912,TRUE,TRUE,48.529
+is,Insertion Sort Fully In-Place       (Stable),10000,random_unique,0.001163445,143513,TRUE,TRUE,116.345
+is,Insertion Sort Fully In-Place       (Stable),100000,random_unique,0.098113846,1768780,TRUE,TRUE,981.138
 is,Insertion Sort Fully In-Place       (Stable),1000000,random_unique,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
 is,Insertion Sort Fully In-Place       (Stable),10000000,random_unique,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
-is,Insertion Sort Fully In-Place       (Stable),1000,25_percent_disordered,0.000029506,10569,TRUE,TRUE,29.506
-is,Insertion Sort Fully In-Place       (Stable),10000,25_percent_disordered,0.000406027,143007,TRUE,TRUE,40.603
-is,Insertion Sort Fully In-Place       (Stable),100000,25_percent_disordered,0.012638192,1768284,TRUE,TRUE,126.382
+is,Insertion Sort Fully In-Place       (Stable),100000000,random_unique,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
+is,Insertion Sort Fully In-Place       (Stable),1000,25_percent_disordered,0.000026560,10649,TRUE,TRUE,26.560
+is,Insertion Sort Fully In-Place       (Stable),10000,25_percent_disordered,0.000403552,143045,TRUE,TRUE,40.355
+is,Insertion Sort Fully In-Place       (Stable),100000,25_percent_disordered,0.012512258,1768034,TRUE,TRUE,125.123
 is,Insertion Sort Fully In-Place       (Stable),1000000,25_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
 is,Insertion Sort Fully In-Place       (Stable),10000000,25_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
-is,Insertion Sort Fully In-Place       (Stable),1000,10_percent_disordered,0.000018044,9914,TRUE,TRUE,18.044
-is,Insertion Sort Fully In-Place       (Stable),10000,10_percent_disordered,0.000279368,142293,TRUE,TRUE,27.937
-is,Insertion Sort Fully In-Place       (Stable),100000,10_percent_disordered,0.003750001,1766977,TRUE,TRUE,37.500
+is,Insertion Sort Fully In-Place       (Stable),100000000,25_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
+is,Insertion Sort Fully In-Place       (Stable),1000,10_percent_disordered,0.000014551,9778,TRUE,TRUE,14.551
+is,Insertion Sort Fully In-Place       (Stable),10000,10_percent_disordered,0.000236211,142148,TRUE,TRUE,23.621
+is,Insertion Sort Fully In-Place       (Stable),100000,10_percent_disordered,0.003793312,1766495,TRUE,TRUE,37.933
 is,Insertion Sort Fully In-Place       (Stable),1000000,10_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
 is,Insertion Sort Fully In-Place       (Stable),10000000,10_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
-is,Insertion Sort Fully In-Place       (Stable),1000,5_percent_disordered,0.000011581,7002,TRUE,TRUE,11.581
-is,Insertion Sort Fully In-Place       (Stable),10000,5_percent_disordered,0.000200568,141517,TRUE,TRUE,20.057
-is,Insertion Sort Fully In-Place       (Stable),100000,5_percent_disordered,0.002883665,1764569,TRUE,TRUE,28.837
+is,Insertion Sort Fully In-Place       (Stable),100000000,10_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
+is,Insertion Sort Fully In-Place       (Stable),1000,5_percent_disordered,0.000008483,6333,TRUE,TRUE,8.483
+is,Insertion Sort Fully In-Place       (Stable),10000,5_percent_disordered,0.000192663,141271,TRUE,TRUE,19.266
+is,Insertion Sort Fully In-Place       (Stable),100000,5_percent_disordered,0.002699944,1764018,TRUE,TRUE,26.999
 is,Insertion Sort Fully In-Place       (Stable),1000000,5_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
 is,Insertion Sort Fully In-Place       (Stable),10000000,5_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
-is,Insertion Sort Fully In-Place       (Stable),1000,1_percent_disordered,0.000003196,1926,TRUE,TRUE,3.196
-is,Insertion Sort Fully In-Place       (Stable),10000,1_percent_disordered,0.000078989,66299,TRUE,TRUE,7.899
-is,Insertion Sort Fully In-Place       (Stable),100000,1_percent_disordered,0.001980344,1743774,TRUE,TRUE,19.803
+is,Insertion Sort Fully In-Place       (Stable),100000000,5_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
+is,Insertion Sort Fully In-Place       (Stable),1000,1_percent_disordered,0.000002007,1619,TRUE,TRUE,2.007
+is,Insertion Sort Fully In-Place       (Stable),10000,1_percent_disordered,0.000073115,63416,TRUE,TRUE,7.312
+is,Insertion Sort Fully In-Place       (Stable),100000,1_percent_disordered,0.001968696,1746861,TRUE,TRUE,19.687
 is,Insertion Sort Fully In-Place       (Stable),1000000,1_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
 is,Insertion Sort Fully In-Place       (Stable),10000000,1_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
-is,Insertion Sort Fully In-Place       (Stable),1000,ordered_duplicates,0.000000942,999,TRUE,TRUE,0.942
-is,Insertion Sort Fully In-Place       (Stable),10000,ordered_duplicates,0.000007844,9999,TRUE,TRUE,0.784
-is,Insertion Sort Fully In-Place       (Stable),100000,ordered_duplicates,0.000076816,99999,TRUE,TRUE,0.768
+is,Insertion Sort Fully In-Place       (Stable),100000000,1_percent_disordered,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
+is,Insertion Sort Fully In-Place       (Stable),1000,ordered_duplicates,0.000000983,999,TRUE,TRUE,0.983
+is,Insertion Sort Fully In-Place       (Stable),10000,ordered_duplicates,0.000009618,9999,TRUE,TRUE,0.962
+is,Insertion Sort Fully In-Place       (Stable),100000,ordered_duplicates,0.000088573,99999,TRUE,TRUE,0.886
 is,Insertion Sort Fully In-Place       (Stable),1000000,ordered_duplicates,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
 is,Insertion Sort Fully In-Place       (Stable),10000000,ordered_duplicates,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
-is,Insertion Sort Fully In-Place       (Stable),1000,ordered_unique,0.000000922,999,TRUE,TRUE,0.922
-is,Insertion Sort Fully In-Place       (Stable),10000,ordered_unique,0.000007845,9999,TRUE,TRUE,0.784
-is,Insertion Sort Fully In-Place       (Stable),100000,ordered_unique,0.000076795,99999,TRUE,TRUE,0.768
+is,Insertion Sort Fully In-Place       (Stable),100000000,ordered_duplicates,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
+is,Insertion Sort Fully In-Place       (Stable),1000,ordered_unique,0.000000983,999,TRUE,TRUE,0.983
+is,Insertion Sort Fully In-Place       (Stable),10000,ordered_unique,0.000009583,9999,TRUE,TRUE,0.958
+is,Insertion Sort Fully In-Place       (Stable),100000,ordered_unique,0.000084994,99999,TRUE,TRUE,0.850
 is,Insertion Sort Fully In-Place       (Stable),1000000,ordered_unique,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
 is,Insertion Sort Fully In-Place       (Stable),10000000,ordered_unique,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
-is,Insertion Sort Fully In-Place       (Stable),1000,reversed_duplicates,0.000023945,10980,TRUE,TRUE,23.945
-is,Insertion Sort Fully In-Place       (Stable),10000,reversed_duplicates,0.002603441,143612,TRUE,TRUE,260.344
-is,Insertion Sort Fully In-Place       (Stable),100000,reversed_duplicates,0.248405359,1768918,TRUE,TRUE,2484.054
+is,Insertion Sort Fully In-Place       (Stable),100000000,ordered_unique,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
+is,Insertion Sort Fully In-Place       (Stable),1000,reversed_duplicates,0.000022556,10978,TRUE,TRUE,22.556
+is,Insertion Sort Fully In-Place       (Stable),10000,reversed_duplicates,0.002116910,143610,TRUE,TRUE,211.691
+is,Insertion Sort Fully In-Place       (Stable),100000,reversed_duplicates,0.243320378,1768916,TRUE,TRUE,2433.204
 is,Insertion Sort Fully In-Place       (Stable),1000000,reversed_duplicates,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
 is,Insertion Sort Fully In-Place       (Stable),10000000,reversed_duplicates,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
-is,Insertion Sort Fully In-Place       (Stable),1000,reversed_unique,0.000022924,10980,TRUE,TRUE,22.924
-is,Insertion Sort Fully In-Place       (Stable),10000,reversed_unique,0.002155645,143612,TRUE,TRUE,215.565
-is,Insertion Sort Fully In-Place       (Stable),100000,reversed_unique,0.235990878,1768918,TRUE,TRUE,2359.909
+is,Insertion Sort Fully In-Place       (Stable),100000000,reversed_duplicates,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
+is,Insertion Sort Fully In-Place       (Stable),1000,reversed_unique,0.000021973,10980,TRUE,TRUE,21.973
+is,Insertion Sort Fully In-Place       (Stable),10000,reversed_unique,0.002107173,143612,TRUE,TRUE,210.717
+is,Insertion Sort Fully In-Place       (Stable),100000,reversed_unique,0.245886933,1768918,TRUE,TRUE,2458.869
 is,Insertion Sort Fully In-Place       (Stable),1000000,reversed_unique,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
 is,Insertion Sort Fully In-Place       (Stable),10000000,reversed_unique,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED
+is,Insertion Sort Fully In-Place       (Stable),100000000,reversed_unique,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED

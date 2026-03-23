@@ -46,153 +46,153 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 ### 10 Percent Disordered
 
-| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items |
-|-----------|----------|----------|----------|----------|----------|
-| fw | *****18.976** | *****17.385** | *****18.441** | *****19.579** | *****21.219** |
-| fs | ****21.650** | ****20.101** | ****20.245** | ****20.605** | ****22.631** |
-| fi | ***23.905** | ***18.981** | ***19.616** | ***20.662** | ***22.738** |
-| nq | 15.700 | 22.113 | 29.878 | 30.135 | 34.323 |
-| ti | 22.933 | 22.568 | 29.858 | 28.209 | 32.062 |
-| wi | 18.355 | 21.148 | 26.176 | 31.419 | 39.890 |
-| is | 18.044 | 27.937 | 37.500 | - | - |
-| fb | 23.705 | 26.710 | 29.486 | 33.807 | 39.431 |
-| gs | 22.603 | 24.432 | 35.646 | 40.173 | 49.208 |
-| gq | 22.843 | 51.440 | 43.219 | 42.707 | 47.351 |
+| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
+|-----------|----------|----------|----------|----------|----------|----------|
+| fw | *****10.669** | *****15.275** | *****17.789** | *****19.163** | *****20.743** | *****25.309** |
+| fi | ****12.366** | ****16.756** | ****18.850** | ****20.489** | ****22.129** | ****25.467** |
+| fs | ***12.203** | ***17.389** | ***19.493** | ***20.828** | ***22.513** | ***26.565** |
+| ti | 13.116 | 19.481 | 23.579 | 26.932 | 30.935 | 35.490 |
+| is | 14.551 | 23.621 | 37.933 | - | - | - |
+| nq | 12.846 | 18.363 | 23.747 | 29.122 | 34.336 | 39.698 |
+| wi | 11.494 | 19.674 | 26.000 | 31.813 | 39.379 | 48.545 |
+| fb | 15.372 | 23.464 | 29.457 | 34.386 | 39.676 | 46.670 |
+| gs | 15.313 | 23.818 | 31.291 | 40.059 | 49.331 | 60.151 |
+| gq | 19.315 | 27.392 | 32.894 | 39.627 | 47.899 | 57.895 |
 
 ### 1 Percent Disordered
 
-| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items |
-|-----------|----------|----------|----------|----------|----------|
-| ti | *****7.625** | *****5.499** | *****6.966** | *****8.580** | *****9.062** |
-| fw | ****6.493** | ****5.655** | ****7.248** | ****8.752** | ****10.068** |
-| fi | ***8.756** | ***6.147** | ***7.764** | ***8.449** | ***9.533** |
-| fs | 9.448 | 6.571 | 12.155 | 8.806 | 9.620 |
-| fb | 5.801 | 7.790 | 9.349 | 11.451 | 13.245 |
-| is | 3.196 | 7.899 | 19.803 | - | - |
-| wi | 9.077 | 8.200 | 13.450 | 18.066 | 22.856 |
-| nq | 11.361 | 16.131 | 24.972 | 20.197 | 23.593 |
-| gs | 15.038 | 12.131 | 15.924 | 25.149 | 33.252 |
-| gq | 14.738 | 20.856 | 19.816 | 28.012 | 33.800 |
+| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
+|-----------|----------|----------|----------|----------|----------|----------|
+| ti | *****3.621** | *****4.456** | *****6.566** | *****8.473** | *****9.097** | *****10.726** |
+| fw | ****2.052** | ****4.154** | ****6.927** | ****8.107** | ****9.174** | ****12.911** |
+| fi | ***2.301** | ***4.733** | ***7.452** | ***8.498** | ***9.543** | ***12.262** |
+| fs | 3.039 | 4.971 | 7.626 | 8.434 | 9.495 | 12.463 |
+| fb | 3.006 | 5.786 | 9.157 | 11.258 | 13.115 | 15.519 |
+| is | 2.007 | 7.312 | 19.687 | - | - | - |
+| wi | 3.296 | 6.701 | 13.247 | 17.679 | 22.784 | 30.463 |
+| nq | 9.466 | 12.382 | 16.551 | 20.032 | 23.383 | 27.142 |
+| gs | 8.536 | 11.444 | 15.925 | 24.661 | 33.200 | 43.269 |
+| gq | 10.467 | 14.361 | 20.609 | 26.639 | 32.742 | 39.832 |
 
 ### 25 Percent Disordered
 
-| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items |
-|-----------|----------|----------|----------|----------|----------|
-| fw | *****27.021** | *****22.661** | *****25.364** | *****27.081** | *****28.938** |
-| fi | ****29.947** | ****24.573** | ****28.119** | ****27.826** | ****30.036** |
-| fs | ***32.220** | ***26.024** | ***27.450** | ***28.703** | ***31.203** |
-| nq | 23.384 | 29.743 | 40.981 | 45.269 | 52.391 |
-| wi | 26.821 | 32.651 | 41.250 | 47.479 | 57.809 |
-| gs | 33.703 | 39.024 | 44.741 | 51.964 | 62.754 |
-| ti | 34.886 | 39.141 | 50.543 | 52.463 | 59.454 |
-| fb | 40.717 | 47.104 | 54.852 | 61.600 | 72.472 |
-| gq | 52.820 | 39.105 | 57.951 | 58.319 | 72.079 |
-| is | 29.506 | 40.603 | 126.38 | - | - |
+| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
+|-----------|----------|----------|----------|----------|----------|----------|
+| fw | *****16.768** | *****20.685** | *****23.699** | *****25.973** | *****28.664** | *****34.257** |
+| fi | ****18.543** | ****22.251** | ****25.100** | ****27.203** | ****30.076** | ****34.205** |
+| fs | ***21.510** | ***24.004** | ***26.669** | ***28.831** | ***31.495** | ***36.598** |
+| nq | 20.656 | 28.534 | 36.399 | 44.335 | 52.103 | 59.904 |
+| wi | 19.029 | 30.822 | 39.009 | 46.474 | 56.882 | 67.871 |
+| ti | 24.827 | 35.408 | 43.181 | 49.751 | 58.422 | 67.243 |
+| gs | 26.104 | 34.559 | 43.049 | 52.071 | 62.085 | 73.497 |
+| gq | 30.044 | 40.446 | 48.016 | 57.118 | 69.050 | 81.428 |
+| fb | 30.659 | 42.721 | 52.840 | 62.222 | 71.858 | 83.430 |
+| is | 26.560 | 40.355 | 125.12 | - | - | - |
 
 ### 5 Percent Disordered
 
-| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items |
-|-----------|----------|----------|----------|----------|----------|
-| fw | *****13.365** | *****14.285** | *****14.509** | *****16.025** | *****16.978** |
-| fs | ****16.200** | ****15.387** | ****20.299** | ****16.526** | ****17.697** |
-| fi | ***17.533** | ***14.725** | ***22.121** | ***16.837** | ***17.381** |
-| ti | 15.800 | 15.388 | 17.189 | 19.532 | 22.299 |
-| is | 11.581 | 20.057 | 28.837 | - | - |
-| nq | 13.325 | 15.630 | 20.657 | 25.591 | 29.257 |
-| fb | 14.798 | 17.817 | 26.553 | 24.075 | 27.807 |
-| wi | 15.219 | 16.768 | 21.172 | 26.924 | 33.801 |
-| gs | 18.024 | 19.322 | 27.880 | 35.557 | 43.143 |
-| gq | 19.016 | 39.453 | 33.048 | 37.000 | 40.195 |
+| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
+|-----------|----------|----------|----------|----------|----------|----------|
+| fw | *****6.403** | *****11.388** | *****13.830** | *****15.052** | *****16.360** | *****20.020** |
+| fi | ****7.580** | ****12.654** | ****14.802** | ****16.023** | ****17.340** | ****20.207** |
+| fs | ***7.412** | ***13.050** | ***14.991** | ***16.236** | ***17.451** | ***20.647** |
+| ti | 8.408 | 12.929 | 16.467 | 19.033 | 21.332 | 24.426 |
+| is | 8.483 | 19.266 | 26.999 | - | - | - |
+| fb | 9.034 | 15.951 | 20.539 | 24.258 | 28.043 | 32.984 |
+| nq | 10.946 | 15.249 | 20.091 | 24.672 | 29.036 | 33.598 |
+| wi | 7.685 | 15.315 | 20.809 | 26.357 | 33.136 | 41.380 |
+| gs | 11.314 | 18.499 | 25.791 | 34.509 | 43.137 | 54.354 |
+| gq | 14.660 | 22.428 | 27.723 | 33.982 | 40.935 | 49.686 |
 
 ### Ordered Duplicates
 
-| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items |
-|-----------|----------|----------|----------|----------|----------|
-| is | *****0.942** | *****0.784** | *****0.768** | - | - |
-| fb | ****1.082** | ****0.799** | ****0.770** | ****0.780** | ****0.806** |
-| ti | ***1.673** | ***0.861** | ***0.778** | ***0.873** | ***0.822** |
-| fs | 1.362 | 0.992 | 1.040 | 0.995 | 0.993 |
-| fi | 3.276 | 1.178 | 1.063 | 1.072 | 0.937 |
-| fw | 3.657 | 1.174 | 1.331 | 1.532 | 0.896 |
-| wi | 5.831 | 3.477 | 2.711 | 2.634 | 2.119 |
-| gs | 15.299 | 10.925 | 13.816 | 13.657 | 16.960 |
-| gq | 12.103 | 12.516 | 15.250 | 18.723 | 21.899 |
-| nq | 12.374 | 12.960 | 20.640 | 21.078 | 22.610 |
+| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
+|-----------|----------|----------|----------|----------|----------|----------|
+| ti | *****0.827** | *****0.795** | *****0.793** | *****0.823** | *****0.808** | *****0.786** |
+| fb | ****0.987** | ****0.963** | ****0.883** | ****0.835** | ****0.801** | ****0.792** |
+| is | ***0.983** | ***0.962** | ***0.886** | - | - | - |
+| fs | 0.989 | 0.975 | 0.973 | 1.040 | 0.984 | 0.978 |
+| fi | 1.194 | 0.959 | 1.062 | 1.032 | 0.932 | 1.473 |
+| fw | 1.227 | 0.926 | 1.060 | 1.151 | 0.916 | 2.082 |
+| wi | 2.525 | 2.856 | 2.629 | 2.602 | 2.093 | 2.414 |
+| gs | 10.008 | 10.785 | 11.628 | 13.555 | 17.028 | 23.056 |
+| gq | 9.840 | 11.784 | 14.051 | 17.082 | 20.038 | 23.966 |
+| nq | 10.431 | 12.740 | 17.470 | 20.062 | 21.931 | 25.976 |
 
 ### Ordered Unique
 
-| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items |
-|-----------|----------|----------|----------|----------|----------|
-| is | *****0.922** | *****0.784** | *****0.768** | - | - |
-| fb | ****1.062** | ****0.797** | ****0.768** | ****0.947** | ****0.809** |
-| ti | ***1.713** | ***0.861** | ***0.777** | ***0.923** | ***0.782** |
-| fs | 1.232 | 0.997 | 0.960 | 1.026 | 1.002 |
-| fi | 3.196 | 1.157 | 1.058 | 1.065 | 0.957 |
-| fw | 3.707 | 1.133 | 1.260 | 1.727 | 0.894 |
-| wi | 5.610 | 3.137 | 2.607 | 2.571 | 2.046 |
-| gs | 11.632 | 9.208 | 10.796 | 14.643 | 15.822 |
-| nq | 9.588 | 11.630 | 15.874 | 18.704 | 20.761 |
-| gq | 12.304 | 12.645 | 17.194 | 17.867 | 20.657 |
+| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
+|-----------|----------|----------|----------|----------|----------|----------|
+| ti | *****0.816** | *****0.786** | *****0.782** | *****0.842** | *****0.803** | *****0.786** |
+| fb | ****1.001** | ****0.973** | ****0.857** | ****0.883** | ****0.804** | ****0.792** |
+| is | ***0.983** | ***0.958** | ***0.850** | - | - | - |
+| fs | 0.989 | 0.975 | 0.974 | 1.001 | 0.994 | 0.981 |
+| fi | 1.196 | 0.961 | 1.062 | 1.046 | 0.935 | 1.481 |
+| fw | 1.239 | 0.924 | 1.059 | 1.148 | 0.908 | 2.116 |
+| wi | 2.526 | 2.576 | 2.501 | 2.534 | 2.040 | 2.375 |
+| gs | 7.579 | 9.239 | 10.340 | 12.646 | 16.497 | 22.325 |
+| gq | 9.826 | 11.773 | 13.989 | 17.094 | 20.083 | 24.322 |
+| nq | 8.885 | 11.573 | 15.770 | 18.470 | 20.889 | 24.455 |
 
 ### Random Duplicates
 
-| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items |
-|-----------|----------|----------|----------|----------|----------|
-| fw | *****25.298** | *****20.006** | *****24.007** | *****27.005** | *****30.117** |
-| fi | ****32.230** | ****24.276** | ****26.604** | ****29.815** | ****33.626** |
-| fs | ***35.988** | ***25.350** | ***32.804** | ***30.405** | ***34.836** |
-| nq | 40.036 | 49.105 | 63.636 | 73.787 | 87.728 |
-| gs | 47.550 | 66.376 | 56.769 | 65.866 | 77.802 |
-| wi | 40.196 | 51.300 | 63.969 | 75.893 | 92.482 |
-| ti | 49.243 | 61.142 | 77.216 | 90.253 | 107.44 |
-| gq | 49.904 | 62.480 | 78.090 | 94.365 | 112.21 |
-| fb | 60.895 | 73.445 | 92.587 | 112.67 | 123.75 |
-| is | 50.174 | 115.57 | 967.17 | - | - |
+| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
+|-----------|----------|----------|----------|----------|----------|----------|
+| fw | *****16.563** | *****18.540** | *****22.777** | *****25.646** | *****29.059** | *****36.295** |
+| fi | ****20.354** | ****22.537** | ****26.187** | ****29.348** | ****33.275** | ****38.793** |
+| fs | ***23.847** | ***23.822** | ***27.360** | ***30.156** | ***33.678** | ***42.454** |
+| gs | 38.502 | 47.561 | 56.133 | 65.399 | 77.983 | 91.618 |
+| nq | 36.351 | 49.007 | 61.328 | 73.490 | 85.651 | 97.703 |
+| wi | 32.695 | 50.614 | 62.446 | 74.782 | 91.588 | 108.10 |
+| ti | 43.824 | 59.711 | 74.164 | 88.695 | 104.91 | 121.29 |
+| gq | 48.985 | 65.245 | 77.091 | 92.146 | 109.66 | 126.81 |
+| fb | 48.660 | 68.078 | 87.104 | 106.27 | 124.30 | 146.11 |
+| is | 48.942 | 117.43 | 976.59 | - | - | - |
 
 ### Random Unique
 
-| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items |
-|-----------|----------|----------|----------|----------|----------|
-| fw | *****28.473** | *****20.121** | *****23.238** | *****27.024** | *****30.668** |
-| fi | ****30.137** | ****23.982** | ****25.903** | ****29.914** | ****33.198** |
-| fs | ***34.325** | ***25.016** | ***28.026** | ***31.217** | ***34.275** |
-| gs | 45.986 | 48.149 | 62.923 | 65.259 | 78.547 |
-| nq | 38.713 | 49.886 | 63.931 | 75.926 | 87.656 |
-| wi | 38.934 | 50.845 | 63.123 | 75.123 | 90.514 |
-| ti | 49.995 | 61.025 | 81.015 | 90.447 | 108.99 |
-| gq | 49.794 | 68.573 | 87.486 | 97.034 | 108.27 |
-| fb | 59.933 | 71.798 | 92.625 | 105.69 | 124.64 |
-| is | 50.676 | 116.24 | 971.50 | - | - |
+| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
+|-----------|----------|----------|----------|----------|----------|----------|
+| fw | *****16.543** | *****18.509** | *****22.825** | *****25.602** | *****29.311** | *****36.396** |
+| fi | ****20.401** | ****22.616** | ****26.020** | ****29.467** | ****33.000** | ****38.656** |
+| fs | ***23.645** | ***23.638** | ***27.274** | ***30.167** | ***33.944** | ***43.581** |
+| gs | 38.142 | 47.471 | 56.091 | 65.177 | 77.906 | 91.645 |
+| nq | 37.560 | 50.275 | 62.617 | 74.916 | 87.093 | 99.441 |
+| wi | 32.977 | 50.234 | 61.962 | 74.390 | 91.938 | 108.09 |
+| ti | 43.832 | 60.083 | 74.291 | 88.721 | 105.05 | 121.26 |
+| gq | 49.021 | 65.734 | 77.112 | 92.131 | 109.24 | 126.72 |
+| fb | 48.408 | 68.210 | 87.692 | 105.96 | 124.86 | 146.13 |
+| is | 48.529 | 116.34 | 981.14 | - | - | - |
 
 ### Reversed Duplicates
 
-| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items |
-|-----------|----------|----------|----------|----------|----------|
-| ti | *****18.555** | *****11.818** | *****12.378** | *****11.770** | *****13.656** |
-| wi | ****13.797** | ****11.849** | ****15.647** | ****12.769** | ****14.789** |
-| fw | ***16.000** | ***13.315** | ***16.978** | ***19.804** | ***24.130** |
-| fi | 19.988 | 13.335 | 15.469 | 19.616 | 24.341 |
-| fs | 22.783 | 13.721 | 15.316 | 18.673 | 23.414 |
-| gs | 21.140 | 15.187 | 24.127 | 18.809 | 19.844 |
-| nq | 19.327 | 21.599 | 32.450 | 26.704 | 30.618 |
-| fb | 29.295 | 24.325 | 24.745 | 28.186 | 32.368 |
-| gq | 46.508 | 59.529 | 25.330 | 36.613 | 46.624 |
-| is | 23.945 | 260.34 | 2484.1 | - | - |
+| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
+|-----------|----------|----------|----------|----------|----------|----------|
+| ti | *****9.586** | *****9.437** | *****9.856** | *****10.315** | *****11.983** | *****16.041** |
+| wi | ****7.726** | ****9.949** | ****11.241** | ****12.300** | ****15.496** | ****20.924** |
+| fw | ***8.236** | ***11.495** | ***14.344** | ***18.784** | ***22.482** | ***30.663** |
+| gs | 13.487 | 14.311 | 15.028 | 17.386 | 20.196 | 27.421 |
+| fi | 9.428 | 12.106 | 15.279 | 19.543 | 24.037 | 35.531 |
+| fs | 10.407 | 12.096 | 14.451 | 18.580 | 24.450 | 36.415 |
+| nq | 16.413 | 21.302 | 22.057 | 26.173 | 30.469 | 31.010 |
+| fb | 19.726 | 21.645 | 24.070 | 28.013 | 32.275 | 53.640 |
+| gq | 23.947 | 31.383 | 36.155 | 36.316 | 43.205 | 50.597 |
+| is | 22.556 | 211.69 | 2433.2 | - | - | - |
 
 ### Reversed Unique
 
-| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items |
-|-----------|----------|----------|----------|----------|----------|
-| ti | *****1.884** | *****1.017** | *****0.922** | *****1.031** | *****0.999** |
-| fb | ****2.885** | ****2.098** | ****1.978** | ****2.018** | ****2.133** |
-| fs | ***7.304** | ***2.583** | ***2.344** | ***2.804** | ***2.927** |
-| wi | 7.875 | 5.113 | 5.465 | 6.307 | 6.924 |
-| gs | 14.207 | 10.195 | 10.736 | 13.369 | 15.796 |
-| fw | 14.167 | 10.962 | 14.288 | 18.491 | 22.405 |
-| fi | 15.940 | 11.594 | 14.118 | 18.841 | 23.516 |
-| gq | 14.267 | 15.784 | 18.695 | 22.182 | 25.400 |
-| nq | 18.124 | 22.401 | 30.192 | 26.991 | 31.570 |
-| is | 22.924 | 215.56 | 2359.9 | - | - |
+| Sort Type | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
+|-----------|----------|----------|----------|----------|----------|----------|
+| ti | *****0.959** | *****0.921** | *****0.925** | *****1.059** | *****0.979** | *****1.064** |
+| fb | ****2.156** | ****2.148** | ****2.052** | ****2.096** | ****2.051** | ****2.227** |
+| fs | ***2.939** | ***2.275** | ***2.390** | ***2.508** | ***2.775** | ***5.630** |
+| wi | 3.530 | 4.454 | 5.135 | 6.065 | 6.951 | 12.789 |
+| gs | 7.808 | 9.513 | 10.553 | 13.231 | 16.104 | 22.968 |
+| fw | 7.158 | 10.296 | 13.378 | 18.072 | 21.955 | 30.722 |
+| fi | 7.632 | 10.691 | 14.004 | 19.020 | 24.310 | 33.838 |
+| gq | 11.723 | 14.470 | 17.022 | 19.797 | 24.978 | 31.609 |
+| nq | 17.114 | 22.596 | 21.634 | 26.055 | 31.002 | 29.687 |
+| is | 21.973 | 210.72 | 2458.9 | - | - | - |
 
 
 ## Cross-Category Analysis
@@ -201,19 +201,18 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Rank | Sort Type | Name | Wins | Top 3 | Win Rate |
 |------|-----------|------|------|-------|----------|
-| 1 | **fw** | Forsort With Workspace | 22 | 32 | 44.0% |
-| 2 | **ti** | TimSort | 14 | 23 | 28.0% |
-| 3 | **is** | Insertion Sort | 7 | 9 | 14.0% |
-| 4 | **fb** | Forsort Basic In-Place | 3 | 16 | 6.0% |
-| 5 | **nq** | Bentley/McIlroy Quick Sort | 2 | 3 | 4.0% |
-| 6 | **wi** | WikiSort | 1 | 6 | 2.0% |
-| 7 | **fi** | Forsort Unstable In-Place | 1 | 26 | 2.0% |
+| 1 | **fw** | Forsort With Workspace | 31 | 42 | 51.7% |
+| 2 | **ti** | TimSort | 25 | 29 | 41.7% |
+| 3 | **is** | Insertion Sort | 1 | 6 | 1.7% |
+| 4 | **wi** | WikiSort | 1 | 8 | 1.7% |
+| 5 | **fb** | Forsort Basic In-Place | 1 | 15 | 1.7% |
+| 6 | **fi** | Forsort Unstable In-Place | 1 | 36 | 1.7% |
 
 ### Recommendations by Use Case
 
-- **Best Stable Sort:** fs (Forsort Stable In-Place) - Avg: 16.918 ns/item (1M-100M items)
-- **Best Unstable Sort:** fi (Forsort Unstable In-Place) - Avg: 18.518 ns/item (1M-100M items)
-- **Best for Nearly-Sorted Data:** fw (Forsort With Workspace) - Avg: 11.338 ns/item
+- **Best Stable Sort:** fs (Forsort Stable In-Place) - Avg: 18.729 ns/item (1M-100M items)
+- **Best Unstable Sort:** fi (Forsort Unstable In-Place) - Avg: 20.305 ns/item (1M-100M items)
+- **Best for Nearly-Sorted Data:** fw (Forsort With Workspace) - Avg: 10.531 ns/item
 
 
 ## Performance Rankings
@@ -224,155 +223,155 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **nq** | Bentley/McIlroy Quick Sort | 15.700 | 0.0% | No |
-| 2 | **is** | Insertion Sort | 18.044 | 14.9% | Yes |
-| 3 | **wi** | WikiSort | 18.355 | 16.9% | Yes |
-| 4 | fw | Forsort With Workspace | 18.976 | 20.9% | Yes |
-| 5 | fs | Forsort Stable In-Place | 21.650 | 37.9% | Yes |
-| 6 | gs | Grail Sort In-Place | 22.603 | 44.0% | Yes |
-| 7 | gq | GLibc Quick Sort | 22.843 | 45.5% | No |
-| 8 | ti | TimSort | 22.933 | 46.1% | Yes |
-| 9 | fb | Forsort Basic In-Place | 23.705 | 51.0% | Yes |
-| 10 | fi | Forsort Unstable In-Place | 23.905 | 52.3% | No |
+| 1 | **fw** | Forsort With Workspace | 10.669 | 0.0% | Yes |
+| 2 | **wi** | WikiSort | 11.494 | 7.7% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 12.203 | 14.4% | Yes |
+| 4 | fi | Forsort Unstable In-Place | 12.366 | 15.9% | No |
+| 5 | nq | Bentley/McIlroy Quick Sort | 12.846 | 20.4% | No |
+| 6 | ti | TimSort | 13.116 | 22.9% | Yes |
+| 7 | is | Insertion Sort | 14.551 | 36.4% | Yes |
+| 8 | gs | Grail Sort In-Place | 15.313 | 43.5% | Yes |
+| 9 | fb | Forsort Basic In-Place | 15.372 | 44.1% | Yes |
+| 10 | gq | GLibc Quick Sort | 19.315 | 81.0% | No |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **is** | Insertion Sort | 3.196 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 5.801 | 81.5% | Yes |
-| 3 | **fw** | Forsort With Workspace | 6.493 | 103.2% | Yes |
-| 4 | ti | TimSort | 7.625 | 138.6% | Yes |
-| 5 | fi | Forsort Unstable In-Place | 8.756 | 174.0% | No |
-| 6 | wi | WikiSort | 9.077 | 184.0% | Yes |
-| 7 | fs | Forsort Stable In-Place | 9.448 | 195.6% | Yes |
-| 8 | nq | Bentley/McIlroy Quick Sort | 11.361 | 255.5% | No |
-| 9 | gq | GLibc Quick Sort | 14.738 | 361.1% | No |
-| 10 | gs | Grail Sort In-Place | 15.038 | 370.5% | Yes |
+| 1 | **is** | Insertion Sort | 2.007 | 0.0% | Yes |
+| 2 | **fw** | Forsort With Workspace | 2.052 | 2.2% | Yes |
+| 3 | **fi** | Forsort Unstable In-Place | 2.301 | 14.6% | No |
+| 4 | fb | Forsort Basic In-Place | 3.006 | 49.8% | Yes |
+| 5 | fs | Forsort Stable In-Place | 3.039 | 51.4% | Yes |
+| 6 | wi | WikiSort | 3.296 | 64.2% | Yes |
+| 7 | ti | TimSort | 3.621 | 80.4% | Yes |
+| 8 | gs | Grail Sort In-Place | 8.536 | 325.3% | Yes |
+| 9 | nq | Bentley/McIlroy Quick Sort | 9.466 | 371.6% | No |
+| 10 | gq | GLibc Quick Sort | 10.467 | 421.5% | No |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **nq** | Bentley/McIlroy Quick Sort | 23.384 | 0.0% | No |
-| 2 | **wi** | WikiSort | 26.821 | 14.7% | Yes |
-| 3 | **fw** | Forsort With Workspace | 27.021 | 15.6% | Yes |
-| 4 | is | Insertion Sort | 29.506 | 26.2% | Yes |
-| 5 | fi | Forsort Unstable In-Place | 29.947 | 28.1% | No |
-| 6 | fs | Forsort Stable In-Place | 32.220 | 37.8% | Yes |
-| 7 | gs | Grail Sort In-Place | 33.703 | 44.1% | Yes |
-| 8 | ti | TimSort | 34.886 | 49.2% | Yes |
-| 9 | fb | Forsort Basic In-Place | 40.717 | 74.1% | Yes |
-| 10 | gq | GLibc Quick Sort | 52.820 | 125.9% | No |
+| 1 | **fw** | Forsort With Workspace | 16.768 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 18.543 | 10.6% | No |
+| 3 | **wi** | WikiSort | 19.029 | 13.5% | Yes |
+| 4 | nq | Bentley/McIlroy Quick Sort | 20.656 | 23.2% | No |
+| 5 | fs | Forsort Stable In-Place | 21.510 | 28.3% | Yes |
+| 6 | ti | TimSort | 24.827 | 48.1% | Yes |
+| 7 | gs | Grail Sort In-Place | 26.104 | 55.7% | Yes |
+| 8 | is | Insertion Sort | 26.560 | 58.4% | Yes |
+| 9 | gq | GLibc Quick Sort | 30.044 | 79.2% | No |
+| 10 | fb | Forsort Basic In-Place | 30.659 | 82.8% | Yes |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **is** | Insertion Sort | 11.581 | 0.0% | Yes |
-| 2 | **nq** | Bentley/McIlroy Quick Sort | 13.325 | 15.1% | No |
-| 3 | **fw** | Forsort With Workspace | 13.365 | 15.4% | Yes |
-| 4 | fb | Forsort Basic In-Place | 14.798 | 27.8% | Yes |
-| 5 | wi | WikiSort | 15.219 | 31.4% | Yes |
-| 6 | ti | TimSort | 15.800 | 36.4% | Yes |
-| 7 | fs | Forsort Stable In-Place | 16.200 | 39.9% | Yes |
-| 8 | fi | Forsort Unstable In-Place | 17.533 | 51.4% | No |
-| 9 | gs | Grail Sort In-Place | 18.024 | 55.6% | Yes |
-| 10 | gq | GLibc Quick Sort | 19.016 | 64.2% | No |
+| 1 | **fw** | Forsort With Workspace | 6.403 | 0.0% | Yes |
+| 2 | **fs** | Forsort Stable In-Place | 7.412 | 15.8% | Yes |
+| 3 | **fi** | Forsort Unstable In-Place | 7.580 | 18.4% | No |
+| 4 | wi | WikiSort | 7.685 | 20.0% | Yes |
+| 5 | ti | TimSort | 8.408 | 31.3% | Yes |
+| 6 | is | Insertion Sort | 8.483 | 32.5% | Yes |
+| 7 | fb | Forsort Basic In-Place | 9.034 | 41.1% | Yes |
+| 8 | nq | Bentley/McIlroy Quick Sort | 10.946 | 71.0% | No |
+| 9 | gs | Grail Sort In-Place | 11.314 | 76.7% | Yes |
+| 10 | gq | GLibc Quick Sort | 14.660 | 129.0% | No |
 
 #### Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **is** | Insertion Sort | 0.942 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 1.082 | 14.9% | Yes |
-| 3 | **fs** | Forsort Stable In-Place | 1.362 | 44.6% | Yes |
-| 4 | ti | TimSort | 1.673 | 77.6% | Yes |
-| 5 | fi | Forsort Unstable In-Place | 3.276 | 247.8% | No |
-| 6 | fw | Forsort With Workspace | 3.657 | 288.2% | Yes |
-| 7 | wi | WikiSort | 5.831 | 519.0% | Yes |
-| 8 | gq | GLibc Quick Sort | 12.103 | 1184.8% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort | 12.374 | 1213.6% | No |
-| 10 | gs | Grail Sort In-Place | 15.299 | 1524.1% | Yes |
+| 1 | **ti** | TimSort | 0.827 | 0.0% | Yes |
+| 2 | **is** | Insertion Sort | 0.983 | 18.9% | Yes |
+| 3 | **fb** | Forsort Basic In-Place | 0.987 | 19.3% | Yes |
+| 4 | fs | Forsort Stable In-Place | 0.989 | 19.6% | Yes |
+| 5 | fi | Forsort Unstable In-Place | 1.194 | 44.4% | No |
+| 6 | fw | Forsort With Workspace | 1.227 | 48.4% | Yes |
+| 7 | wi | WikiSort | 2.525 | 205.3% | Yes |
+| 8 | gq | GLibc Quick Sort | 9.840 | 1089.8% | No |
+| 9 | gs | Grail Sort In-Place | 10.008 | 1110.2% | Yes |
+| 10 | nq | Bentley/McIlroy Quick Sort | 10.431 | 1161.3% | No |
 
 #### Ordered Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **is** | Insertion Sort | 0.922 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 1.062 | 15.2% | Yes |
-| 3 | **fs** | Forsort Stable In-Place | 1.232 | 33.6% | Yes |
-| 4 | ti | TimSort | 1.713 | 85.8% | Yes |
-| 5 | fi | Forsort Unstable In-Place | 3.196 | 246.6% | No |
-| 6 | fw | Forsort With Workspace | 3.707 | 302.1% | Yes |
-| 7 | wi | WikiSort | 5.610 | 508.5% | Yes |
-| 8 | nq | Bentley/McIlroy Quick Sort | 9.588 | 939.9% | No |
-| 9 | gs | Grail Sort In-Place | 11.632 | 1161.6% | Yes |
-| 10 | gq | GLibc Quick Sort | 12.304 | 1234.5% | No |
+| 1 | **ti** | TimSort | 0.816 | 0.0% | Yes |
+| 2 | **is** | Insertion Sort | 0.983 | 20.5% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 0.989 | 21.2% | Yes |
+| 4 | fb | Forsort Basic In-Place | 1.001 | 22.7% | Yes |
+| 5 | fi | Forsort Unstable In-Place | 1.196 | 46.6% | No |
+| 6 | fw | Forsort With Workspace | 1.239 | 51.8% | Yes |
+| 7 | wi | WikiSort | 2.526 | 209.6% | Yes |
+| 8 | gs | Grail Sort In-Place | 7.579 | 828.8% | Yes |
+| 9 | nq | Bentley/McIlroy Quick Sort | 8.885 | 988.8% | No |
+| 10 | gq | GLibc Quick Sort | 9.826 | 1104.2% | No |
 
 #### Random Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 25.298 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 32.230 | 27.4% | No |
-| 3 | **fs** | Forsort Stable In-Place | 35.988 | 42.3% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort | 40.036 | 58.3% | No |
-| 5 | wi | WikiSort | 40.196 | 58.9% | Yes |
-| 6 | gs | Grail Sort In-Place | 47.550 | 88.0% | Yes |
-| 7 | ti | TimSort | 49.243 | 94.7% | Yes |
-| 8 | gq | GLibc Quick Sort | 49.904 | 97.3% | No |
-| 9 | is | Insertion Sort | 50.174 | 98.3% | Yes |
-| 10 | fb | Forsort Basic In-Place | 60.895 | 140.7% | Yes |
+| 1 | **fw** | Forsort With Workspace | 16.563 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 20.354 | 22.9% | No |
+| 3 | **fs** | Forsort Stable In-Place | 23.847 | 44.0% | Yes |
+| 4 | wi | WikiSort | 32.695 | 97.4% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 36.351 | 119.5% | No |
+| 6 | gs | Grail Sort In-Place | 38.502 | 132.5% | Yes |
+| 7 | ti | TimSort | 43.824 | 164.6% | Yes |
+| 8 | fb | Forsort Basic In-Place | 48.660 | 193.8% | Yes |
+| 9 | is | Insertion Sort | 48.942 | 195.5% | Yes |
+| 10 | gq | GLibc Quick Sort | 48.985 | 195.7% | No |
 
 #### Random Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 28.473 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 30.137 | 5.8% | No |
-| 3 | **fs** | Forsort Stable In-Place | 34.325 | 20.6% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort | 38.713 | 36.0% | No |
-| 5 | wi | WikiSort | 38.934 | 36.7% | Yes |
-| 6 | gs | Grail Sort In-Place | 45.986 | 61.5% | Yes |
-| 7 | gq | GLibc Quick Sort | 49.794 | 74.9% | No |
-| 8 | ti | TimSort | 49.995 | 75.6% | Yes |
-| 9 | is | Insertion Sort | 50.676 | 78.0% | Yes |
-| 10 | fb | Forsort Basic In-Place | 59.933 | 110.5% | Yes |
+| 1 | **fw** | Forsort With Workspace | 16.543 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 20.401 | 23.3% | No |
+| 3 | **fs** | Forsort Stable In-Place | 23.645 | 42.9% | Yes |
+| 4 | wi | WikiSort | 32.977 | 99.3% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 37.560 | 127.0% | No |
+| 6 | gs | Grail Sort In-Place | 38.142 | 130.6% | Yes |
+| 7 | ti | TimSort | 43.832 | 165.0% | Yes |
+| 8 | fb | Forsort Basic In-Place | 48.408 | 192.6% | Yes |
+| 9 | is | Insertion Sort | 48.529 | 193.4% | Yes |
+| 10 | gq | GLibc Quick Sort | 49.021 | 196.3% | No |
 
 #### Reversed Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **wi** | WikiSort | 13.797 | 0.0% | Yes |
-| 2 | **fw** | Forsort With Workspace | 16.000 | 16.0% | Yes |
-| 3 | **ti** | TimSort | 18.555 | 34.5% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort | 19.327 | 40.1% | No |
-| 5 | fi | Forsort Unstable In-Place | 19.988 | 44.9% | No |
-| 6 | gs | Grail Sort In-Place | 21.140 | 53.2% | Yes |
-| 7 | fs | Forsort Stable In-Place | 22.783 | 65.1% | Yes |
-| 8 | is | Insertion Sort | 23.945 | 73.6% | Yes |
-| 9 | fb | Forsort Basic In-Place | 29.295 | 112.3% | Yes |
-| 10 | gq | GLibc Quick Sort | 46.508 | 237.1% | No |
+| 1 | **wi** | WikiSort | 7.726 | 0.0% | Yes |
+| 2 | **fw** | Forsort With Workspace | 8.236 | 6.6% | Yes |
+| 3 | **fi** | Forsort Unstable In-Place | 9.428 | 22.0% | No |
+| 4 | ti | TimSort | 9.586 | 24.1% | Yes |
+| 5 | fs | Forsort Stable In-Place | 10.407 | 34.7% | Yes |
+| 6 | gs | Grail Sort In-Place | 13.487 | 74.6% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort | 16.413 | 112.4% | No |
+| 8 | fb | Forsort Basic In-Place | 19.726 | 155.3% | Yes |
+| 9 | is | Insertion Sort | 22.556 | 191.9% | Yes |
+| 10 | gq | GLibc Quick Sort | 23.947 | 210.0% | No |
 
 #### Reversed Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 1.884 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 2.885 | 53.1% | Yes |
-| 3 | **fs** | Forsort Stable In-Place | 7.304 | 287.7% | Yes |
-| 4 | wi | WikiSort | 7.875 | 318.0% | Yes |
-| 5 | fw | Forsort With Workspace | 14.167 | 652.0% | Yes |
-| 6 | gs | Grail Sort In-Place | 14.207 | 654.1% | Yes |
-| 7 | gq | GLibc Quick Sort | 14.267 | 657.3% | No |
-| 8 | fi | Forsort Unstable In-Place | 15.940 | 746.1% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort | 18.124 | 862.0% | No |
-| 10 | is | Insertion Sort | 22.924 | 1116.8% | Yes |
+| 1 | **ti** | TimSort | 0.959 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 2.156 | 124.8% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 2.939 | 206.5% | Yes |
+| 4 | wi | WikiSort | 3.530 | 268.1% | Yes |
+| 5 | fw | Forsort With Workspace | 7.158 | 646.4% | Yes |
+| 6 | fi | Forsort Unstable In-Place | 7.632 | 695.8% | No |
+| 7 | gs | Grail Sort In-Place | 7.808 | 714.2% | Yes |
+| 8 | gq | GLibc Quick Sort | 11.723 | 1122.4% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort | 17.114 | 1684.6% | No |
+| 10 | is | Insertion Sort | 21.973 | 2191.2% | Yes |
 
 #### Overall Winner (Average Across All Variants)
 
-**Winner:** fw (Forsort With Workspace) - Average: 15.716 ns/item
+**Winner:** fw (Forsort With Workspace) - Average: 8.686 ns/item
 
 ### 10000 Items
 
@@ -380,155 +379,155 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 17.385 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 18.981 | 9.2% | No |
-| 3 | **fs** | Forsort Stable In-Place | 20.101 | 15.6% | Yes |
-| 4 | wi | WikiSort | 21.148 | 21.6% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort | 22.113 | 27.2% | No |
-| 6 | ti | TimSort | 22.568 | 29.8% | Yes |
-| 7 | gs | Grail Sort In-Place | 24.432 | 40.5% | Yes |
-| 8 | fb | Forsort Basic In-Place | 26.710 | 53.6% | Yes |
-| 9 | is | Insertion Sort | 27.937 | 60.7% | Yes |
-| 10 | gq | GLibc Quick Sort | 51.440 | 195.9% | No |
+| 1 | **fw** | Forsort With Workspace | 15.275 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 16.756 | 9.7% | No |
+| 3 | **fs** | Forsort Stable In-Place | 17.389 | 13.8% | Yes |
+| 4 | nq | Bentley/McIlroy Quick Sort | 18.363 | 20.2% | No |
+| 5 | ti | TimSort | 19.481 | 27.5% | Yes |
+| 6 | wi | WikiSort | 19.674 | 28.8% | Yes |
+| 7 | fb | Forsort Basic In-Place | 23.464 | 53.6% | Yes |
+| 8 | is | Insertion Sort | 23.621 | 54.6% | Yes |
+| 9 | gs | Grail Sort In-Place | 23.818 | 55.9% | Yes |
+| 10 | gq | GLibc Quick Sort | 27.392 | 79.3% | No |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 5.499 | 0.0% | Yes |
-| 2 | **fw** | Forsort With Workspace | 5.655 | 2.8% | Yes |
-| 3 | **fi** | Forsort Unstable In-Place | 6.147 | 11.8% | No |
-| 4 | fs | Forsort Stable In-Place | 6.571 | 19.5% | Yes |
-| 5 | fb | Forsort Basic In-Place | 7.790 | 41.7% | Yes |
-| 6 | is | Insertion Sort | 7.899 | 43.6% | Yes |
-| 7 | wi | WikiSort | 8.200 | 49.1% | Yes |
-| 8 | gs | Grail Sort In-Place | 12.131 | 120.6% | Yes |
-| 9 | nq | Bentley/McIlroy Quick Sort | 16.131 | 193.3% | No |
-| 10 | gq | GLibc Quick Sort | 20.856 | 279.3% | No |
+| 1 | **fw** | Forsort With Workspace | 4.154 | 0.0% | Yes |
+| 2 | **ti** | TimSort | 4.456 | 7.3% | Yes |
+| 3 | **fi** | Forsort Unstable In-Place | 4.733 | 13.9% | No |
+| 4 | fs | Forsort Stable In-Place | 4.971 | 19.7% | Yes |
+| 5 | fb | Forsort Basic In-Place | 5.786 | 39.3% | Yes |
+| 6 | wi | WikiSort | 6.701 | 61.3% | Yes |
+| 7 | is | Insertion Sort | 7.312 | 76.0% | Yes |
+| 8 | gs | Grail Sort In-Place | 11.444 | 175.5% | Yes |
+| 9 | nq | Bentley/McIlroy Quick Sort | 12.382 | 198.1% | No |
+| 10 | gq | GLibc Quick Sort | 14.361 | 245.7% | No |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 22.661 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 24.573 | 8.4% | No |
-| 3 | **fs** | Forsort Stable In-Place | 26.024 | 14.8% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort | 29.743 | 31.3% | No |
-| 5 | wi | WikiSort | 32.651 | 44.1% | Yes |
-| 6 | gs | Grail Sort In-Place | 39.024 | 72.2% | Yes |
-| 7 | gq | GLibc Quick Sort | 39.105 | 72.6% | No |
-| 8 | ti | TimSort | 39.141 | 72.7% | Yes |
-| 9 | is | Insertion Sort | 40.603 | 79.2% | Yes |
-| 10 | fb | Forsort Basic In-Place | 47.104 | 107.9% | Yes |
+| 1 | **fw** | Forsort With Workspace | 20.685 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 22.251 | 7.6% | No |
+| 3 | **fs** | Forsort Stable In-Place | 24.004 | 16.0% | Yes |
+| 4 | nq | Bentley/McIlroy Quick Sort | 28.534 | 37.9% | No |
+| 5 | wi | WikiSort | 30.822 | 49.0% | Yes |
+| 6 | gs | Grail Sort In-Place | 34.559 | 67.1% | Yes |
+| 7 | ti | TimSort | 35.408 | 71.2% | Yes |
+| 8 | is | Insertion Sort | 40.355 | 95.1% | Yes |
+| 9 | gq | GLibc Quick Sort | 40.446 | 95.5% | No |
+| 10 | fb | Forsort Basic In-Place | 42.721 | 106.5% | Yes |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 14.285 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 14.725 | 3.1% | No |
-| 3 | **fs** | Forsort Stable In-Place | 15.387 | 7.7% | Yes |
-| 4 | ti | TimSort | 15.388 | 7.7% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort | 15.630 | 9.4% | No |
-| 6 | wi | WikiSort | 16.768 | 17.4% | Yes |
-| 7 | fb | Forsort Basic In-Place | 17.817 | 24.7% | Yes |
-| 8 | gs | Grail Sort In-Place | 19.322 | 35.3% | Yes |
-| 9 | is | Insertion Sort | 20.057 | 40.4% | Yes |
-| 10 | gq | GLibc Quick Sort | 39.453 | 176.2% | No |
+| 1 | **fw** | Forsort With Workspace | 11.388 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 12.654 | 11.1% | No |
+| 3 | **ti** | TimSort | 12.929 | 13.5% | Yes |
+| 4 | fs | Forsort Stable In-Place | 13.050 | 14.6% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 15.249 | 33.9% | No |
+| 6 | wi | WikiSort | 15.315 | 34.5% | Yes |
+| 7 | fb | Forsort Basic In-Place | 15.951 | 40.1% | Yes |
+| 8 | gs | Grail Sort In-Place | 18.499 | 62.4% | Yes |
+| 9 | is | Insertion Sort | 19.266 | 69.2% | Yes |
+| 10 | gq | GLibc Quick Sort | 22.428 | 96.9% | No |
 
 #### Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **is** | Insertion Sort | 0.784 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 0.799 | 1.9% | Yes |
-| 3 | **ti** | TimSort | 0.861 | 9.8% | Yes |
-| 4 | fs | Forsort Stable In-Place | 0.992 | 26.5% | Yes |
-| 5 | fw | Forsort With Workspace | 1.174 | 49.7% | Yes |
-| 6 | fi | Forsort Unstable In-Place | 1.178 | 50.3% | No |
-| 7 | wi | WikiSort | 3.477 | 343.5% | Yes |
-| 8 | gs | Grail Sort In-Place | 10.925 | 1293.5% | Yes |
-| 9 | gq | GLibc Quick Sort | 12.516 | 1496.4% | No |
-| 10 | nq | Bentley/McIlroy Quick Sort | 12.960 | 1553.1% | No |
+| 1 | **ti** | TimSort | 0.795 | 0.0% | Yes |
+| 2 | **fw** | Forsort With Workspace | 0.926 | 16.5% | Yes |
+| 3 | **fi** | Forsort Unstable In-Place | 0.959 | 20.6% | No |
+| 4 | is | Insertion Sort | 0.962 | 21.0% | Yes |
+| 5 | fb | Forsort Basic In-Place | 0.963 | 21.1% | Yes |
+| 6 | fs | Forsort Stable In-Place | 0.975 | 22.6% | Yes |
+| 7 | wi | WikiSort | 2.856 | 259.2% | Yes |
+| 8 | gs | Grail Sort In-Place | 10.785 | 1256.6% | Yes |
+| 9 | gq | GLibc Quick Sort | 11.784 | 1382.3% | No |
+| 10 | nq | Bentley/McIlroy Quick Sort | 12.740 | 1502.5% | No |
 
 #### Ordered Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **is** | Insertion Sort | 0.784 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 0.797 | 1.7% | Yes |
-| 3 | **ti** | TimSort | 0.861 | 9.8% | Yes |
-| 4 | fs | Forsort Stable In-Place | 0.997 | 27.2% | Yes |
-| 5 | fw | Forsort With Workspace | 1.133 | 44.5% | Yes |
-| 6 | fi | Forsort Unstable In-Place | 1.157 | 47.6% | No |
-| 7 | wi | WikiSort | 3.137 | 300.1% | Yes |
-| 8 | gs | Grail Sort In-Place | 9.208 | 1074.5% | Yes |
-| 9 | nq | Bentley/McIlroy Quick Sort | 11.630 | 1383.4% | No |
-| 10 | gq | GLibc Quick Sort | 12.645 | 1512.9% | No |
+| 1 | **ti** | TimSort | 0.786 | 0.0% | Yes |
+| 2 | **fw** | Forsort With Workspace | 0.924 | 17.6% | Yes |
+| 3 | **is** | Insertion Sort | 0.958 | 21.9% | Yes |
+| 4 | fi | Forsort Unstable In-Place | 0.961 | 22.3% | No |
+| 5 | fb | Forsort Basic In-Place | 0.973 | 23.8% | Yes |
+| 6 | fs | Forsort Stable In-Place | 0.975 | 24.0% | Yes |
+| 7 | wi | WikiSort | 2.576 | 227.7% | Yes |
+| 8 | gs | Grail Sort In-Place | 9.239 | 1075.4% | Yes |
+| 9 | nq | Bentley/McIlroy Quick Sort | 11.573 | 1372.4% | No |
+| 10 | gq | GLibc Quick Sort | 11.773 | 1397.8% | No |
 
 #### Random Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 20.006 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 24.276 | 21.3% | No |
-| 3 | **fs** | Forsort Stable In-Place | 25.350 | 26.7% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort | 49.105 | 145.5% | No |
-| 5 | wi | WikiSort | 51.300 | 156.4% | Yes |
-| 6 | ti | TimSort | 61.142 | 205.6% | Yes |
-| 7 | gq | GLibc Quick Sort | 62.480 | 212.3% | No |
-| 8 | gs | Grail Sort In-Place | 66.376 | 231.8% | Yes |
-| 9 | fb | Forsort Basic In-Place | 73.445 | 267.1% | Yes |
-| 10 | is | Insertion Sort | 115.57 | 477.7% | Yes |
+| 1 | **fw** | Forsort With Workspace | 18.540 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 22.537 | 21.6% | No |
+| 3 | **fs** | Forsort Stable In-Place | 23.822 | 28.5% | Yes |
+| 4 | gs | Grail Sort In-Place | 47.561 | 156.5% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 49.007 | 164.3% | No |
+| 6 | wi | WikiSort | 50.614 | 173.0% | Yes |
+| 7 | ti | TimSort | 59.711 | 222.1% | Yes |
+| 8 | gq | GLibc Quick Sort | 65.245 | 251.9% | No |
+| 9 | fb | Forsort Basic In-Place | 68.078 | 267.2% | Yes |
+| 10 | is | Insertion Sort | 117.43 | 533.4% | Yes |
 
 #### Random Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 20.121 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 23.982 | 19.2% | No |
-| 3 | **fs** | Forsort Stable In-Place | 25.016 | 24.3% | Yes |
-| 4 | gs | Grail Sort In-Place | 48.149 | 139.3% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort | 49.886 | 147.9% | No |
-| 6 | wi | WikiSort | 50.845 | 152.7% | Yes |
-| 7 | ti | TimSort | 61.025 | 203.3% | Yes |
-| 8 | gq | GLibc Quick Sort | 68.573 | 240.8% | No |
-| 9 | fb | Forsort Basic In-Place | 71.798 | 256.8% | Yes |
-| 10 | is | Insertion Sort | 116.24 | 477.7% | Yes |
+| 1 | **fw** | Forsort With Workspace | 18.509 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 22.616 | 22.2% | No |
+| 3 | **fs** | Forsort Stable In-Place | 23.638 | 27.7% | Yes |
+| 4 | gs | Grail Sort In-Place | 47.471 | 156.5% | Yes |
+| 5 | wi | WikiSort | 50.234 | 171.4% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort | 50.275 | 171.6% | No |
+| 7 | ti | TimSort | 60.083 | 224.6% | Yes |
+| 8 | gq | GLibc Quick Sort | 65.734 | 255.1% | No |
+| 9 | fb | Forsort Basic In-Place | 68.210 | 268.5% | Yes |
+| 10 | is | Insertion Sort | 116.34 | 528.6% | Yes |
 
 #### Reversed Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 11.818 | 0.0% | Yes |
-| 2 | **wi** | WikiSort | 11.849 | 0.3% | Yes |
-| 3 | **fw** | Forsort With Workspace | 13.315 | 12.7% | Yes |
-| 4 | fi | Forsort Unstable In-Place | 13.335 | 12.8% | No |
-| 5 | fs | Forsort Stable In-Place | 13.721 | 16.1% | Yes |
-| 6 | gs | Grail Sort In-Place | 15.187 | 28.5% | Yes |
-| 7 | nq | Bentley/McIlroy Quick Sort | 21.599 | 82.8% | No |
-| 8 | fb | Forsort Basic In-Place | 24.325 | 105.8% | Yes |
-| 9 | gq | GLibc Quick Sort | 59.529 | 403.7% | No |
-| 10 | is | Insertion Sort | 260.34 | 2102.9% | Yes |
+| 1 | **ti** | TimSort | 9.437 | 0.0% | Yes |
+| 2 | **wi** | WikiSort | 9.949 | 5.4% | Yes |
+| 3 | **fw** | Forsort With Workspace | 11.495 | 21.8% | Yes |
+| 4 | fs | Forsort Stable In-Place | 12.096 | 28.2% | Yes |
+| 5 | fi | Forsort Unstable In-Place | 12.106 | 28.3% | No |
+| 6 | gs | Grail Sort In-Place | 14.311 | 51.6% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort | 21.302 | 125.7% | No |
+| 8 | fb | Forsort Basic In-Place | 21.645 | 129.4% | Yes |
+| 9 | gq | GLibc Quick Sort | 31.383 | 232.6% | No |
+| 10 | is | Insertion Sort | 211.69 | 2143.2% | Yes |
 
 #### Reversed Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 1.017 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 2.098 | 106.3% | Yes |
-| 3 | **fs** | Forsort Stable In-Place | 2.583 | 154.0% | Yes |
-| 4 | wi | WikiSort | 5.113 | 402.8% | Yes |
-| 5 | gs | Grail Sort In-Place | 10.195 | 902.5% | Yes |
-| 6 | fw | Forsort With Workspace | 10.962 | 977.9% | Yes |
-| 7 | fi | Forsort Unstable In-Place | 11.594 | 1040.0% | No |
-| 8 | gq | GLibc Quick Sort | 15.784 | 1452.0% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort | 22.401 | 2102.7% | No |
-| 10 | is | Insertion Sort | 215.56 | 21096.2% | Yes |
+| 1 | **ti** | TimSort | 0.921 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 2.148 | 133.2% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 2.275 | 147.0% | Yes |
+| 4 | wi | WikiSort | 4.454 | 383.6% | Yes |
+| 5 | gs | Grail Sort In-Place | 9.513 | 932.9% | Yes |
+| 6 | fw | Forsort With Workspace | 10.296 | 1017.9% | Yes |
+| 7 | fi | Forsort Unstable In-Place | 10.691 | 1060.8% | No |
+| 8 | gq | GLibc Quick Sort | 14.470 | 1471.1% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort | 22.596 | 2353.4% | No |
+| 10 | is | Insertion Sort | 210.72 | 22779.2% | Yes |
 
 #### Overall Winner (Average Across All Variants)
 
-**Winner:** fw (Forsort With Workspace) - Average: 12.670 ns/item
+**Winner:** fw (Forsort With Workspace) - Average: 11.219 ns/item
 
 ### 100000 Items
 
@@ -536,155 +535,155 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 18.441 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 19.616 | 6.4% | No |
-| 3 | **fs** | Forsort Stable In-Place | 20.245 | 9.8% | Yes |
-| 4 | wi | WikiSort | 26.176 | 41.9% | Yes |
-| 5 | fb | Forsort Basic In-Place | 29.486 | 59.9% | Yes |
-| 6 | ti | TimSort | 29.858 | 61.9% | Yes |
-| 7 | nq | Bentley/McIlroy Quick Sort | 29.878 | 62.0% | No |
-| 8 | gs | Grail Sort In-Place | 35.646 | 93.3% | Yes |
-| 9 | is | Insertion Sort | 37.500 | 103.4% | Yes |
-| 10 | gq | GLibc Quick Sort | 43.219 | 134.4% | No |
+| 1 | **fw** | Forsort With Workspace | 17.789 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 18.850 | 6.0% | No |
+| 3 | **fs** | Forsort Stable In-Place | 19.493 | 9.6% | Yes |
+| 4 | ti | TimSort | 23.579 | 32.5% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 23.747 | 33.5% | No |
+| 6 | wi | WikiSort | 26.000 | 46.2% | Yes |
+| 7 | fb | Forsort Basic In-Place | 29.457 | 65.6% | Yes |
+| 8 | gs | Grail Sort In-Place | 31.291 | 75.9% | Yes |
+| 9 | gq | GLibc Quick Sort | 32.894 | 84.9% | No |
+| 10 | is | Insertion Sort | 37.933 | 113.2% | Yes |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 6.966 | 0.0% | Yes |
-| 2 | **fw** | Forsort With Workspace | 7.248 | 4.0% | Yes |
-| 3 | **fi** | Forsort Unstable In-Place | 7.764 | 11.5% | No |
-| 4 | fb | Forsort Basic In-Place | 9.349 | 34.2% | Yes |
-| 5 | fs | Forsort Stable In-Place | 12.155 | 74.5% | Yes |
-| 6 | wi | WikiSort | 13.450 | 93.1% | Yes |
-| 7 | gs | Grail Sort In-Place | 15.924 | 128.6% | Yes |
-| 8 | is | Insertion Sort | 19.803 | 184.3% | Yes |
-| 9 | gq | GLibc Quick Sort | 19.816 | 184.5% | No |
-| 10 | nq | Bentley/McIlroy Quick Sort | 24.972 | 258.5% | No |
+| 1 | **ti** | TimSort | 6.566 | 0.0% | Yes |
+| 2 | **fw** | Forsort With Workspace | 6.927 | 5.5% | Yes |
+| 3 | **fi** | Forsort Unstable In-Place | 7.452 | 13.5% | No |
+| 4 | fs | Forsort Stable In-Place | 7.626 | 16.1% | Yes |
+| 5 | fb | Forsort Basic In-Place | 9.157 | 39.5% | Yes |
+| 6 | wi | WikiSort | 13.247 | 101.8% | Yes |
+| 7 | gs | Grail Sort In-Place | 15.925 | 142.5% | Yes |
+| 8 | nq | Bentley/McIlroy Quick Sort | 16.551 | 152.1% | No |
+| 9 | is | Insertion Sort | 19.687 | 199.8% | Yes |
+| 10 | gq | GLibc Quick Sort | 20.609 | 213.9% | No |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 25.364 | 0.0% | Yes |
-| 2 | **fs** | Forsort Stable In-Place | 27.450 | 8.2% | Yes |
-| 3 | **fi** | Forsort Unstable In-Place | 28.119 | 10.9% | No |
-| 4 | nq | Bentley/McIlroy Quick Sort | 40.981 | 61.6% | No |
-| 5 | wi | WikiSort | 41.250 | 62.6% | Yes |
-| 6 | gs | Grail Sort In-Place | 44.741 | 76.4% | Yes |
-| 7 | ti | TimSort | 50.543 | 99.3% | Yes |
-| 8 | fb | Forsort Basic In-Place | 54.852 | 116.3% | Yes |
-| 9 | gq | GLibc Quick Sort | 57.951 | 128.5% | No |
-| 10 | is | Insertion Sort | 126.38 | 398.3% | Yes |
+| 1 | **fw** | Forsort With Workspace | 23.699 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 25.100 | 5.9% | No |
+| 3 | **fs** | Forsort Stable In-Place | 26.669 | 12.5% | Yes |
+| 4 | nq | Bentley/McIlroy Quick Sort | 36.399 | 53.6% | No |
+| 5 | wi | WikiSort | 39.009 | 64.6% | Yes |
+| 6 | gs | Grail Sort In-Place | 43.049 | 81.6% | Yes |
+| 7 | ti | TimSort | 43.181 | 82.2% | Yes |
+| 8 | gq | GLibc Quick Sort | 48.016 | 102.6% | No |
+| 9 | fb | Forsort Basic In-Place | 52.840 | 123.0% | Yes |
+| 10 | is | Insertion Sort | 125.12 | 428.0% | Yes |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 14.509 | 0.0% | Yes |
-| 2 | **ti** | TimSort | 17.189 | 18.5% | Yes |
-| 3 | **fs** | Forsort Stable In-Place | 20.299 | 39.9% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort | 20.657 | 42.4% | No |
-| 5 | wi | WikiSort | 21.172 | 45.9% | Yes |
-| 6 | fi | Forsort Unstable In-Place | 22.121 | 52.5% | No |
-| 7 | fb | Forsort Basic In-Place | 26.553 | 83.0% | Yes |
-| 8 | gs | Grail Sort In-Place | 27.880 | 92.2% | Yes |
-| 9 | is | Insertion Sort | 28.837 | 98.8% | Yes |
-| 10 | gq | GLibc Quick Sort | 33.048 | 127.8% | No |
+| 1 | **fw** | Forsort With Workspace | 13.830 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 14.802 | 7.0% | No |
+| 3 | **fs** | Forsort Stable In-Place | 14.991 | 8.4% | Yes |
+| 4 | ti | TimSort | 16.467 | 19.1% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 20.091 | 45.3% | No |
+| 6 | fb | Forsort Basic In-Place | 20.539 | 48.5% | Yes |
+| 7 | wi | WikiSort | 20.809 | 50.5% | Yes |
+| 8 | gs | Grail Sort In-Place | 25.791 | 86.5% | Yes |
+| 9 | is | Insertion Sort | 26.999 | 95.2% | Yes |
+| 10 | gq | GLibc Quick Sort | 27.723 | 100.5% | No |
 
 #### Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **is** | Insertion Sort | 0.768 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 0.770 | 0.3% | Yes |
-| 3 | **ti** | TimSort | 0.778 | 1.3% | Yes |
-| 4 | fs | Forsort Stable In-Place | 1.040 | 35.4% | Yes |
-| 5 | fi | Forsort Unstable In-Place | 1.063 | 38.4% | No |
-| 6 | fw | Forsort With Workspace | 1.331 | 73.3% | Yes |
-| 7 | wi | WikiSort | 2.711 | 253.0% | Yes |
-| 8 | gs | Grail Sort In-Place | 13.816 | 1699.0% | Yes |
-| 9 | gq | GLibc Quick Sort | 15.250 | 1885.7% | No |
-| 10 | nq | Bentley/McIlroy Quick Sort | 20.640 | 2587.5% | No |
+| 1 | **ti** | TimSort | 0.793 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 0.883 | 11.3% | Yes |
+| 3 | **is** | Insertion Sort | 0.886 | 11.7% | Yes |
+| 4 | fs | Forsort Stable In-Place | 0.973 | 22.7% | Yes |
+| 5 | fw | Forsort With Workspace | 1.060 | 33.7% | Yes |
+| 6 | fi | Forsort Unstable In-Place | 1.062 | 33.9% | No |
+| 7 | wi | WikiSort | 2.629 | 231.5% | Yes |
+| 8 | gs | Grail Sort In-Place | 11.628 | 1366.3% | Yes |
+| 9 | gq | GLibc Quick Sort | 14.051 | 1671.9% | No |
+| 10 | nq | Bentley/McIlroy Quick Sort | 17.470 | 2103.0% | No |
 
 #### Ordered Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fb** | Forsort Basic In-Place | 0.768 | 0.0% | Yes |
-| 2 | **is** | Insertion Sort | 0.768 | 0.0% | Yes |
-| 3 | **ti** | TimSort | 0.777 | 1.2% | Yes |
-| 4 | fs | Forsort Stable In-Place | 0.960 | 25.0% | Yes |
-| 5 | fi | Forsort Unstable In-Place | 1.058 | 37.8% | No |
-| 6 | fw | Forsort With Workspace | 1.260 | 64.1% | Yes |
-| 7 | wi | WikiSort | 2.607 | 239.5% | Yes |
-| 8 | gs | Grail Sort In-Place | 10.796 | 1305.7% | Yes |
-| 9 | nq | Bentley/McIlroy Quick Sort | 15.874 | 1966.9% | No |
-| 10 | gq | GLibc Quick Sort | 17.194 | 2138.8% | No |
+| 1 | **ti** | TimSort | 0.782 | 0.0% | Yes |
+| 2 | **is** | Insertion Sort | 0.850 | 8.7% | Yes |
+| 3 | **fb** | Forsort Basic In-Place | 0.857 | 9.6% | Yes |
+| 4 | fs | Forsort Stable In-Place | 0.974 | 24.6% | Yes |
+| 5 | fw | Forsort With Workspace | 1.059 | 35.4% | Yes |
+| 6 | fi | Forsort Unstable In-Place | 1.062 | 35.8% | No |
+| 7 | wi | WikiSort | 2.501 | 219.8% | Yes |
+| 8 | gs | Grail Sort In-Place | 10.340 | 1222.3% | Yes |
+| 9 | gq | GLibc Quick Sort | 13.989 | 1688.9% | No |
+| 10 | nq | Bentley/McIlroy Quick Sort | 15.770 | 1916.6% | No |
 
 #### Random Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 24.007 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 26.604 | 10.8% | No |
-| 3 | **fs** | Forsort Stable In-Place | 32.804 | 36.6% | Yes |
-| 4 | gs | Grail Sort In-Place | 56.769 | 136.5% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort | 63.636 | 165.1% | No |
-| 6 | wi | WikiSort | 63.969 | 166.5% | Yes |
-| 7 | ti | TimSort | 77.216 | 221.6% | Yes |
-| 8 | gq | GLibc Quick Sort | 78.090 | 225.3% | No |
-| 9 | fb | Forsort Basic In-Place | 92.587 | 285.7% | Yes |
-| 10 | is | Insertion Sort | 967.17 | 3928.7% | Yes |
+| 1 | **fw** | Forsort With Workspace | 22.777 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 26.187 | 15.0% | No |
+| 3 | **fs** | Forsort Stable In-Place | 27.360 | 20.1% | Yes |
+| 4 | gs | Grail Sort In-Place | 56.133 | 146.4% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 61.328 | 169.3% | No |
+| 6 | wi | WikiSort | 62.446 | 174.2% | Yes |
+| 7 | ti | TimSort | 74.164 | 225.6% | Yes |
+| 8 | gq | GLibc Quick Sort | 77.091 | 238.5% | No |
+| 9 | fb | Forsort Basic In-Place | 87.104 | 282.4% | Yes |
+| 10 | is | Insertion Sort | 976.59 | 4187.6% | Yes |
 
 #### Random Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 23.238 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 25.903 | 11.5% | No |
-| 3 | **fs** | Forsort Stable In-Place | 28.026 | 20.6% | Yes |
-| 4 | gs | Grail Sort In-Place | 62.923 | 170.8% | Yes |
-| 5 | wi | WikiSort | 63.123 | 171.6% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort | 63.931 | 175.1% | No |
-| 7 | ti | TimSort | 81.015 | 248.6% | Yes |
-| 8 | gq | GLibc Quick Sort | 87.486 | 276.5% | No |
-| 9 | fb | Forsort Basic In-Place | 92.625 | 298.6% | Yes |
-| 10 | is | Insertion Sort | 971.50 | 4080.7% | Yes |
+| 1 | **fw** | Forsort With Workspace | 22.825 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 26.020 | 14.0% | No |
+| 3 | **fs** | Forsort Stable In-Place | 27.274 | 19.5% | Yes |
+| 4 | gs | Grail Sort In-Place | 56.091 | 145.7% | Yes |
+| 5 | wi | WikiSort | 61.962 | 171.5% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort | 62.617 | 174.3% | No |
+| 7 | ti | TimSort | 74.291 | 225.5% | Yes |
+| 8 | gq | GLibc Quick Sort | 77.112 | 237.8% | No |
+| 9 | fb | Forsort Basic In-Place | 87.692 | 284.2% | Yes |
+| 10 | is | Insertion Sort | 981.14 | 4198.5% | Yes |
 
 #### Reversed Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 12.378 | 0.0% | Yes |
-| 2 | **fs** | Forsort Stable In-Place | 15.316 | 23.7% | Yes |
-| 3 | **fi** | Forsort Unstable In-Place | 15.469 | 25.0% | No |
-| 4 | wi | WikiSort | 15.647 | 26.4% | Yes |
-| 5 | fw | Forsort With Workspace | 16.978 | 37.2% | Yes |
-| 6 | gs | Grail Sort In-Place | 24.127 | 94.9% | Yes |
-| 7 | fb | Forsort Basic In-Place | 24.745 | 99.9% | Yes |
-| 8 | gq | GLibc Quick Sort | 25.330 | 104.6% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort | 32.450 | 162.2% | No |
-| 10 | is | Insertion Sort | 2484.1 | 19968.3% | Yes |
+| 1 | **ti** | TimSort | 9.856 | 0.0% | Yes |
+| 2 | **wi** | WikiSort | 11.241 | 14.1% | Yes |
+| 3 | **fw** | Forsort With Workspace | 14.344 | 45.5% | Yes |
+| 4 | fs | Forsort Stable In-Place | 14.451 | 46.6% | Yes |
+| 5 | gs | Grail Sort In-Place | 15.028 | 52.5% | Yes |
+| 6 | fi | Forsort Unstable In-Place | 15.279 | 55.0% | No |
+| 7 | nq | Bentley/McIlroy Quick Sort | 22.057 | 123.8% | No |
+| 8 | fb | Forsort Basic In-Place | 24.070 | 144.2% | Yes |
+| 9 | gq | GLibc Quick Sort | 36.155 | 266.8% | No |
+| 10 | is | Insertion Sort | 2433.2 | 24587.5% | Yes |
 
 #### Reversed Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 0.922 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 1.978 | 114.5% | Yes |
-| 3 | **fs** | Forsort Stable In-Place | 2.344 | 154.2% | Yes |
-| 4 | wi | WikiSort | 5.465 | 492.7% | Yes |
-| 5 | gs | Grail Sort In-Place | 10.736 | 1064.4% | Yes |
-| 6 | fi | Forsort Unstable In-Place | 14.118 | 1431.2% | No |
-| 7 | fw | Forsort With Workspace | 14.288 | 1449.7% | Yes |
-| 8 | gq | GLibc Quick Sort | 18.695 | 1927.7% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort | 30.192 | 3174.6% | No |
-| 10 | is | Insertion Sort | 2359.9 | 255855.4% | Yes |
+| 1 | **ti** | TimSort | 0.925 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 2.052 | 121.8% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 2.390 | 158.4% | Yes |
+| 4 | wi | WikiSort | 5.135 | 455.1% | Yes |
+| 5 | gs | Grail Sort In-Place | 10.553 | 1040.9% | Yes |
+| 6 | fw | Forsort With Workspace | 13.378 | 1346.3% | Yes |
+| 7 | fi | Forsort Unstable In-Place | 14.004 | 1413.9% | No |
+| 8 | gq | GLibc Quick Sort | 17.022 | 1740.2% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort | 21.634 | 2238.8% | No |
+| 10 | is | Insertion Sort | 2458.9 | 265723.7% | Yes |
 
 #### Overall Winner (Average Across All Variants)
 
-**Winner:** fw (Forsort With Workspace) - Average: 14.666 ns/item
+**Winner:** fw (Forsort With Workspace) - Average: 13.769 ns/item
 
 ### 1000000 Items
 
@@ -692,145 +691,145 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 19.579 | 0.0% | Yes |
-| 2 | **fs** | Forsort Stable In-Place | 20.605 | 5.2% | Yes |
-| 3 | **fi** | Forsort Unstable In-Place | 20.662 | 5.5% | No |
-| 4 | ti | TimSort | 28.209 | 44.1% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort | 30.135 | 53.9% | No |
-| 6 | wi | WikiSort | 31.419 | 60.5% | Yes |
-| 7 | fb | Forsort Basic In-Place | 33.807 | 72.7% | Yes |
-| 8 | gs | Grail Sort In-Place | 40.173 | 105.2% | Yes |
-| 9 | gq | GLibc Quick Sort | 42.707 | 118.1% | No |
+| 1 | **fw** | Forsort With Workspace | 19.163 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 20.489 | 6.9% | No |
+| 3 | **fs** | Forsort Stable In-Place | 20.828 | 8.7% | Yes |
+| 4 | ti | TimSort | 26.932 | 40.5% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 29.122 | 52.0% | No |
+| 6 | wi | WikiSort | 31.813 | 66.0% | Yes |
+| 7 | fb | Forsort Basic In-Place | 34.386 | 79.4% | Yes |
+| 8 | gq | GLibc Quick Sort | 39.627 | 106.8% | No |
+| 9 | gs | Grail Sort In-Place | 40.059 | 109.0% | Yes |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fi** | Forsort Unstable In-Place | 8.449 | 0.0% | No |
-| 2 | **ti** | TimSort | 8.580 | 1.6% | Yes |
-| 3 | **fw** | Forsort With Workspace | 8.752 | 3.6% | Yes |
-| 4 | fs | Forsort Stable In-Place | 8.806 | 4.2% | Yes |
-| 5 | fb | Forsort Basic In-Place | 11.451 | 35.5% | Yes |
-| 6 | wi | WikiSort | 18.066 | 113.8% | Yes |
-| 7 | nq | Bentley/McIlroy Quick Sort | 20.197 | 139.0% | No |
-| 8 | gs | Grail Sort In-Place | 25.149 | 197.7% | Yes |
-| 9 | gq | GLibc Quick Sort | 28.012 | 231.5% | No |
+| 1 | **fw** | Forsort With Workspace | 8.107 | 0.0% | Yes |
+| 2 | **fs** | Forsort Stable In-Place | 8.434 | 4.0% | Yes |
+| 3 | **ti** | TimSort | 8.473 | 4.5% | Yes |
+| 4 | fi | Forsort Unstable In-Place | 8.498 | 4.8% | No |
+| 5 | fb | Forsort Basic In-Place | 11.258 | 38.9% | Yes |
+| 6 | wi | WikiSort | 17.679 | 118.1% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort | 20.032 | 147.1% | No |
+| 8 | gs | Grail Sort In-Place | 24.661 | 204.2% | Yes |
+| 9 | gq | GLibc Quick Sort | 26.639 | 228.6% | No |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 27.081 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 27.826 | 2.8% | No |
-| 3 | **fs** | Forsort Stable In-Place | 28.703 | 6.0% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort | 45.269 | 67.2% | No |
-| 5 | wi | WikiSort | 47.479 | 75.3% | Yes |
-| 6 | gs | Grail Sort In-Place | 51.964 | 91.9% | Yes |
-| 7 | ti | TimSort | 52.463 | 93.7% | Yes |
-| 8 | gq | GLibc Quick Sort | 58.319 | 115.4% | No |
-| 9 | fb | Forsort Basic In-Place | 61.600 | 127.5% | Yes |
+| 1 | **fw** | Forsort With Workspace | 25.973 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 27.203 | 4.7% | No |
+| 3 | **fs** | Forsort Stable In-Place | 28.831 | 11.0% | Yes |
+| 4 | nq | Bentley/McIlroy Quick Sort | 44.335 | 70.7% | No |
+| 5 | wi | WikiSort | 46.474 | 78.9% | Yes |
+| 6 | ti | TimSort | 49.751 | 91.5% | Yes |
+| 7 | gs | Grail Sort In-Place | 52.071 | 100.5% | Yes |
+| 8 | gq | GLibc Quick Sort | 57.118 | 119.9% | No |
+| 9 | fb | Forsort Basic In-Place | 62.222 | 139.6% | Yes |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 16.025 | 0.0% | Yes |
-| 2 | **fs** | Forsort Stable In-Place | 16.526 | 3.1% | Yes |
-| 3 | **fi** | Forsort Unstable In-Place | 16.837 | 5.1% | No |
-| 4 | ti | TimSort | 19.532 | 21.9% | Yes |
-| 5 | fb | Forsort Basic In-Place | 24.075 | 50.2% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort | 25.591 | 59.7% | No |
-| 7 | wi | WikiSort | 26.924 | 68.0% | Yes |
-| 8 | gs | Grail Sort In-Place | 35.557 | 121.9% | Yes |
-| 9 | gq | GLibc Quick Sort | 37.000 | 130.9% | No |
+| 1 | **fw** | Forsort With Workspace | 15.052 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 16.023 | 6.5% | No |
+| 3 | **fs** | Forsort Stable In-Place | 16.236 | 7.9% | Yes |
+| 4 | ti | TimSort | 19.033 | 26.4% | Yes |
+| 5 | fb | Forsort Basic In-Place | 24.258 | 61.2% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort | 24.672 | 63.9% | No |
+| 7 | wi | WikiSort | 26.357 | 75.1% | Yes |
+| 8 | gq | GLibc Quick Sort | 33.982 | 125.8% | No |
+| 9 | gs | Grail Sort In-Place | 34.509 | 129.3% | Yes |
 
 #### Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fb** | Forsort Basic In-Place | 0.780 | 0.0% | Yes |
-| 2 | **ti** | TimSort | 0.873 | 11.9% | Yes |
-| 3 | **fs** | Forsort Stable In-Place | 0.995 | 27.6% | Yes |
-| 4 | fi | Forsort Unstable In-Place | 1.072 | 37.4% | No |
-| 5 | fw | Forsort With Workspace | 1.532 | 96.4% | Yes |
-| 6 | wi | WikiSort | 2.634 | 237.7% | Yes |
-| 7 | gs | Grail Sort In-Place | 13.657 | 1650.9% | Yes |
-| 8 | gq | GLibc Quick Sort | 18.723 | 2300.4% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort | 21.078 | 2602.3% | No |
+| 1 | **ti** | TimSort | 0.823 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 0.835 | 1.5% | Yes |
+| 3 | **fi** | Forsort Unstable In-Place | 1.032 | 25.4% | No |
+| 4 | fs | Forsort Stable In-Place | 1.040 | 26.4% | Yes |
+| 5 | fw | Forsort With Workspace | 1.151 | 39.9% | Yes |
+| 6 | wi | WikiSort | 2.602 | 216.2% | Yes |
+| 7 | gs | Grail Sort In-Place | 13.555 | 1547.0% | Yes |
+| 8 | gq | GLibc Quick Sort | 17.082 | 1975.6% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort | 20.062 | 2337.7% | No |
 
 #### Ordered Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 0.923 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 0.947 | 2.6% | Yes |
-| 3 | **fs** | Forsort Stable In-Place | 1.026 | 11.2% | Yes |
-| 4 | fi | Forsort Unstable In-Place | 1.065 | 15.4% | No |
-| 5 | fw | Forsort With Workspace | 1.727 | 87.1% | Yes |
-| 6 | wi | WikiSort | 2.571 | 178.5% | Yes |
-| 7 | gs | Grail Sort In-Place | 14.643 | 1486.5% | Yes |
-| 8 | gq | GLibc Quick Sort | 17.867 | 1835.8% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort | 18.704 | 1926.4% | No |
+| 1 | **ti** | TimSort | 0.842 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 0.883 | 4.9% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 1.001 | 18.9% | Yes |
+| 4 | fi | Forsort Unstable In-Place | 1.046 | 24.2% | No |
+| 5 | fw | Forsort With Workspace | 1.148 | 36.3% | Yes |
+| 6 | wi | WikiSort | 2.534 | 201.0% | Yes |
+| 7 | gs | Grail Sort In-Place | 12.646 | 1401.9% | Yes |
+| 8 | gq | GLibc Quick Sort | 17.094 | 1930.2% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort | 18.470 | 2093.6% | No |
 
 #### Random Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 27.005 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 29.815 | 10.4% | No |
-| 3 | **fs** | Forsort Stable In-Place | 30.405 | 12.6% | Yes |
-| 4 | gs | Grail Sort In-Place | 65.866 | 143.9% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort | 73.787 | 173.2% | No |
-| 6 | wi | WikiSort | 75.893 | 181.0% | Yes |
-| 7 | ti | TimSort | 90.253 | 234.2% | Yes |
-| 8 | gq | GLibc Quick Sort | 94.365 | 249.4% | No |
-| 9 | fb | Forsort Basic In-Place | 112.67 | 317.2% | Yes |
+| 1 | **fw** | Forsort With Workspace | 25.646 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 29.348 | 14.4% | No |
+| 3 | **fs** | Forsort Stable In-Place | 30.156 | 17.6% | Yes |
+| 4 | gs | Grail Sort In-Place | 65.399 | 155.0% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 73.490 | 186.6% | No |
+| 6 | wi | WikiSort | 74.782 | 191.6% | Yes |
+| 7 | ti | TimSort | 88.695 | 245.8% | Yes |
+| 8 | gq | GLibc Quick Sort | 92.146 | 259.3% | No |
+| 9 | fb | Forsort Basic In-Place | 106.27 | 314.4% | Yes |
 
 #### Random Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 27.024 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 29.914 | 10.7% | No |
-| 3 | **fs** | Forsort Stable In-Place | 31.217 | 15.5% | Yes |
-| 4 | gs | Grail Sort In-Place | 65.259 | 141.5% | Yes |
-| 5 | wi | WikiSort | 75.123 | 178.0% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort | 75.926 | 181.0% | No |
-| 7 | ti | TimSort | 90.447 | 234.7% | Yes |
-| 8 | gq | GLibc Quick Sort | 97.034 | 259.1% | No |
-| 9 | fb | Forsort Basic In-Place | 105.69 | 291.1% | Yes |
+| 1 | **fw** | Forsort With Workspace | 25.602 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 29.467 | 15.1% | No |
+| 3 | **fs** | Forsort Stable In-Place | 30.167 | 17.8% | Yes |
+| 4 | gs | Grail Sort In-Place | 65.177 | 154.6% | Yes |
+| 5 | wi | WikiSort | 74.390 | 190.6% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort | 74.916 | 192.6% | No |
+| 7 | ti | TimSort | 88.721 | 246.5% | Yes |
+| 8 | gq | GLibc Quick Sort | 92.131 | 259.9% | No |
+| 9 | fb | Forsort Basic In-Place | 105.96 | 313.9% | Yes |
 
 #### Reversed Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 11.770 | 0.0% | Yes |
-| 2 | **wi** | WikiSort | 12.769 | 8.5% | Yes |
-| 3 | **fs** | Forsort Stable In-Place | 18.673 | 58.6% | Yes |
-| 4 | gs | Grail Sort In-Place | 18.809 | 59.8% | Yes |
-| 5 | fi | Forsort Unstable In-Place | 19.616 | 66.7% | No |
-| 6 | fw | Forsort With Workspace | 19.804 | 68.3% | Yes |
-| 7 | nq | Bentley/McIlroy Quick Sort | 26.704 | 126.9% | No |
-| 8 | fb | Forsort Basic In-Place | 28.186 | 139.5% | Yes |
-| 9 | gq | GLibc Quick Sort | 36.613 | 211.1% | No |
+| 1 | **ti** | TimSort | 10.315 | 0.0% | Yes |
+| 2 | **wi** | WikiSort | 12.300 | 19.2% | Yes |
+| 3 | **gs** | Grail Sort In-Place | 17.386 | 68.6% | Yes |
+| 4 | fs | Forsort Stable In-Place | 18.580 | 80.1% | Yes |
+| 5 | fw | Forsort With Workspace | 18.784 | 82.1% | Yes |
+| 6 | fi | Forsort Unstable In-Place | 19.543 | 89.5% | No |
+| 7 | nq | Bentley/McIlroy Quick Sort | 26.173 | 153.7% | No |
+| 8 | fb | Forsort Basic In-Place | 28.013 | 171.6% | Yes |
+| 9 | gq | GLibc Quick Sort | 36.316 | 252.1% | No |
 
 #### Reversed Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 1.031 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 2.018 | 95.7% | Yes |
-| 3 | **fs** | Forsort Stable In-Place | 2.804 | 172.0% | Yes |
-| 4 | wi | WikiSort | 6.307 | 511.7% | Yes |
-| 5 | gs | Grail Sort In-Place | 13.369 | 1196.7% | Yes |
-| 6 | fw | Forsort With Workspace | 18.491 | 1693.5% | Yes |
-| 7 | fi | Forsort Unstable In-Place | 18.841 | 1727.4% | No |
-| 8 | gq | GLibc Quick Sort | 22.182 | 2051.5% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort | 26.991 | 2517.9% | No |
+| 1 | **ti** | TimSort | 1.059 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 2.096 | 97.9% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 2.508 | 136.8% | Yes |
+| 4 | wi | WikiSort | 6.065 | 472.7% | Yes |
+| 5 | gs | Grail Sort In-Place | 13.231 | 1149.4% | Yes |
+| 6 | fw | Forsort With Workspace | 18.072 | 1606.5% | Yes |
+| 7 | fi | Forsort Unstable In-Place | 19.020 | 1696.0% | No |
+| 8 | gq | GLibc Quick Sort | 19.797 | 1769.4% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort | 26.055 | 2360.3% | No |
 
 #### Overall Winner (Average Across All Variants)
 
-**Winner:** fs (Forsort Stable In-Place) - Average: 15.976 ns/item
+**Winner:** fs (Forsort Stable In-Place) - Average: 15.778 ns/item
 
 ### 10000000 Items
 
@@ -838,145 +837,291 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 21.219 | 0.0% | Yes |
-| 2 | **fs** | Forsort Stable In-Place | 22.631 | 6.7% | Yes |
-| 3 | **fi** | Forsort Unstable In-Place | 22.738 | 7.2% | No |
-| 4 | ti | TimSort | 32.062 | 51.1% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort | 34.323 | 61.8% | No |
-| 6 | fb | Forsort Basic In-Place | 39.431 | 85.8% | Yes |
-| 7 | wi | WikiSort | 39.890 | 88.0% | Yes |
-| 8 | gq | GLibc Quick Sort | 47.351 | 123.2% | No |
-| 9 | gs | Grail Sort In-Place | 49.208 | 131.9% | Yes |
+| 1 | **fw** | Forsort With Workspace | 20.743 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 22.129 | 6.7% | No |
+| 3 | **fs** | Forsort Stable In-Place | 22.513 | 8.5% | Yes |
+| 4 | ti | TimSort | 30.935 | 49.1% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 34.336 | 65.5% | No |
+| 6 | wi | WikiSort | 39.379 | 89.8% | Yes |
+| 7 | fb | Forsort Basic In-Place | 39.676 | 91.3% | Yes |
+| 8 | gq | GLibc Quick Sort | 47.899 | 130.9% | No |
+| 9 | gs | Grail Sort In-Place | 49.331 | 137.8% | Yes |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 9.062 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 9.533 | 5.2% | No |
-| 3 | **fs** | Forsort Stable In-Place | 9.620 | 6.2% | Yes |
-| 4 | fw | Forsort With Workspace | 10.068 | 11.1% | Yes |
-| 5 | fb | Forsort Basic In-Place | 13.245 | 46.2% | Yes |
-| 6 | wi | WikiSort | 22.856 | 152.2% | Yes |
-| 7 | nq | Bentley/McIlroy Quick Sort | 23.593 | 160.4% | No |
-| 8 | gs | Grail Sort In-Place | 33.252 | 266.9% | Yes |
-| 9 | gq | GLibc Quick Sort | 33.800 | 273.0% | No |
+| 1 | **ti** | TimSort | 9.097 | 0.0% | Yes |
+| 2 | **fw** | Forsort With Workspace | 9.174 | 0.8% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 9.495 | 4.4% | Yes |
+| 4 | fi | Forsort Unstable In-Place | 9.543 | 4.9% | No |
+| 5 | fb | Forsort Basic In-Place | 13.115 | 44.2% | Yes |
+| 6 | wi | WikiSort | 22.784 | 150.5% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort | 23.383 | 157.0% | No |
+| 8 | gq | GLibc Quick Sort | 32.742 | 259.9% | No |
+| 9 | gs | Grail Sort In-Place | 33.200 | 265.0% | Yes |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 28.938 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 30.036 | 3.8% | No |
-| 3 | **fs** | Forsort Stable In-Place | 31.203 | 7.8% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort | 52.391 | 81.0% | No |
-| 5 | wi | WikiSort | 57.809 | 99.8% | Yes |
-| 6 | ti | TimSort | 59.454 | 105.5% | Yes |
-| 7 | gs | Grail Sort In-Place | 62.754 | 116.9% | Yes |
-| 8 | gq | GLibc Quick Sort | 72.079 | 149.1% | No |
-| 9 | fb | Forsort Basic In-Place | 72.472 | 150.4% | Yes |
+| 1 | **fw** | Forsort With Workspace | 28.664 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 30.076 | 4.9% | No |
+| 3 | **fs** | Forsort Stable In-Place | 31.495 | 9.9% | Yes |
+| 4 | nq | Bentley/McIlroy Quick Sort | 52.103 | 81.8% | No |
+| 5 | wi | WikiSort | 56.882 | 98.4% | Yes |
+| 6 | ti | TimSort | 58.422 | 103.8% | Yes |
+| 7 | gs | Grail Sort In-Place | 62.085 | 116.6% | Yes |
+| 8 | gq | GLibc Quick Sort | 69.050 | 140.9% | No |
+| 9 | fb | Forsort Basic In-Place | 71.858 | 150.7% | Yes |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 16.978 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 17.381 | 2.4% | No |
-| 3 | **fs** | Forsort Stable In-Place | 17.697 | 4.2% | Yes |
-| 4 | ti | TimSort | 22.299 | 31.3% | Yes |
-| 5 | fb | Forsort Basic In-Place | 27.807 | 63.8% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort | 29.257 | 72.3% | No |
-| 7 | wi | WikiSort | 33.801 | 99.1% | Yes |
-| 8 | gq | GLibc Quick Sort | 40.195 | 136.7% | No |
-| 9 | gs | Grail Sort In-Place | 43.143 | 154.1% | Yes |
+| 1 | **fw** | Forsort With Workspace | 16.360 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 17.340 | 6.0% | No |
+| 3 | **fs** | Forsort Stable In-Place | 17.451 | 6.7% | Yes |
+| 4 | ti | TimSort | 21.332 | 30.4% | Yes |
+| 5 | fb | Forsort Basic In-Place | 28.043 | 71.4% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort | 29.036 | 77.5% | No |
+| 7 | wi | WikiSort | 33.136 | 102.5% | Yes |
+| 8 | gq | GLibc Quick Sort | 40.935 | 150.2% | No |
+| 9 | gs | Grail Sort In-Place | 43.137 | 163.7% | Yes |
 
 #### Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fb** | Forsort Basic In-Place | 0.806 | 0.0% | Yes |
-| 2 | **ti** | TimSort | 0.822 | 2.0% | Yes |
-| 3 | **fw** | Forsort With Workspace | 0.896 | 11.2% | Yes |
-| 4 | fi | Forsort Unstable In-Place | 0.937 | 16.3% | No |
-| 5 | fs | Forsort Stable In-Place | 0.993 | 23.2% | Yes |
-| 6 | wi | WikiSort | 2.119 | 162.9% | Yes |
-| 7 | gs | Grail Sort In-Place | 16.960 | 2004.2% | Yes |
-| 8 | gq | GLibc Quick Sort | 21.899 | 2617.0% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort | 22.610 | 2705.2% | No |
+| 1 | **fb** | Forsort Basic In-Place | 0.801 | 0.0% | Yes |
+| 2 | **ti** | TimSort | 0.808 | 0.9% | Yes |
+| 3 | **fw** | Forsort With Workspace | 0.916 | 14.4% | Yes |
+| 4 | fi | Forsort Unstable In-Place | 0.932 | 16.4% | No |
+| 5 | fs | Forsort Stable In-Place | 0.984 | 22.8% | Yes |
+| 6 | wi | WikiSort | 2.093 | 161.3% | Yes |
+| 7 | gs | Grail Sort In-Place | 17.028 | 2025.8% | Yes |
+| 8 | gq | GLibc Quick Sort | 20.038 | 2401.6% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort | 21.931 | 2638.0% | No |
 
 #### Ordered Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 0.782 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 0.809 | 3.5% | Yes |
-| 3 | **fw** | Forsort With Workspace | 0.894 | 14.3% | Yes |
-| 4 | fi | Forsort Unstable In-Place | 0.957 | 22.4% | No |
-| 5 | fs | Forsort Stable In-Place | 1.002 | 28.1% | Yes |
-| 6 | wi | WikiSort | 2.046 | 161.6% | Yes |
-| 7 | gs | Grail Sort In-Place | 15.822 | 1923.3% | Yes |
-| 8 | gq | GLibc Quick Sort | 20.657 | 2541.6% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort | 20.761 | 2554.9% | No |
+| 1 | **ti** | TimSort | 0.803 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 0.804 | 0.1% | Yes |
+| 3 | **fw** | Forsort With Workspace | 0.908 | 13.1% | Yes |
+| 4 | fi | Forsort Unstable In-Place | 0.935 | 16.4% | No |
+| 5 | fs | Forsort Stable In-Place | 0.994 | 23.8% | Yes |
+| 6 | wi | WikiSort | 2.040 | 154.0% | Yes |
+| 7 | gs | Grail Sort In-Place | 16.497 | 1954.4% | Yes |
+| 8 | gq | GLibc Quick Sort | 20.083 | 2401.0% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort | 20.889 | 2501.4% | No |
 
 #### Random Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 30.117 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 33.626 | 11.7% | No |
-| 3 | **fs** | Forsort Stable In-Place | 34.836 | 15.7% | Yes |
-| 4 | gs | Grail Sort In-Place | 77.802 | 158.3% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort | 87.728 | 191.3% | No |
-| 6 | wi | WikiSort | 92.482 | 207.1% | Yes |
-| 7 | ti | TimSort | 107.44 | 256.7% | Yes |
-| 8 | gq | GLibc Quick Sort | 112.21 | 272.6% | No |
-| 9 | fb | Forsort Basic In-Place | 123.75 | 310.9% | Yes |
+| 1 | **fw** | Forsort With Workspace | 29.059 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 33.275 | 14.5% | No |
+| 3 | **fs** | Forsort Stable In-Place | 33.678 | 15.9% | Yes |
+| 4 | gs | Grail Sort In-Place | 77.983 | 168.4% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 85.651 | 194.7% | No |
+| 6 | wi | WikiSort | 91.588 | 215.2% | Yes |
+| 7 | ti | TimSort | 104.91 | 261.0% | Yes |
+| 8 | gq | GLibc Quick Sort | 109.66 | 277.4% | No |
+| 9 | fb | Forsort Basic In-Place | 124.30 | 327.8% | Yes |
 
 #### Random Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | Forsort With Workspace | 30.668 | 0.0% | Yes |
-| 2 | **fi** | Forsort Unstable In-Place | 33.198 | 8.2% | No |
-| 3 | **fs** | Forsort Stable In-Place | 34.275 | 11.8% | Yes |
-| 4 | gs | Grail Sort In-Place | 78.547 | 156.1% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort | 87.656 | 185.8% | No |
-| 6 | wi | WikiSort | 90.514 | 195.1% | Yes |
-| 7 | gq | GLibc Quick Sort | 108.27 | 253.0% | No |
-| 8 | ti | TimSort | 108.99 | 255.4% | Yes |
-| 9 | fb | Forsort Basic In-Place | 124.64 | 306.4% | Yes |
+| 1 | **fw** | Forsort With Workspace | 29.311 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 33.000 | 12.6% | No |
+| 3 | **fs** | Forsort Stable In-Place | 33.944 | 15.8% | Yes |
+| 4 | gs | Grail Sort In-Place | 77.906 | 165.8% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 87.093 | 197.1% | No |
+| 6 | wi | WikiSort | 91.938 | 213.7% | Yes |
+| 7 | ti | TimSort | 105.05 | 258.4% | Yes |
+| 8 | gq | GLibc Quick Sort | 109.24 | 272.7% | No |
+| 9 | fb | Forsort Basic In-Place | 124.86 | 326.0% | Yes |
 
 #### Reversed Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 13.656 | 0.0% | Yes |
-| 2 | **wi** | WikiSort | 14.789 | 8.3% | Yes |
-| 3 | **gs** | Grail Sort In-Place | 19.844 | 45.3% | Yes |
-| 4 | fs | Forsort Stable In-Place | 23.414 | 71.5% | Yes |
-| 5 | fw | Forsort With Workspace | 24.130 | 76.7% | Yes |
-| 6 | fi | Forsort Unstable In-Place | 24.341 | 78.2% | No |
-| 7 | nq | Bentley/McIlroy Quick Sort | 30.618 | 124.2% | No |
-| 8 | fb | Forsort Basic In-Place | 32.368 | 137.0% | Yes |
-| 9 | gq | GLibc Quick Sort | 46.624 | 241.4% | No |
+| 1 | **ti** | TimSort | 11.983 | 0.0% | Yes |
+| 2 | **wi** | WikiSort | 15.496 | 29.3% | Yes |
+| 3 | **gs** | Grail Sort In-Place | 20.196 | 68.5% | Yes |
+| 4 | fw | Forsort With Workspace | 22.482 | 87.6% | Yes |
+| 5 | fi | Forsort Unstable In-Place | 24.037 | 100.6% | No |
+| 6 | fs | Forsort Stable In-Place | 24.450 | 104.0% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort | 30.469 | 154.3% | No |
+| 8 | fb | Forsort Basic In-Place | 32.275 | 169.3% | Yes |
+| 9 | gq | GLibc Quick Sort | 43.205 | 260.6% | No |
 
 #### Reversed Unique
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort | 0.999 | 0.0% | Yes |
-| 2 | **fb** | Forsort Basic In-Place | 2.133 | 113.5% | Yes |
-| 3 | **fs** | Forsort Stable In-Place | 2.927 | 193.0% | Yes |
-| 4 | wi | WikiSort | 6.924 | 593.1% | Yes |
-| 5 | gs | Grail Sort In-Place | 15.796 | 1481.2% | Yes |
-| 6 | fw | Forsort With Workspace | 22.405 | 2142.7% | Yes |
-| 7 | fi | Forsort Unstable In-Place | 23.516 | 2254.0% | No |
-| 8 | gq | GLibc Quick Sort | 25.400 | 2442.5% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort | 31.570 | 3060.2% | No |
+| 1 | **ti** | TimSort | 0.979 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 2.051 | 109.5% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 2.775 | 183.5% | Yes |
+| 4 | wi | WikiSort | 6.951 | 610.0% | Yes |
+| 5 | gs | Grail Sort In-Place | 16.104 | 1544.9% | Yes |
+| 6 | fw | Forsort With Workspace | 21.955 | 2142.6% | Yes |
+| 7 | fi | Forsort Unstable In-Place | 24.310 | 2383.1% | No |
+| 8 | gq | GLibc Quick Sort | 24.978 | 2451.4% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort | 31.002 | 3066.7% | No |
 
 #### Overall Winner (Average Across All Variants)
 
-**Winner:** fs (Forsort Stable In-Place) - Average: 17.860 ns/item
+**Winner:** fs (Forsort Stable In-Place) - Average: 17.778 ns/item
+
+### 100000000 Items
+
+#### 10 Percent Disordered
+
+| Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
+|------|-----------|------|---------|-------------|---------|
+| 1 | **fw** | Forsort With Workspace | 25.309 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 25.467 | 0.6% | No |
+| 3 | **fs** | Forsort Stable In-Place | 26.565 | 5.0% | Yes |
+| 4 | ti | TimSort | 35.490 | 40.2% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 39.698 | 56.9% | No |
+| 6 | fb | Forsort Basic In-Place | 46.670 | 84.4% | Yes |
+| 7 | wi | WikiSort | 48.545 | 91.8% | Yes |
+| 8 | gq | GLibc Quick Sort | 57.895 | 128.8% | No |
+| 9 | gs | Grail Sort In-Place | 60.151 | 137.7% | Yes |
+
+#### 1 Percent Disordered
+
+| Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
+|------|-----------|------|---------|-------------|---------|
+| 1 | **ti** | TimSort | 10.726 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 12.262 | 14.3% | No |
+| 3 | **fs** | Forsort Stable In-Place | 12.463 | 16.2% | Yes |
+| 4 | fw | Forsort With Workspace | 12.911 | 20.4% | Yes |
+| 5 | fb | Forsort Basic In-Place | 15.519 | 44.7% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort | 27.142 | 153.0% | No |
+| 7 | wi | WikiSort | 30.463 | 184.0% | Yes |
+| 8 | gq | GLibc Quick Sort | 39.832 | 271.4% | No |
+| 9 | gs | Grail Sort In-Place | 43.269 | 303.4% | Yes |
+
+#### 25 Percent Disordered
+
+| Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
+|------|-----------|------|---------|-------------|---------|
+| 1 | **fi** | Forsort Unstable In-Place | 34.205 | 0.0% | No |
+| 2 | **fw** | Forsort With Workspace | 34.257 | 0.2% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 36.598 | 7.0% | Yes |
+| 4 | nq | Bentley/McIlroy Quick Sort | 59.904 | 75.1% | No |
+| 5 | ti | TimSort | 67.243 | 96.6% | Yes |
+| 6 | wi | WikiSort | 67.871 | 98.4% | Yes |
+| 7 | gs | Grail Sort In-Place | 73.497 | 114.9% | Yes |
+| 8 | gq | GLibc Quick Sort | 81.428 | 138.1% | No |
+| 9 | fb | Forsort Basic In-Place | 83.430 | 143.9% | Yes |
+
+#### 5 Percent Disordered
+
+| Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
+|------|-----------|------|---------|-------------|---------|
+| 1 | **fw** | Forsort With Workspace | 20.020 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 20.207 | 0.9% | No |
+| 3 | **fs** | Forsort Stable In-Place | 20.647 | 3.1% | Yes |
+| 4 | ti | TimSort | 24.426 | 22.0% | Yes |
+| 5 | fb | Forsort Basic In-Place | 32.984 | 64.8% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort | 33.598 | 67.8% | No |
+| 7 | wi | WikiSort | 41.380 | 106.7% | Yes |
+| 8 | gq | GLibc Quick Sort | 49.686 | 148.2% | No |
+| 9 | gs | Grail Sort In-Place | 54.354 | 171.5% | Yes |
+
+#### Ordered Duplicates
+
+| Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
+|------|-----------|------|---------|-------------|---------|
+| 1 | **ti** | TimSort | 0.786 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 0.792 | 0.8% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 0.978 | 24.4% | Yes |
+| 4 | fi | Forsort Unstable In-Place | 1.473 | 87.4% | No |
+| 5 | fw | Forsort With Workspace | 2.082 | 164.9% | Yes |
+| 6 | wi | WikiSort | 2.414 | 207.1% | Yes |
+| 7 | gs | Grail Sort In-Place | 23.056 | 2833.3% | Yes |
+| 8 | gq | GLibc Quick Sort | 23.966 | 2949.1% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort | 25.976 | 3204.8% | No |
+
+#### Ordered Unique
+
+| Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
+|------|-----------|------|---------|-------------|---------|
+| 1 | **ti** | TimSort | 0.786 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 0.792 | 0.8% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 0.981 | 24.8% | Yes |
+| 4 | fi | Forsort Unstable In-Place | 1.481 | 88.4% | No |
+| 5 | fw | Forsort With Workspace | 2.116 | 169.2% | Yes |
+| 6 | wi | WikiSort | 2.375 | 202.2% | Yes |
+| 7 | gs | Grail Sort In-Place | 22.325 | 2740.3% | Yes |
+| 8 | gq | GLibc Quick Sort | 24.322 | 2994.4% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort | 24.455 | 3011.3% | No |
+
+#### Random Duplicates
+
+| Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
+|------|-----------|------|---------|-------------|---------|
+| 1 | **fw** | Forsort With Workspace | 36.295 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 38.793 | 6.9% | No |
+| 3 | **fs** | Forsort Stable In-Place | 42.454 | 17.0% | Yes |
+| 4 | gs | Grail Sort In-Place | 91.618 | 152.4% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 97.703 | 169.2% | No |
+| 6 | wi | WikiSort | 108.10 | 197.8% | Yes |
+| 7 | ti | TimSort | 121.29 | 234.2% | Yes |
+| 8 | gq | GLibc Quick Sort | 126.81 | 249.4% | No |
+| 9 | fb | Forsort Basic In-Place | 146.11 | 302.6% | Yes |
+
+#### Random Unique
+
+| Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
+|------|-----------|------|---------|-------------|---------|
+| 1 | **fw** | Forsort With Workspace | 36.396 | 0.0% | Yes |
+| 2 | **fi** | Forsort Unstable In-Place | 38.656 | 6.2% | No |
+| 3 | **fs** | Forsort Stable In-Place | 43.581 | 19.7% | Yes |
+| 4 | gs | Grail Sort In-Place | 91.645 | 151.8% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 99.441 | 173.2% | No |
+| 6 | wi | WikiSort | 108.09 | 197.0% | Yes |
+| 7 | ti | TimSort | 121.26 | 233.2% | Yes |
+| 8 | gq | GLibc Quick Sort | 126.72 | 248.2% | No |
+| 9 | fb | Forsort Basic In-Place | 146.13 | 301.5% | Yes |
+
+#### Reversed Duplicates
+
+| Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
+|------|-----------|------|---------|-------------|---------|
+| 1 | **ti** | TimSort | 16.041 | 0.0% | Yes |
+| 2 | **wi** | WikiSort | 20.924 | 30.4% | Yes |
+| 3 | **gs** | Grail Sort In-Place | 27.421 | 70.9% | Yes |
+| 4 | fw | Forsort With Workspace | 30.663 | 91.2% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort | 31.010 | 93.3% | No |
+| 6 | fi | Forsort Unstable In-Place | 35.531 | 121.5% | No |
+| 7 | fs | Forsort Stable In-Place | 36.415 | 127.0% | Yes |
+| 8 | gq | GLibc Quick Sort | 50.597 | 215.4% | No |
+| 9 | fb | Forsort Basic In-Place | 53.640 | 234.4% | Yes |
+
+#### Reversed Unique
+
+| Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
+|------|-----------|------|---------|-------------|---------|
+| 1 | **ti** | TimSort | 1.064 | 0.0% | Yes |
+| 2 | **fb** | Forsort Basic In-Place | 2.227 | 109.3% | Yes |
+| 3 | **fs** | Forsort Stable In-Place | 5.630 | 429.1% | Yes |
+| 4 | wi | WikiSort | 12.789 | 1102.0% | Yes |
+| 5 | gs | Grail Sort In-Place | 22.968 | 2058.6% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort | 29.687 | 2690.1% | No |
+| 7 | fw | Forsort With Workspace | 30.722 | 2787.4% | Yes |
+| 8 | gq | GLibc Quick Sort | 31.609 | 2870.8% | No |
+| 9 | fi | Forsort Unstable In-Place | 33.838 | 3080.3% | No |
+
+#### Overall Winner (Average Across All Variants)
+
+**Winner:** fs (Forsort Stable In-Place) - Average: 22.631 ns/item
 
 
 ## Detailed Results by Dataset Size
@@ -987,151 +1132,151 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| nq | Bentley/McIlroy Quick Sort | **0.000015700** | 8551 | **15.700** | Yes | 1 |
-| is | Insertion Sort | **0.000018044** | 9914 | **18.044** | Yes | 2 |
-| wi | WikiSort | **0.000018355** | 6814 | **18.355** | Yes | 3 |
-| fw | Forsort With Workspace | 0.000018976 | 4638 | 18.976 | Yes | 4 |
-| fs | Forsort Stable In-Place | 0.000021650 | 5165 | 21.650 | Yes | 5 |
-| gs | Grail Sort In-Place | 0.000022603 | 6681 | 22.603 | Yes | 6 |
-| gq | GLibc Quick Sort | 0.000022843 | 6406 | 22.843 | Yes | 7 |
-| ti | TimSort | 0.000022933 | 4835 | 22.933 | Yes | 8 |
-| fb | Forsort Basic In-Place | 0.000023705 | 5943 | 23.705 | Yes | 9 |
-| fi | Forsort Unstable In-Place | 0.000023905 | 5175 | 23.905 | Yes | 10 |
+| fw | Forsort With Workspace | **0.000010669** | 4437 | **10.669** | Yes | 1 |
+| wi | WikiSort | **0.000011494** | 7000 | **11.494** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.000012203** | 5039 | **12.203** | Yes | 3 |
+| fi | Forsort Unstable In-Place | 0.000012366 | 4835 | 12.366 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.000012846 | 8522 | 12.846 | Yes | 5 |
+| ti | TimSort | 0.000013116 | 4668 | 13.116 | Yes | 6 |
+| is | Insertion Sort | 0.000014551 | 9778 | 14.551 | Yes | 7 |
+| gs | Grail Sort In-Place | 0.000015313 | 6633 | 15.313 | Yes | 8 |
+| fb | Forsort Basic In-Place | 0.000015372 | 5767 | 15.372 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.000019315 | 6438 | 19.315 | Yes | 10 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| is | Insertion Sort | **0.000003196** | 1926 | **3.196** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.000005801** | 2212 | **5.801** | Yes | 2 |
-| fw | Forsort With Workspace | **0.000006493** | 1355 | **6.493** | Yes | 3 |
-| ti | TimSort | 0.000007625 | 2235 | 7.625 | Yes | 4 |
-| fi | Forsort Unstable In-Place | 0.000008756 | 1496 | 8.756 | Yes | 5 |
-| wi | WikiSort | 0.000009077 | 2792 | 9.077 | Yes | 6 |
-| fs | Forsort Stable In-Place | 0.000009448 | 2744 | 9.448 | Yes | 7 |
-| nq | Bentley/McIlroy Quick Sort | 0.000011361 | 8304 | 11.361 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.000014738 | 5016 | 14.738 | Yes | 9 |
-| gs | Grail Sort In-Place | 0.000015038 | 4933 | 15.038 | Yes | 10 |
+| is | Insertion Sort | **0.000002007** | 1619 | **2.007** | Yes | 1 |
+| fw | Forsort With Workspace | **0.000002052** | 1255 | **2.052** | Yes | 2 |
+| fi | Forsort Unstable In-Place | **0.000002301** | 1344 | **2.301** | Yes | 3 |
+| fb | Forsort Basic In-Place | 0.000003006 | 2203 | 3.006 | Yes | 4 |
+| fs | Forsort Stable In-Place | 0.000003039 | 2189 | 3.039 | Yes | 5 |
+| wi | WikiSort | 0.000003296 | 2798 | 3.296 | Yes | 6 |
+| ti | TimSort | 0.000003621 | 2045 | 3.621 | Yes | 7 |
+| gs | Grail Sort In-Place | 0.000008536 | 4877 | 8.536 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.000009466 | 8249 | 9.466 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.000010467 | 4983 | 10.467 | Yes | 10 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| nq | Bentley/McIlroy Quick Sort | **0.000023384** | 9211 | **23.384** | Yes | 1 |
-| wi | WikiSort | **0.000026821** | 8846 | **26.821** | Yes | 2 |
-| fw | Forsort With Workspace | **0.000027021** | 7428 | **27.021** | Yes | 3 |
-| is | Insertion Sort | 0.000029506 | 10569 | 29.506 | Yes | 4 |
-| fi | Forsort Unstable In-Place | 0.000029947 | 7835 | 29.947 | Yes | 5 |
-| fs | Forsort Stable In-Place | 0.000032220 | 8302 | 32.220 | Yes | 6 |
-| gs | Grail Sort In-Place | 0.000033703 | 9042 | 33.703 | Yes | 7 |
-| ti | TimSort | 0.000034886 | 7010 | 34.886 | Yes | 8 |
-| fb | Forsort Basic In-Place | 0.000040717 | 9126 | 40.717 | Yes | 9 |
-| gq | GLibc Quick Sort | 0.000052820 | 8064 | 52.820 | Yes | 10 |
+| fw | Forsort With Workspace | **0.000016768** | 7393 | **16.768** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.000018543** | 7689 | **18.543** | Yes | 2 |
+| wi | WikiSort | **0.000019029** | 8748 | **19.029** | Yes | 3 |
+| nq | Bentley/McIlroy Quick Sort | 0.000020656 | 9187 | 20.656 | Yes | 4 |
+| fs | Forsort Stable In-Place | 0.000021510 | 8173 | 21.510 | Yes | 5 |
+| ti | TimSort | 0.000024827 | 7036 | 24.827 | Yes | 6 |
+| gs | Grail Sort In-Place | 0.000026104 | 9002 | 26.104 | Yes | 7 |
+| is | Insertion Sort | 0.000026560 | 10649 | 26.560 | Yes | 8 |
+| gq | GLibc Quick Sort | 0.000030044 | 7947 | 30.044 | Yes | 9 |
+| fb | Forsort Basic In-Place | 0.000030659 | 9141 | 30.659 | Yes | 10 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| is | Insertion Sort | **0.000011581** | 7002 | **11.581** | Yes | 1 |
-| nq | Bentley/McIlroy Quick Sort | **0.000013325** | 8389 | **13.325** | Yes | 2 |
-| fw | Forsort With Workspace | **0.000013365** | 3122 | **13.365** | Yes | 3 |
-| fb | Forsort Basic In-Place | 0.000014798 | 4435 | 14.798 | Yes | 4 |
-| wi | WikiSort | 0.000015219 | 5635 | 15.219 | Yes | 5 |
-| ti | TimSort | 0.000015800 | 3759 | 15.800 | Yes | 6 |
-| fs | Forsort Stable In-Place | 0.000016200 | 3521 | 16.200 | Yes | 7 |
-| fi | Forsort Unstable In-Place | 0.000017533 | 3455 | 17.533 | Yes | 8 |
-| gs | Grail Sort In-Place | 0.000018024 | 5713 | 18.024 | Yes | 9 |
-| gq | GLibc Quick Sort | 0.000019016 | 5673 | 19.016 | Yes | 10 |
+| fw | Forsort With Workspace | **0.000006403** | 2843 | **6.403** | Yes | 1 |
+| fs | Forsort Stable In-Place | **0.000007412** | 3431 | **7.412** | Yes | 2 |
+| fi | Forsort Unstable In-Place | **0.000007580** | 3137 | **7.580** | Yes | 3 |
+| wi | WikiSort | 0.000007685 | 5001 | 7.685 | Yes | 4 |
+| ti | TimSort | 0.000008408 | 3567 | 8.408 | Yes | 5 |
+| is | Insertion Sort | 0.000008483 | 6333 | 8.483 | Yes | 6 |
+| fb | Forsort Basic In-Place | 0.000009034 | 4094 | 9.034 | Yes | 7 |
+| nq | Bentley/McIlroy Quick Sort | 0.000010946 | 8358 | 10.946 | Yes | 8 |
+| gs | Grail Sort In-Place | 0.000011314 | 5504 | 11.314 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.000014660 | 5560 | 14.660 | Yes | 10 |
 
 #### Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| is | Insertion Sort | **0.000000942** | 999 | **0.942** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.000001082** | 999 | **1.082** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.000001362** | 999 | **1.362** | Yes | 3 |
-| ti | TimSort | 0.000001673 | 999 | 1.673 | Yes | 4 |
-| fi | Forsort Unstable In-Place | 0.000003276 | 1052 | 3.276 | Yes | 5 |
-| fw | Forsort With Workspace | 0.000003657 | 1028 | 3.657 | Yes | 6 |
-| wi | WikiSort | 0.000005831 | 2530 | 5.831 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.000012103 | 4932 | 12.103 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.000012374 | 7959 | 12.374 | No | 9 |
-| gs | Grail Sort In-Place | 0.000015299 | 5139 | 15.299 | Yes | 10 |
+| ti | TimSort | **0.000000827** | 999 | **0.827** | Yes | 1 |
+| is | Insertion Sort | **0.000000983** | 999 | **0.983** | Yes | 2 |
+| fb | Forsort Basic In-Place | **0.000000987** | 999 | **0.987** | Yes | 3 |
+| fs | Forsort Stable In-Place | 0.000000989 | 999 | 0.989 | Yes | 4 |
+| fi | Forsort Unstable In-Place | 0.000001194 | 1052 | 1.194 | Yes | 5 |
+| fw | Forsort With Workspace | 0.000001227 | 1028 | 1.227 | Yes | 6 |
+| wi | WikiSort | 0.000002525 | 2530 | 2.525 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.000009840 | 4932 | 9.840 | Yes | 8 |
+| gs | Grail Sort In-Place | 0.000010008 | 5216 | 10.008 | Yes | 9 |
+| nq | Bentley/McIlroy Quick Sort | 0.000010431 | 7953 | 10.431 | No | 10 |
 
 #### Ordered Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| is | Insertion Sort | **0.000000922** | 999 | **0.922** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.000001062** | 999 | **1.062** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.000001232** | 999 | **1.232** | Yes | 3 |
-| ti | TimSort | 0.000001713 | 999 | 1.713 | Yes | 4 |
-| fi | Forsort Unstable In-Place | 0.000003196 | 1052 | 3.196 | Yes | 5 |
-| fw | Forsort With Workspace | 0.000003707 | 1028 | 3.707 | Yes | 6 |
-| wi | WikiSort | 0.000005610 | 2530 | 5.610 | Yes | 7 |
-| nq | Bentley/McIlroy Quick Sort | 0.000009588 | 8192 | 9.588 | Yes | 8 |
-| gs | Grail Sort In-Place | 0.000011632 | 4790 | 11.632 | Yes | 9 |
-| gq | GLibc Quick Sort | 0.000012304 | 4932 | 12.304 | Yes | 10 |
+| ti | TimSort | **0.000000816** | 999 | **0.816** | Yes | 1 |
+| is | Insertion Sort | **0.000000983** | 999 | **0.983** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.000000989** | 999 | **0.989** | Yes | 3 |
+| fb | Forsort Basic In-Place | 0.000001001 | 999 | 1.001 | Yes | 4 |
+| fi | Forsort Unstable In-Place | 0.000001196 | 1052 | 1.196 | Yes | 5 |
+| fw | Forsort With Workspace | 0.000001239 | 1028 | 1.239 | Yes | 6 |
+| wi | WikiSort | 0.000002526 | 2530 | 2.526 | Yes | 7 |
+| gs | Grail Sort In-Place | 0.000007579 | 4790 | 7.579 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.000008885 | 8192 | 8.885 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.000009826 | 4932 | 9.826 | Yes | 10 |
 
 #### Random Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.000025298** | 9545 | **25.298** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.000032230** | 10166 | **32.230** | No | 2 |
-| fs | Forsort Stable In-Place | **0.000035988** | 10564 | **35.988** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort | 0.000040036 | 9551 | 40.036 | No | 4 |
-| wi | WikiSort | 0.000040196 | 9532 | 40.196 | Yes | 5 |
-| gs | Grail Sort In-Place | 0.000047550 | 10486 | 47.550 | Yes | 6 |
-| ti | TimSort | 0.000049243 | 8670 | 49.243 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.000049904 | 8702 | 49.904 | Yes | 8 |
-| is | Insertion Sort | 0.000050174 | 10897 | 50.174 | Yes | 9 |
-| fb | Forsort Basic In-Place | 0.000060895 | 15144 | 60.895 | Yes | 10 |
+| fw | Forsort With Workspace | **0.000016563** | 9578 | **16.563** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.000020354** | 10215 | **20.354** | No | 2 |
+| fs | Forsort Stable In-Place | **0.000023847** | 10478 | **23.847** | Yes | 3 |
+| wi | WikiSort | 0.000032695 | 9514 | 32.695 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.000036351 | 9401 | 36.351 | No | 5 |
+| gs | Grail Sort In-Place | 0.000038502 | 10536 | 38.502 | Yes | 6 |
+| ti | TimSort | 0.000043824 | 8680 | 43.824 | Yes | 7 |
+| fb | Forsort Basic In-Place | 0.000048660 | 15097 | 48.660 | Yes | 8 |
+| is | Insertion Sort | 0.000048942 | 10907 | 48.942 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.000048985 | 8703 | 48.985 | Yes | 10 |
 
 #### Random Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.000028473** | 9543 | **28.473** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.000030137** | 10128 | **30.137** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.000034325** | 10446 | **34.325** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort | 0.000038713 | 10449 | 38.713 | Yes | 4 |
-| wi | WikiSort | 0.000038934 | 9528 | 38.934 | Yes | 5 |
-| gs | Grail Sort In-Place | 0.000045986 | 10421 | 45.986 | Yes | 6 |
-| gq | GLibc Quick Sort | 0.000049794 | 8699 | 49.794 | Yes | 7 |
-| ti | TimSort | 0.000049995 | 8667 | 49.995 | Yes | 8 |
-| is | Insertion Sort | 0.000050676 | 10897 | 50.676 | Yes | 9 |
-| fb | Forsort Basic In-Place | 0.000059933 | 15138 | 59.933 | Yes | 10 |
+| fw | Forsort With Workspace | **0.000016543** | 9575 | **16.543** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.000020401** | 10218 | **20.401** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.000023645** | 10464 | **23.645** | Yes | 3 |
+| wi | WikiSort | 0.000032977 | 9510 | 32.977 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.000037560 | 10086 | 37.560 | Yes | 5 |
+| gs | Grail Sort In-Place | 0.000038142 | 10506 | 38.142 | Yes | 6 |
+| ti | TimSort | 0.000043832 | 8680 | 43.832 | Yes | 7 |
+| fb | Forsort Basic In-Place | 0.000048408 | 15120 | 48.408 | Yes | 8 |
+| is | Insertion Sort | 0.000048529 | 10912 | 48.529 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.000049021 | 8703 | 49.021 | Yes | 10 |
 
 #### Reversed Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| wi | WikiSort | **0.000013797** | 4824 | **13.797** | Yes | 1 |
-| fw | Forsort With Workspace | **0.000016000** | 6577 | **16.000** | Yes | 2 |
-| ti | TimSort | **0.000018555** | 4514 | **18.555** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort | 0.000019327 | 11921 | 19.327 | No | 4 |
-| fi | Forsort Unstable In-Place | 0.000019988 | 6543 | 19.988 | No | 5 |
-| gs | Grail Sort In-Place | 0.000021140 | 5709 | 21.140 | Yes | 6 |
-| fs | Forsort Stable In-Place | 0.000022783 | 5921 | 22.783 | Yes | 7 |
-| is | Insertion Sort | 0.000023945 | 10980 | 23.945 | Yes | 8 |
-| fb | Forsort Basic In-Place | 0.000029295 | 8586 | 29.295 | Yes | 9 |
-| gq | GLibc Quick Sort | 0.000046508 | 5231 | 46.508 | Yes | 10 |
+| wi | WikiSort | **0.000007726** | 4601 | **7.726** | Yes | 1 |
+| fw | Forsort With Workspace | **0.000008236** | 6564 | **8.236** | Yes | 2 |
+| fi | Forsort Unstable In-Place | **0.000009428** | 6498 | **9.428** | No | 3 |
+| ti | TimSort | 0.000009586 | 4456 | 9.586 | Yes | 4 |
+| fs | Forsort Stable In-Place | 0.000010407 | 5887 | 10.407 | Yes | 5 |
+| gs | Grail Sort In-Place | 0.000013487 | 5699 | 13.487 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort | 0.000016413 | 12038 | 16.413 | No | 7 |
+| fb | Forsort Basic In-Place | 0.000019726 | 8563 | 19.726 | Yes | 8 |
+| is | Insertion Sort | 0.000022556 | 10978 | 22.556 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.000023947 | 5237 | 23.947 | Yes | 10 |
 
 #### Reversed Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.000001884** | 999 | **1.884** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.000002885** | 1998 | **2.885** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.000007304** | 2551 | **7.304** | Yes | 3 |
-| wi | WikiSort | 0.000007875 | 3287 | 7.875 | Yes | 4 |
-| fw | Forsort With Workspace | 0.000014167 | 6614 | 14.167 | Yes | 5 |
-| gs | Grail Sort In-Place | 0.000014207 | 5112 | 14.207 | Yes | 6 |
-| gq | GLibc Quick Sort | 0.000014267 | 5044 | 14.267 | Yes | 7 |
-| fi | Forsort Unstable In-Place | 0.000015940 | 6407 | 15.940 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.000018124 | 14222 | 18.124 | Yes | 9 |
-| is | Insertion Sort | 0.000022924 | 10980 | 22.924 | Yes | 10 |
+| ti | TimSort | **0.000000959** | 999 | **0.959** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.000002156** | 1998 | **2.156** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.000002939** | 2551 | **2.939** | Yes | 3 |
+| wi | WikiSort | 0.000003530 | 3287 | 3.530 | Yes | 4 |
+| fw | Forsort With Workspace | 0.000007158 | 6614 | 7.158 | Yes | 5 |
+| fi | Forsort Unstable In-Place | 0.000007632 | 6407 | 7.632 | Yes | 6 |
+| gs | Grail Sort In-Place | 0.000007808 | 5112 | 7.808 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.000011723 | 5044 | 11.723 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.000017114 | 14222 | 17.114 | Yes | 9 |
+| is | Insertion Sort | 0.000021973 | 10980 | 21.973 | Yes | 10 |
 
 ### 10000 Items
 
@@ -1139,151 +1284,151 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.000173848** | 65993 | **17.385** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.000189809** | 70201 | **18.981** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.000201010** | 68128 | **20.101** | Yes | 3 |
-| wi | WikiSort | 0.000211479 | 109711 | 21.148 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort | 0.000221134 | 120049 | 22.113 | Yes | 5 |
-| ti | TimSort | 0.000225676 | 56262 | 22.568 | Yes | 6 |
-| gs | Grail Sort In-Place | 0.000244321 | 105591 | 24.432 | Yes | 7 |
-| fb | Forsort Basic In-Place | 0.000267105 | 79904 | 26.710 | Yes | 8 |
-| is | Insertion Sort | 0.000279368 | 142293 | 27.937 | Yes | 9 |
-| gq | GLibc Quick Sort | 0.000514401 | 102041 | 51.440 | Yes | 10 |
+| fw | Forsort With Workspace | **0.000152752** | 65570 | **15.275** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.000167564** | 69599 | **16.756** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.000173895** | 67719 | **17.389** | Yes | 3 |
+| nq | Bentley/McIlroy Quick Sort | 0.000183627 | 119573 | 18.363 | Yes | 4 |
+| ti | TimSort | 0.000194810 | 56009 | 19.481 | Yes | 5 |
+| wi | WikiSort | 0.000196741 | 110229 | 19.674 | Yes | 6 |
+| fb | Forsort Basic In-Place | 0.000234643 | 79242 | 23.464 | Yes | 7 |
+| is | Insertion Sort | 0.000236211 | 142148 | 23.621 | Yes | 8 |
+| gs | Grail Sort In-Place | 0.000238182 | 106234 | 23.818 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.000273921 | 102551 | 27.392 | Yes | 10 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.000054994** | 20318 | **5.499** | Yes | 1 |
-| fw | Forsort With Workspace | **0.000056546** | 21323 | **5.655** | Yes | 2 |
-| fi | Forsort Unstable In-Place | **0.000061466** | 22792 | **6.147** | Yes | 3 |
-| fs | Forsort Stable In-Place | 0.000065714 | 24197 | 6.571 | Yes | 4 |
-| fb | Forsort Basic In-Place | 0.000077897 | 32359 | 7.790 | Yes | 5 |
-| is | Insertion Sort | 0.000078989 | 66299 | 7.899 | Yes | 6 |
-| wi | WikiSort | 0.000081995 | 47827 | 8.200 | Yes | 7 |
-| gs | Grail Sort In-Place | 0.000121309 | 60937 | 12.131 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.000161311 | 112554 | 16.131 | Yes | 9 |
-| gq | GLibc Quick Sort | 0.000208564 | 69350 | 20.856 | Yes | 10 |
+| fw | Forsort With Workspace | **0.000041538** | 20647 | **4.154** | Yes | 1 |
+| ti | TimSort | **0.000044559** | 20070 | **4.456** | Yes | 2 |
+| fi | Forsort Unstable In-Place | **0.000047333** | 22033 | **4.733** | Yes | 3 |
+| fs | Forsort Stable In-Place | 0.000049710 | 24636 | 4.971 | Yes | 4 |
+| fb | Forsort Basic In-Place | 0.000057857 | 32456 | 5.786 | Yes | 5 |
+| wi | WikiSort | 0.000067006 | 45926 | 6.701 | Yes | 6 |
+| is | Insertion Sort | 0.000073115 | 63416 | 7.312 | Yes | 7 |
+| gs | Grail Sort In-Place | 0.000114445 | 61178 | 11.444 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.000123817 | 112921 | 12.382 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.000143611 | 69193 | 14.361 | Yes | 10 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.000226608** | 101352 | **22.661** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.000245734** | 104888 | **24.573** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.000260241** | 106432 | **26.024** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort | 0.000297432 | 126774 | 29.743 | Yes | 4 |
-| wi | WikiSort | 0.000326507 | 132042 | 32.651 | Yes | 5 |
-| gs | Grail Sort In-Place | 0.000390237 | 127531 | 39.024 | Yes | 6 |
-| gq | GLibc Quick Sort | 0.000391048 | 115721 | 39.105 | Yes | 7 |
-| ti | TimSort | 0.000391409 | 96274 | 39.141 | Yes | 8 |
-| is | Insertion Sort | 0.000406027 | 143007 | 40.603 | Yes | 9 |
-| fb | Forsort Basic In-Place | 0.000471039 | 126347 | 47.104 | Yes | 10 |
+| fw | Forsort With Workspace | **0.000206849** | 100883 | **20.685** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.000222509** | 104343 | **22.251** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.000240037** | 105425 | **24.004** | Yes | 3 |
+| nq | Bentley/McIlroy Quick Sort | 0.000285343 | 127121 | 28.534 | Yes | 4 |
+| wi | WikiSort | 0.000308217 | 131331 | 30.822 | Yes | 5 |
+| gs | Grail Sort In-Place | 0.000345587 | 126395 | 34.559 | Yes | 6 |
+| ti | TimSort | 0.000354083 | 93930 | 35.408 | Yes | 7 |
+| is | Insertion Sort | 0.000403552 | 143045 | 40.355 | Yes | 8 |
+| gq | GLibc Quick Sort | 0.000404457 | 115309 | 40.446 | Yes | 9 |
+| fb | Forsort Basic In-Place | 0.000427209 | 124782 | 42.721 | Yes | 10 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.000142850** | 46217 | **14.285** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.000147248** | 49717 | **14.725** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.000153870** | 50742 | **15.387** | Yes | 3 |
-| ti | TimSort | 0.000153880 | 41101 | 15.388 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort | 0.000156305 | 116444 | 15.630 | Yes | 5 |
-| wi | WikiSort | 0.000167677 | 94710 | 16.768 | Yes | 6 |
-| fb | Forsort Basic In-Place | 0.000178167 | 60447 | 17.817 | Yes | 7 |
-| gs | Grail Sort In-Place | 0.000193215 | 89970 | 19.322 | Yes | 8 |
-| is | Insertion Sort | 0.000200568 | 141517 | 20.057 | Yes | 9 |
-| gq | GLibc Quick Sort | 0.000394525 | 91579 | 39.453 | Yes | 10 |
+| fw | Forsort With Workspace | **0.000113875** | 46482 | **11.388** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.000126536** | 50062 | **12.654** | Yes | 2 |
+| ti | TimSort | **0.000129288** | 41460 | **12.929** | Yes | 3 |
+| fs | Forsort Stable In-Place | 0.000130504 | 50985 | 13.050 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.000152488 | 116696 | 15.249 | Yes | 5 |
+| wi | WikiSort | 0.000153154 | 95321 | 15.315 | Yes | 6 |
+| fb | Forsort Basic In-Place | 0.000159515 | 60799 | 15.951 | Yes | 7 |
+| gs | Grail Sort In-Place | 0.000184987 | 90191 | 18.499 | Yes | 8 |
+| is | Insertion Sort | 0.000192663 | 141271 | 19.266 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.000224280 | 92078 | 22.428 | Yes | 10 |
 
 #### Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| is | Insertion Sort | **0.000007844** | 9999 | **0.784** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.000007985** | 9999 | **0.799** | Yes | 2 |
-| ti | TimSort | **0.000008606** | 9999 | **0.861** | Yes | 3 |
-| fs | Forsort Stable In-Place | 0.000009919 | 9999 | 0.992 | Yes | 4 |
-| fw | Forsort With Workspace | 0.000011742 | 10049 | 1.174 | Yes | 5 |
-| fi | Forsort Unstable In-Place | 0.000011782 | 10091 | 1.178 | Yes | 6 |
-| wi | WikiSort | 0.000034765 | 23719 | 3.477 | Yes | 7 |
-| gs | Grail Sort In-Place | 0.000109246 | 55113 | 10.925 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.000125157 | 64608 | 12.516 | Yes | 9 |
-| nq | Bentley/McIlroy Quick Sort | 0.000129595 | 109572 | 12.960 | No | 10 |
+| ti | TimSort | **0.000007950** | 9999 | **0.795** | Yes | 1 |
+| fw | Forsort With Workspace | **0.000009257** | 10049 | **0.926** | Yes | 2 |
+| fi | Forsort Unstable In-Place | **0.000009593** | 10091 | **0.959** | Yes | 3 |
+| is | Insertion Sort | 0.000009618 | 9999 | 0.962 | Yes | 4 |
+| fb | Forsort Basic In-Place | 0.000009632 | 9999 | 0.963 | Yes | 5 |
+| fs | Forsort Stable In-Place | 0.000009751 | 9999 | 0.975 | Yes | 6 |
+| wi | WikiSort | 0.000028564 | 23734 | 2.856 | Yes | 7 |
+| gs | Grail Sort In-Place | 0.000107847 | 55104 | 10.785 | Yes | 8 |
+| gq | GLibc Quick Sort | 0.000117840 | 64608 | 11.784 | Yes | 9 |
+| nq | Bentley/McIlroy Quick Sort | 0.000127397 | 109630 | 12.740 | No | 10 |
 
 #### Ordered Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| is | Insertion Sort | **0.000007845** | 9999 | **0.784** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.000007965** | 9999 | **0.797** | Yes | 2 |
-| ti | TimSort | **0.000008607** | 9999 | **0.861** | Yes | 3 |
-| fs | Forsort Stable In-Place | 0.000009969 | 9999 | 0.997 | Yes | 4 |
-| fw | Forsort With Workspace | 0.000011331 | 10049 | 1.133 | Yes | 5 |
-| fi | Forsort Unstable In-Place | 0.000011572 | 10091 | 1.157 | Yes | 6 |
-| wi | WikiSort | 0.000031369 | 23662 | 3.137 | Yes | 7 |
-| gs | Grail Sort In-Place | 0.000092084 | 53332 | 9.208 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.000116300 | 111539 | 11.630 | Yes | 9 |
-| gq | GLibc Quick Sort | 0.000126449 | 64608 | 12.645 | Yes | 10 |
+| ti | TimSort | **0.000007855** | 9999 | **0.786** | Yes | 1 |
+| fw | Forsort With Workspace | **0.000009238** | 10049 | **0.924** | Yes | 2 |
+| is | Insertion Sort | **0.000009583** | 9999 | **0.958** | Yes | 3 |
+| fi | Forsort Unstable In-Place | 0.000009614 | 10091 | 0.961 | Yes | 4 |
+| fb | Forsort Basic In-Place | 0.000009732 | 9999 | 0.973 | Yes | 5 |
+| fs | Forsort Stable In-Place | 0.000009755 | 9999 | 0.975 | Yes | 6 |
+| wi | WikiSort | 0.000025764 | 23662 | 2.576 | Yes | 7 |
+| gs | Grail Sort In-Place | 0.000092392 | 53332 | 9.239 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.000115730 | 111539 | 11.573 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.000117727 | 64608 | 11.773 | Yes | 10 |
 
 #### Random Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.000200058** | 126206 | **20.006** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.000242758** | 133040 | **24.276** | No | 2 |
-| fs | Forsort Stable In-Place | **0.000253498** | 133710 | **25.350** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort | 0.000491047 | 130174 | 49.105 | No | 4 |
-| wi | WikiSort | 0.000512999 | 143437 | 51.300 | Yes | 5 |
-| ti | TimSort | 0.000611415 | 120348 | 61.142 | Yes | 6 |
-| gq | GLibc Quick Sort | 0.000624800 | 120379 | 62.480 | Yes | 7 |
-| gs | Grail Sort In-Place | 0.000663763 | 138958 | 66.376 | Yes | 8 |
-| fb | Forsort Basic In-Place | 0.000734447 | 207099 | 73.445 | Yes | 9 |
-| is | Insertion Sort | 0.001155662 | 143533 | 115.57 | Yes | 10 |
+| fw | Forsort With Workspace | **0.000185404** | 126146 | **18.540** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.000225370** | 133040 | **22.537** | No | 2 |
+| fs | Forsort Stable In-Place | **0.000238217** | 133561 | **23.822** | Yes | 3 |
+| gs | Grail Sort In-Place | 0.000475614 | 138673 | 47.561 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.000490068 | 130137 | 49.007 | No | 5 |
+| wi | WikiSort | 0.000506137 | 143380 | 50.614 | Yes | 6 |
+| ti | TimSort | 0.000597111 | 120355 | 59.711 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.000652450 | 120413 | 65.245 | Yes | 8 |
+| fb | Forsort Basic In-Place | 0.000680777 | 208374 | 68.078 | Yes | 9 |
+| is | Insertion Sort | 0.001174321 | 143506 | 117.43 | Yes | 10 |
 
 #### Random Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.000201210** | 126191 | **20.121** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.000239823** | 133036 | **23.982** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.000250162** | 133652 | **25.016** | Yes | 3 |
-| gs | Grail Sort In-Place | 0.000481489 | 138659 | 48.149 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort | 0.000498862 | 137009 | 49.886 | Yes | 5 |
-| wi | WikiSort | 0.000508450 | 143420 | 50.845 | Yes | 6 |
-| ti | TimSort | 0.000610253 | 120349 | 61.025 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.000685734 | 120381 | 68.573 | Yes | 8 |
-| fb | Forsort Basic In-Place | 0.000717976 | 207075 | 71.798 | Yes | 9 |
-| is | Insertion Sort | 0.001162425 | 143533 | 116.24 | Yes | 10 |
+| fw | Forsort With Workspace | **0.000185095** | 126139 | **18.509** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.000226158** | 133079 | **22.616** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.000236383** | 133577 | **23.638** | Yes | 3 |
+| gs | Grail Sort In-Place | 0.000474713 | 138630 | 47.471 | Yes | 4 |
+| wi | WikiSort | 0.000502342 | 143339 | 50.234 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort | 0.000502751 | 137009 | 50.275 | Yes | 6 |
+| ti | TimSort | 0.000600834 | 120355 | 60.083 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.000657336 | 120413 | 65.734 | Yes | 8 |
+| fb | Forsort Basic In-Place | 0.000682100 | 208537 | 68.210 | Yes | 9 |
+| is | Insertion Sort | 0.001163445 | 143513 | 116.34 | Yes | 10 |
 
 #### Reversed Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.000118183** | 39979 | **11.818** | Yes | 1 |
-| wi | WikiSort | **0.000118494** | 51458 | **11.849** | Yes | 2 |
-| fw | Forsort With Workspace | **0.000133151** | 97308 | **13.315** | Yes | 3 |
-| fi | Forsort Unstable In-Place | 0.000133352 | 93311 | 13.335 | No | 4 |
-| fs | Forsort Stable In-Place | 0.000137209 | 82441 | 13.721 | Yes | 5 |
-| gs | Grail Sort In-Place | 0.000151867 | 60858 | 15.187 | Yes | 6 |
-| nq | Bentley/McIlroy Quick Sort | 0.000215988 | 165488 | 21.599 | No | 7 |
-| fb | Forsort Basic In-Place | 0.000243249 | 87160 | 24.325 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.000595294 | 70389 | 59.529 | Yes | 9 |
-| is | Insertion Sort | 0.002603441 | 143612 | 260.34 | Yes | 10 |
+| ti | TimSort | **0.000094371** | 39936 | **9.437** | Yes | 1 |
+| wi | WikiSort | **0.000099491** | 44661 | **9.949** | Yes | 2 |
+| fw | Forsort With Workspace | **0.000114954** | 97316 | **11.495** | Yes | 3 |
+| fs | Forsort Stable In-Place | 0.000120959 | 82496 | 12.096 | Yes | 4 |
+| fi | Forsort Unstable In-Place | 0.000121062 | 93307 | 12.106 | No | 5 |
+| gs | Grail Sort In-Place | 0.000143115 | 60796 | 14.311 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort | 0.000213023 | 166725 | 21.302 | No | 7 |
+| fb | Forsort Basic In-Place | 0.000216448 | 86922 | 21.645 | Yes | 8 |
+| gq | GLibc Quick Sort | 0.000313827 | 70411 | 31.383 | Yes | 9 |
+| is | Insertion Sort | 0.002116910 | 143610 | 211.69 | Yes | 10 |
 
 #### Reversed Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.000010169** | 9999 | **1.017** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.000020979** | 19998 | **2.098** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.000025829** | 21910 | **2.583** | Yes | 3 |
-| wi | WikiSort | 0.000051126 | 25008 | 5.113 | Yes | 4 |
-| gs | Grail Sort In-Place | 0.000101952 | 57076 | 10.195 | Yes | 5 |
-| fw | Forsort With Workspace | 0.000109617 | 98010 | 10.962 | Yes | 6 |
-| fi | Forsort Unstable In-Place | 0.000115939 | 93366 | 11.594 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.000157838 | 69008 | 15.784 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.000224013 | 192779 | 22.401 | Yes | 9 |
-| is | Insertion Sort | 0.002155645 | 143612 | 215.56 | Yes | 10 |
+| ti | TimSort | **0.000009206** | 9999 | **0.921** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.000021475** | 19998 | **2.148** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.000022749** | 21910 | **2.275** | Yes | 3 |
+| wi | WikiSort | 0.000044537 | 25008 | 4.454 | Yes | 4 |
+| gs | Grail Sort In-Place | 0.000095130 | 57076 | 9.513 | Yes | 5 |
+| fw | Forsort With Workspace | 0.000102956 | 98010 | 10.296 | Yes | 6 |
+| fi | Forsort Unstable In-Place | 0.000106906 | 93366 | 10.691 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.000144699 | 69008 | 14.470 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.000225963 | 192779 | 22.596 | Yes | 9 |
+| is | Insertion Sort | 0.002107173 | 143612 | 210.72 | Yes | 10 |
 
 ### 100000 Items
 
@@ -1291,151 +1436,151 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.001844099** | 791210 | **18.441** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.001961594** | 831423 | **19.616** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.002024453** | 806980 | **20.245** | Yes | 3 |
-| wi | WikiSort | 0.002617630 | 1484398 | 26.176 | Yes | 4 |
-| fb | Forsort Basic In-Place | 0.002948617 | 947643 | 29.486 | Yes | 5 |
-| ti | TimSort | 0.002985758 | 677520 | 29.858 | Yes | 6 |
-| nq | Bentley/McIlroy Quick Sort | 0.002987777 | 1537075 | 29.878 | No | 7 |
-| gs | Grail Sort In-Place | 0.003564610 | 1432235 | 35.646 | Yes | 8 |
-| is | Insertion Sort | 0.003750001 | 1766977 | 37.500 | Yes | 9 |
-| gq | GLibc Quick Sort | 0.004321891 | 1389495 | 43.219 | Yes | 10 |
+| fw | Forsort With Workspace | **0.001778930** | 793764 | **17.789** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.001885012** | 837033 | **18.850** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.001949305** | 807830 | **19.493** | Yes | 3 |
+| ti | TimSort | 0.002357887 | 678052 | 23.579 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.002374697 | 1538407 | 23.747 | Yes | 5 |
+| wi | WikiSort | 0.002600019 | 1482357 | 26.000 | Yes | 6 |
+| fb | Forsort Basic In-Place | 0.002945675 | 949054 | 29.457 | Yes | 7 |
+| gs | Grail Sort In-Place | 0.003129099 | 1432892 | 31.291 | Yes | 8 |
+| gq | GLibc Quick Sort | 0.003289419 | 1388167 | 32.894 | Yes | 9 |
+| is | Insertion Sort | 0.003793312 | 1766495 | 37.933 | Yes | 10 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.000696616** | 254708 | **6.966** | Yes | 1 |
-| fw | Forsort With Workspace | **0.000724769** | 293036 | **7.248** | Yes | 2 |
-| fi | Forsort Unstable In-Place | **0.000776436** | 308065 | **7.764** | Yes | 3 |
-| fb | Forsort Basic In-Place | 0.000934865 | 431804 | 9.349 | Yes | 4 |
-| fs | Forsort Stable In-Place | 0.001215515 | 318465 | 12.155 | Yes | 5 |
-| wi | WikiSort | 0.001344985 | 936287 | 13.450 | Yes | 6 |
-| gs | Grail Sort In-Place | 0.001592407 | 904672 | 15.924 | Yes | 7 |
-| is | Insertion Sort | 0.001980344 | 1743774 | 19.803 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.001981592 | 1046328 | 19.816 | Yes | 9 |
-| nq | Bentley/McIlroy Quick Sort | 0.002497195 | 1516043 | 24.972 | Yes | 10 |
+| ti | TimSort | **0.000656595** | 255911 | **6.566** | Yes | 1 |
+| fw | Forsort With Workspace | **0.000692749** | 295456 | **6.927** | Yes | 2 |
+| fi | Forsort Unstable In-Place | **0.000745210** | 311115 | **7.452** | Yes | 3 |
+| fs | Forsort Stable In-Place | 0.000762608 | 321287 | 7.626 | Yes | 4 |
+| fb | Forsort Basic In-Place | 0.000915719 | 434229 | 9.157 | Yes | 5 |
+| wi | WikiSort | 0.001324750 | 949667 | 13.247 | Yes | 6 |
+| gs | Grail Sort In-Place | 0.001592541 | 912868 | 15.925 | Yes | 7 |
+| nq | Bentley/McIlroy Quick Sort | 0.001655133 | 1515721 | 16.551 | Yes | 8 |
+| is | Insertion Sort | 0.001968696 | 1746861 | 19.687 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.002060893 | 1052791 | 20.609 | Yes | 10 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.002536379** | 1236866 | **25.364** | Yes | 1 |
-| fs | Forsort Stable In-Place | **0.002745003** | 1266212 | **27.450** | Yes | 2 |
-| fi | Forsort Unstable In-Place | **0.002811940** | 1268232 | **28.119** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort | 0.004098078 | 1625332 | 40.981 | No | 4 |
-| wi | WikiSort | 0.004124969 | 1724079 | 41.250 | Yes | 5 |
-| gs | Grail Sort In-Place | 0.004474117 | 1633206 | 44.741 | Yes | 6 |
-| ti | TimSort | 0.005054293 | 1092617 | 50.543 | Yes | 7 |
-| fb | Forsort Basic In-Place | 0.005485176 | 1535002 | 54.852 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.005795081 | 1511072 | 57.951 | Yes | 9 |
-| is | Insertion Sort | 0.012638192 | 1768284 | 126.38 | Yes | 10 |
+| fw | Forsort With Workspace | **0.002369943** | 1237300 | **23.699** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.002509973** | 1269646 | **25.100** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.002666944** | 1267521 | **26.669** | Yes | 3 |
+| nq | Bentley/McIlroy Quick Sort | 0.003639950 | 1622471 | 36.399 | Yes | 4 |
+| wi | WikiSort | 0.003900897 | 1718054 | 39.009 | Yes | 5 |
+| gs | Grail Sort In-Place | 0.004304851 | 1631763 | 43.049 | Yes | 6 |
+| ti | TimSort | 0.004318139 | 1094067 | 43.181 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.004801646 | 1507255 | 48.016 | Yes | 8 |
+| fb | Forsort Basic In-Place | 0.005283970 | 1537056 | 52.840 | Yes | 9 |
+| is | Insertion Sort | 0.012512258 | 1768034 | 125.12 | Yes | 10 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.001450919** | 625323 | **14.509** | Yes | 1 |
-| ti | TimSort | **0.001718906** | 522910 | **17.189** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.002029939** | 599475 | **20.299** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort | 0.002065691 | 1515354 | 20.657 | No | 4 |
-| wi | WikiSort | 0.002117215 | 1321121 | 21.172 | Yes | 5 |
-| fi | Forsort Unstable In-Place | 0.002212147 | 656475 | 22.121 | Yes | 6 |
-| fb | Forsort Basic In-Place | 0.002655300 | 735032 | 26.553 | Yes | 7 |
-| gs | Grail Sort In-Place | 0.002788014 | 1280038 | 27.880 | Yes | 8 |
-| is | Insertion Sort | 0.002883665 | 1764569 | 28.837 | Yes | 9 |
-| gq | GLibc Quick Sort | 0.003304841 | 1299870 | 33.048 | Yes | 10 |
+| fw | Forsort With Workspace | **0.001382960** | 611739 | **13.830** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.001480247** | 643591 | **14.802** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.001499149** | 599708 | **14.991** | Yes | 3 |
+| ti | TimSort | 0.001646669 | 521645 | 16.467 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.002009068 | 1517055 | 20.091 | Yes | 5 |
+| fb | Forsort Basic In-Place | 0.002053931 | 735010 | 20.539 | Yes | 6 |
+| wi | WikiSort | 0.002080903 | 1317946 | 20.809 | Yes | 7 |
+| gs | Grail Sort In-Place | 0.002579098 | 1279975 | 25.791 | Yes | 8 |
+| is | Insertion Sort | 0.002699944 | 1764018 | 26.999 | Yes | 9 |
+| gq | GLibc Quick Sort | 0.002772315 | 1297217 | 27.723 | Yes | 10 |
 
 #### Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| is | Insertion Sort | **0.000076816** | 99999 | **0.768** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.000077036** | 99999 | **0.770** | Yes | 2 |
-| ti | TimSort | **0.000077756** | 99999 | **0.778** | Yes | 3 |
-| fs | Forsort Stable In-Place | 0.000104037 | 99999 | 1.040 | Yes | 4 |
-| fi | Forsort Unstable In-Place | 0.000106281 | 100167 | 1.063 | Yes | 5 |
-| fw | Forsort With Workspace | 0.000133101 | 100078 | 1.331 | Yes | 6 |
-| wi | WikiSort | 0.000271052 | 240768 | 2.711 | Yes | 7 |
-| gs | Grail Sort In-Place | 0.001381645 | 616261 | 13.816 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.001525019 | 815024 | 15.250 | Yes | 9 |
-| nq | Bentley/McIlroy Quick Sort | 0.002064004 | 1479069 | 20.640 | No | 10 |
+| ti | TimSort | **0.000079289** | 99999 | **0.793** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.000088269** | 99999 | **0.883** | Yes | 2 |
+| is | Insertion Sort | **0.000088573** | 99999 | **0.886** | Yes | 3 |
+| fs | Forsort Stable In-Place | 0.000097324 | 99999 | 0.973 | Yes | 4 |
+| fw | Forsort With Workspace | 0.000106027 | 100078 | 1.060 | Yes | 5 |
+| fi | Forsort Unstable In-Place | 0.000106170 | 100167 | 1.062 | Yes | 6 |
+| wi | WikiSort | 0.000262902 | 240807 | 2.629 | Yes | 7 |
+| gs | Grail Sort In-Place | 0.001162827 | 616161 | 11.628 | Yes | 8 |
+| gq | GLibc Quick Sort | 0.001405061 | 815024 | 14.051 | Yes | 9 |
+| nq | Bentley/McIlroy Quick Sort | 0.001747035 | 1479358 | 17.470 | No | 10 |
 
 #### Ordered Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fb | Forsort Basic In-Place | **0.000076836** | 99999 | **0.768** | Yes | 1 |
-| is | Insertion Sort | **0.000076795** | 99999 | **0.768** | Yes | 2 |
-| ti | TimSort | **0.000077707** | 99999 | **0.777** | Yes | 3 |
-| fs | Forsort Stable In-Place | 0.000095961 | 99999 | 0.960 | Yes | 4 |
-| fi | Forsort Unstable In-Place | 0.000105810 | 100167 | 1.058 | Yes | 5 |
-| fw | Forsort With Workspace | 0.000126038 | 100078 | 1.260 | Yes | 6 |
-| wi | WikiSort | 0.000260662 | 240530 | 2.607 | Yes | 7 |
-| gs | Grail Sort In-Place | 0.001079609 | 608786 | 10.796 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.001587362 | 1524583 | 15.874 | Yes | 9 |
-| gq | GLibc Quick Sort | 0.001719353 | 815024 | 17.194 | Yes | 10 |
+| ti | TimSort | **0.000078191** | 99999 | **0.782** | Yes | 1 |
+| is | Insertion Sort | **0.000084994** | 99999 | **0.850** | Yes | 2 |
+| fb | Forsort Basic In-Place | **0.000085710** | 99999 | **0.857** | Yes | 3 |
+| fs | Forsort Stable In-Place | 0.000097400 | 99999 | 0.974 | Yes | 4 |
+| fw | Forsort With Workspace | 0.000105909 | 100078 | 1.059 | Yes | 5 |
+| fi | Forsort Unstable In-Place | 0.000106152 | 100167 | 1.062 | Yes | 6 |
+| wi | WikiSort | 0.000250058 | 240530 | 2.501 | Yes | 7 |
+| gs | Grail Sort In-Place | 0.001034039 | 608786 | 10.340 | Yes | 8 |
+| gq | GLibc Quick Sort | 0.001398905 | 815024 | 13.989 | Yes | 9 |
+| nq | Bentley/McIlroy Quick Sort | 0.001576996 | 1524583 | 15.770 | Yes | 10 |
 
 #### Random Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.002400710** | 1622428 | **24.007** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.002660383** | 1648605 | **26.604** | No | 2 |
-| fs | Forsort Stable In-Place | **0.003280357** | 1702536 | **32.804** | Yes | 3 |
-| gs | Grail Sort In-Place | 0.005676929 | 1691595 | 56.769 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort | 0.006363596 | 1640156 | 63.636 | No | 5 |
-| wi | WikiSort | 0.006396878 | 1828864 | 63.969 | Yes | 6 |
-| ti | TimSort | 0.007721569 | 1531448 | 77.216 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.007808995 | 1536166 | 78.090 | Yes | 8 |
-| fb | Forsort Basic In-Place | 0.009258692 | 2642972 | 92.587 | Yes | 9 |
-| is | Insertion Sort | 0.096717451 | 1768738 | 967.17 | Yes | 10 |
+| fw | Forsort With Workspace | **0.002277720** | 1621744 | **22.777** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.002618686** | 1649126 | **26.187** | No | 2 |
+| fs | Forsort Stable In-Place | **0.002736018** | 1701468 | **27.360** | Yes | 3 |
+| gs | Grail Sort In-Place | 0.005613263 | 1692380 | 56.133 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.006132836 | 1663179 | 61.328 | No | 5 |
+| wi | WikiSort | 0.006244588 | 1828877 | 62.446 | Yes | 6 |
+| ti | TimSort | 0.007416420 | 1531076 | 74.164 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.007709124 | 1536077 | 77.091 | Yes | 8 |
+| fb | Forsort Basic In-Place | 0.008710394 | 2642006 | 87.104 | Yes | 9 |
+| is | Insertion Sort | 0.097658717 | 1768772 | 976.59 | Yes | 10 |
 
 #### Random Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.002323778** | 1622478 | **23.238** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.002590271** | 1649183 | **25.903** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.002802602** | 1703019 | **28.026** | Yes | 3 |
-| gs | Grail Sort In-Place | 0.006292341 | 1692166 | 62.923 | Yes | 4 |
-| wi | WikiSort | 0.006312328 | 1828495 | 63.123 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort | 0.006393101 | 1717336 | 63.931 | Yes | 6 |
-| ti | TimSort | 0.008101536 | 1531408 | 81.015 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.008748561 | 1536166 | 87.486 | Yes | 8 |
-| fb | Forsort Basic In-Place | 0.009262529 | 2645089 | 92.625 | Yes | 9 |
-| is | Insertion Sort | 0.097150227 | 1768738 | 971.50 | Yes | 10 |
+| fw | Forsort With Workspace | **0.002282541** | 1621737 | **22.825** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.002602045** | 1649581 | **26.020** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.002727420** | 1701948 | **27.274** | Yes | 3 |
+| gs | Grail Sort In-Place | 0.005609075 | 1692299 | 56.091 | Yes | 4 |
+| wi | WikiSort | 0.006196196 | 1828536 | 61.962 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort | 0.006261659 | 1731512 | 62.617 | Yes | 6 |
+| ti | TimSort | 0.007429093 | 1531074 | 74.291 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.007711163 | 1536078 | 77.112 | Yes | 8 |
+| fb | Forsort Basic In-Place | 0.008769205 | 2643502 | 87.692 | Yes | 9 |
+| is | Insertion Sort | 0.098113846 | 1768780 | 981.14 | Yes | 10 |
 
 #### Reversed Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.001237757** | 423392 | **12.378** | Yes | 1 |
-| fs | Forsort Stable In-Place | **0.001531638** | 1050201 | **15.316** | Yes | 2 |
-| fi | Forsort Unstable In-Place | **0.001546931** | 1195859 | **15.469** | No | 3 |
-| wi | WikiSort | 0.001564701 | 537302 | 15.647 | Yes | 4 |
-| fw | Forsort With Workspace | 0.001697792 | 1228527 | 16.978 | Yes | 5 |
-| gs | Grail Sort In-Place | 0.002412733 | 653093 | 24.127 | Yes | 6 |
-| fb | Forsort Basic In-Place | 0.002474508 | 874719 | 24.745 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.002533033 | 866253 | 25.330 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.003244994 | 1775969 | 32.450 | No | 9 |
-| is | Insertion Sort | 0.248405359 | 1768918 | 2484.1 | Yes | 10 |
+| ti | TimSort | **0.000985618** | 423415 | **9.856** | Yes | 1 |
+| wi | WikiSort | **0.001124081** | 566125 | **11.241** | Yes | 2 |
+| fw | Forsort With Workspace | **0.001434386** | 1228341 | **14.344** | Yes | 3 |
+| fs | Forsort Stable In-Place | 0.001445057 | 1049640 | 14.451 | Yes | 4 |
+| gs | Grail Sort In-Place | 0.001502752 | 653665 | 15.028 | Yes | 5 |
+| fi | Forsort Unstable In-Place | 0.001527859 | 1195728 | 15.279 | No | 6 |
+| nq | Bentley/McIlroy Quick Sort | 0.002205730 | 1775198 | 22.057 | No | 7 |
+| fb | Forsort Basic In-Place | 0.002407025 | 874234 | 24.070 | Yes | 8 |
+| gq | GLibc Quick Sort | 0.003615501 | 866156 | 36.155 | Yes | 9 |
+| is | Insertion Sort | 0.243320378 | 1768916 | 2433.2 | Yes | 10 |
 
 #### Reversed Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.000092184** | 99999 | **0.922** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.000197753** | 199998 | **1.978** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.000234443** | 210306 | **2.344** | Yes | 3 |
-| wi | WikiSort | 0.000546527 | 284046 | 5.465 | Yes | 4 |
-| gs | Grail Sort In-Place | 0.001073572 | 627299 | 10.736 | Yes | 5 |
-| fi | Forsort Unstable In-Place | 0.001411836 | 1201428 | 14.118 | Yes | 6 |
-| fw | Forsort With Workspace | 0.001428768 | 1235508 | 14.288 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.001869504 | 853904 | 18.695 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.003019207 | 1935567 | 30.192 | Yes | 9 |
-| is | Insertion Sort | 0.235990878 | 1768918 | 2359.9 | Yes | 10 |
+| ti | TimSort | **0.000092458** | 99999 | **0.925** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.000205189** | 199998 | **2.052** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.000239048** | 210306 | **2.390** | Yes | 3 |
+| wi | WikiSort | 0.000513483 | 284046 | 5.135 | Yes | 4 |
+| gs | Grail Sort In-Place | 0.001055258 | 627299 | 10.553 | Yes | 5 |
+| fw | Forsort With Workspace | 0.001337821 | 1235508 | 13.378 | Yes | 6 |
+| fi | Forsort Unstable In-Place | 0.001400427 | 1201428 | 14.004 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.001702158 | 853904 | 17.022 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.002163364 | 1935567 | 21.634 | Yes | 9 |
+| is | Insertion Sort | 0.245886933 | 1768918 | 2458.9 | Yes | 10 |
 
 ### 1000000 Items
 
@@ -1443,141 +1588,141 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.019578709** | 9348531 | **19.579** | Yes | 1 |
-| fs | Forsort Stable In-Place | **0.020604506** | 9523259 | **20.605** | Yes | 2 |
-| fi | Forsort Unstable In-Place | **0.020662023** | 10035648 | **20.662** | No | 3 |
-| ti | TimSort | 0.028208739 | 7705166 | 28.209 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort | 0.030134638 | 18757448 | 30.135 | No | 5 |
-| wi | WikiSort | 0.031419466 | 18764583 | 31.419 | Yes | 6 |
-| fb | Forsort Basic In-Place | 0.033806516 | 10708135 | 33.807 | Yes | 7 |
-| gs | Grail Sort In-Place | 0.040173433 | 17976361 | 40.173 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.042707481 | 17436475 | 42.707 | Yes | 9 |
+| fw | Forsort With Workspace | **0.019163416** | 9378919 | **19.163** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.020488689** | 10065646 | **20.489** | No | 2 |
+| fs | Forsort Stable In-Place | **0.020828117** | 9541829 | **20.828** | Yes | 3 |
+| ti | TimSort | 0.026931705 | 7732409 | 26.932 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.029121617 | 18775482 | 29.122 | No | 5 |
+| wi | WikiSort | 0.031813414 | 18763332 | 31.813 | Yes | 6 |
+| fb | Forsort Basic In-Place | 0.034386446 | 10738391 | 34.386 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.039627085 | 17422395 | 39.627 | Yes | 8 |
+| gs | Grail Sort In-Place | 0.040058520 | 18052628 | 40.059 | Yes | 9 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fi | Forsort Unstable In-Place | **0.008448553** | 3524638 | **8.449** | No | 1 |
-| ti | TimSort | **0.008580260** | 3191636 | **8.580** | Yes | 2 |
-| fw | Forsort With Workspace | **0.008751585** | 3374464 | **8.752** | Yes | 3 |
-| fs | Forsort Stable In-Place | 0.008806007 | 3612221 | 8.806 | Yes | 4 |
-| fb | Forsort Basic In-Place | 0.011450740 | 4912080 | 11.451 | Yes | 5 |
-| wi | WikiSort | 0.018066082 | 13269948 | 18.066 | Yes | 6 |
-| nq | Bentley/McIlroy Quick Sort | 0.020196505 | 18248470 | 20.197 | No | 7 |
-| gs | Grail Sort In-Place | 0.025149416 | 13144367 | 25.149 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.028012444 | 14447185 | 28.012 | Yes | 9 |
+| fw | Forsort With Workspace | **0.008107045** | 3357826 | **8.107** | Yes | 1 |
+| fs | Forsort Stable In-Place | **0.008434186** | 3657630 | **8.434** | Yes | 2 |
+| ti | TimSort | **0.008472522** | 3178270 | **8.473** | Yes | 3 |
+| fi | Forsort Unstable In-Place | 0.008497932 | 3573466 | 8.498 | No | 4 |
+| fb | Forsort Basic In-Place | 0.011257612 | 4900221 | 11.258 | Yes | 5 |
+| wi | WikiSort | 0.017679174 | 13258987 | 17.679 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort | 0.020031550 | 18248981 | 20.032 | No | 7 |
+| gs | Grail Sort In-Place | 0.024661259 | 13140131 | 24.661 | Yes | 8 |
+| gq | GLibc Quick Sort | 0.026639107 | 14446341 | 26.639 | Yes | 9 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.027081475** | 14553714 | **27.081** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.027826110** | 15090266 | **27.826** | No | 2 |
-| fs | Forsort Stable In-Place | **0.028702736** | 14945609 | **28.703** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort | 0.045268794 | 19802661 | 45.269 | No | 4 |
-| wi | WikiSort | 0.047478989 | 21143567 | 47.479 | Yes | 5 |
-| gs | Grail Sort In-Place | 0.051964205 | 19780452 | 51.964 | Yes | 6 |
-| ti | TimSort | 0.052463028 | 12434342 | 52.463 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.058319220 | 18502661 | 58.319 | Yes | 8 |
-| fb | Forsort Basic In-Place | 0.061599833 | 17971590 | 61.600 | Yes | 9 |
+| fw | Forsort With Workspace | **0.025973321** | 14555100 | **25.973** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.027202919** | 15100948 | **27.203** | No | 2 |
+| fs | Forsort Stable In-Place | **0.028830623** | 14974558 | **28.831** | Yes | 3 |
+| nq | Bentley/McIlroy Quick Sort | 0.044335403 | 19738342 | 44.335 | No | 4 |
+| wi | WikiSort | 0.046473560 | 21147516 | 46.474 | Yes | 5 |
+| ti | TimSort | 0.049750762 | 12452072 | 49.751 | Yes | 6 |
+| gs | Grail Sort In-Place | 0.052070848 | 19798612 | 52.071 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.057117962 | 18497245 | 57.118 | Yes | 8 |
+| fb | Forsort Basic In-Place | 0.062222154 | 17999085 | 62.222 | Yes | 9 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.016025099** | 7201084 | **16.025** | Yes | 1 |
-| fs | Forsort Stable In-Place | **0.016525614** | 7242401 | **16.526** | Yes | 2 |
-| fi | Forsort Unstable In-Place | **0.016837462** | 7699280 | **16.837** | No | 3 |
-| ti | TimSort | 0.019532120 | 6025478 | 19.532 | Yes | 4 |
-| fb | Forsort Basic In-Place | 0.024074536 | 8177254 | 24.075 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort | 0.025590989 | 18492866 | 25.591 | No | 6 |
-| wi | WikiSort | 0.026923713 | 17053388 | 26.924 | Yes | 7 |
-| gs | Grail Sort In-Place | 0.035557172 | 16672002 | 35.557 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.036999764 | 16530918 | 37.000 | Yes | 9 |
+| fw | Forsort With Workspace | **0.015051820** | 7222003 | **15.052** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.016023132** | 7721762 | **16.023** | No | 2 |
+| fs | Forsort Stable In-Place | **0.016236009** | 7266918 | **16.236** | Yes | 3 |
+| ti | TimSort | 0.019032607 | 6045702 | 19.033 | Yes | 4 |
+| fb | Forsort Basic In-Place | 0.024257738 | 8208435 | 24.258 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort | 0.024672363 | 18502531 | 24.672 | No | 6 |
+| wi | WikiSort | 0.026356784 | 17098338 | 26.357 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.033981658 | 16566537 | 33.982 | Yes | 8 |
+| gs | Grail Sort In-Place | 0.034508873 | 16617516 | 34.509 | Yes | 9 |
 
 #### Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fb | Forsort Basic In-Place | **0.000780153** | 999999 | **0.780** | Yes | 1 |
-| ti | TimSort | **0.000872517** | 999999 | **0.873** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.000994908** | 999999 | **0.995** | Yes | 3 |
-| fi | Forsort Unstable In-Place | 0.001071844 | 1000212 | 1.072 | Yes | 4 |
-| fw | Forsort With Workspace | 0.001532153 | 1000058 | 1.532 | Yes | 5 |
-| wi | WikiSort | 0.002634434 | 2596537 | 2.634 | Yes | 6 |
-| gs | Grail Sort In-Place | 0.013657462 | 7043925 | 13.657 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.018723444 | 9884992 | 18.723 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.021078479 | 17945563 | 21.078 | No | 9 |
+| ti | TimSort | **0.000823320** | 999999 | **0.823** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.000835467** | 999999 | **0.835** | Yes | 2 |
+| fi | Forsort Unstable In-Place | **0.001032374** | 1000212 | **1.032** | Yes | 3 |
+| fs | Forsort Stable In-Place | 0.001039642 | 999999 | 1.040 | Yes | 4 |
+| fw | Forsort With Workspace | 0.001151456 | 1000058 | 1.151 | Yes | 5 |
+| wi | WikiSort | 0.002602327 | 2596569 | 2.602 | Yes | 6 |
+| gs | Grail Sort In-Place | 0.013554668 | 7043630 | 13.555 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.017082282 | 9884992 | 17.082 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.020062442 | 17946378 | 20.062 | No | 9 |
 
 #### Ordered Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.000922522** | 999999 | **0.923** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.000946928** | 999999 | **0.947** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.001026037** | 999999 | **1.026** | Yes | 3 |
-| fi | Forsort Unstable In-Place | 0.001064710 | 1000212 | 1.065 | Yes | 4 |
-| fw | Forsort With Workspace | 0.001726660 | 1000058 | 1.727 | Yes | 5 |
-| wi | WikiSort | 0.002570724 | 2595342 | 2.571 | Yes | 6 |
-| gs | Grail Sort In-Place | 0.014642688 | 7019410 | 14.643 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.017866645 | 9884992 | 17.867 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.018703565 | 18196618 | 18.704 | Yes | 9 |
+| ti | TimSort | **0.000842035** | 999999 | **0.842** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.000882807** | 999999 | **0.883** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.001000915** | 999999 | **1.001** | Yes | 3 |
+| fi | Forsort Unstable In-Place | 0.001045806 | 1000212 | 1.046 | Yes | 4 |
+| fw | Forsort With Workspace | 0.001147869 | 1000058 | 1.148 | Yes | 5 |
+| wi | WikiSort | 0.002533910 | 2595342 | 2.534 | Yes | 6 |
+| gs | Grail Sort In-Place | 0.012645737 | 7019410 | 12.646 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.017093656 | 9884992 | 17.094 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.018470486 | 18196618 | 18.470 | Yes | 9 |
 
 #### Random Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.027004530** | 19344227 | **27.005** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.029815326** | 20000785 | **29.815** | No | 2 |
-| fs | Forsort Stable In-Place | **0.030405300** | 20136481 | **30.405** | Yes | 3 |
-| gs | Grail Sort In-Place | 0.065866130 | 20156763 | 65.866 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort | 0.073787402 | 20553611 | 73.787 | No | 5 |
-| wi | WikiSort | 0.075892618 | 22375013 | 75.893 | Yes | 6 |
-| ti | TimSort | 0.090253491 | 18290244 | 90.253 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.094364803 | 18671395 | 94.365 | Yes | 8 |
-| fb | Forsort Basic In-Place | 0.112674130 | 31924599 | 112.67 | Yes | 9 |
+| fw | Forsort With Workspace | **0.025646217** | 19344423 | **25.646** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.029347805** | 20001793 | **29.348** | No | 2 |
+| fs | Forsort Stable In-Place | **0.030155750** | 20136370 | **30.156** | Yes | 3 |
+| gs | Grail Sort In-Place | 0.065398538 | 20162205 | 65.399 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.073489670 | 20262071 | 73.490 | No | 5 |
+| wi | WikiSort | 0.074782356 | 22373179 | 74.782 | Yes | 6 |
+| ti | TimSort | 0.088694587 | 18299291 | 88.695 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.092146498 | 18672439 | 92.146 | Yes | 8 |
+| fb | Forsort Basic In-Place | 0.106266426 | 31919011 | 106.27 | Yes | 9 |
 
 #### Random Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.027024058** | 19344337 | **27.024** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.029914322** | 20003927 | **29.914** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.031216676** | 20144554 | **31.217** | Yes | 3 |
-| gs | Grail Sort In-Place | 0.065258528 | 20154575 | 65.259 | Yes | 4 |
-| wi | WikiSort | 0.075122574 | 22370399 | 75.123 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort | 0.075926289 | 20868688 | 75.926 | Yes | 6 |
-| ti | TimSort | 0.090447047 | 18290499 | 90.447 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.097034233 | 18671395 | 97.034 | Yes | 8 |
-| fb | Forsort Basic In-Place | 0.105689299 | 31940258 | 105.69 | Yes | 9 |
+| fw | Forsort With Workspace | **0.025601732** | 19344483 | **25.602** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.029466759** | 20006177 | **29.467** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.030167176** | 20144097 | **30.167** | Yes | 3 |
+| gs | Grail Sort In-Place | 0.065176848 | 20161687 | 65.177 | Yes | 4 |
+| wi | WikiSort | 0.074389976 | 22370389 | 74.390 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort | 0.074916287 | 20938662 | 74.916 | Yes | 6 |
+| ti | TimSort | 0.088720540 | 18299314 | 88.721 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.092130698 | 18672439 | 92.131 | Yes | 8 |
+| fb | Forsort Basic In-Place | 0.105957559 | 31933798 | 105.96 | Yes | 9 |
 
 #### Reversed Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.011769794** | 4401865 | **11.770** | Yes | 1 |
-| wi | WikiSort | **0.012768959** | 6525364 | **12.769** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.018672878** | 13913561 | **18.673** | Yes | 3 |
-| gs | Grail Sort In-Place | 0.018808596 | 7771207 | 18.809 | Yes | 4 |
-| fi | Forsort Unstable In-Place | 0.019615817 | 15717682 | 19.616 | No | 5 |
-| fw | Forsort With Workspace | 0.019803654 | 16347747 | 19.804 | Yes | 6 |
-| nq | Bentley/McIlroy Quick Sort | 0.026704001 | 21898144 | 26.704 | No | 7 |
-| fb | Forsort Basic In-Place | 0.028186461 | 8713098 | 28.186 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.036613179 | 10249850 | 36.613 | Yes | 9 |
+| ti | TimSort | **0.010314809** | 4402853 | **10.315** | Yes | 1 |
+| wi | WikiSort | **0.012299724** | 6207660 | **12.300** | Yes | 2 |
+| gs | Grail Sort In-Place | **0.017386303** | 7770801 | **17.386** | Yes | 3 |
+| fs | Forsort Stable In-Place | 0.018580167 | 13911789 | 18.580 | Yes | 4 |
+| fw | Forsort With Workspace | 0.018784212 | 16348383 | 18.784 | Yes | 5 |
+| fi | Forsort Unstable In-Place | 0.019543367 | 15717552 | 19.543 | No | 6 |
+| nq | Bentley/McIlroy Quick Sort | 0.026172660 | 21892802 | 26.173 | No | 7 |
+| fb | Forsort Basic In-Place | 0.028012811 | 8712753 | 28.013 | Yes | 8 |
+| gq | GLibc Quick Sort | 0.036315567 | 10249892 | 36.316 | Yes | 9 |
 
 #### Reversed Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.001031017** | 999999 | **1.031** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.002018160** | 1999998 | **2.018** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.002804055** | 2088913 | **2.804** | Yes | 3 |
-| wi | WikiSort | 0.006306860 | 3273489 | 6.307 | Yes | 4 |
-| gs | Grail Sort In-Place | 0.013368642 | 7551070 | 13.369 | Yes | 5 |
-| fw | Forsort With Workspace | 0.018490554 | 16420327 | 18.491 | Yes | 6 |
-| fi | Forsort Unstable In-Place | 0.018841204 | 15784214 | 18.841 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.022182005 | 10066432 | 22.182 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.026991293 | 24025703 | 26.991 | Yes | 9 |
+| ti | TimSort | **0.001058713** | 999999 | **1.059** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.002096470** | 1999998 | **2.096** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.002508083** | 2088913 | **2.508** | Yes | 3 |
+| wi | WikiSort | 0.006065014 | 3273489 | 6.065 | Yes | 4 |
+| gs | Grail Sort In-Place | 0.013230791 | 7551070 | 13.231 | Yes | 5 |
+| fw | Forsort With Workspace | 0.018072363 | 16420327 | 18.072 | Yes | 6 |
+| fi | Forsort Unstable In-Place | 0.019020390 | 15784214 | 19.020 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.019797313 | 10066432 | 19.797 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.026054586 | 24025703 | 26.055 | Yes | 9 |
 
 ### 10000000 Items
 
@@ -1585,141 +1730,283 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.212190237** | 108062257 | **21.219** | Yes | 1 |
-| fs | Forsort Stable In-Place | **0.226306165** | 111378588 | **22.631** | Yes | 2 |
-| fi | Forsort Unstable In-Place | **0.227382463** | 115392550 | **22.738** | No | 3 |
-| ti | TimSort | 0.320621459 | 80899342 | 32.062 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort | 0.343228960 | 221620434 | 34.323 | No | 5 |
-| fb | Forsort Basic In-Place | 0.394309576 | 118907223 | 39.431 | Yes | 6 |
-| wi | WikiSort | 0.398904032 | 222638416 | 39.890 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.473511623 | 207836717 | 47.351 | Yes | 8 |
-| gs | Grail Sort In-Place | 0.492080045 | 215643949 | 49.208 | Yes | 9 |
+| fw | Forsort With Workspace | **0.207427254** | 108136956 | **20.743** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.221293916** | 115617274 | **22.129** | No | 2 |
+| fs | Forsort Stable In-Place | **0.225134624** | 111448176 | **22.513** | Yes | 3 |
+| ti | TimSort | 0.309353580 | 80925243 | 30.935 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.343359787 | 221669671 | 34.336 | No | 5 |
+| wi | WikiSort | 0.393791366 | 222839482 | 39.379 | Yes | 6 |
+| fb | Forsort Basic In-Place | 0.396755191 | 119004161 | 39.676 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.478988276 | 208005685 | 47.899 | Yes | 8 |
+| gs | Grail Sort In-Place | 0.493310994 | 215571686 | 49.331 | Yes | 9 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.090624875** | 29034572 | **9.062** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.095334504** | 44268314 | **9.533** | No | 2 |
-| fs | Forsort Stable In-Place | **0.096200361** | 45723521 | **9.620** | Yes | 3 |
-| fw | Forsort With Workspace | 0.100680716 | 42894715 | 10.068 | Yes | 4 |
-| fb | Forsort Basic In-Place | 0.132453030 | 52321148 | 13.245 | Yes | 5 |
-| wi | WikiSort | 0.228560388 | 161674690 | 22.856 | Yes | 6 |
-| nq | Bentley/McIlroy Quick Sort | 0.235930683 | 214985800 | 23.593 | No | 7 |
-| gs | Grail Sort In-Place | 0.332520029 | 167107953 | 33.252 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.338004308 | 178719900 | 33.800 | Yes | 9 |
+| ti | TimSort | **0.090973151** | 29069681 | **9.097** | Yes | 1 |
+| fw | Forsort With Workspace | **0.091738614** | 42850992 | **9.174** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.094945570** | 45672892 | **9.495** | Yes | 3 |
+| fi | Forsort Unstable In-Place | 0.095427426 | 44731145 | 9.543 | No | 4 |
+| fb | Forsort Basic In-Place | 0.131149290 | 52344010 | 13.115 | Yes | 5 |
+| wi | WikiSort | 0.227842050 | 161734923 | 22.784 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort | 0.233829431 | 215110068 | 23.383 | No | 7 |
+| gq | GLibc Quick Sort | 0.327420037 | 178609052 | 32.742 | Yes | 8 |
+| gs | Grail Sort In-Place | 0.332001863 | 166962457 | 33.200 | Yes | 9 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.289375908** | 165645932 | **28.938** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.300361469** | 173895640 | **30.036** | No | 2 |
-| fs | Forsort Stable In-Place | **0.312029848** | 171498604 | **31.203** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort | 0.523906357 | 233347510 | 52.391 | No | 4 |
-| wi | WikiSort | 0.578092182 | 249353467 | 57.809 | Yes | 5 |
-| ti | TimSort | 0.594535740 | 139122422 | 59.454 | Yes | 6 |
-| gs | Grail Sort In-Place | 0.627543945 | 232407212 | 62.754 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.720792319 | 218019265 | 72.079 | Yes | 8 |
-| fb | Forsort Basic In-Place | 0.724721859 | 205423876 | 72.472 | Yes | 9 |
+| fw | Forsort With Workspace | **0.286638305** | 166155567 | **28.664** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.300758452** | 174363379 | **30.076** | No | 2 |
+| fs | Forsort Stable In-Place | **0.314948811** | 171186457 | **31.495** | Yes | 3 |
+| nq | Bentley/McIlroy Quick Sort | 0.521032147 | 232464629 | 52.103 | No | 4 |
+| wi | WikiSort | 0.568817018 | 249329827 | 56.882 | Yes | 5 |
+| ti | TimSort | 0.584222610 | 139283095 | 58.422 | Yes | 6 |
+| gs | Grail Sort In-Place | 0.620847348 | 232215059 | 62.085 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.690500288 | 218008909 | 69.050 | Yes | 8 |
+| fb | Forsort Basic In-Place | 0.718578560 | 205430665 | 71.858 | Yes | 9 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.169781293** | 83058524 | **16.978** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.173810859** | 87825094 | **17.381** | No | 2 |
-| fs | Forsort Stable In-Place | **0.176965856** | 86531834 | **17.697** | Yes | 3 |
-| ti | TimSort | 0.222994811 | 59750966 | 22.299 | Yes | 4 |
-| fb | Forsort Basic In-Place | 0.278074604 | 89509650 | 27.807 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort | 0.292568040 | 218696014 | 29.257 | No | 6 |
-| wi | WikiSort | 0.338012264 | 204484322 | 33.801 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.401947926 | 199491157 | 40.195 | Yes | 8 |
-| gs | Grail Sort In-Place | 0.431433972 | 201569842 | 43.143 | Yes | 9 |
+| fw | Forsort With Workspace | **0.163603943** | 83711153 | **16.360** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.173395372** | 88606072 | **17.340** | No | 2 |
+| fs | Forsort Stable In-Place | **0.174509268** | 86683679 | **17.451** | Yes | 3 |
+| ti | TimSort | 0.213320203 | 59828908 | 21.332 | Yes | 4 |
+| fb | Forsort Basic In-Place | 0.280431050 | 89624605 | 28.043 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort | 0.290364632 | 218637153 | 29.036 | No | 6 |
+| wi | WikiSort | 0.331360048 | 204435712 | 33.136 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.409348233 | 199438755 | 40.935 | Yes | 8 |
+| gs | Grail Sort In-Place | 0.431371921 | 201499966 | 43.137 | Yes | 9 |
 
 #### Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fb | Forsort Basic In-Place | **0.008055760** | 9999999 | **0.806** | Yes | 1 |
-| ti | TimSort | **0.008220862** | 9999999 | **0.822** | Yes | 2 |
-| fw | Forsort With Workspace | **0.008960379** | 10000089 | **0.896** | Yes | 3 |
-| fi | Forsort Unstable In-Place | 0.009370352 | 10000304 | 0.937 | Yes | 4 |
-| fs | Forsort Stable In-Place | 0.009933326 | 9999999 | 0.993 | Yes | 5 |
-| wi | WikiSort | 0.021190620 | 20127971 | 2.119 | Yes | 6 |
-| gs | Grail Sort In-Place | 0.169602813 | 79282702 | 16.960 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.218990385 | 114434624 | 21.899 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.226096302 | 209619989 | 22.610 | No | 9 |
+| fb | Forsort Basic In-Place | **0.008005439** | 9999999 | **0.801** | Yes | 1 |
+| ti | TimSort | **0.008083803** | 9999999 | **0.808** | Yes | 2 |
+| fw | Forsort With Workspace | **0.009158089** | 10000089 | **0.916** | Yes | 3 |
+| fi | Forsort Unstable In-Place | 0.009316000 | 10000304 | 0.932 | Yes | 4 |
+| fs | Forsort Stable In-Place | 0.009841889 | 9999999 | 0.984 | Yes | 5 |
+| wi | WikiSort | 0.020928711 | 20127952 | 2.093 | Yes | 6 |
+| gs | Grail Sort In-Place | 0.170277717 | 79282160 | 17.028 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.200381412 | 114434624 | 20.038 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.219305391 | 209616775 | 21.931 | No | 9 |
 
 #### Ordered Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.007823401** | 9999999 | **0.782** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.008086007** | 9999999 | **0.809** | Yes | 2 |
-| fw | Forsort With Workspace | **0.008944910** | 10000089 | **0.894** | Yes | 3 |
-| fi | Forsort Unstable In-Place | 0.009572313 | 10000304 | 0.957 | Yes | 4 |
-| fs | Forsort Stable In-Place | 0.010017896 | 9999999 | 1.002 | Yes | 5 |
-| wi | WikiSort | 0.020464349 | 20122509 | 2.046 | Yes | 6 |
-| gs | Grail Sort In-Place | 0.158224827 | 79189929 | 15.822 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.206565356 | 114434624 | 20.657 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.207612912 | 211572877 | 20.761 | Yes | 9 |
+| ti | TimSort | **0.008030856** | 9999999 | **0.803** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.008038721** | 9999999 | **0.804** | Yes | 2 |
+| fw | Forsort With Workspace | **0.009082028** | 10000089 | **0.908** | Yes | 3 |
+| fi | Forsort Unstable In-Place | 0.009353298 | 10000304 | 0.935 | Yes | 4 |
+| fs | Forsort Stable In-Place | 0.009942179 | 9999999 | 0.994 | Yes | 5 |
+| wi | WikiSort | 0.020395639 | 20122509 | 2.040 | Yes | 6 |
+| gs | Grail Sort In-Place | 0.164972749 | 79189929 | 16.497 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.200827225 | 114434624 | 20.083 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.208888187 | 211572877 | 20.889 | Yes | 9 |
 
 #### Random Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.301173910** | 225441758 | **30.117** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.336261433** | 232288484 | **33.626** | No | 2 |
-| fs | Forsort Stable In-Place | **0.348358849** | 235476695 | **34.836** | Yes | 3 |
-| gs | Grail Sort In-Place | 0.778015711 | 236936715 | 77.802 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort | 0.877276720 | 237131562 | 87.728 | No | 5 |
-| wi | WikiSort | 0.924820731 | 266882917 | 92.482 | Yes | 6 |
-| ti | TimSort | 1.074393132 | 213811853 | 107.44 | Yes | 7 |
-| gq | GLibc Quick Sort | 1.122142440 | 220067417 | 112.21 | Yes | 8 |
-| fb | Forsort Basic In-Place | 1.237487885 | 373483234 | 123.75 | Yes | 9 |
+| fw | Forsort With Workspace | **0.290592420** | 225429372 | **29.059** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.332753702** | 232277822 | **33.275** | No | 2 |
+| fs | Forsort Stable In-Place | **0.336778259** | 235467084 | **33.678** | Yes | 3 |
+| gs | Grail Sort In-Place | 0.779831996 | 236958802 | 77.983 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.856509726 | 238426327 | 85.651 | No | 5 |
+| wi | WikiSort | 0.915883656 | 266877152 | 91.588 | Yes | 6 |
+| ti | TimSort | 1.049124157 | 213810303 | 104.91 | Yes | 7 |
+| gq | GLibc Quick Sort | 1.096587015 | 220066877 | 109.66 | Yes | 8 |
+| fb | Forsort Basic In-Place | 1.243011421 | 373451538 | 124.30 | Yes | 9 |
 
 #### Random Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | Forsort With Workspace | **0.306675017** | 225441805 | **30.668** | Yes | 1 |
-| fi | Forsort Unstable In-Place | **0.331976464** | 232334009 | **33.198** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.342748457** | 235566350 | **34.275** | Yes | 3 |
-| gs | Grail Sort In-Place | 0.785473930 | 236874687 | 78.547 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort | 0.876564928 | 244066204 | 87.656 | Yes | 5 |
-| wi | WikiSort | 0.905138788 | 266816725 | 90.514 | Yes | 6 |
-| gq | GLibc Quick Sort | 1.082702133 | 220067428 | 108.27 | Yes | 7 |
-| ti | TimSort | 1.089873136 | 213807264 | 108.99 | Yes | 8 |
-| fb | Forsort Basic In-Place | 1.246419495 | 373634696 | 124.64 | Yes | 9 |
+| fw | Forsort With Workspace | **0.293111952** | 225429382 | **29.311** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **0.330000697** | 232321330 | **33.000** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.339439458** | 235553320 | **33.944** | Yes | 3 |
+| gs | Grail Sort In-Place | 0.779063544 | 236954845 | 77.906 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 0.870931728 | 245146777 | 87.093 | Yes | 5 |
+| wi | WikiSort | 0.919381912 | 266849832 | 91.938 | Yes | 6 |
+| ti | TimSort | 1.050459084 | 213810880 | 105.05 | Yes | 7 |
+| gq | GLibc Quick Sort | 1.092386182 | 220066878 | 109.24 | Yes | 8 |
+| fb | Forsort Basic In-Place | 1.248617548 | 373600354 | 124.86 | Yes | 9 |
 
 #### Reversed Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.136563583** | 39874238 | **13.656** | Yes | 1 |
-| wi | WikiSort | **0.147893978** | 63017582 | **14.789** | Yes | 2 |
-| gs | Grail Sort In-Place | **0.198444009** | 84024780 | **19.844** | Yes | 3 |
-| fs | Forsort Stable In-Place | 0.234135963 | 177392059 | 23.414 | Yes | 4 |
-| fw | Forsort With Workspace | 0.241298834 | 197268472 | 24.130 | Yes | 5 |
-| fi | Forsort Unstable In-Place | 0.243414350 | 190726110 | 24.341 | No | 6 |
-| nq | Bentley/McIlroy Quick Sort | 0.306184177 | 264937278 | 30.618 | No | 7 |
-| fb | Forsort Basic In-Place | 0.323675058 | 87246533 | 32.368 | Yes | 8 |
-| gq | GLibc Quick Sort | 0.466244958 | 120240926 | 46.624 | Yes | 9 |
+| ti | TimSort | **0.119832743** | 39878005 | **11.983** | Yes | 1 |
+| wi | WikiSort | **0.154961954** | 68281610 | **15.496** | Yes | 2 |
+| gs | Grail Sort In-Place | **0.201964860** | 84028558 | **20.196** | Yes | 3 |
+| fw | Forsort With Workspace | 0.224815546 | 197266392 | 22.482 | Yes | 4 |
+| fi | Forsort Unstable In-Place | 0.240367175 | 190717993 | 24.037 | No | 5 |
+| fs | Forsort Stable In-Place | 0.244501067 | 177389869 | 24.450 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort | 0.304685565 | 264938580 | 30.469 | No | 7 |
+| fb | Forsort Basic In-Place | 0.322745722 | 87261055 | 32.275 | Yes | 8 |
+| gq | GLibc Quick Sort | 0.432054839 | 120242863 | 43.205 | Yes | 9 |
 
 #### Reversed Unique
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort | **0.009994701** | 9999999 | **0.999** | Yes | 1 |
-| fb | Forsort Basic In-Place | **0.021334533** | 19999998 | **2.133** | Yes | 2 |
-| fs | Forsort Stable In-Place | **0.029273504** | 20867892 | **2.927** | Yes | 3 |
-| wi | WikiSort | 0.069244068 | 21498750 | 6.924 | Yes | 4 |
-| gs | Grail Sort In-Place | 0.157961778 | 81979307 | 15.796 | Yes | 5 |
-| fw | Forsort With Workspace | 0.224052013 | 197985849 | 22.405 | Yes | 6 |
-| fi | Forsort Unstable In-Place | 0.235160168 | 191369358 | 23.516 | Yes | 7 |
-| gq | GLibc Quick Sort | 0.254004954 | 118788160 | 25.400 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort | 0.315696319 | 290683459 | 31.570 | Yes | 9 |
+| ti | TimSort | **0.009786140** | 9999999 | **0.979** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.020509149** | 19999998 | **2.051** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.027745473** | 20867892 | **2.775** | Yes | 3 |
+| wi | WikiSort | 0.069511696 | 21498750 | 6.951 | Yes | 4 |
+| gs | Grail Sort In-Place | 0.161042160 | 81979307 | 16.104 | Yes | 5 |
+| fw | Forsort With Workspace | 0.219546673 | 197985849 | 21.955 | Yes | 6 |
+| fi | Forsort Unstable In-Place | 0.243104683 | 191369358 | 24.310 | Yes | 7 |
+| gq | GLibc Quick Sort | 0.249777290 | 118788160 | 24.978 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 0.310016405 | 290683459 | 31.002 | Yes | 9 |
+
+### 100000000 Items
+
+#### 10 Percent Disordered
+
+| Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
+|-----------|------|----------|-------------|---------|---------|------|
+| fw | Forsort With Workspace | **2.530893564** | 1190163424 | **25.309** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **2.546713125** | 1271696181 | **25.467** | No | 2 |
+| fs | Forsort Stable In-Place | **2.656512948** | 1225557917 | **26.565** | Yes | 3 |
+| ti | TimSort | 3.548974833 | 885349200 | 35.490 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 3.969756048 | 2556114832 | 39.698 | No | 5 |
+| fb | Forsort Basic In-Place | 4.667011102 | 1303198586 | 46.670 | Yes | 6 |
+| wi | WikiSort | 4.854466001 | 2589528798 | 48.545 | Yes | 7 |
+| gq | GLibc Quick Sort | 5.789545085 | 2425087751 | 57.895 | Yes | 8 |
+| gs | Grail Sort In-Place | 6.015076110 | 2494360434 | 60.151 | Yes | 9 |
+
+#### 1 Percent Disordered
+
+| Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
+|-----------|------|----------|-------------|---------|---------|------|
+| ti | TimSort | **1.072557498** | 324457797 | **10.726** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **1.226233482** | 550340981 | **12.262** | No | 2 |
+| fs | Forsort Stable In-Place | **1.246258164** | 547276621 | **12.463** | Yes | 3 |
+| fw | Forsort With Workspace | 1.291136746 | 515983732 | 12.911 | Yes | 4 |
+| fb | Forsort Basic In-Place | 1.551855373 | 550843510 | 15.519 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort | 2.714225867 | 2503124446 | 27.142 | No | 6 |
+| wi | WikiSort | 3.046304073 | 1990181595 | 30.463 | Yes | 7 |
+| gq | GLibc Quick Sort | 3.983222307 | 2138192604 | 39.832 | Yes | 8 |
+| gs | Grail Sort In-Place | 4.326902303 | 2022530075 | 43.269 | Yes | 9 |
+
+#### 25 Percent Disordered
+
+| Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
+|-----------|------|----------|-------------|---------|---------|------|
+| fi | Forsort Unstable In-Place | **3.420504731** | 1935889512 | **34.205** | No | 1 |
+| fw | Forsort With Workspace | **3.425709885** | 1862655030 | **34.257** | Yes | 2 |
+| fs | Forsort Stable In-Place | **3.659809780** | 1924373356 | **36.598** | Yes | 3 |
+| nq | Bentley/McIlroy Quick Sort | 5.990400107 | 2673076661 | 59.904 | No | 4 |
+| ti | TimSort | 6.724278612 | 1534831256 | 67.243 | Yes | 5 |
+| wi | WikiSort | 6.787143739 | 2854508858 | 67.871 | Yes | 6 |
+| gs | Grail Sort In-Place | 7.349677664 | 2634592105 | 73.497 | Yes | 7 |
+| gq | GLibc Quick Sort | 8.142842687 | 2514385833 | 81.428 | Yes | 8 |
+| fb | Forsort Basic In-Place | 8.342982036 | 2304584977 | 83.430 | Yes | 9 |
+
+#### 5 Percent Disordered
+
+| Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
+|-----------|------|----------|-------------|---------|---------|------|
+| fw | Forsort With Workspace | **2.001956525** | 925918048 | **20.020** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **2.020743975** | 982170604 | **20.207** | No | 2 |
+| fs | Forsort Stable In-Place | **2.064685960** | 974518742 | **20.647** | Yes | 3 |
+| ti | TimSort | 2.442566222 | 659631595 | 24.426 | Yes | 4 |
+| fb | Forsort Basic In-Place | 3.298381317 | 967963232 | 32.984 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort | 3.359759096 | 2520850711 | 33.598 | No | 6 |
+| wi | WikiSort | 4.138039596 | 2411282096 | 41.380 | Yes | 7 |
+| gq | GLibc Quick Sort | 4.968551217 | 2341899008 | 49.686 | Yes | 8 |
+| gs | Grail Sort In-Place | 5.435377744 | 2358494172 | 54.354 | Yes | 9 |
+
+#### Ordered Duplicates
+
+| Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
+|-----------|------|----------|-------------|---------|---------|------|
+| ti | TimSort | **0.078552610** | 99999999 | **0.786** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.079188564** | 99999999 | **0.792** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.097827504** | 99999999 | **0.978** | Yes | 3 |
+| fi | Forsort Unstable In-Place | 0.147268071 | 100000429 | 1.473 | Yes | 4 |
+| fw | Forsort With Workspace | 0.208217315 | 100000101 | 2.082 | Yes | 5 |
+| wi | WikiSort | 0.241426721 | 223294335 | 2.414 | Yes | 6 |
+| gs | Grail Sort In-Place | 2.305556910 | 840542710 | 23.056 | Yes | 7 |
+| gq | GLibc Quick Sort | 2.396573075 | 1314447104 | 23.966 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 2.597615824 | 2472882034 | 25.976 | No | 9 |
+
+#### Ordered Unique
+
+| Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
+|-----------|------|----------|-------------|---------|---------|------|
+| ti | TimSort | **0.078627547** | 99999999 | **0.786** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.079182811** | 99999999 | **0.792** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.098091316** | 99999999 | **0.981** | Yes | 3 |
+| fi | Forsort Unstable In-Place | 0.148088338 | 100000429 | 1.481 | Yes | 4 |
+| fw | Forsort With Workspace | 0.211584476 | 100000101 | 2.116 | Yes | 5 |
+| wi | WikiSort | 0.237512367 | 223275953 | 2.375 | Yes | 6 |
+| gs | Grail Sort In-Place | 2.232538003 | 840185031 | 22.325 | Yes | 7 |
+| gq | GLibc Quick Sort | 2.432246432 | 1314447104 | 24.322 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort | 2.445536555 | 2525165841 | 24.455 | Yes | 9 |
+
+#### Random Duplicates
+
+| Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
+|-----------|------|----------|-------------|---------|---------|------|
+| fw | Forsort With Workspace | **3.629485644** | 2621029714 | **36.295** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **3.879304971** | 2634697879 | **38.793** | No | 2 |
+| fs | Forsort Stable In-Place | **4.245442846** | 2742131801 | **42.454** | Yes | 3 |
+| gs | Grail Sort In-Place | 9.161776953 | 2655245492 | 91.618 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 9.770257411 | 2749060430 | 97.703 | No | 5 |
+| wi | WikiSort | 10.810110215 | 3064238700 | 108.10 | Yes | 6 |
+| ti | TimSort | 12.128933030 | 2435412938 | 121.29 | Yes | 7 |
+| gq | GLibc Quick Sort | 12.680917931 | 2532644916 | 126.81 | Yes | 8 |
+| fb | Forsort Basic In-Place | 14.610756403 | 4273768630 | 146.11 | Yes | 9 |
+
+#### Random Unique
+
+| Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
+|-----------|------|----------|-------------|---------|---------|------|
+| fw | Forsort With Workspace | **3.639563970** | 2621029170 | **36.396** | Yes | 1 |
+| fi | Forsort Unstable In-Place | **3.865571791** | 2635143637 | **38.656** | Yes | 2 |
+| fs | Forsort Stable In-Place | **4.358097904** | 2743841495 | **43.581** | Yes | 3 |
+| gs | Grail Sort In-Place | 9.164548158 | 2655129547 | 91.645 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 9.944102438 | 2820363361 | 99.441 | Yes | 5 |
+| wi | WikiSort | 10.809300069 | 3063957721 | 108.09 | Yes | 6 |
+| ti | TimSort | 12.125734075 | 2435415718 | 121.26 | Yes | 7 |
+| gq | GLibc Quick Sort | 12.671754261 | 2532644915 | 126.72 | Yes | 8 |
+| fb | Forsort Basic In-Place | 14.613546595 | 4275253950 | 146.13 | Yes | 9 |
+
+#### Reversed Duplicates
+
+| Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
+|-----------|------|----------|-------------|---------|---------|------|
+| ti | TimSort | **1.604083224** | 418702981 | **16.041** | Yes | 1 |
+| wi | WikiSort | **2.092436747** | 744007323 | **20.924** | Yes | 2 |
+| gs | Grail Sort In-Place | **2.742132355** | 916681093 | **27.421** | Yes | 3 |
+| fw | Forsort With Workspace | 3.066291528 | 2232942602 | 30.663 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort | 3.101003496 | 2805414470 | 31.010 | No | 5 |
+| fi | Forsort Unstable In-Place | 3.553149719 | 2171397613 | 35.531 | No | 6 |
+| fs | Forsort Stable In-Place | 3.641450785 | 2027882293 | 36.415 | Yes | 7 |
+| gq | GLibc Quick Sort | 5.059735799 | 1363129113 | 50.597 | Yes | 8 |
+| fb | Forsort Basic In-Place | 5.363953906 | 871236419 | 53.640 | Yes | 9 |
+
+#### Reversed Unique
+
+| Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
+|-----------|------|----------|-------------|---------|---------|------|
+| ti | TimSort | **0.106418345** | 99999999 | **1.064** | Yes | 1 |
+| fb | Forsort Basic In-Place | **0.222671659** | 199999998 | **2.227** | Yes | 2 |
+| fs | Forsort Stable In-Place | **0.563042267** | 208655473 | **5.630** | Yes | 3 |
+| wi | WikiSort | 1.278887250 | 266513829 | 12.789 | Yes | 4 |
+| gs | Grail Sort In-Place | 2.296826958 | 896694624 | 22.968 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort | 2.968740131 | 2921036489 | 29.687 | Yes | 6 |
+| fw | Forsort With Workspace | 3.072165532 | 2240136721 | 30.722 | Yes | 7 |
+| gq | GLibc Quick Sort | 3.160901496 | 1351335168 | 31.609 | Yes | 8 |
+| fi | Forsort Unstable In-Place | 3.383844351 | 2176935091 | 33.838 | Yes | 9 |
 
 
 ## Stability Verification
