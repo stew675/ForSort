@@ -526,7 +526,7 @@ fillset(struct item *a, size_t n)
 	for (uint32_t i = 0; i < n; i++)
 		a[i].order = i;
 
-	stable = true;
+	stable &= true;
 #endif
 } // fillset
 
@@ -626,10 +626,14 @@ main(int argc, char *argv[])
 	}
 
 	double	total_time = 0;
+	double	run_time = 0;
 	size_t	num_runs = 0;
+	struct timespec run_start;
+
+	clock_gettime(CLOCK_MONOTONIC, &run_start);
 
 	// Let's finally do this thing!
-	while ((total_time < 30) || (num_runs < 10)) {
+	while ((run_time < 60) || (num_runs < 10)) {
 		memset(a, 0, n * sizeof(*a));
 		srandom((uint32_t)num_runs);
 		fillset(a, n);
@@ -645,9 +649,8 @@ main(int argc, char *argv[])
 				printf("\nTesting %s for 1 run\n", sortname);
 			} else {
 				printf("\nExtended Testing of %s\n\n", sortname);
-				printf("Test will run for a minimum of 30s total sorting time\n");
+				printf("Test will run for a minimum of 60s total run time\n");
 				printf("and a minimum of 10 runs. Whichever takes longer\n");
-				printf("Test preparation time is not included in the 30s\n");
 			}
 		}
 
@@ -698,7 +701,16 @@ main(int argc, char *argv[])
 
 		total_time += tim;
 
+		// Did it sort correctly?
+		test_sort(a, n);
+
+		// Was sort stable?
+		test_stability(a, n);
+
+		run_time = (end.tv_sec - run_start.tv_sec) + (end.tv_nsec - run_start.tv_nsec) / 1000000000.0;
+
 		num_runs++;
+
 		if (quick_test)
 			break;
 	}
@@ -712,12 +724,6 @@ main(int argc, char *argv[])
 	if (verbose) {
 		print_array(a, n);
 	}
-
-	// Did it sort correctly?
-	test_sort(a, n);
-
-	// Was sort stable?
-	test_stability(a, n);
 
 	// Stats time!
 	printf("\n");

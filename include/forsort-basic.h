@@ -321,21 +321,26 @@ static size_t
 NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
 	VAR	*pe = pa + (n * ES), *curr = pa, *start;
-	size_t	reversals = 0;
+	size_t	reversals = 0, loops = 0;
+
+	if (n < 2)
+		return 0;
 
 	// I learned a lesson here.  Break out tight loops into their own
 	// functions and let the C compiler optimize it.  This allows the
 	// compiler to work around CPU UOP cache alignment issues better.
 	while (curr != pe) {
+		loops++;
 		curr = CALL(process_ascending)(curr, pe, COMMON_ARGS);
 		if (curr == pe)
-			return reversals;
+			break;
 		start = curr - ES;
 		curr = CALL(process_descending)(curr, pe, COMMON_ARGS);
 		reversals += NITEM(curr - start);
 		CALL(reverse_block)(start, curr, es);
 	}
-	return reversals;
+//	return reversals;
+	return reversals - loops + 1;
 } // dereverse
 
 
