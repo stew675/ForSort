@@ -330,10 +330,10 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		curr = CALL(process_ascending)(curr, pe, COMMON_ARGS);
 		if (curr == pe)
 			return reversals;
-		start = curr;
+		start = curr - ES;
 		curr = CALL(process_descending)(curr, pe, COMMON_ARGS);
 		reversals += NITEM(curr - start);
-		CALL(reverse_block)(start - ES, curr, es);
+		CALL(reverse_block)(start, curr, es);
 	}
 	return reversals;
 } // dereverse
@@ -344,8 +344,10 @@ NAME(basic_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 {
 	size_t reversals = CALL(dereverse)(pa, n, COMMON_ARGS);
 
-	if (!reversals)		// Already sorted
-		return 0;
+	// Check if was fully sorted, or fully reversed
+	if ((reversals == 0) || (reversals == n))
+		return reversals;
+
 #if LOW_STACK
 	CALL(basic_bottom_up_sort)(pa, n, COMMON_ARGS);
 #else
