@@ -636,8 +636,11 @@ def generate_results(
     sections.append(generate_sort_types_section())
     sections.append(generate_variant_section())
 
-    # Cross-category analysis as executive summary (moved to top)
+    # Cross-category Analysis Summary
     sections.append(generate_cross_category_analysis(data))
+
+    # Size winners summary
+    sections.append(generate_size_winners_summary(data))
 
     # Summary section (always included)
     sections.append(generate_summary_by_size(data, include_skipped))
@@ -645,9 +648,6 @@ def generate_results(
     # Rankings section
     if include_rankings:
         sections.append(generate_performance_rankings(data, include_skipped))
-
-    # Size winners summary (always included after rankings)
-    sections.append(generate_size_winners_summary(data))
 
     # Detailed tables (optional)
     if include_detailed:

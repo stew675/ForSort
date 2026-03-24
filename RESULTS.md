@@ -67,6 +67,19 @@ This document contains comprehensive benchmark results for all sorting algorithm
 - **Best for Random Data:** fw (ForSort With Allocated Workspace) - Avg: 23.480 ns/item
 
 
+## Size Winners Summary
+
+| Dataset Size | 1st Place | Avg (ns/item) | 2nd Place | Avg (ns/item) | 3rd Place | Avg (ns/item) |
+|--------------|-----------|---------------|-----------|---------------|-----------|---------------|
+| 100 | **fw**<br>ForSort With Allocated Workspace | 6.463 | **wi**<br>WikiSort Fully In-Place | 7.060 | **fi**<br>ForSort Unstable Fully In-Place | 7.223 |
+| 1000 | **fw**<br>ForSort With Allocated Workspace | 8.772 | **fi**<br>ForSort Unstable Fully In-Place | 10.042 | **fs**<br>ForSort Stable Fully In-Place | 10.185 |
+| 10000 | **fw**<br>ForSort With Allocated Workspace | 11.662 | **fs**<br>ForSort Stable Fully In-Place | 12.236 | **fi**<br>ForSort Unstable Fully In-Place | 12.925 |
+| 100000 | **fs**<br>ForSort Stable Fully In-Place | 14.126 | **fw**<br>ForSort With Allocated Workspace | 14.454 | **fi**<br>ForSort Unstable Fully In-Place | 15.363 |
+| 1000000 | **fs**<br>ForSort Stable Fully In-Place | 15.666 | **fw**<br>ForSort With Allocated Workspace | 16.579 | **fi**<br>ForSort Unstable Fully In-Place | 17.675 |
+| 10000000 | **fs**<br>ForSort Stable Fully In-Place | 17.772 | **fw**<br>ForSort With Allocated Workspace | 18.824 | **fi**<br>ForSort Unstable Fully In-Place | 20.183 |
+| 100000000 | **fs**<br>ForSort Stable Fully In-Place | 22.183 | **fw**<br>ForSort With Allocated Workspace | 24.081 | **fi**<br>ForSort Unstable Fully In-Place | 25.239 |
+
+
 ## Summary by Dataset Size and Test Variant
 
 ### Fully Random
@@ -1029,19 +1042,6 @@ This document contains comprehensive benchmark results for all sorting algorithm
 | 7 | nq | Bentley/McIlroy Quick Sort In-Place | 30.852 | 2843.9% | No |
 | 8 | gq | GLibc Quick Sort Fully In-Place | 31.454 | 2901.3% | No |
 | 9 | fi | ForSort Unstable Fully In-Place | 33.934 | 3138.0% | No |
-
-
-## Size Winners Summary
-
-| Dataset Size | 1st Place | Avg (ns/item) | 2nd Place | Avg (ns/item) | 3rd Place | Avg (ns/item) |
-|--------------|-----------|---------------|-----------|---------------|-----------|---------------|
-| 100 | **fw**<br>ForSort With Allocated Workspace | 6.463 | **wi**<br>WikiSort Fully In-Place | 7.060 | **fi**<br>ForSort Unstable Fully In-Place | 7.223 |
-| 1000 | **fw**<br>ForSort With Allocated Workspace | 8.772 | **fi**<br>ForSort Unstable Fully In-Place | 10.042 | **fs**<br>ForSort Stable Fully In-Place | 10.185 |
-| 10000 | **fw**<br>ForSort With Allocated Workspace | 11.662 | **fs**<br>ForSort Stable Fully In-Place | 12.236 | **fi**<br>ForSort Unstable Fully In-Place | 12.925 |
-| 100000 | **fs**<br>ForSort Stable Fully In-Place | 14.126 | **fw**<br>ForSort With Allocated Workspace | 14.454 | **fi**<br>ForSort Unstable Fully In-Place | 15.363 |
-| 1000000 | **fs**<br>ForSort Stable Fully In-Place | 15.666 | **fw**<br>ForSort With Allocated Workspace | 16.579 | **fi**<br>ForSort Unstable Fully In-Place | 17.675 |
-| 10000000 | **fs**<br>ForSort Stable Fully In-Place | 17.772 | **fw**<br>ForSort With Allocated Workspace | 18.824 | **fi**<br>ForSort Unstable Fully In-Place | 20.183 |
-| 100000000 | **fs**<br>ForSort Stable Fully In-Place | 22.183 | **fw**<br>ForSort With Allocated Workspace | 24.081 | **fi**<br>ForSort Unstable Fully In-Place | 25.239 |
 
 
 ## Detailed Results by Dataset Size
