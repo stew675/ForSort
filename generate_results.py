@@ -76,11 +76,6 @@ def load_csv_data(filepath: str) -> List[Dict]:
     return data
 
 
-def get_unsorted_unique_values(data: List[Dict], field: str) -> List[str]:
-    """Get sorted unique values from a field."""
-    return set(row[field] for row in data if row.get("_valid", False))
-
-
 def get_unique_values(data: List[Dict], field: str) -> List[str]:
     """Get sorted unique values from a field."""
     return sorted(set(row[field] for row in data if row.get("_valid", False)))
@@ -162,9 +157,9 @@ def generate_summary_by_size(data: List[Dict], include_skipped: bool = False) ->
     """Generate summary tables organized by dataset size and test variant."""
     lines = ["## Summary by Dataset Size and Test Variant", ""]
 
-    # Get unique sizes and variants
+    # Get unique sizes and variants (maintain custom order from VARIANT_INFO)
     sizes = get_unique_values(data, "num_items")
-    variants = get_unsorted_unique_values(data, "test_variant")
+    variants = list(VARIANT_INFO.keys())
 
     for variant in variants:
         lines.append(f"### {variant.replace('_', ' ').title()}")
@@ -223,7 +218,7 @@ def generate_performance_rankings(
     lines = ["## Performance Rankings", ""]
 
     sizes = get_unique_values(data, "num_items")
-    variants = get_unique_values(data, "test_variant")
+    variants = list(VARIANT_INFO.keys())
 
     for size in sizes:
         lines.append(f"### {size} Items")
@@ -303,7 +298,7 @@ def generate_cross_category_analysis(data: List[Dict]) -> str:
     lines = ["## Cross-Category Analysis", ""]
 
     sizes = get_unique_values(data, "num_items")
-    variants = get_unique_values(data, "test_variant")
+    variants = list(VARIANT_INFO.keys())
 
     num_sort_types = len(SORT_TYPE_INFO)
 
@@ -380,12 +375,8 @@ def generate_cross_category_analysis(data: List[Dict]) -> str:
 
     lines.append("### Overall Performance Ranking (Weighted Average)")
     lines.append("")
-    lines.append(
-        "| Rank | Sort Type | Name | Weighted Rank | Wins | Top 3 |"
-    )
-    lines.append(
-        "|------|-----------|------|---------------|------|-------|"
-    )
+    lines.append("| Rank | Sort Type | Name | Weighted Rank | Wins | Top 3 |")
+    lines.append("|------|-----------|------|---------------|------|-------|")
 
     for rank, (st, avg_rank) in enumerate(sorted_by_rank, 1):
         name = SORT_TYPE_INFO.get(st, {"name": st})["name"]
@@ -506,8 +497,8 @@ def generate_detailed_tables(data: List[Dict], sizes: List[str]) -> str:
             r for r in data if r.get("_valid", False) and r["num_items"] == size
         ]
 
-        # Group by variant
-        variants = get_unique_values(size_rows, "test_variant")
+        # Group by variant (maintain custom order from VARIANT_INFO)
+        variants = list(VARIANT_INFO.keys())
 
         for variant in variants:
             variant_rows = [r for r in size_rows if r["test_variant"] == variant]
@@ -604,7 +595,7 @@ def generate_results(
     sizes = get_unique_values(data, "num_items")
     print(f"Found {len(sizes)} unique dataset sizes: {sizes}")
 
-    variants = get_unique_values(data, "test_variant")
+    variants = list(VARIANT_INFO.keys())
     print(f"Found {len(variants)} unique test variants")
 
     # Build the markdown content
