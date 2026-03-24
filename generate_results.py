@@ -579,8 +579,8 @@ def generate_detailed_tables(data: List[Dict], sizes: List[str]) -> str:
 def generate_stability_section(data: List[Dict]) -> str:
     """Generate stability verification section."""
     lines = ["## Stability Verification", ""]
-    lines.append("| Sort Type | Name | Expected | Verified (1M random) |")
-    lines.append("|-----------|------|----------|---------------------|")
+    lines.append("| Sort Type | Name | Stable |")
+    lines.append("|-----------|------|--------|")
 
     for st, info in SORT_TYPE_INFO.items():
         expected = "Stable" if info["stable"] else "Unstable"
@@ -599,7 +599,7 @@ def generate_stability_section(data: List[Dict]) -> str:
         else:
             verified = "N/A"
 
-        lines.append(f"| {st} | {info['name']} | {expected} | {verified} |")
+        lines.append(f"| {st} | {info['name']} | {verified} |")
 
     return (
         "\n".join(lines)

@@ -1887,18 +1887,18 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 ## Stability Verification
 
-| Sort Type | Name | Expected | Verified (1M random) |
-|-----------|------|----------|---------------------|
-| fb | ForSort Basic Fully In-Place | Stable | Yes |
-| fi | ForSort Unstable Fully In-Place | Unstable | No |
-| fs | ForSort Stable Fully In-Place | Stable | Yes |
-| fw | ForSort With Allocated Workspace | Stable | Yes |
-| gs | GrailSort Fully In-Place | Stable | Yes |
-| gq | GLibc Quick Sort Fully In-Place | Unstable | Yes |
-| nq | Bentley/McIlroy Quick Sort In-Place | Unstable | No |
-| ti | TimSort with Allocated Workspace | Stable | Yes |
-| wi | WikiSort Fully In-Place | Stable | Yes |
-| is | Insertion Sort Fully In-Place | Stable | Yes |
+| Sort Type | Name | Stable |
+|-----------|------|--------|
+| fb | ForSort Basic Fully In-Place | Yes |
+| fi | ForSort Unstable Fully In-Place | No |
+| fs | ForSort Stable Fully In-Place | Yes |
+| fw | ForSort With Allocated Workspace | Yes |
+| gs | GrailSort Fully In-Place | Yes |
+| gq | GLibc Quick Sort Fully In-Place | Yes |
+| nq | Bentley/McIlroy Quick Sort In-Place | No |
+| ti | TimSort with Allocated Workspace | Yes |
+| wi | WikiSort Fully In-Place | Yes |
+| is | Insertion Sort Fully In-Place | Yes |
 
 ---
 *Generated automatically from benchmark_results.csv*
