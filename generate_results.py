@@ -268,10 +268,29 @@ def generate_performance_rankings(
 
             lines.append("")
 
-        # Summary winner for this size (across all variants - average)
-        lines.append("#### Overall Winner (Average Across All Variants)")
-        lines.append("")
+    return "\n".join(lines) + "\n"
 
+
+def generate_size_winners_summary(data: List[Dict]) -> str:
+    """Generate summary table of winners for each dataset size."""
+    lines = ["## Size Winners Summary", ""]
+
+    sizes = get_unique_values(data, "num_items")
+    variants = list(VARIANT_INFO.keys())
+
+    lines.append(
+        "| Dataset Size | 1st Place | Avg (ns/item) | 2nd Place | Avg (ns/item) | 3rd Place | Avg (ns/item) |"
+    )
+    lines.append(
+        "|--------------|-----------|---------------|-----------|---------------|-----------|---------------|"
+    )
+
+    for size in sizes:
+        size_rows = [
+            r for r in data if r.get("_valid", False) and r["num_items"] == size
+        ]
+
+        # Calculate average time across all variants for each sort type
         avg_times = {}
         for st in SORT_TYPE_INFO.keys():
             st_rows = [r for r in size_rows if r["sort_type"] == st]
@@ -282,14 +301,25 @@ def generate_performance_rankings(
                 if valid_ns:
                     avg_times[st] = sum(valid_ns) / len(valid_ns)
 
-        if avg_times:
-            best_st = min(avg_times.keys(), key=lambda x: avg_times[x])
+        # Sort by average time (lower is better)
+        sorted_by_time = sorted(avg_times.items(), key=lambda x: x[1])
+
+        if len(sorted_by_time) >= 3:
+            first_st, first_avg = sorted_by_time[0]
+            second_st, second_avg = sorted_by_time[1]
+            third_st, third_avg = sorted_by_time[2]
+
+            first_name = SORT_TYPE_INFO[first_st]["name"]
+            second_name = SORT_TYPE_INFO[second_st]["name"]
+            third_name = SORT_TYPE_INFO[third_st]["name"]
+
             lines.append(
-                f"**Winner:** {best_st} ({SORT_TYPE_INFO[best_st]['name']}) - Average: {format_ns(avg_times[best_st])} ns/item"
+                f"| {size} | **{first_st}**<br>{first_name} | {format_ns(first_avg)} | **{second_st}**<br>{second_name} | {format_ns(second_avg)} | **{third_st}**<br>{third_name} | {format_ns(third_avg)} |"
             )
+        else:
+            lines.append(f"| {size} | - | - | - | - | - | - |")
 
-        lines.append("")
-
+    lines.append("")
     return "\n".join(lines) + "\n"
 
 
@@ -615,6 +645,9 @@ def generate_results(
     # Rankings section
     if include_rankings:
         sections.append(generate_performance_rankings(data, include_skipped))
+
+    # Size winners summary (always included after rankings)
+    sections.append(generate_size_winners_summary(data))
 
     # Detailed tables (optional)
     if include_detailed:
