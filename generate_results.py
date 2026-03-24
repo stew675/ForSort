@@ -24,31 +24,29 @@ from typing import Dict, List, Tuple, Optional
 
 # Sort type metadata
 SORT_TYPE_INFO = {
-    "fb": {"name": "Forsort Basic In-Place", "stable": True},
-    "fi": {"name": "Forsort Unstable In-Place", "stable": False},
-    "fw": {"name": "Forsort With Workspace", "stable": True},
-    "fs": {"name": "Forsort Stable In-Place", "stable": True},
-    "gs": {"name": "Grail Sort In-Place", "stable": True},
-    "gq": {"name": "GLibc Quick Sort", "stable": False},
-    "nq": {"name": "Bentley/McIlroy Quick Sort", "stable": False},
-    "ti": {"name": "TimSort", "stable": True},
-    "wi": {"name": "WikiSort", "stable": True},
-    "is": {"name": "Insertion Sort", "stable": True},
+    "fb": {"name": "ForSort Basic Fully In-Place", "stable": True},
+    "fi": {"name": "ForSort Unstable Fully In-Place", "stable": False},
+    "fs": {"name": "ForSort Stable Fully In-Place", "stable": True},
+    "fw": {"name": "ForSort With Allocated Workspace", "stable": True},
+    "gs": {"name": "GrailSort Fully In-Place", "stable": True},
+    "gq": {"name": "GLibc Quick Sort Fully In-Place", "stable": False},
+    "nq": {"name": "Bentley/McIlroy Quick Sort In-Place", "stable": False},
+    "ti": {"name": "TimSort with Allocated Workspace", "stable": True},
+    "wi": {"name": "WikiSort Fully In-Place", "stable": True},
+    "is": {"name": "Insertion Sort Fully In-Place", "stable": True},
 }
 
 
 # Test variant descriptions
 VARIANT_INFO = {
-    "random_duplicates": "Random Data Duplicate Values",
-    "random_unique": "Random Data Unique Values",
+    "fully_random": "Fully Random Data",
     "25_percent_disordered": "75% Ordered, 25% disorder",
     "10_percent_disordered": "90% Ordered, 10% disorder",
     "5_percent_disordered": "95% Ordered, 5% disorder",
     "1_percent_disordered": "99% Ordered, 1% disorder",
-    "ordered_duplicates": "Fully Ordered Duplicate Values",
-    "ordered_unique": "Fully Ordered Unique Values",
-    "reversed_duplicates": "Reverse Ordered with duplicate values",
-    "reversed_unique": "Reverse Ordered with unique values",
+    "fully_ordered": "Fully Ordered",
+    "reverse_ordered_duplicates": "Reverse Ordered with Duplicate Values",
+    "reverse_ordered_uniques": "Reverse Ordered with Unique Values",
 }
 
 
@@ -400,7 +398,9 @@ def generate_cross_category_analysis(data: List[Dict]) -> str:
 
     # Best for random data
     random_rows = [
-        r for r in data if r.get("_valid", False) and r["test_variant"] == "random"
+        r
+        for r in data
+        if r.get("_valid", False) and r["test_variant"] == "fully_random"
     ]
     rand_avg = {}
     for st in SORT_TYPE_INFO.keys():
@@ -489,13 +489,13 @@ def generate_stability_section(data: List[Dict]) -> str:
     for st, info in SORT_TYPE_INFO.items():
         expected = "Stable" if info["stable"] else "Unstable"
 
-        # Check actual stability from data - look for either random variant
+        # Check actual stability from data - look for fully_random variant
         rows = [
             r
             for r in data
             if r["sort_type"] == st
             and r["num_items"] == "1000000"
-            and r["test_variant"] in ("random_duplicates", "random_unique")
+            and r["test_variant"] == "fully_random"
         ]
 
         if rows and rows[0].get("_valid", False):
