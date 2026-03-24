@@ -76,6 +76,11 @@ def load_csv_data(filepath: str) -> List[Dict]:
     return data
 
 
+def get_unsorted_unique_values(data: List[Dict], field: str) -> List[str]:
+    """Get sorted unique values from a field."""
+    return set(row[field] for row in data if row.get("_valid", False))
+
+
 def get_unique_values(data: List[Dict], field: str) -> List[str]:
     """Get sorted unique values from a field."""
     return sorted(set(row[field] for row in data if row.get("_valid", False)))
@@ -159,7 +164,7 @@ def generate_summary_by_size(data: List[Dict], include_skipped: bool = False) ->
 
     # Get unique sizes and variants
     sizes = get_unique_values(data, "num_items")
-    variants = get_unique_values(data, "test_variant")
+    variants = get_unsorted_unique_values(data, "test_variant")
 
     for variant in variants:
         lines.append(f"### {variant.replace('_', ' ').title()}")
@@ -376,24 +381,23 @@ def generate_cross_category_analysis(data: List[Dict]) -> str:
     lines.append("### Overall Performance Ranking (Weighted Average)")
     lines.append("")
     lines.append(
-        "| Rank | Sort Type | Name | Avg Rank | Wins | Top 3 | Weighted Score |"
+        "| Rank | Sort Type | Name | Weighted Rank | Wins | Top 3 |"
     )
     lines.append(
-        "|------|-----------|------|----------|------|-------|----------------|"
+        "|------|-----------|------|---------------|------|-------|"
     )
 
     for rank, (st, avg_rank) in enumerate(sorted_by_rank, 1):
         name = SORT_TYPE_INFO.get(st, {"name": st})["name"]
         wins = win_counts.get(st, 0)
         top3 = top3_counts.get(st, 0)
-        weighted_score = f"{avg_rank:.2f}"
 
         # Highlight top 3
         prefix = "**" if rank <= 3 else ""
         suffix = "**" if rank <= 3 else ""
 
         lines.append(
-            f"| {rank} | {prefix}{st}{suffix} | {name} | {avg_rank:.2f} | {wins} | {top3} | {weighted_score} |"
+            f"| {rank} | {prefix}{st}{suffix} | {name} | {avg_rank:.2f} | {wins} | {top3} |"
         )
 
     lines.append("")
