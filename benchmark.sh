@@ -10,27 +10,25 @@ SORT_TYPES=(
     "fs:ForSort Stable Fully In-Place       (Stable)"
     "fw:ForSort With Allocated Workspace    (Stable)"
     "gs:GrailSort Fully In-Place            (Stable)"
-    "gq:GLibc Quick Sort Fully In-Place     (Stability Not Guaranteed)"
+    "gq:GLibc Quick Sort Fully In-Place     (Stable?)
     "nq:Bentley/McIlroy Quick Sort In-Place (Unstable)"
     "ti:TimSort with Allocated Workspace    (Stable)"
     "wi:WikiSort Fully In-Place             (Stable)"
+    "is:Insertion Sort Fully In-Place       (Stable)"
 )
 
-#    "is:Insertion Sort Fully In-Place       (Stable)"
 
 # Test variants to run for each sort type
 # Format: "variant_name:options"
 TEST_VARIANTS=(
-    "random_duplicates:-a 42 -l n"
-    "random_unique:-a 42 -u"
+    "fully_random:-a 42"
     "25_percent_disordered:-a 42 -d 25"
     "10_percent_disordered:-a 42 -d 10"
     "5_percent_disordered:-a 42 -d 5"
     "1_percent_disordered:-a 42 -d 1"
-    "ordered_duplicates:-a 42 -l n -o"
-    "ordered_unique:-a 42 -o -u"
-    "reversed_duplicates:-a 42 -l n -o -r"
-    "reversed_unique:-a 42 -o -u -r"
+    "fully_ordered:-a 42 -o"
+    "reverse_ordered_duplicates:-a 42 -l n -o -r"
+    "reverse_ordered_uniques:-a 42 -o -u -r"
 )
 
 NUM_ITEMS=(100 1000 10000 100000 1000000 10000000 100000000)
@@ -55,7 +53,7 @@ for sort_entry in "${SORT_TYPES[@]}"; do
         
         for n in "${NUM_ITEMS[@]}"; do
             # Skip large item counts for insertion sort (O(n^2) algorithm)
-            if [[ "$sort_code" == "is" && "$n" -gt 100000 ]]; then
+            if [[ "$sort_code" == "is" && "$n" -gt 1000000 ]]; then
                 echo "  Skipping $n items (O(n^2) algorithm)"
                 echo "$sort_code,$sort_name,$n,$variant_name,SKIPPED,SKIPPED,SKIPPED,SKIPPED,SKIPPED" >> "$OUTPUT_FILE"
                 continue

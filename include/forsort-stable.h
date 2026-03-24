@@ -44,7 +44,7 @@
 #define MAX_DUPS 27
 
 // Uncomment to turn on debugging output for the uniques extraction and merging system
-//#define       DEBUG_UNIQUE_PROCESSING
+// #define       DEBUG_UNIQUE_PROCESSING
 
 // A structure to manage the state of the stable sort algorithm
 struct NAME(stable_state) {
@@ -356,7 +356,7 @@ NAME(stable_sort_finisher)(struct NAME(stable_state) *state, COMMON_PARAMS)
 static void
 NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
-	struct NAME(stable_state )state_real = {0}, *state = &state_real;
+	struct NAME(stable_state) state_real = {0}, *state = &state_real;
 	VAR	*pe = pa + (n * ES), *ws, *pr;
 	size_t	nr, nw;
 
@@ -381,27 +381,19 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 	pr = pa + (nw * ES);	// Pointer to rest
 
 	// First sort our candidate work-space chunk
-	size_t reversals = CALL(basic_sort)(pa, nw, COMMON_ARGS);
+	size_t work_reversals = CALL(basic_sort)(pa, nw, COMMON_ARGS);
 
 #ifdef	DEBUG_UNIQUE_PROCESSING
-	printf("stable_sort() - Workspace: reversals = %zu, nw = %zu\n", reversals, nw);
+	printf("stable_sort() - Workspace: reversals = %zu, nw = %zu\n", work_reversals, nw);
 #endif
 
-	// Quickly handle various reversed or sorted input corner-cases
-	if ((reversals == 0) || (reversals >= (size_t)(nw * 0.97))) {
-		// Rest of input may benefit from reversal processing
-
+	// Handle work-space was sorted corner case
+	if (work_reversals == 0) {
 #ifdef	DEBUG_UNIQUE_PROCESSING
-		printf("stable_sort() - Workspace appears to be sorted or mostly reversed\n");
+		printf("stable_sort() - Rest of input is possibly fully sorted\n");
 #endif
-		reversals = CALL(dereverse)(pr, nr, COMMON_ARGS);
-
-		bool rest_is_sorted = (reversals == 0) || (reversals == nr);
-
-#ifdef	DEBUG_UNIQUE_PROCESSING
-		printf("stable_sort() - Rest appears to be sorted or mostly reversed\n");
-		printf("stable_sort() - reversals = %zu, nr = %zu\n", reversals, nr);
-#endif
+		size_t rest_reversals = CALL(dereverse)(pr, nr, COMMON_ARGS);
+		bool rest_is_sorted = (rest_reversals == 0) || (rest_reversals == nr);
 
 		// Handle everything was fully sorted corner-case
 		if (rest_is_sorted && !IS_LT(pr, pr - ES)) {
@@ -410,10 +402,21 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 #endif
 			return;
 		}
+	}
 
-		// Handle everything was reversed corner-case
+	// Quickly handle various reversed or near sorted input corner-cases
+	// The 0.965 here is emperically derived
+	if (work_reversals >= (size_t)(nw * 0.965)) {
+#ifdef	DEBUG_UNIQUE_PROCESSING
+		printf("stable_sort() - Input appears to be mostly or fully reversed\n");
+#endif
+		size_t rest_reversals = CALL(dereverse)(pr, nr, COMMON_ARGS);
+		bool rest_is_sorted = (rest_reversals == 0) || (rest_reversals == nr);
+
+		// Handle the everything else was sorted or reversed corner-cases
 		if (rest_is_sorted && IS_LT(pe - ES, pa)) {
 #ifdef	DEBUG_UNIQUE_PROCESSING
+			printf("stable_sort() - Rest of input was fully ordered\n");
 			printf("stable_sort() - Performing rotate_block reverse\n");
 #endif
 			CALL(rotate_block)(pa, pr, pe, es);

@@ -633,25 +633,25 @@ main(int argc, char *argv[])
 	clock_gettime(CLOCK_MONOTONIC, &run_start);
 
 	// Let's finally do this thing!
-	while ((run_time < 60) || (num_runs < 10)) {
+	if (quick_test) {
+		printf("\nTesting %s for 1 run\n", sortname);
+	} else {
+		printf("\nExtended Testing of %s\n\n", sortname);
+		printf("Tests will run for 20s total run time and a minimum of 10 runs\n");
+		printf("Whichever takes longer up to a hard maximum of 200s\n");
+	}
+
+	while (true) {
+		struct timespec start, end;
+
+		num_runs++;
+
 		memset(a, 0, n * sizeof(*a));
 		srandom((uint32_t)num_runs);
 		fillset(a, n);
 
-		if ((n == 0) && verbose) {
+		if (verbose) {
 			print_array(a, n);
-		}
-
-		struct timespec start, end;
-
-		if (num_runs == 0) {
-			if (quick_test) {
-				printf("\nTesting %s for 1 run\n", sortname);
-			} else {
-				printf("\nExtended Testing of %s\n\n", sortname);
-				printf("Test will run for a minimum of 60s total run time\n");
-				printf("and a minimum of 10 runs. Whichever takes longer\n");
-			}
 		}
 
 		clock_gettime(CLOCK_MONOTONIC, &start);
@@ -709,9 +709,15 @@ main(int argc, char *argv[])
 
 		run_time = (end.tv_sec - run_start.tv_sec) + (end.tv_nsec - run_start.tv_nsec) / 1000000000.0;
 
-		num_runs++;
+		// Check exit conditions
 
 		if (quick_test)
+			break;
+
+		if ((run_time >= 20) && (num_runs >= 10))
+			break;
+
+		if (run_time >= 200)
 			break;
 	}
 
