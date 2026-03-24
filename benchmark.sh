@@ -10,7 +10,7 @@ SORT_TYPES=(
     "fs:ForSort Stable Fully In-Place       (Stable)"
     "fw:ForSort With Allocated Workspace    (Stable)"
     "gs:GrailSort Fully In-Place            (Stable)"
-    "gq:GLibc Quick Sort Fully In-Place     (Stable?)
+    "gq:GLibc Quick Sort Fully In-Place     (Stable?)"
     "nq:Bentley/McIlroy Quick Sort In-Place (Unstable)"
     "ti:TimSort with Allocated Workspace    (Stable)"
     "wi:WikiSort Fully In-Place             (Stable)"

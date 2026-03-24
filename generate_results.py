@@ -60,8 +60,10 @@ def load_csv_data(filepath: str) -> List[Dict]:
             try:
                 if row["avg_time_sec"] == "SKIPPED":
                     row["_valid"] = False
+                    row["_skipped"] = True
                 else:
                     row["_valid"] = True
+                    row["_skipped"] = False
                     row["_num_items"] = int(row["num_items"])
                     row["_time_sec"] = float(row["avg_time_sec"])
                     row["_comparisons"] = int(row["avg_comparisons"])
@@ -292,49 +294,114 @@ def generate_performance_rankings(
 
 
 def generate_cross_category_analysis(data: List[Dict]) -> str:
-    """Generate cross-category winner analysis showing which algorithm wins most often."""
+    """Generate cross-category analysis using weighted average rank positions."""
     lines = ["## Cross-Category Analysis", ""]
 
     sizes = get_unique_values(data, "num_items")
     variants = get_unique_values(data, "test_variant")
 
-    # Count wins for each sort type
-    win_counts = defaultdict(int)
+    num_sort_types = len(SORT_TYPE_INFO)
+
+    def is_reversed_variant(variant: str) -> bool:
+        """Check if variant is a reversed scenario (lower weight)."""
+        return variant.startswith("reverse_")
+
+    def get_variant_weight(variant: str) -> float:
+        """Get weight for a variant (0.05 for reversed, 1.0 for others)."""
+        return 0.05 if is_reversed_variant(variant) else 1.0
+
+    # Build set of all size/variant combinations that exist in the data
+    all_categories = set()
+    for row in data:
+        all_categories.add((row["num_items"], row["test_variant"]))
+
+    # Calculate weighted average rank for each sort type
+    weighted_rank_sums = defaultdict(float)
+    total_weight = defaultdict(float)
     top3_counts = defaultdict(int)
+    win_counts = defaultdict(int)
 
     for size in sizes:
         for variant in variants:
-            size_rows = [
+            if (size, variant) not in all_categories:
+                continue
+
+            # Get all rows for this category (including skipped ones)
+            category_rows = [
                 r
                 for r in data
-                if r.get("_valid", False)
-                and r["num_items"] == size
-                and r["test_variant"] == variant
+                if r["num_items"] == size and r["test_variant"] == variant
             ]
-            rankings = rank_by_time(size_rows)
+
+            # Get only valid (non-skipped) rows for ranking
+            valid_rows = [r for r in category_rows if r.get("_valid", False)]
+            rankings = rank_by_time(valid_rows)
+            weight = get_variant_weight(variant)
+
+            # Build ranking dict for this category (only valid entries get ranked)
+            rank_dict = {st: rank for st, _, rank in rankings} if rankings else {}
+
             if rankings:
+                # Count wins and top 3
                 win_counts[rankings[0][0]] += 1
                 for st, _, _ in rankings[:3]:
                     top3_counts[st] += 1
 
+            # For each sort type that has an entry in this category (valid or skipped)
+            sort_types_in_category = set(r["sort_type"] for r in category_rows)
+
+            for st in SORT_TYPE_INFO.keys():
+                if st in sort_types_in_category:
+                    # Algorithm has an entry - check if it's valid or skipped
+                    if st in rank_dict:
+                        rank = rank_dict[st]
+                    else:
+                        # Algorithm was skipped for this category - assign last place
+                        rank = num_sort_types
+
+                    weighted_rank_sums[st] += rank * weight
+                    total_weight[st] += weight
+
+    # Calculate weighted average rank for each sort type
+    weighted_avg_ranks = {}
+    for st in SORT_TYPE_INFO.keys():
+        if total_weight[st] > 0:
+            weighted_avg_ranks[st] = weighted_rank_sums[st] / total_weight[st]
+
+    # Sort by weighted average rank (lower is better)
+    sorted_by_rank = sorted(weighted_avg_ranks.items(), key=lambda x: x[1])
+
     total_categories = len(sizes) * len(variants)
 
-    lines.append("### Win Count by Algorithm")
+    lines.append("### Overall Performance Ranking (Weighted Average)")
     lines.append("")
-    lines.append("| Rank | Sort Type | Name | Wins | Top 3 | Win Rate |")
-    lines.append("|------|-----------|------|------|-------|----------|")
+    lines.append(
+        "| Rank | Sort Type | Name | Avg Rank | Wins | Top 3 | Weighted Score |"
+    )
+    lines.append(
+        "|------|-----------|------|----------|------|-------|----------------|"
+    )
 
-    # Sort by win count
-    sorted_wins = sorted(win_counts.items(), key=lambda x: x[1], reverse=True)
-
-    for rank, (st, wins) in enumerate(sorted_wins, 1):
+    for rank, (st, avg_rank) in enumerate(sorted_by_rank, 1):
         name = SORT_TYPE_INFO.get(st, {"name": st})["name"]
-        top3 = top3_counts[st]
-        win_rate = (
-            f"{(wins / total_categories) * 100:.1f}%" if total_categories > 0 else "0%"
-        )
-        lines.append(f"| {rank} | **{st}** | {name} | {wins} | {top3} | {win_rate} |")
+        wins = win_counts.get(st, 0)
+        top3 = top3_counts.get(st, 0)
+        weighted_score = f"{avg_rank:.2f}"
 
+        # Highlight top 3
+        prefix = "**" if rank <= 3 else ""
+        suffix = "**" if rank <= 3 else ""
+
+        lines.append(
+            f"| {rank} | {prefix}{st}{suffix} | {name} | {avg_rank:.2f} | {wins} | {top3} | {weighted_score} |"
+        )
+
+    lines.append("")
+    lines.append(
+        "*Rankings based on weighted average finish position across all test categories. "
+        "Reversed test scenarios weighted at 0.05x, all others at 1.0x. "
+        "Skipped results (e.g., Insertion Sort for large datasets) counted as last place.*"
+    )
     lines.append("")
 
     # Best for each use case
@@ -378,7 +445,11 @@ def generate_cross_category_analysis(data: List[Dict]) -> str:
         )
 
     # Best for nearly-sorted data
-    nearly_sorted_variants = ["ordered", "1_percent_disordered", "5_percent_disordered"]
+    nearly_sorted_variants = [
+        "fully_ordered",
+        "1_percent_disordered",
+        "5_percent_disordered",
+    ]
     nearly_sorted_rows = [
         r
         for r in data
@@ -540,11 +611,11 @@ def generate_results(
     sections.append(generate_sort_types_section())
     sections.append(generate_variant_section())
 
+    # Cross-category analysis as executive summary (moved to top)
+    sections.append(generate_cross_category_analysis(data))
+
     # Summary section (always included)
     sections.append(generate_summary_by_size(data, include_skipped))
-
-    # Cross-category analysis (new feature)
-    sections.append(generate_cross_category_analysis(data))
 
     # Rankings section
     if include_rankings:
