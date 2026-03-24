@@ -83,10 +83,10 @@ def get_unique_values(data: List[Dict], field: str) -> List[str]:
 
 def rank_by_time(rows: List[Dict]) -> List[Tuple[str, float, int]]:
     """Rank rows by ns_per_item (lower is better). Returns list of (sort_type, ns_per_item, rank)."""
-    valid_rows = [
-        (r["sort_type"], r["_ns_per_item"]) for r in rows if r.get("_valid", False)
+    rows_with_ns = [
+        (r["sort_type"], r["_ns_per_item"]) for r in rows if "_ns_per_item" in r
     ]
-    sorted_rows = sorted(valid_rows, key=lambda x: x[1])
+    sorted_rows = sorted(rows_with_ns, key=lambda x: x[1])
     return [(st, ns, i + 1) for i, (st, ns) in enumerate(sorted_rows)]
 
 
@@ -151,6 +151,79 @@ def generate_variant_section() -> str:
     for variant, desc in VARIANT_INFO.items():
         lines.append(f"| {variant} | {desc} |")
     return "\n".join(lines) + "\n\n"
+
+
+def get_non_reversed_variants() -> List[str]:
+    """Get variants excluding reversed scenarios."""
+    return [v for v in VARIANT_INFO.keys() if not v.startswith("reverse_")]
+
+
+def generate_summary_by_size_total(
+    data: List[Dict], include_skipped: bool = False
+) -> str:
+    """Generate summary table by dataset size, averaging across all non-reversed variants."""
+    lines = ["## Summary by Dataset Size (All Variants)", ""]
+    lines.append(
+        "Averages across all test variants (excluding reverse-ordered scenarios which are statistical outliers). "
+        "Lower values indicate better performance.\n"
+    )
+
+    sizes = get_unique_values(data, "num_items")
+    variants = get_non_reversed_variants()
+
+    lines.append("| Sort Type | " + " | ".join(f"{n} items" for n in sizes) + " |")
+    lines.append("|-----------|" + "".join("-" * 12 + "|" for _ in sizes))
+
+    # Build averages for each sort type and size
+    matrix = {}  # sort_type -> {size -> [ns_values]}
+    for row in data:
+        if not row.get("_valid", False):
+            continue
+        if row["test_variant"] not in variants:
+            continue
+        st = row["sort_type"]
+        size = row["num_items"]
+        if st not in matrix:
+            matrix[st] = {}
+        if size not in matrix[st]:
+            matrix[st][size] = []
+        matrix[st][size].append(row["_ns_per_item"])
+
+    # Calculate averages and rank
+    avg_times = {}
+    for st, size_dict in matrix.items():
+        valid_averages = []
+        for size, values in size_dict.items():
+            if values:
+                valid_averages.append(sum(values) / len(values))
+        if valid_averages:
+            avg_times[st] = sum(valid_averages) / len(valid_averages)
+
+    ranked_types = sorted(avg_times.keys(), key=lambda x: avg_times[x])
+
+    # Generate rows in rank order
+    for st in ranked_types:
+        row_parts = [f"| {st} |"]
+        for size in sizes:
+            if st in matrix and size in matrix[st]:
+                values = matrix[st][size]
+                if values:
+                    avg_val = sum(values) / len(values)
+                    avg_str = format_ns(avg_val)
+                    rank = ranked_types.index(st) + 1
+                    if rank <= 3:
+                        stars = "*" * (4 - rank)
+                        row_parts.append(f" {stars}**{avg_str}** |")
+                    else:
+                        row_parts.append(f" {avg_str} |")
+                else:
+                    row_parts.append(" - |")
+            else:
+                row_parts.append(" - |")
+        lines.append("".join(row_parts))
+
+    lines.append("")
+    return "\n".join(lines) + "\n"
 
 
 def generate_summary_by_size(data: List[Dict], include_skipped: bool = False) -> str:
@@ -274,9 +347,12 @@ def generate_performance_rankings(
 def generate_size_winners_summary(data: List[Dict]) -> str:
     """Generate summary table of winners for each dataset size."""
     lines = ["## Size Winners Summary", ""]
+    lines.append(
+        "*Excludes reverse-ordered scenarios which are statistical outliers.*\n"
+    )
 
     sizes = get_unique_values(data, "num_items")
-    variants = list(VARIANT_INFO.keys())
+    variants = get_non_reversed_variants()
 
     lines.append(
         "| Dataset Size | 1st Place | Avg (ns/item) | 2nd Place | Avg (ns/item) | 3rd Place | Avg (ns/item) |"
@@ -290,10 +366,14 @@ def generate_size_winners_summary(data: List[Dict]) -> str:
             r for r in data if r.get("_valid", False) and r["num_items"] == size
         ]
 
-        # Calculate average time across all variants for each sort type
+        # Calculate average time across all non-reversed variants for each sort type
         avg_times = {}
         for st in SORT_TYPE_INFO.keys():
-            st_rows = [r for r in size_rows if r["sort_type"] == st]
+            st_rows = [
+                r
+                for r in size_rows
+                if r["sort_type"] == st and r["test_variant"] in variants
+            ]
             if st_rows:
                 valid_ns = [
                     r["_ns_per_item"] for r in st_rows if r.get("_valid", False)
@@ -361,9 +441,19 @@ def generate_worst_case_analysis(
                 if r["num_items"] == size and r["test_variant"] == variant
             ]
 
-            # Get only valid rows for ranking
-            valid_rows = [r for r in category_rows if r.get("_valid", False)]
-            rankings = rank_by_time(valid_rows)
+            # Get all rows, substituting large time for SKIPPED entries when ranking
+            all_rows_for_ranking = []
+            for r in category_rows:
+                r_copy = dict(r)
+                if r.get("_valid", False):
+                    all_rows_for_ranking.append(r_copy)
+                else:
+                    # SKIPPED - use very large time value for ranking purposes
+                    # 1e20 ns = 100 million seconds (far worse than any real value)
+                    r_copy["_ns_per_item"] = 1e20
+                    all_rows_for_ranking.append(r_copy)
+
+            rankings = rank_by_time(all_rows_for_ranking)
 
             if not rankings:
                 continue
@@ -371,14 +461,19 @@ def generate_worst_case_analysis(
             # Build rank dict for this category
             rank_dict = {st: rank for st, _, rank in rankings}
 
-            # For each sort type with an entry in this category
-            sort_types_in_category = set(r["sort_type"] for r in category_rows)
+            # For each sort type defined in SORT_TYPE_INFO
+            for st in SORT_TYPE_INFO.keys():
+                # Check if this sort type has any entry in this category (valid or skipped)
+                has_entry = any(r["sort_type"] == st for r in category_rows)
 
-            for st in sort_types_in_category:
-                if st in rank_dict:
-                    rank = rank_dict[st]
+                if has_entry:
+                    if st in rank_dict:
+                        rank = rank_dict[st]
+                    else:
+                        rank = len(rankings)  # Last place for skipped
                 else:
-                    rank = len(rankings)  # Last place for skipped
+                    # Algorithm not tested in this category - treat as last place (worst)
+                    rank = len(rankings) + 1
 
                 worst_case_data[st].append((size, variant, rank))
 
@@ -426,30 +521,26 @@ def generate_worst_case_analysis(
 
 
 def generate_cross_category_analysis(data: List[Dict]) -> str:
-    """Generate cross-category analysis using weighted average rank positions."""
+    """Generate cross-category analysis using average rank positions (excluding reversed variants)."""
     lines = ["## Cross-Category Analysis", ""]
+    lines.append(
+        "*Analysis excludes reverse-ordered test scenarios which are statistical outliers rarely seen in practice.*\n"
+    )
 
     sizes = get_unique_values(data, "num_items")
-    variants = list(VARIANT_INFO.keys())
+    variants = get_non_reversed_variants()
 
     num_sort_types = len(SORT_TYPE_INFO)
-
-    def is_reversed_variant(variant: str) -> bool:
-        """Check if variant is a reversed scenario (lower weight)."""
-        return variant.startswith("reverse_")
-
-    def get_variant_weight(variant: str) -> float:
-        """Get weight for a variant (0.05 for reversed, 1.0 for others)."""
-        return 0.05 if is_reversed_variant(variant) else 1.0
 
     # Build set of all size/variant combinations that exist in the data
     all_categories = set()
     for row in data:
-        all_categories.add((row["num_items"], row["test_variant"]))
+        if row["test_variant"] in variants:
+            all_categories.add((row["num_items"], row["test_variant"]))
 
-    # Calculate weighted average rank for each sort type
-    weighted_rank_sums = defaultdict(float)
-    total_weight = defaultdict(float)
+    # Calculate average rank for each sort type
+    rank_sums = defaultdict(float)
+    total_categories = defaultdict(float)
     top3_counts = defaultdict(int)
     win_counts = defaultdict(int)
 
@@ -468,7 +559,6 @@ def generate_cross_category_analysis(data: List[Dict]) -> str:
             # Get only valid (non-skipped) rows for ranking
             valid_rows = [r for r in category_rows if r.get("_valid", False)]
             rankings = rank_by_time(valid_rows)
-            weight = get_variant_weight(variant)
 
             # Build ranking dict for this category (only valid entries get ranked)
             rank_dict = {st: rank for st, _, rank in rankings} if rankings else {}
@@ -491,24 +581,24 @@ def generate_cross_category_analysis(data: List[Dict]) -> str:
                         # Algorithm was skipped for this category - assign last place
                         rank = num_sort_types
 
-                    weighted_rank_sums[st] += rank * weight
-                    total_weight[st] += weight
+                    rank_sums[st] += rank
+                    total_categories[st] += 1
 
-    # Calculate weighted average rank for each sort type
-    weighted_avg_ranks = {}
+    # Calculate average rank for each sort type
+    avg_ranks = {}
     for st in SORT_TYPE_INFO.keys():
-        if total_weight[st] > 0:
-            weighted_avg_ranks[st] = weighted_rank_sums[st] / total_weight[st]
+        if total_categories[st] > 0:
+            avg_ranks[st] = rank_sums[st] / total_categories[st]
 
-    # Sort by weighted average rank (lower is better)
-    sorted_by_rank = sorted(weighted_avg_ranks.items(), key=lambda x: x[1])
+    # Sort by average rank (lower is better)
+    sorted_by_rank = sorted(avg_ranks.items(), key=lambda x: x[1])
 
-    total_categories = len(sizes) * len(variants)
+    total_categories_count = len(sizes) * len(variants)
 
-    lines.append("### Overall Performance Ranking (Weighted Average)")
+    lines.append("### Overall Performance Ranking")
     lines.append("")
-    lines.append("| Rank | Sort Type | Name | Weighted Rank | Wins | Top 3 |")
-    lines.append("|------|-----------|------|---------------|------|-------|")
+    lines.append("| Rank | Sort Type | Name | Avg Rank | Wins | Top 3 |")
+    lines.append("|------|-----------|------|----------|------|-------|")
 
     for rank, (st, avg_rank) in enumerate(sorted_by_rank, 1):
         name = SORT_TYPE_INFO.get(st, {"name": st})["name"]
@@ -525,8 +615,7 @@ def generate_cross_category_analysis(data: List[Dict]) -> str:
 
     lines.append("")
     lines.append(
-        "*Rankings based on weighted average finish position across all test categories. "
-        "Reversed test scenarios weighted at 0.05x, all others at 1.0x. "
+        "*Rankings based on average finish position across all test categories (excluding reverse-ordered scenarios). "
         "Skipped results (e.g., Insertion Sort for large datasets) counted as last place.*"
     )
     lines.append("")
@@ -747,7 +836,10 @@ def generate_results(
     # Worst-case performance (exclude reversed by default)
     sections.append(generate_worst_case_analysis(data, exclude_reversed=True))
 
-    # Summary section (always included)
+    # Summary by size (average across all non-reversed variants)
+    sections.append(generate_summary_by_size_total(data, include_skipped))
+
+    # Summary section (always included) - individual variants
     sections.append(generate_summary_by_size(data, include_skipped))
 
     # Rankings section

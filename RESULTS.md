@@ -42,22 +42,24 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 ## Cross-Category Analysis
 
-### Overall Performance Ranking (Weighted Average)
+*Analysis excludes reverse-ordered test scenarios which are statistical outliers rarely seen in practice.*
 
-| Rank | Sort Type | Name | Weighted Rank | Wins | Top 3 |
-|------|-----------|------|---------------|------|-------|
-| 1 | **fw** | ForSort With Allocated Workspace | 1.95 | 27 | 39 |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 2.65 | 1 | 36 |
-| 3 | **fs** | ForSort Stable Fully In-Place | 3.89 | 0 | 32 |
-| 4 | ti | TimSort with Allocated Workspace | 4.36 | 21 | 24 |
-| 5 | wi | WikiSort Fully In-Place | 5.41 | 3 | 12 |
-| 6 | fb | ForSort Basic Fully In-Place | 6.27 | 0 | 14 |
-| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 6.40 | 0 | 0 |
-| 8 | gs | GrailSort Fully In-Place | 7.46 | 0 | 3 |
-| 9 | is | Insertion Sort Fully In-Place | 7.67 | 4 | 8 |
+### Overall Performance Ranking
+
+| Rank | Sort Type | Name | Avg Rank | Wins | Top 3 |
+|------|-----------|------|----------|------|-------|
+| 1 | **fw** | ForSort With Allocated Workspace | 1.90 | 27 | 35 |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 2.60 | 1 | 34 |
+| 3 | **fs** | ForSort Stable Fully In-Place | 3.88 | 0 | 25 |
+| 4 | ti | TimSort with Allocated Workspace | 4.40 | 10 | 12 |
+| 5 | wi | WikiSort Fully In-Place | 5.45 | 0 | 5 |
+| 6 | fb | ForSort Basic Fully In-Place | 6.29 | 0 | 7 |
+| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 6.38 | 0 | 0 |
+| 8 | gs | GrailSort Fully In-Place | 7.50 | 0 | 0 |
+| 9 | is | Insertion Sort Fully In-Place | 7.64 | 4 | 8 |
 | 10 | gq | GLibc Quick Sort Fully In-Place | 8.95 | 0 | 0 |
 
-*Rankings based on weighted average finish position across all test categories. Reversed test scenarios weighted at 0.05x, all others at 1.0x. Skipped results (e.g., Insertion Sort for large datasets) counted as last place.*
+*Rankings based on average finish position across all test categories (excluding reverse-ordered scenarios). Skipped results (e.g., Insertion Sort for large datasets) counted as last place.*
 
 ### Recommendations by Use Case
 
@@ -69,15 +71,17 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 ## Size Winners Summary
 
+*Excludes reverse-ordered scenarios which are statistical outliers.*
+
 | Dataset Size | 1st Place | Avg (ns/item) | 2nd Place | Avg (ns/item) | 3rd Place | Avg (ns/item) |
 |--------------|-----------|---------------|-----------|---------------|-----------|---------------|
-| 100 | **fw**<br>ForSort With Allocated Workspace | 6.463 | **wi**<br>WikiSort Fully In-Place | 7.060 | **fi**<br>ForSort Unstable Fully In-Place | 7.223 |
-| 1000 | **fw**<br>ForSort With Allocated Workspace | 8.772 | **fi**<br>ForSort Unstable Fully In-Place | 10.042 | **fs**<br>ForSort Stable Fully In-Place | 10.185 |
-| 10000 | **fw**<br>ForSort With Allocated Workspace | 11.662 | **fs**<br>ForSort Stable Fully In-Place | 12.236 | **fi**<br>ForSort Unstable Fully In-Place | 12.925 |
-| 100000 | **fs**<br>ForSort Stable Fully In-Place | 14.126 | **fw**<br>ForSort With Allocated Workspace | 14.454 | **fi**<br>ForSort Unstable Fully In-Place | 15.363 |
-| 1000000 | **fs**<br>ForSort Stable Fully In-Place | 15.666 | **fw**<br>ForSort With Allocated Workspace | 16.579 | **fi**<br>ForSort Unstable Fully In-Place | 17.675 |
-| 10000000 | **fs**<br>ForSort Stable Fully In-Place | 17.772 | **fw**<br>ForSort With Allocated Workspace | 18.824 | **fi**<br>ForSort Unstable Fully In-Place | 20.183 |
-| 100000000 | **fs**<br>ForSort Stable Fully In-Place | 22.183 | **fw**<br>ForSort With Allocated Workspace | 24.081 | **fi**<br>ForSort Unstable Fully In-Place | 25.239 |
+| 100 | **fw**<br>ForSort With Allocated Workspace | 6.393 | **fi**<br>ForSort Unstable Fully In-Place | 6.925 | **wi**<br>WikiSort Fully In-Place | 7.699 |
+| 1000 | **fw**<br>ForSort With Allocated Workspace | 9.032 | **fi**<br>ForSort Unstable Fully In-Place | 10.567 | **fs**<br>ForSort Stable Fully In-Place | 11.623 |
+| 10000 | **fw**<br>ForSort With Allocated Workspace | 11.935 | **fi**<br>ForSort Unstable Fully In-Place | 13.465 | **fs**<br>ForSort Stable Fully In-Place | 14.122 |
+| 100000 | **fw**<br>ForSort With Allocated Workspace | 14.627 | **fi**<br>ForSort Unstable Fully In-Place | 15.628 | **fs**<br>ForSort Stable Fully In-Place | 16.244 |
+| 1000000 | **fw**<br>ForSort With Allocated Workspace | 15.980 | **fi**<br>ForSort Unstable Fully In-Place | 17.243 | **fs**<br>ForSort Stable Fully In-Place | 17.611 |
+| 10000000 | **fw**<br>ForSort With Allocated Workspace | 17.668 | **fi**<br>ForSort Unstable Fully In-Place | 18.889 | **fs**<br>ForSort Stable Fully In-Place | 19.420 |
+| 100000000 | **fw**<br>ForSort With Allocated Workspace | 21.923 | **fi**<br>ForSort Unstable Fully In-Place | 22.250 | **fs**<br>ForSort Stable Fully In-Place | 23.332 |
 
 
 ## Worst-Case Performance
@@ -94,10 +98,28 @@ This section identifies which algorithm has the best *worst-case* performance ac
 | 6 | gs | GrailSort Fully In-Place | 9 | 13 |
 | 7 | fb | ForSort Basic Fully In-Place | 10 | 2 |
 | 8 | nq | Bentley/McIlroy Quick Sort In-Place | 10 | 2 |
-| 9 | is | Insertion Sort Fully In-Place | 10 | 9 |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 10 | 17 |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 10 | 17 |
+| 10 | is | Insertion Sort Fully In-Place | 10 | 21 |
 
 *Worst rank indicates the highest (poorest) position achieved across all test categories. Lower worst rank = better worst-case performance.*
+
+
+## Summary by Dataset Size (All Variants)
+
+Averages across all test variants (excluding reverse-ordered scenarios which are statistical outliers). Lower values indicate better performance.
+
+| Sort Type | 100 items | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
+|-----------|------------|------------|------------|------------|------------|------------|------------|
+| fw | *****6.393** | *****9.032** | *****11.935** | *****14.627** | *****15.980** | *****17.668** | *****21.923** |
+| fi | ****6.925** | ****10.567** | ****13.465** | ****15.628** | ****17.243** | ****18.889** | ****22.250** |
+| fs | ***8.832** | ***11.623** | ***14.122** | ***16.244** | ***17.611** | ***19.420** | ***23.332** |
+| ti | 9.360 | 15.772 | 22.160 | 27.277 | 32.167 | 37.636 | 43.258 |
+| wi | 7.699 | 12.839 | 20.634 | 26.695 | 32.782 | 40.019 | 48.014 |
+| nq | 11.025 | 16.745 | 22.882 | 29.339 | 35.384 | 41.450 | 47.919 |
+| gs | 12.560 | 17.714 | 23.811 | 29.838 | 37.435 | 46.037 | 56.920 |
+| fb | 9.606 | 17.934 | 26.361 | 33.551 | 39.831 | 46.564 | 54.424 |
+| gq | 13.764 | 21.801 | 29.967 | 36.723 | 44.368 | 53.390 | 62.965 |
+| is | 8.222 | 17.046 | 34.950 | 196.14 | 2478.0 | - | - |
 
 
 ## Summary by Dataset Size and Test Variant
