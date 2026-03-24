@@ -40,6 +40,46 @@ This document contains comprehensive benchmark results for all sorting algorithm
 | reverse_ordered_uniques | Reverse Ordered with Unique Values |
 
 
+## Worst-Case Performance
+
+This section identifies which algorithm has the best *worst-case* performance across all test variants except reverse-ordered scenarios (statistical outliers rarely seen in practice). Lower rank indicates better performance in the worst scenario encountered.
+
+| Rank | Sort Type | Name | Worst Rank | Scenarios |
+|------|-----------|------|------------|-----------|
+| 1 | **fi** | ForSort Unstable Fully In-Place | 5 | 2 |
+| 2 | **fw** | ForSort With Allocated Workspace | 6 | 2 |
+| 3 | **wi** | WikiSort Fully In-Place | 7 | 10 |
+| 4 | fs | ForSort Stable Fully In-Place | 7 | 2 |
+| 5 | ti | TimSort with Allocated Workspace | 7 | 12 |
+| 6 | gs | GrailSort Fully In-Place | 9 | 13 |
+| 7 | is | Insertion Sort Fully In-Place | 10 | 9 |
+| 8 | fb | ForSort Basic Fully In-Place | 10 | 2 |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 10 | 2 |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 10 | 17 |
+
+*Worst rank indicates the highest (poorest) position achieved across all test categories. Lower worst rank = better worst-case performance.*
+
+
+## Worst-Case Performance
+
+This section identifies which algorithm has the best *worst-case* performance across all test variants except reverse-ordered scenarios (statistical outliers rarely seen in practice). Lower rank indicates better performance in the worst scenario encountered.
+
+| Rank | Sort Type | Name | Worst Rank | Scenarios |
+|------|-----------|------|------------|-----------|
+| 1 | **fi** | ForSort Unstable Fully In-Place | 5 | 2 |
+| 2 | **fw** | ForSort With Allocated Workspace | 6 | 2 |
+| 3 | **wi** | WikiSort Fully In-Place | 7 | 10 |
+| 4 | fs | ForSort Stable Fully In-Place | 7 | 2 |
+| 5 | ti | TimSort with Allocated Workspace | 7 | 12 |
+| 6 | gs | GrailSort Fully In-Place | 9 | 13 |
+| 7 | is | Insertion Sort Fully In-Place | 10 | 9 |
+| 8 | fb | ForSort Basic Fully In-Place | 10 | 2 |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 10 | 2 |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 10 | 17 |
+
+*Worst rank indicates the highest (poorest) position achieved across all test categories. Lower worst rank = better worst-case performance.*
+
+
 ## Cross-Category Analysis
 
 ### Overall Performance Ranking (Weighted Average)

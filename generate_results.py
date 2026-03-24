@@ -323,6 +323,105 @@ def generate_size_winners_summary(data: List[Dict]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def generate_worst_case_analysis(
+    data: List[Dict], exclude_reversed: bool = True
+) -> str:
+    """Generate worst-case performance analysis - find algorithm with best worst results."""
+    lines = ["## Worst-Case Performance", ""]
+
+    if exclude_reversed:
+        lines.append(
+            "This section identifies which algorithm has the best *worst-case* performance across all test variants "
+            "except reverse-ordered scenarios (statistical outliers rarely seen in practice). "
+            "Lower rank indicates better performance in the worst scenario encountered.\n"
+        )
+    else:
+        lines.append(
+            "This section identifies which algorithm has the best *worst-case* performance across all test variants and dataset sizes. "
+            "Lower rank indicates better performance in the worst scenario encountered.\n"
+        )
+
+    sizes = get_unique_values(data, "num_items")
+
+    # Filter out reverse-ordered variants if requested
+    if exclude_reversed:
+        variants = [v for v in VARIANT_INFO.keys() if not v.startswith("reverse_")]
+    else:
+        variants = list(VARIANT_INFO.keys())
+
+    # Build data structure: sort_type -> list of (size, variant, rank)
+    worst_case_data = defaultdict(list)
+
+    for size in sizes:
+        for variant in variants:
+            # Get all rows for this category
+            category_rows = [
+                r
+                for r in data
+                if r["num_items"] == size and r["test_variant"] == variant
+            ]
+
+            # Get only valid rows for ranking
+            valid_rows = [r for r in category_rows if r.get("_valid", False)]
+            rankings = rank_by_time(valid_rows)
+
+            if not rankings:
+                continue
+
+            # Build rank dict for this category
+            rank_dict = {st: rank for st, _, rank in rankings}
+
+            # For each sort type with an entry in this category
+            sort_types_in_category = set(r["sort_type"] for r in category_rows)
+
+            for st in sort_types_in_category:
+                if st in rank_dict:
+                    rank = rank_dict[st]
+                else:
+                    rank = len(rankings)  # Last place for skipped
+
+                worst_case_data[st].append((size, variant, rank))
+
+    # For each algorithm, find its worst rank (highest number = worst performance)
+    worst_ranks = {}
+    for st, cases in worst_case_data.items():
+        worst_rank = max(rank for _, _, rank in cases)
+        worst_ranks[st] = worst_rank
+
+    # Sort by worst rank (lower = better worst-case performance)
+    sorted_by_worst = sorted(worst_ranks.items(), key=lambda x: x[1])
+
+    lines.append("| Rank | Sort Type | Name | Worst Rank | Scenarios |")
+    lines.append("|------|-----------|------|------------|-----------|")
+
+    for rank, (st, worst_rank) in enumerate(sorted_by_worst, 1):
+        name = SORT_TYPE_INFO.get(st, {"name": st})["name"]
+        # Count how many scenarios had this worst rank
+        scenarios = [
+            f"{size}/{variant}"
+            for size, variant, r in worst_case_data[st]
+            if r == worst_rank
+        ]
+        scenario_count = len(scenarios)
+
+        # Highlight top 3
+        prefix = "**" if rank <= 3 else ""
+        suffix = "**" if rank <= 3 else ""
+
+        lines.append(
+            f"| {rank} | {prefix}{st}{suffix} | {name} | {worst_rank} | {scenario_count} |"
+        )
+
+    lines.append("")
+    lines.append(
+        "*Worst rank indicates the highest (poorest) position achieved across all test categories. "
+        "Lower worst rank = better worst-case performance.*"
+    )
+    lines.append("")
+
+    return "\n".join(lines) + "\n"
+
+
 def generate_cross_category_analysis(data: List[Dict]) -> str:
     """Generate cross-category analysis using weighted average rank positions."""
     lines = ["## Cross-Category Analysis", ""]
@@ -635,6 +734,12 @@ def generate_results(
     sections.append(generate_overview_section())
     sections.append(generate_sort_types_section())
     sections.append(generate_variant_section())
+
+    # Worst-case performance
+    sections.append(generate_worst_case_analysis(data))
+
+    # Worst-case performance (exclude reversed by default)
+    sections.append(generate_worst_case_analysis(data, exclude_reversed=True))
 
     # Cross-category Analysis Summary
     sections.append(generate_cross_category_analysis(data))
