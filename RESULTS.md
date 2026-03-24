@@ -40,46 +40,6 @@ This document contains comprehensive benchmark results for all sorting algorithm
 | reverse_ordered_uniques | Reverse Ordered with Unique Values |
 
 
-## Worst-Case Performance
-
-This section identifies which algorithm has the best *worst-case* performance across all test variants except reverse-ordered scenarios (statistical outliers rarely seen in practice). Lower rank indicates better performance in the worst scenario encountered.
-
-| Rank | Sort Type | Name | Worst Rank | Scenarios |
-|------|-----------|------|------------|-----------|
-| 1 | **fi** | ForSort Unstable Fully In-Place | 5 | 2 |
-| 2 | **fw** | ForSort With Allocated Workspace | 6 | 2 |
-| 3 | **wi** | WikiSort Fully In-Place | 7 | 10 |
-| 4 | fs | ForSort Stable Fully In-Place | 7 | 2 |
-| 5 | ti | TimSort with Allocated Workspace | 7 | 12 |
-| 6 | gs | GrailSort Fully In-Place | 9 | 13 |
-| 7 | is | Insertion Sort Fully In-Place | 10 | 9 |
-| 8 | fb | ForSort Basic Fully In-Place | 10 | 2 |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 10 | 2 |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 10 | 17 |
-
-*Worst rank indicates the highest (poorest) position achieved across all test categories. Lower worst rank = better worst-case performance.*
-
-
-## Worst-Case Performance
-
-This section identifies which algorithm has the best *worst-case* performance across all test variants except reverse-ordered scenarios (statistical outliers rarely seen in practice). Lower rank indicates better performance in the worst scenario encountered.
-
-| Rank | Sort Type | Name | Worst Rank | Scenarios |
-|------|-----------|------|------------|-----------|
-| 1 | **fi** | ForSort Unstable Fully In-Place | 5 | 2 |
-| 2 | **fw** | ForSort With Allocated Workspace | 6 | 2 |
-| 3 | **wi** | WikiSort Fully In-Place | 7 | 10 |
-| 4 | fs | ForSort Stable Fully In-Place | 7 | 2 |
-| 5 | ti | TimSort with Allocated Workspace | 7 | 12 |
-| 6 | gs | GrailSort Fully In-Place | 9 | 13 |
-| 7 | is | Insertion Sort Fully In-Place | 10 | 9 |
-| 8 | fb | ForSort Basic Fully In-Place | 10 | 2 |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 10 | 2 |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 10 | 17 |
-
-*Worst rank indicates the highest (poorest) position achieved across all test categories. Lower worst rank = better worst-case performance.*
-
-
 ## Cross-Category Analysis
 
 ### Overall Performance Ranking (Weighted Average)
@@ -118,6 +78,26 @@ This section identifies which algorithm has the best *worst-case* performance ac
 | 1000000 | **fs**<br>ForSort Stable Fully In-Place | 15.666 | **fw**<br>ForSort With Allocated Workspace | 16.579 | **fi**<br>ForSort Unstable Fully In-Place | 17.675 |
 | 10000000 | **fs**<br>ForSort Stable Fully In-Place | 17.772 | **fw**<br>ForSort With Allocated Workspace | 18.824 | **fi**<br>ForSort Unstable Fully In-Place | 20.183 |
 | 100000000 | **fs**<br>ForSort Stable Fully In-Place | 22.183 | **fw**<br>ForSort With Allocated Workspace | 24.081 | **fi**<br>ForSort Unstable Fully In-Place | 25.239 |
+
+
+## Worst-Case Performance
+
+This section identifies which algorithm has the best *worst-case* performance across all test variants except reverse-ordered scenarios (statistical outliers rarely seen in practice). Lower rank indicates better performance in the worst scenario encountered.
+
+| Rank | Sort Type | Name | Worst Rank | Scenarios |
+|------|-----------|------|------------|-----------|
+| 1 | **fi** | ForSort Unstable Fully In-Place | 5 | 2 |
+| 2 | **fw** | ForSort With Allocated Workspace | 6 | 2 |
+| 3 | **fs** | ForSort Stable Fully In-Place | 7 | 2 |
+| 4 | wi | WikiSort Fully In-Place | 7 | 10 |
+| 5 | ti | TimSort with Allocated Workspace | 7 | 12 |
+| 6 | gs | GrailSort Fully In-Place | 9 | 13 |
+| 7 | fb | ForSort Basic Fully In-Place | 10 | 2 |
+| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 10 | 2 |
+| 9 | is | Insertion Sort Fully In-Place | 10 | 9 |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 10 | 17 |
+
+*Worst rank indicates the highest (poorest) position achieved across all test categories. Lower worst rank = better worst-case performance.*
 
 
 ## Summary by Dataset Size and Test Variant

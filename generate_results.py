@@ -388,8 +388,11 @@ def generate_worst_case_analysis(
         worst_rank = max(rank for _, _, rank in cases)
         worst_ranks[st] = worst_rank
 
-    # Sort by worst rank (lower = better worst-case performance)
-    sorted_by_worst = sorted(worst_ranks.items(), key=lambda x: x[1])
+    # Sort by worst rank (lower = better), then by scenarios with that rank (lower = better)
+    sorted_by_worst = sorted(
+        worst_ranks.items(),
+        key=lambda x: (x[1], sum(1 for _, _, r in worst_case_data[x[0]] if r == x[1])),
+    )
 
     lines.append("| Rank | Sort Type | Name | Worst Rank | Scenarios |")
     lines.append("|------|-----------|------|------------|-----------|")
@@ -735,17 +738,14 @@ def generate_results(
     sections.append(generate_sort_types_section())
     sections.append(generate_variant_section())
 
-    # Worst-case performance
-    sections.append(generate_worst_case_analysis(data))
-
-    # Worst-case performance (exclude reversed by default)
-    sections.append(generate_worst_case_analysis(data, exclude_reversed=True))
-
     # Cross-category Analysis Summary
     sections.append(generate_cross_category_analysis(data))
 
     # Size winners summary
     sections.append(generate_size_winners_summary(data))
+
+    # Worst-case performance (exclude reversed by default)
+    sections.append(generate_worst_case_analysis(data, exclude_reversed=True))
 
     # Summary section (always included)
     sections.append(generate_summary_by_size(data, include_skipped))
