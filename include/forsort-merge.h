@@ -727,11 +727,12 @@ merge_done:
 } // merge_two_to_target
 
 
-// This is a hybrid bottom-up merge with a dash of top-down recursive semantics
-// It will do a bottom-up merge-sort of sections that fit the constraints but
-// will recurse to also bottom-up merge-sort the sections that don't neatly fit
-// within an even multiple of the merge size MS
-// It turns out that 5 is pretty much the best choice for everything
+// This is a hybrid merge-sort.  It will top-down split the work into chunks
+// of even powers of MS until those chunks fit within the available workspace
+// Then it will do a bottom-up merge-sort of the <= work-space sized sections
+// before returning up the stack to perform a work-space constrained merge of
+// the larger sorted blocks.
+// It turns out that MS=5 is pretty much the best choice for everything
 #define MS 5
 static void
 NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
@@ -753,14 +754,22 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	size_t	na = n - step, nb = step, disorder = 0, num = 0;
 	VAR	*pb = pa + na * ES;
 
-	// Top-down split-merge pb until it fits within pw
+	// Top-down split-merge pb until nb fits within nw
 	if (nb > nw) {
 		step = nb >> 1;
-		VAR *pt = pb + step * ES;
+
+		VAR	*pt = pb + step * ES;
+
 		CALL(sort_using_workspace)(pb, step, ws, nw, COMMON_ARGS);
 		CALL(sort_using_workspace)(pt, step, ws, nw, COMMON_ARGS);
 		CALL(merge_workspace_constrained)(pb, step, pt, step, ws, nw, COMMON_ARGS);
-		goto skip_it_good;
+
+		if (na) {
+			CALL(sort_using_workspace)(pa, na, ws, nw, COMMON_ARGS);
+			CALL(merge_workspace_constrained)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
+		}
+
+		return;
 	}
 
 	// First sort everything in pb into MS sized chunks
@@ -848,7 +857,6 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 		CALL(merge_workspace_constrained)(pb, step, pt, step, ws, nw, COMMON_ARGS);
 	}
 
-skip_it_good:
 	// Use the constrained workspace algorithm to merge pa and pb together
 	if (na > 0) {
 		CALL(sort_using_workspace)(pa, na, ws, nw, COMMON_ARGS);
