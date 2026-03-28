@@ -753,29 +753,19 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	size_t	na = n - step, nb = step, disorder = 0, num = 0;
 	VAR	*pb = pa + na * ES;
 
-	// Recursively handle merge sorting the pa remainder
-	if (na > 0)
-		CALL(sort_using_workspace)(pa, na, ws, nw, COMMON_ARGS);
+	// Top-down split-merge pb until it fits within pw
+	if (nb > nw) {
+		step = nb >> 1;
+		VAR *pt = pb + step * ES;
+		CALL(sort_using_workspace)(pb, step, ws, nw, COMMON_ARGS);
+		CALL(sort_using_workspace)(pt, step, ws, nw, COMMON_ARGS);
+		CALL(merge_workspace_constrained)(pb, step, pt, step, ws, nw, COMMON_ARGS);
+		goto skip_it_good;
+	}
 
 	// First sort everything in pb into MS sized chunks
 	for (VAR *pt = pb, *pe = pa + n * ES; pt < pe; pt += (MS * ES))
-#if (MS == 2)
-		CALL(sort_two)(pt, COMMON_ARGS);
-#elif (MS == 3)
-		CALL(sort_three)(pt, COMMON_ARGS);
-#elif (MS == 4)
-		CALL(sort_four)(pt, COMMON_ARGS);
-#elif (MS == 5)
 		CALL(sort_five)(pt, COMMON_ARGS);
-#elif (MS == 6)
-		CALL(sort_six)(pt, COMMON_ARGS);
-#elif (MS == 7)
-		CALL(sort_seven)(pt, COMMON_ARGS);
-#elif (MS == 8)
-		CALL(sort_eight)(pt, COMMON_ARGS);
-#else
-		CALL(insertion_sort)(pt, MS, COMMON_ARGS);
-#endif
 
 	// Now bottom-up merge-sort pb
 
@@ -853,15 +843,17 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 
 	// Handle final 2-step merge if applicable
 	if (step < nb) {
-		VAR	*p1 = pb;
-		VAR	*p2 = pb + step * ES;
+		VAR	*pt = pb + step * ES;
 
-		CALL(merge_workspace_constrained)(p1, step, p2, step, ws, nw, COMMON_ARGS);
+		CALL(merge_workspace_constrained)(pb, step, pt, step, ws, nw, COMMON_ARGS);
 	}
 
+skip_it_good:
 	// Use the constrained workspace algorithm to merge pa and pb together
-	if (na > 0)
+	if (na > 0) {
+		CALL(sort_using_workspace)(pa, na, ws, nw, COMMON_ARGS);
 		CALL(merge_workspace_constrained)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
+	}
 } // sort_using_workspace
 
 // Base merge-sort algorithm - I'm all 'bout that speed baby!
