@@ -1089,8 +1089,21 @@
             const nb = step;
             const pb = pa + na;
 
-            if (na > 0) {
+            if(na > 0) {
                 sortUsingWorkspace(pa, na, ws, nw);
+            }
+
+            if (nb > nw) {
+                step >>= 1;
+                let pt = pb + step;
+                sortUsingWorkspace(pb, step, ws, nw);
+                sortUsingWorkspace(pt, step, ws, nw);
+                mergeWorkspaceConstrained(pb, step, pt, step, ws, nw);
+
+                if (na > 0) {
+                    mergeWorkspaceConstrained(pa, na, pb, nb, ws, nw);
+                }
+                return;
             }
 
             for (let pt = pb, pe = pa + n; pt < pe; pt += MS) {

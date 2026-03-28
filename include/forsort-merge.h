@@ -754,6 +754,9 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	size_t	na = n - step, nb = step, disorder = 0, num = 0;
 	VAR	*pb = pa + na * ES;
 
+	if (na)
+		CALL(sort_using_workspace)(pa, na, ws, nw, COMMON_ARGS);
+
 	// Top-down split-merge pb until nb fits within nw
 	if (nb > nw) {
 		step = nb >> 1;
@@ -764,10 +767,8 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 		CALL(sort_using_workspace)(pt, step, ws, nw, COMMON_ARGS);
 		CALL(merge_workspace_constrained)(pb, step, pt, step, ws, nw, COMMON_ARGS);
 
-		if (na) {
-			CALL(sort_using_workspace)(pa, na, ws, nw, COMMON_ARGS);
+		if (na)
 			CALL(merge_workspace_constrained)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
-		}
 
 		return;
 	}
@@ -858,10 +859,8 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	}
 
 	// Use the constrained workspace algorithm to merge pa and pb together
-	if (na > 0) {
-		CALL(sort_using_workspace)(pa, na, ws, nw, COMMON_ARGS);
+	if (na)
 		CALL(merge_workspace_constrained)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
-	}
 } // sort_using_workspace
 
 // Base merge-sort algorithm - I'm all 'bout that speed baby!
