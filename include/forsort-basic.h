@@ -284,45 +284,55 @@ NAME(reverse_block)(VAR *restrict pa, VAR *restrict pe, size_t es)
 } // reverse_block
 
 
-static void
-NAME(fixup_reverse)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
+static VAR *
+NAME(process_descending)(VAR *restrict curr, VAR *restrict pe, COMMON_PARAMS)
 {
-	VAR *restrict prev = pa, *restrict curr = pa + ES, *restrict fix;
+	VAR *restrict prev, *restrict fix;
 
-	while (curr != pe) {
-		if (IS_LT(prev, curr)) {
+	ASSERT(curr <= pe);
+	while (true) {
+		// Handle monotonically decreasing sequence
+		do {
 			prev = curr;
 			curr += ES;
-		} else {
+
+			if (curr >= pe)
+				return curr;
+
+			if (IS_LT(curr, prev))
+				continue;
+
+			if (IS_LT(prev, curr))
+				return curr;
+
+			// prev and curr are equal
 			fix = prev;
-			do {
-				prev = curr;
-				curr += ES;
-			} while ((curr != pe) && !IS_LT(prev, curr));
-			CALL(reverse_block)(fix, curr, es);
-		}
-	}
-} // fixup_reverse
-
-
-static VAR *
-NAME(process_descending)(VAR *restrict pa, VAR *restrict pe, int *needfix, COMMON_PARAMS)
-{
-	VAR *restrict prev = pa, *restrict curr = pa + ES;
-	int	dofix = 0;
-
-	ASSERT(pa < pe);
-	for ( ; curr != pe; prev = curr, curr += ES) {
-		if (IS_LT(curr, prev))
-			continue;
-
-		if (IS_LT(prev, curr))
 			break;
+		} while (true);
 
-		dofix = 1;
+		// Handle a duplicate/equality sequence
+		do {
+			prev = curr;
+			curr += ES;
+
+			if (curr >= pe) {
+				CALL(reverse_block)(fix, curr, es);
+				return curr;
+			}
+
+			if (IS_LT(curr, prev)) {
+				CALL(reverse_block)(fix, curr, es);
+				break;
+			}
+
+			if (IS_LT(prev, curr)) {
+				CALL(reverse_block)(fix, curr, es);
+				return curr;
+			}
+
+			// prev and curr are still equal
+		} while (true);
 	}
-	*needfix = dofix;
-	return curr;
 } // process_descending
 
 
@@ -350,7 +360,6 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 {
 	VAR	*pe = pa + (n * ES), *curr = pa, *start;
 	size_t	reversals = 0, loops = 0;
-	int	dofix;
 
 	if (n < 2)
 		return 0;
@@ -364,11 +373,9 @@ NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
 		if (curr == pe)
 			break;
 		start = curr - ES;
-		curr = CALL(process_descending)(curr, pe, &dofix, COMMON_ARGS);
+		curr = CALL(process_descending)(curr, pe, COMMON_ARGS);
 		reversals += NITEM(curr - start);
 		CALL(reverse_block)(start, curr, es);
-		if (dofix)
-			CALL(fixup_reverse)(start, curr, COMMON_ARGS);
 	}
 	return reversals - loops + 1;
 } // dereverse
