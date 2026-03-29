@@ -287,17 +287,15 @@ NAME(reverse_block)(VAR *restrict pa, VAR *restrict pe, size_t es)
 static VAR *
 NAME(process_descending)(VAR *restrict curr, VAR *restrict pe, COMMON_PARAMS)
 {
-	VAR *restrict prev, *restrict fix;
-
 	ASSERT(curr <= pe);
-	while (true) {
+	for (VAR *restrict fix;;) {
 		// Handle monotonically decreasing sequence
-		do {
+		for (VAR *restrict prev;;) {
 			prev = curr;
 			curr += ES;
 
 			if (curr >= pe)
-				return curr;
+				return pe;
 
 			if (IS_LT(curr, prev))
 				continue;
@@ -308,16 +306,16 @@ NAME(process_descending)(VAR *restrict curr, VAR *restrict pe, COMMON_PARAMS)
 			// prev and curr are equal
 			fix = prev;
 			break;
-		} while (true);
+		}
 
 		// Handle a duplicate/equality sequence
-		do {
+		for (VAR *restrict prev;;) {
 			prev = curr;
 			curr += ES;
 
 			if (curr >= pe) {
-				CALL(reverse_block)(fix, curr, es);
-				return curr;
+				CALL(reverse_block)(fix, pe, es);
+				return pe;
 			}
 
 			if (IS_LT(curr, prev)) {
@@ -329,26 +327,25 @@ NAME(process_descending)(VAR *restrict curr, VAR *restrict pe, COMMON_PARAMS)
 				CALL(reverse_block)(fix, curr, es);
 				return curr;
 			}
-
-			// prev and curr are still equal
-		} while (true);
+		}
 	}
 } // process_descending
 
 
 static VAR *
-NAME(process_ascending)(VAR *restrict pa, VAR *restrict pe, COMMON_PARAMS)
+NAME(process_ascending)(VAR *restrict curr, VAR *restrict pe, COMMON_PARAMS)
 {
-	VAR *restrict prev = pa, *restrict curr = pa + ES;
-
-	ASSERT(pa < pe);
-	while (curr != pe) {
-		if (IS_LT(curr, prev))
-			return curr;
+	ASSERT(curr <= pe);
+	for (VAR *restrict prev;;) {
 		prev = curr;
 		curr += ES;
+
+		if (curr >= pe)
+			return pe;
+
+		if (IS_LT(curr, prev))
+			return curr;
 	}
-	return curr;
 } // process_ascending
 
 
