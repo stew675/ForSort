@@ -89,36 +89,39 @@
 // BASIC_INSERT_MAX defines the number of items below which the basic_sort()
 // functionality will simply use Insertion Sort.  Above a certain amount, the
 // insertion sort switches from linear to binary search, and so can run fairly
-// quickly up to even 80 items.  This is different to INSERT_SORT_MAX because
-// that value affects the high performance merge routines, whereas the basic
-// sort has a higher K-factor overhead, and so BASIC_INSERT_MAX can be higher
+// quickly up to even 80 items.
 #define	BASIC_INSERT_MAX	24
 
-// SKEW defines the split ratio when doing top-down division of the array
-// While shift_merge_in_place and split_merge_in_place can definitely merge
-// any two sorted arrays together in linear O(M+N) time, experimentally there
-// is an observable performance bias to be had when the first array, M, is
-// appreciably smaller than the second array, N.  While the total number of
-// comparisons and swaps are not affected significantly, a roughly 1:4 ratio
-// is observed to perform about 5-10% better than a 1:1 ratio.  Since the
-// stable merge-in-place algorithm relies heavily on this basic sort to form
-// its initial working sets, it's best that this skew ratio is managed
-// independently from the main merge-sort skew.  Experimentally, a 29:71
-// split appears to offer the best compromise
+// Grants forsort_basic() the ability to allocate a buffer on the stack of
+// BASIC_BUF_SIZE in bytes.  This buffer is used as a fixed size work-space
+// with which to call merge_sort_in_place() to speed up the merging of small
+// blocks.  This is completely optional and if stack-space is constrained
+// then this can be safely set to 0 to disable this feature entirely.
+#define	BASIC_BUF_SIZE		2048
+
+// BASIC_SKEW defines the split ratio when doing top-down division of the array
+// While rotate_merge_in_place() will merge any two sorted arrays together in
+// linear O(M+N) time, experimentally there is an observable performance bias
+// to be had when the first array, M, is appreciably smaller than the second
+// array, N.
+//
+// While the total number of comparisons is not affected significantly, a
+// roughly 1:3 ratio is observed to perform about 5-10% better than a 1:1
+// ratio.  Experimentally, a 29:71 split appears to offer the best compromise
 #define	BASIC_SKEW		29
 
 // WSRATIO defines the split ratio when choosing how much of the array to
 // use as a makeshift workspace when no workspace is provided
-// Experimentally anything from 3-20 works okay, but 9 appears optimal
-// Using 3 would mirror a closest approximation of classic merge sort
+// Anything from 3-20 works okay, but experimentally 6 appears optimal
+// Using 3 would provide the closest approximation of a classic merge sort
 #define	WSRATIO			6
 
 // STABLE_WSRATIO controls the behaviour of the stable sorting "front end" to
 // the main algorithm.  It has to dig out unique values from the sort space
 // to use as a workspace for the main algorithm.  Since doing so isn't "free"
 // there's a trade-off between spending more time digging out uniques, as
-// opposed to just using what we can find.  A good value appears to be anywhere
-// from 1.5x to 3x of what WSRATIO is set to,
+// opposed to just using what we can find.
+// Experimentally 29 appears to be the optimal value here
 #define	STABLE_WSRATIO		29
 
 // Set the following to 1 to enable low-stack mode, whereby we will not use
