@@ -244,6 +244,59 @@ NAME(basic_bottom_up_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 } // basic_bottom_up_sort
 
 
+// Hybrid top-down/bottom-up sort
+static void
+NAME(basic_hybrid_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
+{
+	// Handle small array size inputs with insertion sort
+	// Ensure there's no way na and nb could be zero
+	if ((n <= BASIC_INSERT_MAX) || (n <= 8))
+		return CALL(insertion_sort)(pa, n, COMMON_ARGS);
+
+	// First work out how to split the input
+	size_t	step;
+	for (step = 5; (step << 1) <= n; step <<= 1);
+
+	size_t	na = n - step, nb = step;
+	VAR	*pb = pa + (na * ES);
+	VAR	*pe = pa + (n * ES);
+
+	CALL(basic_hybrid_sort)(pa, na, COMMON_ARGS);
+
+	// Pick a size likely not to exceed CPU L1 data cache size
+	if (nb > 1024) {
+		size_t	nt = nb >> 1;
+		VAR	*pt = pb + (nt * ES);
+
+		CALL(basic_hybrid_sort)(pb, nt, COMMON_ARGS);
+		CALL(basic_hybrid_sort)(pt, nt, COMMON_ARGS);
+		CALL(rotate_merge_in_place)(pb, pt, pe, COMMON_ARGS);
+		if (na > 0)
+			CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+		return;
+	}
+
+	// Now 5-sort everything in pb
+	for (VAR *pt = pb; pt < pe; pt += (5 * ES))
+		CALL(sort_five)(pt, COMMON_ARGS);
+
+	// Now bottom up merge everything in pb
+	for (step = 5; step < nb; step <<= 1) {
+		size_t	step2 = step << 1;
+		for (VAR *p1 = pb; p1 < pe; p1 += (step2 * ES)) {
+			VAR	*p2 = p1 + step * ES;
+			VAR	*p3 = p1 + step2 * ES;
+
+			CALL(rotate_merge_in_place)(p1, p2, p3, COMMON_ARGS);
+		}
+	}
+
+	// Merge pa into pb
+	if (na > 0)
+		CALL(rotate_merge_in_place)(pa, pb, pe, COMMON_ARGS);
+} // basic_hybrid_sort
+
+
 // Top-down merge sort with a bias to smaller left-side arrays as this appears
 // to help the in-place merge algorithm a little bit,  This makes it a hair
 // faster than the bottom-up merge version of basic_sort().  basic_sort()  is
@@ -383,6 +436,7 @@ NAME(basic_sort)(VAR *pa, const size_t n, COMMON_PARAMS)
 #if LOW_STACK
 	CALL(basic_bottom_up_sort)(pa, n, COMMON_ARGS);
 #else
+//	CALL(basic_hybrid_sort)(pa, n, COMMON_ARGS);
 	CALL(basic_top_down_sort)(pa, n, COMMON_ARGS);
 #endif
 	return reversals;
