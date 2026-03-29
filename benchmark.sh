@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Benchmarking script for all sort types in ts executable
-# Runs each sort type with item counts: 1000, 10000, 100000, 1000000, 10000000
+# Runs each sort type with item counts: 100, 1000, 10000, 100000, 1000000, 10000000, 100000000
 
 # Sort types to test
 SORT_TYPES=(
-    "fb:ForSort Basic Fully In-Place        (Stable)"
+    "fw:ForSort With Allocated Workspace    (Stable)"
     "fi:ForSort Unstable Fully In-Place     (Unstable)"
     "fs:ForSort Stable Fully In-Place       (Stable)"
-    "fw:ForSort With Allocated Workspace    (Stable)"
+    "fb:ForSort Basic Fully In-Place        (Stable)"
     "gs:GrailSort Fully In-Place            (Stable)"
     "gq:GLibc Quick Sort Fully In-Place     (Stable?)"
     "nq:Bentley/McIlroy Quick Sort In-Place (Unstable)"
