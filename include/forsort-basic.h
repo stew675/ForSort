@@ -286,7 +286,7 @@ NAME(basic_hybrid_sort_sub)(VAR *pa, const size_t n, COMMON_PARAMS)
 	// If the chunk is small enough to benefit from using
 	// merge_sort_in_place(), then use that instead
 	if ((n * es) <= (BASIC_BUF_SIZE << 6)) {
-		char	ws[BASIC_BUF_SIZE];
+		_Alignas(64) char ws[BASIC_BUF_SIZE];
 		size_t	nw = BASIC_BUF_SIZE / es;
 
 		return CALL(merge_sort_in_place)(pa, n, (VAR *)ws, nw, COMMON_ARGS);
