@@ -48,25 +48,25 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Rank | Sort Type | Name | Avg Rank | Wins | Top 3 |
 |------|-----------|------|----------|------|-------|
-| 1 | **fw** | ForSort With Allocated Workspace | 1.90 | 27 | 35 |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 2.60 | 1 | 34 |
-| 3 | **fs** | ForSort Stable Fully In-Place | 3.88 | 0 | 25 |
-| 4 | ti | TimSort with Allocated Workspace | 4.40 | 10 | 12 |
-| 5 | wi | WikiSort Fully In-Place | 5.45 | 0 | 5 |
-| 6 | fb | ForSort Basic Fully In-Place | 6.29 | 0 | 7 |
-| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 6.38 | 0 | 0 |
-| 8 | gs | GrailSort Fully In-Place | 7.50 | 0 | 0 |
-| 9 | is | Insertion Sort Fully In-Place | 7.64 | 4 | 8 |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 8.95 | 0 | 0 |
+| 1 | **fw** | ForSort With Allocated Workspace | 1.81 | 27 | 36 |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 2.86 | 0 | 34 |
+| 3 | **fs** | ForSort Stable Fully In-Place | 3.69 | 0 | 26 |
+| 4 | fb | ForSort Basic Fully In-Place | 4.12 | 3 | 8 |
+| 5 | ti | TimSort with Allocated Workspace | 5.02 | 7 | 11 |
+| 6 | wi | WikiSort Fully In-Place | 5.93 | 1 | 3 |
+| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 6.83 | 0 | 0 |
+| 8 | is | Insertion Sort Fully In-Place | 7.71 | 4 | 8 |
+| 9 | gs | GrailSort Fully In-Place | 7.76 | 0 | 0 |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 9.26 | 0 | 0 |
 
 *Rankings based on average finish position across all test categories (excluding reverse-ordered scenarios). Skipped results (e.g., Insertion Sort for large datasets) counted as last place.*
 
 ### Recommendations by Use Case
 
-- **Best Stable Sort:** fs (ForSort Stable Fully In-Place) - Avg: 18.541 ns/item (1M-100M items)
-- **Best Unstable Sort:** fi (ForSort Unstable Fully In-Place) - Avg: 21.032 ns/item (1M-100M items)
-- **Best for Nearly-Sorted Data:** fw (ForSort With Allocated Workspace) - Avg: 6.838 ns/item
-- **Best for Random Data:** fw (ForSort With Allocated Workspace) - Avg: 23.480 ns/item
+- **Best Stable Sort:** fs (ForSort Stable Fully In-Place) - Avg: 15.692 ns/item (1M-100M items)
+- **Best Unstable Sort:** fi (ForSort Unstable Fully In-Place) - Avg: 20.824 ns/item (1M-100M items)
+- **Best for Nearly-Sorted Data:** fw (ForSort With Allocated Workspace) - Avg: 6.487 ns/item
+- **Best for Random Data:** fw (ForSort With Allocated Workspace) - Avg: 24.320 ns/item
 
 
 ## Size Winners Summary
@@ -75,13 +75,13 @@ This document contains comprehensive benchmark results for all sorting algorithm
 
 | Dataset Size | 1st Place | Avg (ns/item) | 2nd Place | Avg (ns/item) | 3rd Place | Avg (ns/item) |
 |--------------|-----------|---------------|-----------|---------------|-----------|---------------|
-| 100 | **fw**<br>ForSort With Allocated Workspace | 6.393 | **fi**<br>ForSort Unstable Fully In-Place | 6.925 | **wi**<br>WikiSort Fully In-Place | 7.699 |
-| 1000 | **fw**<br>ForSort With Allocated Workspace | 9.032 | **fi**<br>ForSort Unstable Fully In-Place | 10.567 | **fs**<br>ForSort Stable Fully In-Place | 11.623 |
-| 10000 | **fw**<br>ForSort With Allocated Workspace | 11.935 | **fi**<br>ForSort Unstable Fully In-Place | 13.465 | **fs**<br>ForSort Stable Fully In-Place | 14.122 |
-| 100000 | **fw**<br>ForSort With Allocated Workspace | 14.627 | **fi**<br>ForSort Unstable Fully In-Place | 15.628 | **fs**<br>ForSort Stable Fully In-Place | 16.244 |
-| 1000000 | **fw**<br>ForSort With Allocated Workspace | 15.980 | **fi**<br>ForSort Unstable Fully In-Place | 17.243 | **fs**<br>ForSort Stable Fully In-Place | 17.611 |
-| 10000000 | **fw**<br>ForSort With Allocated Workspace | 17.668 | **fi**<br>ForSort Unstable Fully In-Place | 18.889 | **fs**<br>ForSort Stable Fully In-Place | 19.420 |
-| 100000000 | **fw**<br>ForSort With Allocated Workspace | 21.923 | **fi**<br>ForSort Unstable Fully In-Place | 22.250 | **fs**<br>ForSort Stable Fully In-Place | 23.332 |
+| 100 | **fb**<br>ForSort Basic Fully In-Place | 6.627 | **fw**<br>ForSort With Allocated Workspace | 7.159 | **fi**<br>ForSort Unstable Fully In-Place | 7.572 |
+| 1000 | **fw**<br>ForSort With Allocated Workspace | 8.998 | **fi**<br>ForSort Unstable Fully In-Place | 10.442 | **fb**<br>ForSort Basic Fully In-Place | 10.831 |
+| 10000 | **fw**<br>ForSort With Allocated Workspace | 11.796 | **fi**<br>ForSort Unstable Fully In-Place | 13.452 | **fs**<br>ForSort Stable Fully In-Place | 13.999 |
+| 100000 | **fw**<br>ForSort With Allocated Workspace | 14.703 | **fi**<br>ForSort Unstable Fully In-Place | 15.676 | **fs**<br>ForSort Stable Fully In-Place | 16.186 |
+| 1000000 | **fw**<br>ForSort With Allocated Workspace | 16.172 | **fi**<br>ForSort Unstable Fully In-Place | 17.377 | **fs**<br>ForSort Stable Fully In-Place | 17.592 |
+| 10000000 | **fw**<br>ForSort With Allocated Workspace | 17.509 | **fi**<br>ForSort Unstable Fully In-Place | 19.050 | **fs**<br>ForSort Stable Fully In-Place | 19.454 |
+| 100000000 | **fw**<br>ForSort With Allocated Workspace | 20.835 | **fi**<br>ForSort Unstable Fully In-Place | 21.567 | **fs**<br>ForSort Stable Fully In-Place | 22.402 |
 
 
 ## Worst-Case Performance
@@ -90,16 +90,16 @@ This section identifies which algorithm has the best *worst-case* performance ac
 
 | Rank | Sort Type | Name | Worst Rank | Scenarios |
 |------|-----------|------|------------|-----------|
-| 1 | **fi** | ForSort Unstable Fully In-Place | 5 | 2 |
-| 2 | **fw** | ForSort With Allocated Workspace | 6 | 2 |
-| 3 | **fs** | ForSort Stable Fully In-Place | 7 | 2 |
-| 4 | wi | WikiSort Fully In-Place | 7 | 10 |
-| 5 | ti | TimSort with Allocated Workspace | 7 | 12 |
-| 6 | gs | GrailSort Fully In-Place | 9 | 13 |
-| 7 | fb | ForSort Basic Fully In-Place | 10 | 2 |
+| 1 | **fi** | ForSort Unstable Fully In-Place | 6 | 1 |
+| 2 | **fw** | ForSort With Allocated Workspace | 6 | 1 |
+| 3 | **fb** | ForSort Basic Fully In-Place | 7 | 1 |
+| 4 | wi | WikiSort Fully In-Place | 7 | 16 |
+| 5 | fs | ForSort Stable Fully In-Place | 8 | 1 |
+| 6 | ti | TimSort with Allocated Workspace | 8 | 8 |
+| 7 | gs | GrailSort Fully In-Place | 9 | 14 |
 | 8 | nq | Bentley/McIlroy Quick Sort In-Place | 10 | 2 |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 10 | 17 |
-| 10 | is | Insertion Sort Fully In-Place | 10 | 21 |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 10 | 20 |
+| 10 | is | Insertion Sort Fully In-Place | 10 | 20 |
 
 *Worst rank indicates the highest (poorest) position achieved across all test categories. Lower worst rank = better worst-case performance.*
 
@@ -110,16 +110,16 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Sort Type | 100 items | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
 |-----------|------------|------------|------------|------------|------------|------------|------------|
-| fw | *****6.393** | *****9.032** | *****11.935** | *****14.627** | *****15.980** | *****17.668** | *****21.923** |
-| fi | ****6.925** | ****10.567** | ****13.465** | ****15.628** | ****17.243** | ****18.889** | ****22.250** |
-| fs | ***8.832** | ***11.623** | ***14.122** | ***16.244** | ***17.611** | ***19.420** | ***23.332** |
-| ti | 9.360 | 15.772 | 22.160 | 27.277 | 32.167 | 37.636 | 43.258 |
-| wi | 7.699 | 12.839 | 20.634 | 26.695 | 32.782 | 40.019 | 48.014 |
-| nq | 11.025 | 16.745 | 22.882 | 29.339 | 35.384 | 41.450 | 47.919 |
-| gs | 12.560 | 17.714 | 23.811 | 29.838 | 37.435 | 46.037 | 56.920 |
-| fb | 9.606 | 17.934 | 26.361 | 33.551 | 39.831 | 46.564 | 54.424 |
-| gq | 13.764 | 21.801 | 29.967 | 36.723 | 44.368 | 53.390 | 62.965 |
-| is | 8.222 | 17.046 | 34.950 | 196.14 | 2478.0 | - | - |
+| fw | *****7.159** | *****8.998** | *****11.796** | *****14.703** | *****16.172** | *****17.509** | *****20.835** |
+| fi | ****7.572** | ****10.442** | ****13.452** | ****15.676** | ****17.377** | ****19.050** | ****21.567** |
+| fs | ***8.322** | ***11.599** | ***13.999** | ***16.186** | ***17.592** | ***19.454** | ***22.402** |
+| fb | 6.627 | 10.831 | 15.663 | 22.144 | 28.287 | 34.558 | 42.100 |
+| ti | 9.528 | 15.853 | 22.196 | 27.646 | 32.501 | 37.687 | 43.385 |
+| wi | 7.910 | 12.760 | 20.802 | 27.212 | 33.210 | 40.952 | 49.279 |
+| nq | 11.173 | 16.961 | 23.198 | 29.561 | 35.959 | 41.867 | 48.155 |
+| gs | 12.907 | 17.977 | 24.183 | 30.168 | 38.107 | 46.559 | 57.259 |
+| gq | 13.858 | 22.209 | 30.283 | 36.640 | 44.310 | 53.537 | 63.134 |
+| is | 8.234 | 16.837 | 34.593 | 195.57 | 2454.3 | - | - |
 
 
 ## Summary by Dataset Size and Test Variant
@@ -128,121 +128,121 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Sort Type | 100 items | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
 |-----------|----------|----------|----------|----------|----------|----------|----------|
-| fw | *****15.613** | *****16.575** | *****18.473** | *****22.811** | *****25.563** | *****29.007** | *****36.316** |
-| fi | ****18.049** | ****20.640** | ****22.800** | ****26.030** | ****29.678** | ****33.149** | ****39.335** |
-| fs | ***23.018** | ***23.668** | ***23.849** | ***27.248** | ***29.892** | ***34.083** | ***42.307** |
-| gs | 29.642 | 38.028 | 47.123 | 54.088 | 63.430 | 75.376 | 90.196 |
-| wi | 21.458 | 32.976 | 50.223 | 60.256 | 73.756 | 89.125 | 104.92 |
-| nq | 24.508 | 37.101 | 50.375 | 62.143 | 73.915 | 86.332 | 98.438 |
-| ti | 27.642 | 43.668 | 59.498 | 73.206 | 88.149 | 104.96 | 120.74 |
-| gq | 32.521 | 48.706 | 64.757 | 77.331 | 92.929 | 110.46 | 127.09 |
-| fb | 29.557 | 48.210 | 69.245 | 86.789 | 105.49 | 124.58 | 147.04 |
-| is | 27.480 | 49.297 | 116.78 | 962.84 | 13325.2 | - | - |
+| fw | *****19.417** | *****17.205** | *****18.581** | *****23.899** | *****26.034** | *****29.048** | *****36.057** |
+| fi | ****21.540** | ****20.726** | ****22.614** | ****26.869** | ****30.142** | ****33.502** | ****38.895** |
+| fs | ***21.498** | ***23.534** | ***23.889** | ***27.495** | ***29.729** | ***34.348** | ***41.713** |
+| fb | 15.409 | 20.705 | 27.549 | 47.933 | 66.723 | 86.221 | 107.08 |
+| gs | 30.553 | 38.399 | 47.336 | 56.314 | 66.149 | 77.385 | 91.972 |
+| wi | 21.894 | 32.195 | 49.119 | 61.693 | 74.287 | 91.485 | 106.65 |
+| nq | 25.394 | 37.787 | 50.360 | 62.808 | 75.460 | 87.763 | 100.08 |
+| ti | 27.581 | 43.660 | 59.659 | 74.351 | 88.799 | 104.66 | 121.17 |
+| gq | 32.389 | 48.791 | 65.082 | 77.021 | 91.701 | 109.74 | 126.32 |
+| is | 27.644 | 48.386 | 116.31 | 963.58 | 13204.3 | - | - |
 
 ### 25 Percent Disordered
 
 | Sort Type | 100 items | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
 |-----------|----------|----------|----------|----------|----------|----------|----------|
-| fw | *****10.167** | *****16.994** | *****20.938** | *****23.907** | *****26.357** | *****28.787** | *****34.307** |
-| fi | ****11.137** | ****18.878** | ****22.563** | ****25.299** | ****27.527** | ****30.216** | ****34.592** |
-| fs | ***14.877** | ***21.537** | ***24.315** | ***26.594** | ***28.737** | ***31.185** | ***36.421** |
-| nq | 13.411 | 20.806 | 28.878 | 36.683 | 44.802 | 52.514 | 60.589 |
-| wi | 10.962 | 19.080 | 30.154 | 38.629 | 45.998 | 55.754 | 64.624 |
-| ti | 13.644 | 25.020 | 35.369 | 42.749 | 49.135 | 58.794 | 67.324 |
-| gs | 15.914 | 25.690 | 33.611 | 42.577 | 50.730 | 60.381 | 72.027 |
-| gq | 18.149 | 29.871 | 39.898 | 49.087 | 57.422 | 69.404 | 81.187 |
-| fb | 15.554 | 30.995 | 42.985 | 54.169 | 62.620 | 72.494 | 83.668 |
-| is | 12.031 | 26.692 | 40.955 | 128.61 | 1255.5 | - | - |
+| fw | *****12.030** | *****17.121** | *****20.217** | *****24.044** | *****26.842** | *****28.213** | *****33.764** |
+| fi | ****12.600** | ****18.969** | ****22.135** | ****25.048** | ****27.747** | ****29.672** | ****33.879** |
+| fs | ***14.260** | ***22.224** | ***23.913** | ***26.420** | ***28.623** | ***31.673** | ***35.437** |
+| fb | 11.809 | 20.238 | 26.854 | 34.307 | 44.140 | 52.776 | 64.186 |
+| nq | 13.305 | 21.299 | 29.651 | 37.345 | 45.769 | 53.572 | 62.041 |
+| wi | 11.481 | 19.062 | 31.127 | 38.757 | 46.462 | 56.127 | 67.054 |
+| ti | 14.001 | 24.814 | 35.380 | 43.337 | 49.716 | 58.523 | 67.205 |
+| gs | 16.443 | 26.450 | 35.278 | 42.614 | 52.291 | 61.010 | 72.613 |
+| gq | 18.173 | 30.187 | 40.383 | 47.935 | 56.913 | 69.370 | 81.218 |
+| is | 11.966 | 26.802 | 40.064 | 124.34 | 1235.1 | - | - |
 
 ### 10 Percent Disordered
 
 | Sort Type | 100 items | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
 |-----------|----------|----------|----------|----------|----------|----------|----------|
-| fw | *****4.822** | *****10.869** | *****15.480** | *****18.546** | *****19.414** | *****21.241** | *****25.569** |
-| fi | ****5.193** | ****12.764** | ****16.967** | ****19.067** | ****20.610** | ****22.242** | ****25.609** |
-| fs | ***6.746** | ***12.534** | ***17.419** | ***19.816** | ***20.730** | ***22.797** | ***26.656** |
-| ti | 6.848 | 13.102 | 19.606 | 23.951 | 27.229 | 30.722 | 35.490 |
-| nq | 8.576 | 13.101 | 18.599 | 24.137 | 29.585 | 34.811 | 40.307 |
-| wi | 5.382 | 11.522 | 19.168 | 25.338 | 30.790 | 38.729 | 46.483 |
-| fb | 5.759 | 15.406 | 23.331 | 29.855 | 34.397 | 40.316 | 46.928 |
-| gs | 9.497 | 15.115 | 23.314 | 30.965 | 39.475 | 48.321 | 59.842 |
-| gq | 10.187 | 18.931 | 27.166 | 32.441 | 40.056 | 47.670 | 57.400 |
-| is | 4.622 | 14.772 | 23.660 | 37.755 | 190.29 | - | - |
+| fw | *****4.709** | *****10.587** | *****15.299** | *****18.443** | *****19.800** | *****21.057** | *****24.440** |
+| fi | ****4.809** | ****12.286** | ****17.123** | ****19.147** | ****20.588** | ****23.011** | ****24.883** |
+| fs | ***6.481** | ***12.302** | ***17.223** | ***19.628** | ***21.396** | ***22.605** | ***25.408** |
+| fb | 5.707 | 12.401 | 19.213 | 22.716 | 26.699 | 31.421 | 37.978 |
+| ti | 7.057 | 13.391 | 19.642 | 23.807 | 27.181 | 30.852 | 35.891 |
+| nq | 8.525 | 13.104 | 19.098 | 24.170 | 30.288 | 35.413 | 40.334 |
+| wi | 5.495 | 11.688 | 19.450 | 26.390 | 31.772 | 40.152 | 47.572 |
+| gs | 9.662 | 15.360 | 23.681 | 30.942 | 39.438 | 49.257 | 60.339 |
+| gq | 10.422 | 19.448 | 27.275 | 32.641 | 39.573 | 48.010 | 57.707 |
+| is | 4.684 | 14.419 | 23.805 | 37.969 | 189.93 | - | - |
 
 ### 5 Percent Disordered
 
 | Sort Type | 100 items | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
 |-----------|----------|----------|----------|----------|----------|----------|----------|
-| fw | *****3.332** | *****6.500** | *****11.611** | *****14.560** | *****15.203** | *****16.759** | *****20.535** |
-| fi | ****3.243** | ****7.656** | ****12.815** | ****14.910** | ****16.101** | ****17.337** | ****20.276** |
-| fs | ***4.210** | ***7.610** | ***12.983** | ***14.981** | ***16.519** | ***17.593** | ***20.762** |
-| ti | 4.798 | 8.428 | 13.225 | 16.541 | 19.254 | 21.474 | 24.558 |
-| fb | 3.413 | 9.057 | 15.805 | 20.450 | 24.102 | 27.915 | 32.537 |
-| nq | 7.303 | 11.054 | 15.381 | 20.373 | 25.045 | 29.581 | 34.280 |
-| wi | 3.654 | 7.597 | 15.089 | 20.582 | 25.866 | 31.983 | 40.065 |
-| is | 2.733 | 8.508 | 19.788 | 27.011 | 70.275 | - | - |
-| gq | 8.091 | 14.076 | 22.131 | 27.298 | 33.086 | 40.546 | 49.066 |
-| gs | 7.797 | 11.298 | 18.286 | 25.513 | 34.272 | 43.034 | 54.319 |
+| fw | *****3.047** | *****6.221** | *****11.614** | *****13.938** | *****15.296** | *****16.468** | *****18.834** |
+| fi | ****2.960** | ****7.381** | ****13.182** | ****14.635** | ****16.207** | ****17.418** | ****19.591** |
+| fs | ***4.043** | ***7.359** | ***12.934** | ***15.088** | ***16.130** | ***17.679** | ***19.565** |
+| ti | 5.137 | 8.731 | 13.208 | 16.791 | 19.857 | 22.151 | 24.532 |
+| fb | 3.518 | 7.808 | 14.004 | 17.647 | 19.910 | 23.511 | 27.693 |
+| nq | 7.330 | 11.045 | 15.832 | 20.396 | 25.078 | 29.830 | 34.459 |
+| wi | 3.704 | 7.618 | 15.814 | 20.908 | 26.020 | 33.167 | 41.428 |
+| is | 2.660 | 8.433 | 19.115 | 27.018 | 70.042 | - | - |
+| gs | 8.004 | 11.582 | 18.395 | 25.539 | 34.052 | 42.725 | 53.590 |
+| gq | 8.336 | 14.743 | 22.329 | 27.682 | 33.858 | 41.128 | 49.466 |
 
 ### 1 Percent Disordered
 
 | Sort Type | 100 items | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
 |-----------|----------|----------|----------|----------|----------|----------|----------|
-| ti | *****2.279** | *****3.599** | *****4.479** | *****6.433** | *****8.430** | *****9.061** | *****10.660** |
-| fw | ****2.334** | ****2.033** | ****4.226** | ****6.928** | ****8.197** | ****9.319** | ****12.877** |
-| fi | ***2.103** | ***2.291** | ***4.723** | ***7.444** | ***8.474** | ***9.486** | ***12.258** |
-| fs | 2.855 | 3.204 | 4.998 | 7.662 | 8.505 | 9.601 | 12.655 |
-| fb | 2.221 | 2.946 | 5.831 | 9.170 | 11.539 | 13.271 | 15.572 |
-| is | 1.379 | 2.021 | 7.535 | 19.717 | 25.683 | - | - |
-| wi | 2.499 | 3.320 | 6.640 | 12.954 | 17.726 | 22.519 | 29.706 |
-| nq | 6.305 | 9.497 | 12.445 | 16.799 | 20.262 | 23.960 | 28.057 |
-| gs | 6.549 | 8.503 | 11.253 | 15.773 | 24.292 | 32.872 | 43.103 |
-| gq | 6.930 | 9.920 | 14.094 | 20.307 | 26.187 | 32.300 | 39.397 |
+| fw | *****1.985** | *****1.838** | *****4.155** | *****7.035** | *****8.153** | *****9.387** | *****10.973** |
+| ti | ****2.430** | ****3.707** | ****4.503** | ****6.812** | ****8.545** | ****9.123** | ****10.719** |
+| fi | ***1.874** | ***2.193** | ***4.737** | ***7.494** | ***8.716** | ***9.827** | ***11.236** |
+| fs | 2.537 | 3.173 | 5.033 | 7.516 | 8.655 | 9.594 | 11.486 |
+| fb | 2.216 | 2.837 | 5.396 | 9.391 | 11.391 | 12.616 | 14.874 |
+| is | 1.371 | 1.998 | 7.297 | 19.633 | 25.455 | - | - |
+| wi | 2.587 | 3.416 | 6.671 | 12.984 | 18.161 | 22.738 | 30.568 |
+| nq | 6.313 | 9.566 | 12.519 | 16.637 | 20.507 | 23.608 | 27.495 |
+| gs | 6.729 | 8.409 | 11.327 | 15.378 | 24.112 | 32.870 | 42.977 |
+| gq | 7.046 | 10.224 | 14.618 | 20.510 | 26.404 | 32.477 | 39.783 |
 
 ### Fully Ordered
 
 | Sort Type | 100 items | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
 |-----------|----------|----------|----------|----------|----------|----------|----------|
-| ti | *****0.951** | *****0.813** | *****0.782** | *****0.779** | *****0.803** | *****0.803** | *****0.779** |
-| fb | ****1.132** | ****0.993** | ****0.970** | ****0.874** | ****0.834** | ****0.806** | ****0.794** |
-| is | ***1.084** | ***0.983** | ***0.976** | ***0.882** | ***0.836** | - | - |
-| fi | 1.823 | 1.174 | 0.920 | 1.018 | 1.070 | 0.902 | 1.431 |
-| fs | 1.283 | 1.185 | 1.168 | 1.165 | 1.284 | 1.262 | 1.190 |
-| fw | 2.089 | 1.222 | 0.885 | 1.013 | 1.148 | 0.896 | 1.935 |
-| wi | 2.240 | 2.542 | 2.531 | 2.413 | 2.558 | 2.005 | 2.280 |
-| gs | 5.960 | 7.649 | 9.282 | 10.113 | 12.409 | 16.236 | 22.032 |
-| gq | 6.707 | 9.300 | 11.758 | 13.875 | 16.527 | 19.960 | 23.645 |
-| nq | 6.048 | 8.913 | 11.614 | 15.900 | 18.692 | 21.502 | 25.844 |
+| ti | *****0.964** | *****0.814** | *****0.784** | *****0.781** | *****0.905** | *****0.817** | *****0.791** |
+| fb | ****1.104** | ****0.994** | ****0.962** | ****0.868** | ****0.857** | ****0.804** | ****0.791** |
+| is | ***1.080** | ***0.981** | ***0.967** | ***0.872** | ***0.830** | - | - |
+| fs | 1.115 | 1.001 | 1.001 | 0.969 | 1.020 | 0.828 | 0.806 |
+| fi | 1.651 | 1.096 | 0.920 | 0.863 | 0.864 | 0.873 | 0.920 |
+| fw | 1.763 | 1.018 | 0.911 | 0.858 | 0.905 | 0.879 | 0.945 |
+| wi | 2.301 | 2.582 | 2.629 | 2.542 | 2.556 | 2.045 | 2.401 |
+| gs | 6.053 | 7.663 | 9.083 | 10.223 | 12.597 | 16.105 | 22.063 |
+| gq | 6.781 | 9.862 | 12.010 | 14.053 | 17.413 | 20.494 | 24.308 |
+| nq | 6.171 | 8.965 | 11.730 | 16.007 | 18.654 | 21.013 | 24.515 |
 
 ### Reverse Ordered Duplicates
 
 | Sort Type | 100 items | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
 |-----------|----------|----------|----------|----------|----------|----------|----------|
-| ti | *****9.405** | *****9.705** | *****9.893** | *****10.056** | *****10.387** | *****12.322** | *****16.200** |
-| wi | ****7.287** | ****7.754** | ****9.809** | ****11.335** | ****12.197** | ****15.504** | ****20.564** |
-| fw | ***7.361** | ***8.221** | ***11.272** | ***14.312** | ***18.687** | ***22.613** | ***30.781** |
-| gs | 15.004 | 13.550 | 14.256 | 15.023 | 17.521 | 20.103 | 27.204 |
-| fi | 9.041 | 9.452 | 12.099 | 15.276 | 19.629 | 24.238 | 34.478 |
-| fs | 15.127 | 10.693 | 12.100 | 14.462 | 18.486 | 24.444 | 35.912 |
-| nq | 11.645 | 16.412 | 21.218 | 21.834 | 25.920 | 30.691 | 31.675 |
-| fb | 17.477 | 19.834 | 21.683 | 24.120 | 28.259 | 32.767 | 53.605 |
-| gq | 20.211 | 25.192 | 32.451 | 37.197 | 37.408 | 43.196 | 49.997 |
-| is | 10.434 | 22.584 | 212.77 | 2434.3 | 31000.9 | - | - |
+| fb | *****4.769** | *****4.128** | *****4.121** | *****3.862** | *****3.880** | *****3.967** | *****4.074** |
+| fs | ****8.745** | ****5.593** | ****4.863** | ****4.608** | ****4.638** | ****5.040** | ****6.182** |
+| ti | ***9.843** | ***10.088** | ***9.828** | ***10.374** | ***10.783** | ***12.508** | ***16.397** |
+| wi | 7.166 | 7.823 | 9.948 | 11.396 | 12.483 | 15.736 | 21.152 |
+| fw | 10.804 | 7.989 | 11.823 | 14.042 | 18.370 | 22.690 | 28.257 |
+| gs | 14.704 | 13.343 | 14.196 | 14.876 | 17.068 | 19.754 | 26.726 |
+| fi | 11.825 | 9.324 | 12.098 | 14.698 | 18.901 | 24.328 | 33.507 |
+| nq | 11.770 | 16.564 | 21.386 | 22.214 | 26.376 | 30.562 | 31.040 |
+| gq | 20.504 | 25.349 | 32.689 | 38.483 | 37.593 | 42.882 | 50.385 |
+| is | 10.394 | 22.737 | 213.59 | 2403.4 | 31225.9 | - | - |
 
 ### Reverse Ordered Uniques
 
 | Sort Type | 100 items | 1000 items | 10000 items | 100000 items | 1000000 items | 10000000 items | 100000000 items |
 |-----------|----------|----------|----------|----------|----------|----------|----------|
-| ti | *****1.070** | *****0.948** | *****0.912** | *****0.915** | *****0.985** | *****0.951** | *****1.048** |
-| fb | ****1.179** | ****1.012** | ****1.018** | ****1.041** | ****1.072** | ****1.062** | ****1.238** |
-| fs | ***1.265** | ***1.050** | ***1.052** | ***1.082** | ***1.176** | ***1.213** | ***1.564** |
-| wi | 2.997 | 3.660 | 4.423 | 5.033 | 5.995 | 7.047 | 12.590 |
-| gs | 6.245 | 7.651 | 9.412 | 10.704 | 13.603 | 16.296 | 22.748 |
-| fw | 5.984 | 7.762 | 10.411 | 13.559 | 18.062 | 21.972 | 30.327 |
-| fi | 7.191 | 7.478 | 10.517 | 13.857 | 18.308 | 23.894 | 33.934 |
-| gq | 9.447 | 11.702 | 14.472 | 16.919 | 19.866 | 24.920 | 31.454 |
-| nq | 11.498 | 17.069 | 22.470 | 21.707 | 26.443 | 31.630 | 30.852 |
-| is | 9.000 | 22.736 | 210.84 | 2356.1 | 30667.4 | - | - |
+| ti | *****1.095** | *****0.963** | *****0.910** | *****0.930** | *****1.030** | *****0.975** | *****1.056** |
+| fb | ****1.184** | ****1.015** | ****1.019** | ****1.013** | ****1.077** | ****1.096** | ****1.237** |
+| fs | ***1.285** | ***1.083** | ***1.052** | ***1.101** | ***1.212** | ***1.270** | ***1.576** |
+| wi | 3.028 | 3.504 | 4.450 | 5.017 | 5.973 | 6.906 | 12.612 |
+| gs | 6.456 | 7.999 | 9.519 | 10.617 | 13.242 | 15.678 | 22.880 |
+| fw | 7.587 | 7.046 | 10.533 | 12.876 | 17.554 | 21.959 | 27.392 |
+| fi | 8.509 | 7.324 | 10.501 | 13.343 | 18.087 | 23.531 | 33.459 |
+| gq | 9.613 | 11.837 | 14.865 | 17.217 | 19.770 | 25.100 | 31.903 |
+| nq | 11.382 | 17.187 | 22.776 | 21.643 | 26.162 | 31.098 | 29.682 |
+| is | 8.855 | 22.005 | 215.94 | 2432.2 | 31213.1 | - | - |
 
 
 ## Performance Rankings
@@ -253,121 +253,121 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 15.613 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 18.049 | 15.6% | No |
-| 3 | **wi** | WikiSort Fully In-Place | 21.458 | 37.4% | Yes |
-| 4 | fs | ForSort Stable Fully In-Place | 23.018 | 47.4% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 24.508 | 57.0% | No |
-| 6 | is | Insertion Sort Fully In-Place | 27.480 | 76.0% | Yes |
-| 7 | ti | TimSort with Allocated Workspace | 27.642 | 77.0% | Yes |
-| 8 | fb | ForSort Basic Fully In-Place | 29.557 | 89.3% | Yes |
-| 9 | gs | GrailSort Fully In-Place | 29.642 | 89.9% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 32.521 | 108.3% | No |
+| 1 | **fb** | ForSort Basic Fully In-Place | 15.409 | 0.0% | Yes |
+| 2 | **fw** | ForSort With Allocated Workspace | 19.417 | 26.0% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 21.498 | 39.5% | Yes |
+| 4 | fi | ForSort Unstable Fully In-Place | 21.540 | 39.8% | No |
+| 5 | wi | WikiSort Fully In-Place | 21.894 | 42.1% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 25.394 | 64.8% | No |
+| 7 | ti | TimSort with Allocated Workspace | 27.581 | 79.0% | Yes |
+| 8 | is | Insertion Sort Fully In-Place | 27.644 | 79.4% | Yes |
+| 9 | gs | GrailSort Fully In-Place | 30.553 | 98.3% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 32.389 | 110.2% | No |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 10.167 | 0.0% | Yes |
-| 2 | **wi** | WikiSort Fully In-Place | 10.962 | 7.8% | Yes |
-| 3 | **fi** | ForSort Unstable Fully In-Place | 11.137 | 9.5% | No |
-| 4 | is | Insertion Sort Fully In-Place | 12.031 | 18.3% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 13.411 | 31.9% | No |
-| 6 | ti | TimSort with Allocated Workspace | 13.644 | 34.2% | Yes |
-| 7 | fs | ForSort Stable Fully In-Place | 14.877 | 46.3% | Yes |
-| 8 | fb | ForSort Basic Fully In-Place | 15.554 | 53.0% | Yes |
-| 9 | gs | GrailSort Fully In-Place | 15.914 | 56.5% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 18.149 | 78.5% | No |
+| 1 | **wi** | WikiSort Fully In-Place | 11.481 | 0.0% | Yes |
+| 2 | **fb** | ForSort Basic Fully In-Place | 11.809 | 2.9% | Yes |
+| 3 | **is** | Insertion Sort Fully In-Place | 11.966 | 4.2% | Yes |
+| 4 | fw | ForSort With Allocated Workspace | 12.030 | 4.8% | Yes |
+| 5 | fi | ForSort Unstable Fully In-Place | 12.600 | 9.7% | No |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 13.305 | 15.9% | No |
+| 7 | ti | TimSort with Allocated Workspace | 14.001 | 21.9% | Yes |
+| 8 | fs | ForSort Stable Fully In-Place | 14.260 | 24.2% | Yes |
+| 9 | gs | GrailSort Fully In-Place | 16.443 | 43.2% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 18.173 | 58.3% | No |
 
 #### 10 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **is** | Insertion Sort Fully In-Place | 4.622 | 0.0% | Yes |
-| 2 | **fw** | ForSort With Allocated Workspace | 4.822 | 4.3% | Yes |
-| 3 | **fi** | ForSort Unstable Fully In-Place | 5.193 | 12.4% | No |
-| 4 | wi | WikiSort Fully In-Place | 5.382 | 16.4% | Yes |
-| 5 | fb | ForSort Basic Fully In-Place | 5.759 | 24.6% | Yes |
-| 6 | fs | ForSort Stable Fully In-Place | 6.746 | 46.0% | Yes |
-| 7 | ti | TimSort with Allocated Workspace | 6.848 | 48.2% | Yes |
-| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 8.576 | 85.5% | No |
-| 9 | gs | GrailSort Fully In-Place | 9.497 | 105.5% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 10.187 | 120.4% | No |
+| 1 | **is** | Insertion Sort Fully In-Place | 4.684 | 0.0% | Yes |
+| 2 | **fw** | ForSort With Allocated Workspace | 4.709 | 0.5% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 4.809 | 2.7% | No |
+| 4 | wi | WikiSort Fully In-Place | 5.495 | 17.3% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 5.707 | 21.8% | Yes |
+| 6 | fs | ForSort Stable Fully In-Place | 6.481 | 38.4% | Yes |
+| 7 | ti | TimSort with Allocated Workspace | 7.057 | 50.7% | Yes |
+| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 8.525 | 82.0% | No |
+| 9 | gs | GrailSort Fully In-Place | 9.662 | 106.3% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 10.422 | 122.5% | No |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **is** | Insertion Sort Fully In-Place | 2.733 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 3.243 | 18.7% | No |
-| 3 | **fw** | ForSort With Allocated Workspace | 3.332 | 21.9% | Yes |
-| 4 | fb | ForSort Basic Fully In-Place | 3.413 | 24.9% | Yes |
-| 5 | wi | WikiSort Fully In-Place | 3.654 | 33.7% | Yes |
-| 6 | fs | ForSort Stable Fully In-Place | 4.210 | 54.0% | Yes |
-| 7 | ti | TimSort with Allocated Workspace | 4.798 | 75.6% | Yes |
-| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 7.303 | 167.2% | No |
-| 9 | gs | GrailSort Fully In-Place | 7.797 | 185.3% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 8.091 | 196.0% | No |
+| 1 | **is** | Insertion Sort Fully In-Place | 2.660 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 2.960 | 11.3% | No |
+| 3 | **fw** | ForSort With Allocated Workspace | 3.047 | 14.5% | Yes |
+| 4 | fb | ForSort Basic Fully In-Place | 3.518 | 32.3% | Yes |
+| 5 | wi | WikiSort Fully In-Place | 3.704 | 39.2% | Yes |
+| 6 | fs | ForSort Stable Fully In-Place | 4.043 | 52.0% | Yes |
+| 7 | ti | TimSort with Allocated Workspace | 5.137 | 93.1% | Yes |
+| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 7.330 | 175.6% | No |
+| 9 | gs | GrailSort Fully In-Place | 8.004 | 200.9% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 8.336 | 213.4% | No |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **is** | Insertion Sort Fully In-Place | 1.379 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 2.103 | 52.5% | No |
-| 3 | **fb** | ForSort Basic Fully In-Place | 2.221 | 61.1% | Yes |
-| 4 | ti | TimSort with Allocated Workspace | 2.279 | 65.3% | Yes |
-| 5 | fw | ForSort With Allocated Workspace | 2.334 | 69.3% | Yes |
-| 6 | wi | WikiSort Fully In-Place | 2.499 | 81.2% | Yes |
-| 7 | fs | ForSort Stable Fully In-Place | 2.855 | 107.0% | Yes |
-| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 6.305 | 357.2% | No |
-| 9 | gs | GrailSort Fully In-Place | 6.549 | 374.9% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 6.930 | 402.5% | No |
+| 1 | **is** | Insertion Sort Fully In-Place | 1.371 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 1.874 | 36.7% | No |
+| 3 | **fw** | ForSort With Allocated Workspace | 1.985 | 44.8% | Yes |
+| 4 | fb | ForSort Basic Fully In-Place | 2.216 | 61.6% | Yes |
+| 5 | ti | TimSort with Allocated Workspace | 2.430 | 77.2% | Yes |
+| 6 | fs | ForSort Stable Fully In-Place | 2.537 | 85.0% | Yes |
+| 7 | wi | WikiSort Fully In-Place | 2.587 | 88.7% | Yes |
+| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 6.313 | 360.5% | No |
+| 9 | gs | GrailSort Fully In-Place | 6.729 | 390.8% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 7.046 | 413.9% | No |
 
 #### Fully Ordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.951 | 0.0% | Yes |
-| 2 | **is** | Insertion Sort Fully In-Place | 1.084 | 14.0% | Yes |
-| 3 | **fb** | ForSort Basic Fully In-Place | 1.132 | 19.0% | Yes |
-| 4 | fs | ForSort Stable Fully In-Place | 1.283 | 34.9% | Yes |
-| 5 | fi | ForSort Unstable Fully In-Place | 1.823 | 91.7% | No |
-| 6 | fw | ForSort With Allocated Workspace | 2.089 | 119.7% | Yes |
-| 7 | wi | WikiSort Fully In-Place | 2.240 | 135.5% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 5.960 | 526.7% | Yes |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 6.048 | 536.0% | No |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 6.707 | 605.3% | No |
+| 1 | **ti** | TimSort with Allocated Workspace | 0.964 | 0.0% | Yes |
+| 2 | **is** | Insertion Sort Fully In-Place | 1.080 | 12.0% | Yes |
+| 3 | **fb** | ForSort Basic Fully In-Place | 1.104 | 14.5% | Yes |
+| 4 | fs | ForSort Stable Fully In-Place | 1.115 | 15.7% | Yes |
+| 5 | fi | ForSort Unstable Fully In-Place | 1.651 | 71.3% | No |
+| 6 | fw | ForSort With Allocated Workspace | 1.763 | 82.9% | Yes |
+| 7 | wi | WikiSort Fully In-Place | 2.301 | 138.7% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 6.053 | 527.9% | Yes |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 6.171 | 540.1% | No |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 6.781 | 603.4% | No |
 
 #### Reverse Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **wi** | WikiSort Fully In-Place | 7.287 | 0.0% | Yes |
-| 2 | **fw** | ForSort With Allocated Workspace | 7.361 | 1.0% | Yes |
-| 3 | **fi** | ForSort Unstable Fully In-Place | 9.041 | 24.1% | No |
-| 4 | ti | TimSort with Allocated Workspace | 9.405 | 29.1% | Yes |
-| 5 | is | Insertion Sort Fully In-Place | 10.434 | 43.2% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 11.645 | 59.8% | No |
-| 7 | gs | GrailSort Fully In-Place | 15.004 | 105.9% | Yes |
-| 8 | fs | ForSort Stable Fully In-Place | 15.127 | 107.6% | Yes |
-| 9 | fb | ForSort Basic Fully In-Place | 17.477 | 139.8% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 20.211 | 177.4% | No |
+| 1 | **fb** | ForSort Basic Fully In-Place | 4.769 | 0.0% | Yes |
+| 2 | **wi** | WikiSort Fully In-Place | 7.166 | 50.3% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 8.745 | 83.4% | Yes |
+| 4 | ti | TimSort with Allocated Workspace | 9.843 | 106.4% | Yes |
+| 5 | is | Insertion Sort Fully In-Place | 10.394 | 117.9% | Yes |
+| 6 | fw | ForSort With Allocated Workspace | 10.804 | 126.5% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 11.770 | 146.8% | No |
+| 8 | fi | ForSort Unstable Fully In-Place | 11.825 | 148.0% | No |
+| 9 | gs | GrailSort Fully In-Place | 14.704 | 208.3% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 20.504 | 329.9% | No |
 
 #### Reverse Ordered Uniques
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 1.070 | 0.0% | Yes |
-| 2 | **fb** | ForSort Basic Fully In-Place | 1.179 | 10.2% | Yes |
-| 3 | **fs** | ForSort Stable Fully In-Place | 1.265 | 18.2% | Yes |
-| 4 | wi | WikiSort Fully In-Place | 2.997 | 180.1% | Yes |
-| 5 | fw | ForSort With Allocated Workspace | 5.984 | 459.3% | Yes |
-| 6 | gs | GrailSort Fully In-Place | 6.245 | 483.6% | Yes |
-| 7 | fi | ForSort Unstable Fully In-Place | 7.191 | 572.1% | No |
-| 8 | is | Insertion Sort Fully In-Place | 9.000 | 741.1% | Yes |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 9.447 | 782.9% | No |
-| 10 | nq | Bentley/McIlroy Quick Sort In-Place | 11.498 | 974.6% | No |
+| 1 | **ti** | TimSort with Allocated Workspace | 1.095 | 0.0% | Yes |
+| 2 | **fb** | ForSort Basic Fully In-Place | 1.184 | 8.1% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 1.285 | 17.4% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 3.028 | 176.5% | Yes |
+| 5 | gs | GrailSort Fully In-Place | 6.456 | 489.6% | Yes |
+| 6 | fw | ForSort With Allocated Workspace | 7.587 | 592.9% | Yes |
+| 7 | fi | ForSort Unstable Fully In-Place | 8.509 | 677.1% | No |
+| 8 | is | Insertion Sort Fully In-Place | 8.855 | 708.7% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 9.613 | 777.9% | No |
+| 10 | nq | Bentley/McIlroy Quick Sort In-Place | 11.382 | 939.5% | No |
 
 ### 1000 Items
 
@@ -375,121 +375,121 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 16.575 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 20.640 | 24.5% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 23.668 | 42.8% | Yes |
-| 4 | wi | WikiSort Fully In-Place | 32.976 | 99.0% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 37.101 | 123.8% | No |
-| 6 | gs | GrailSort Fully In-Place | 38.028 | 129.4% | Yes |
-| 7 | ti | TimSort with Allocated Workspace | 43.668 | 163.5% | Yes |
-| 8 | fb | ForSort Basic Fully In-Place | 48.210 | 190.9% | Yes |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 48.706 | 193.9% | No |
-| 10 | is | Insertion Sort Fully In-Place | 49.297 | 197.4% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 17.205 | 0.0% | Yes |
+| 2 | **fb** | ForSort Basic Fully In-Place | 20.705 | 20.3% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 20.726 | 20.5% | No |
+| 4 | fs | ForSort Stable Fully In-Place | 23.534 | 36.8% | Yes |
+| 5 | wi | WikiSort Fully In-Place | 32.195 | 87.1% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 37.787 | 119.6% | No |
+| 7 | gs | GrailSort Fully In-Place | 38.399 | 123.2% | Yes |
+| 8 | ti | TimSort with Allocated Workspace | 43.660 | 153.8% | Yes |
+| 9 | is | Insertion Sort Fully In-Place | 48.386 | 181.2% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 48.791 | 183.6% | No |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 16.994 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 18.878 | 11.1% | No |
-| 3 | **wi** | WikiSort Fully In-Place | 19.080 | 12.3% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort In-Place | 20.806 | 22.4% | No |
-| 5 | fs | ForSort Stable Fully In-Place | 21.537 | 26.7% | Yes |
-| 6 | ti | TimSort with Allocated Workspace | 25.020 | 47.2% | Yes |
-| 7 | gs | GrailSort Fully In-Place | 25.690 | 51.2% | Yes |
-| 8 | is | Insertion Sort Fully In-Place | 26.692 | 57.1% | Yes |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 29.871 | 75.8% | No |
-| 10 | fb | ForSort Basic Fully In-Place | 30.995 | 82.4% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 17.121 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 18.969 | 10.8% | No |
+| 3 | **wi** | WikiSort Fully In-Place | 19.062 | 11.3% | Yes |
+| 4 | fb | ForSort Basic Fully In-Place | 20.238 | 18.2% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 21.299 | 24.4% | No |
+| 6 | fs | ForSort Stable Fully In-Place | 22.224 | 29.8% | Yes |
+| 7 | ti | TimSort with Allocated Workspace | 24.814 | 44.9% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 26.450 | 54.5% | Yes |
+| 9 | is | Insertion Sort Fully In-Place | 26.802 | 56.5% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 30.187 | 76.3% | No |
 
 #### 10 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 10.869 | 0.0% | Yes |
-| 2 | **wi** | WikiSort Fully In-Place | 11.522 | 6.0% | Yes |
-| 3 | **fs** | ForSort Stable Fully In-Place | 12.534 | 15.3% | Yes |
-| 4 | fi | ForSort Unstable Fully In-Place | 12.764 | 17.4% | No |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 13.101 | 20.5% | No |
-| 6 | ti | TimSort with Allocated Workspace | 13.102 | 20.5% | Yes |
-| 7 | is | Insertion Sort Fully In-Place | 14.772 | 35.9% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 15.115 | 39.1% | Yes |
-| 9 | fb | ForSort Basic Fully In-Place | 15.406 | 41.7% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 18.931 | 74.2% | No |
+| 1 | **fw** | ForSort With Allocated Workspace | 10.587 | 0.0% | Yes |
+| 2 | **wi** | WikiSort Fully In-Place | 11.688 | 10.4% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 12.286 | 16.0% | No |
+| 4 | fs | ForSort Stable Fully In-Place | 12.302 | 16.2% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 12.401 | 17.1% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 13.104 | 23.8% | No |
+| 7 | ti | TimSort with Allocated Workspace | 13.391 | 26.5% | Yes |
+| 8 | is | Insertion Sort Fully In-Place | 14.419 | 36.2% | Yes |
+| 9 | gs | GrailSort Fully In-Place | 15.360 | 45.1% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 19.448 | 83.7% | No |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 6.500 | 0.0% | Yes |
-| 2 | **wi** | WikiSort Fully In-Place | 7.597 | 16.9% | Yes |
-| 3 | **fs** | ForSort Stable Fully In-Place | 7.610 | 17.1% | Yes |
-| 4 | fi | ForSort Unstable Fully In-Place | 7.656 | 17.8% | No |
-| 5 | ti | TimSort with Allocated Workspace | 8.428 | 29.7% | Yes |
-| 6 | is | Insertion Sort Fully In-Place | 8.508 | 30.9% | Yes |
-| 7 | fb | ForSort Basic Fully In-Place | 9.057 | 39.3% | Yes |
-| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 11.054 | 70.1% | No |
-| 9 | gs | GrailSort Fully In-Place | 11.298 | 73.8% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 14.076 | 116.6% | No |
+| 1 | **fw** | ForSort With Allocated Workspace | 6.221 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 7.359 | 18.3% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 7.381 | 18.6% | No |
+| 4 | wi | WikiSort Fully In-Place | 7.618 | 22.5% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 7.808 | 25.5% | Yes |
+| 6 | is | Insertion Sort Fully In-Place | 8.433 | 35.6% | Yes |
+| 7 | ti | TimSort with Allocated Workspace | 8.731 | 40.3% | Yes |
+| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 11.045 | 77.5% | No |
+| 9 | gs | GrailSort Fully In-Place | 11.582 | 86.2% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 14.743 | 137.0% | No |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **is** | Insertion Sort Fully In-Place | 2.021 | 0.0% | Yes |
-| 2 | **fw** | ForSort With Allocated Workspace | 2.033 | 0.6% | Yes |
-| 3 | **fi** | ForSort Unstable Fully In-Place | 2.291 | 13.4% | No |
-| 4 | fb | ForSort Basic Fully In-Place | 2.946 | 45.8% | Yes |
-| 5 | fs | ForSort Stable Fully In-Place | 3.204 | 58.5% | Yes |
-| 6 | wi | WikiSort Fully In-Place | 3.320 | 64.3% | Yes |
-| 7 | ti | TimSort with Allocated Workspace | 3.599 | 78.1% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 8.503 | 320.7% | Yes |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 9.497 | 369.9% | No |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 9.920 | 390.8% | No |
+| 1 | **fw** | ForSort With Allocated Workspace | 1.838 | 0.0% | Yes |
+| 2 | **is** | Insertion Sort Fully In-Place | 1.998 | 8.7% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 2.193 | 19.3% | No |
+| 4 | fb | ForSort Basic Fully In-Place | 2.837 | 54.4% | Yes |
+| 5 | fs | ForSort Stable Fully In-Place | 3.173 | 72.6% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 3.416 | 85.9% | Yes |
+| 7 | ti | TimSort with Allocated Workspace | 3.707 | 101.7% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 8.409 | 357.5% | Yes |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 9.566 | 420.5% | No |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 10.224 | 456.3% | No |
 
 #### Fully Ordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.813 | 0.0% | Yes |
-| 2 | **is** | Insertion Sort Fully In-Place | 0.983 | 20.9% | Yes |
-| 3 | **fb** | ForSort Basic Fully In-Place | 0.993 | 22.1% | Yes |
-| 4 | fi | ForSort Unstable Fully In-Place | 1.174 | 44.4% | No |
-| 5 | fs | ForSort Stable Fully In-Place | 1.185 | 45.8% | Yes |
-| 6 | fw | ForSort With Allocated Workspace | 1.222 | 50.3% | Yes |
-| 7 | wi | WikiSort Fully In-Place | 2.542 | 212.7% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 7.649 | 840.8% | Yes |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 8.913 | 996.3% | No |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 9.300 | 1043.9% | No |
+| 1 | **ti** | TimSort with Allocated Workspace | 0.814 | 0.0% | Yes |
+| 2 | **is** | Insertion Sort Fully In-Place | 0.981 | 20.5% | Yes |
+| 3 | **fb** | ForSort Basic Fully In-Place | 0.994 | 22.1% | Yes |
+| 4 | fs | ForSort Stable Fully In-Place | 1.001 | 23.0% | Yes |
+| 5 | fw | ForSort With Allocated Workspace | 1.018 | 25.1% | Yes |
+| 6 | fi | ForSort Unstable Fully In-Place | 1.096 | 34.6% | No |
+| 7 | wi | WikiSort Fully In-Place | 2.582 | 217.2% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 7.663 | 841.4% | Yes |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 8.965 | 1001.4% | No |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 9.862 | 1111.5% | No |
 
 #### Reverse Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **wi** | WikiSort Fully In-Place | 7.754 | 0.0% | Yes |
-| 2 | **fw** | ForSort With Allocated Workspace | 8.221 | 6.0% | Yes |
-| 3 | **fi** | ForSort Unstable Fully In-Place | 9.452 | 21.9% | No |
-| 4 | ti | TimSort with Allocated Workspace | 9.705 | 25.2% | Yes |
-| 5 | fs | ForSort Stable Fully In-Place | 10.693 | 37.9% | Yes |
-| 6 | gs | GrailSort Fully In-Place | 13.550 | 74.7% | Yes |
-| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 16.412 | 111.7% | No |
-| 8 | fb | ForSort Basic Fully In-Place | 19.834 | 155.8% | Yes |
-| 9 | is | Insertion Sort Fully In-Place | 22.584 | 191.3% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 25.192 | 224.9% | No |
+| 1 | **fb** | ForSort Basic Fully In-Place | 4.128 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 5.593 | 35.5% | Yes |
+| 3 | **wi** | WikiSort Fully In-Place | 7.823 | 89.5% | Yes |
+| 4 | fw | ForSort With Allocated Workspace | 7.989 | 93.5% | Yes |
+| 5 | fi | ForSort Unstable Fully In-Place | 9.324 | 125.9% | No |
+| 6 | ti | TimSort with Allocated Workspace | 10.088 | 144.4% | Yes |
+| 7 | gs | GrailSort Fully In-Place | 13.343 | 223.2% | Yes |
+| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 16.564 | 301.3% | No |
+| 9 | is | Insertion Sort Fully In-Place | 22.737 | 450.8% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 25.349 | 514.1% | No |
 
 #### Reverse Ordered Uniques
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.948 | 0.0% | Yes |
-| 2 | **fb** | ForSort Basic Fully In-Place | 1.012 | 6.8% | Yes |
-| 3 | **fs** | ForSort Stable Fully In-Place | 1.050 | 10.8% | Yes |
-| 4 | wi | WikiSort Fully In-Place | 3.660 | 286.1% | Yes |
-| 5 | fi | ForSort Unstable Fully In-Place | 7.478 | 688.8% | No |
-| 6 | gs | GrailSort Fully In-Place | 7.651 | 707.1% | Yes |
-| 7 | fw | ForSort With Allocated Workspace | 7.762 | 718.8% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 11.702 | 1134.4% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 17.069 | 1700.5% | No |
-| 10 | is | Insertion Sort Fully In-Place | 22.736 | 2298.3% | Yes |
+| 1 | **ti** | TimSort with Allocated Workspace | 0.963 | 0.0% | Yes |
+| 2 | **fb** | ForSort Basic Fully In-Place | 1.015 | 5.4% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 1.083 | 12.5% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 3.504 | 263.9% | Yes |
+| 5 | fw | ForSort With Allocated Workspace | 7.046 | 631.7% | Yes |
+| 6 | fi | ForSort Unstable Fully In-Place | 7.324 | 660.5% | No |
+| 7 | gs | GrailSort Fully In-Place | 7.999 | 730.6% | Yes |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 11.837 | 1129.2% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 17.187 | 1684.7% | No |
+| 10 | is | Insertion Sort Fully In-Place | 22.005 | 2185.0% | Yes |
 
 ### 10000 Items
 
@@ -497,121 +497,121 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 18.473 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 22.800 | 23.4% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 23.849 | 29.1% | Yes |
-| 4 | gs | GrailSort Fully In-Place | 47.123 | 155.1% | Yes |
-| 5 | wi | WikiSort Fully In-Place | 50.223 | 171.9% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 50.375 | 172.7% | No |
-| 7 | ti | TimSort with Allocated Workspace | 59.498 | 222.1% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 64.757 | 250.5% | No |
-| 9 | fb | ForSort Basic Fully In-Place | 69.245 | 274.8% | Yes |
-| 10 | is | Insertion Sort Fully In-Place | 116.78 | 532.2% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 18.581 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 22.614 | 21.7% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 23.889 | 28.6% | Yes |
+| 4 | fb | ForSort Basic Fully In-Place | 27.549 | 48.3% | Yes |
+| 5 | gs | GrailSort Fully In-Place | 47.336 | 154.8% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 49.119 | 164.4% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 50.360 | 171.0% | No |
+| 8 | ti | TimSort with Allocated Workspace | 59.659 | 221.1% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 65.082 | 250.3% | No |
+| 10 | is | Insertion Sort Fully In-Place | 116.31 | 526.0% | Yes |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 20.938 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 22.563 | 7.8% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 24.315 | 16.1% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort In-Place | 28.878 | 37.9% | No |
-| 5 | wi | WikiSort Fully In-Place | 30.154 | 44.0% | Yes |
-| 6 | gs | GrailSort Fully In-Place | 33.611 | 60.5% | Yes |
-| 7 | ti | TimSort with Allocated Workspace | 35.369 | 68.9% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 39.898 | 90.6% | No |
-| 9 | is | Insertion Sort Fully In-Place | 40.955 | 95.6% | Yes |
-| 10 | fb | ForSort Basic Fully In-Place | 42.985 | 105.3% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 20.217 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 22.135 | 9.5% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 23.913 | 18.3% | Yes |
+| 4 | fb | ForSort Basic Fully In-Place | 26.854 | 32.8% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 29.651 | 46.7% | No |
+| 6 | wi | WikiSort Fully In-Place | 31.127 | 54.0% | Yes |
+| 7 | gs | GrailSort Fully In-Place | 35.278 | 74.5% | Yes |
+| 8 | ti | TimSort with Allocated Workspace | 35.380 | 75.0% | Yes |
+| 9 | is | Insertion Sort Fully In-Place | 40.064 | 98.2% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 40.383 | 99.7% | No |
 
 #### 10 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 15.480 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 16.967 | 9.6% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 17.419 | 12.5% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort In-Place | 18.599 | 20.1% | No |
-| 5 | wi | WikiSort Fully In-Place | 19.168 | 23.8% | Yes |
-| 6 | ti | TimSort with Allocated Workspace | 19.606 | 26.7% | Yes |
-| 7 | gs | GrailSort Fully In-Place | 23.314 | 50.6% | Yes |
-| 8 | fb | ForSort Basic Fully In-Place | 23.331 | 50.7% | Yes |
-| 9 | is | Insertion Sort Fully In-Place | 23.660 | 52.8% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 27.166 | 75.5% | No |
+| 1 | **fw** | ForSort With Allocated Workspace | 15.299 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 17.123 | 11.9% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 17.223 | 12.6% | Yes |
+| 4 | nq | Bentley/McIlroy Quick Sort In-Place | 19.098 | 24.8% | No |
+| 5 | fb | ForSort Basic Fully In-Place | 19.213 | 25.6% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 19.450 | 27.1% | Yes |
+| 7 | ti | TimSort with Allocated Workspace | 19.642 | 28.4% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 23.681 | 54.8% | Yes |
+| 9 | is | Insertion Sort Fully In-Place | 23.805 | 55.6% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 27.275 | 78.3% | No |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 11.611 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 12.815 | 10.4% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 12.983 | 11.8% | Yes |
-| 4 | ti | TimSort with Allocated Workspace | 13.225 | 13.9% | Yes |
-| 5 | wi | WikiSort Fully In-Place | 15.089 | 30.0% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 15.381 | 32.5% | No |
-| 7 | fb | ForSort Basic Fully In-Place | 15.805 | 36.1% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 18.286 | 57.5% | Yes |
-| 9 | is | Insertion Sort Fully In-Place | 19.788 | 70.4% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 22.131 | 90.6% | No |
+| 1 | **fw** | ForSort With Allocated Workspace | 11.614 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 12.934 | 11.4% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 13.182 | 13.5% | No |
+| 4 | ti | TimSort with Allocated Workspace | 13.208 | 13.7% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 14.004 | 20.6% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 15.814 | 36.2% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 15.832 | 36.3% | No |
+| 8 | gs | GrailSort Fully In-Place | 18.395 | 58.4% | Yes |
+| 9 | is | Insertion Sort Fully In-Place | 19.115 | 64.6% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 22.329 | 92.3% | No |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 4.226 | 0.0% | Yes |
-| 2 | **ti** | TimSort with Allocated Workspace | 4.479 | 6.0% | Yes |
-| 3 | **fi** | ForSort Unstable Fully In-Place | 4.723 | 11.8% | No |
-| 4 | fs | ForSort Stable Fully In-Place | 4.998 | 18.3% | Yes |
-| 5 | fb | ForSort Basic Fully In-Place | 5.831 | 38.0% | Yes |
-| 6 | wi | WikiSort Fully In-Place | 6.640 | 57.1% | Yes |
-| 7 | is | Insertion Sort Fully In-Place | 7.535 | 78.3% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 11.253 | 166.3% | Yes |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 12.445 | 194.5% | No |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 14.094 | 233.5% | No |
+| 1 | **fw** | ForSort With Allocated Workspace | 4.155 | 0.0% | Yes |
+| 2 | **ti** | TimSort with Allocated Workspace | 4.503 | 8.4% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 4.737 | 14.0% | No |
+| 4 | fs | ForSort Stable Fully In-Place | 5.033 | 21.1% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 5.396 | 29.9% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 6.671 | 60.6% | Yes |
+| 7 | is | Insertion Sort Fully In-Place | 7.297 | 75.6% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 11.327 | 172.6% | Yes |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 12.519 | 201.3% | No |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 14.618 | 251.8% | No |
 
 #### Fully Ordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.782 | 0.0% | Yes |
-| 2 | **fw** | ForSort With Allocated Workspace | 0.885 | 13.2% | Yes |
-| 3 | **fi** | ForSort Unstable Fully In-Place | 0.920 | 17.6% | No |
-| 4 | fb | ForSort Basic Fully In-Place | 0.970 | 24.0% | Yes |
-| 5 | is | Insertion Sort Fully In-Place | 0.976 | 24.8% | Yes |
-| 6 | fs | ForSort Stable Fully In-Place | 1.168 | 49.4% | Yes |
-| 7 | wi | WikiSort Fully In-Place | 2.531 | 223.7% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 9.282 | 1087.0% | Yes |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 11.614 | 1385.2% | No |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 11.758 | 1403.6% | No |
+| 1 | **ti** | TimSort with Allocated Workspace | 0.784 | 0.0% | Yes |
+| 2 | **fw** | ForSort With Allocated Workspace | 0.911 | 16.2% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 0.920 | 17.3% | No |
+| 4 | fb | ForSort Basic Fully In-Place | 0.962 | 22.7% | Yes |
+| 5 | is | Insertion Sort Fully In-Place | 0.967 | 23.3% | Yes |
+| 6 | fs | ForSort Stable Fully In-Place | 1.001 | 27.7% | Yes |
+| 7 | wi | WikiSort Fully In-Place | 2.629 | 235.3% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 9.083 | 1058.5% | Yes |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 11.730 | 1396.2% | No |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 12.010 | 1431.9% | No |
 
 #### Reverse Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **wi** | WikiSort Fully In-Place | 9.809 | 0.0% | Yes |
-| 2 | **ti** | TimSort with Allocated Workspace | 9.893 | 0.9% | Yes |
-| 3 | **fw** | ForSort With Allocated Workspace | 11.272 | 14.9% | Yes |
-| 4 | fi | ForSort Unstable Fully In-Place | 12.099 | 23.3% | No |
-| 5 | fs | ForSort Stable Fully In-Place | 12.100 | 23.4% | Yes |
-| 6 | gs | GrailSort Fully In-Place | 14.256 | 45.3% | Yes |
-| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 21.218 | 116.3% | No |
-| 8 | fb | ForSort Basic Fully In-Place | 21.683 | 121.1% | Yes |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 32.451 | 230.8% | No |
-| 10 | is | Insertion Sort Fully In-Place | 212.77 | 2069.2% | Yes |
+| 1 | **fb** | ForSort Basic Fully In-Place | 4.121 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 4.863 | 18.0% | Yes |
+| 3 | **ti** | TimSort with Allocated Workspace | 9.828 | 138.5% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 9.948 | 141.4% | Yes |
+| 5 | fw | ForSort With Allocated Workspace | 11.823 | 186.9% | Yes |
+| 6 | fi | ForSort Unstable Fully In-Place | 12.098 | 193.6% | No |
+| 7 | gs | GrailSort Fully In-Place | 14.196 | 244.5% | Yes |
+| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 21.386 | 419.0% | No |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 32.689 | 693.2% | No |
+| 10 | is | Insertion Sort Fully In-Place | 213.59 | 5083.0% | Yes |
 
 #### Reverse Ordered Uniques
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.912 | 0.0% | Yes |
-| 2 | **fb** | ForSort Basic Fully In-Place | 1.018 | 11.6% | Yes |
-| 3 | **fs** | ForSort Stable Fully In-Place | 1.052 | 15.4% | Yes |
-| 4 | wi | WikiSort Fully In-Place | 4.423 | 385.0% | Yes |
-| 5 | gs | GrailSort Fully In-Place | 9.412 | 932.0% | Yes |
-| 6 | fw | ForSort With Allocated Workspace | 10.411 | 1041.6% | Yes |
-| 7 | fi | ForSort Unstable Fully In-Place | 10.517 | 1053.2% | No |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 14.472 | 1486.8% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 22.470 | 2363.8% | No |
-| 10 | is | Insertion Sort Fully In-Place | 210.84 | 23019.0% | Yes |
+| 1 | **ti** | TimSort with Allocated Workspace | 0.910 | 0.0% | Yes |
+| 2 | **fb** | ForSort Basic Fully In-Place | 1.019 | 12.0% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 1.052 | 15.6% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 4.450 | 389.0% | Yes |
+| 5 | gs | GrailSort Fully In-Place | 9.519 | 946.0% | Yes |
+| 6 | fi | ForSort Unstable Fully In-Place | 10.501 | 1054.0% | No |
+| 7 | fw | ForSort With Allocated Workspace | 10.533 | 1057.5% | Yes |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 14.865 | 1533.5% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 22.776 | 2402.9% | No |
+| 10 | is | Insertion Sort Fully In-Place | 215.94 | 23630.2% | Yes |
 
 ### 100000 Items
 
@@ -619,121 +619,121 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 22.811 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 26.030 | 14.1% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 27.248 | 19.5% | Yes |
-| 4 | gs | GrailSort Fully In-Place | 54.088 | 137.1% | Yes |
-| 5 | wi | WikiSort Fully In-Place | 60.256 | 164.2% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 62.143 | 172.4% | No |
-| 7 | ti | TimSort with Allocated Workspace | 73.206 | 220.9% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 77.331 | 239.0% | No |
-| 9 | fb | ForSort Basic Fully In-Place | 86.789 | 280.5% | Yes |
-| 10 | is | Insertion Sort Fully In-Place | 962.84 | 4120.9% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 23.899 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 26.869 | 12.4% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 27.495 | 15.0% | Yes |
+| 4 | fb | ForSort Basic Fully In-Place | 47.933 | 100.6% | Yes |
+| 5 | gs | GrailSort Fully In-Place | 56.314 | 135.6% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 61.693 | 158.1% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 62.808 | 162.8% | No |
+| 8 | ti | TimSort with Allocated Workspace | 74.351 | 211.1% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 77.021 | 222.3% | No |
+| 10 | is | Insertion Sort Fully In-Place | 963.58 | 3931.9% | Yes |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 23.907 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 25.299 | 5.8% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 26.594 | 11.2% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort In-Place | 36.683 | 53.4% | No |
-| 5 | wi | WikiSort Fully In-Place | 38.629 | 61.6% | Yes |
-| 6 | gs | GrailSort Fully In-Place | 42.577 | 78.1% | Yes |
-| 7 | ti | TimSort with Allocated Workspace | 42.749 | 78.8% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 49.087 | 105.3% | No |
-| 9 | fb | ForSort Basic Fully In-Place | 54.169 | 126.6% | Yes |
-| 10 | is | Insertion Sort Fully In-Place | 128.61 | 438.0% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 24.044 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 25.048 | 4.2% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 26.420 | 9.9% | Yes |
+| 4 | fb | ForSort Basic Fully In-Place | 34.307 | 42.7% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 37.345 | 55.3% | No |
+| 6 | wi | WikiSort Fully In-Place | 38.757 | 61.2% | Yes |
+| 7 | gs | GrailSort Fully In-Place | 42.614 | 77.2% | Yes |
+| 8 | ti | TimSort with Allocated Workspace | 43.337 | 80.2% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 47.935 | 99.4% | No |
+| 10 | is | Insertion Sort Fully In-Place | 124.34 | 417.1% | Yes |
 
 #### 10 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 18.546 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 19.067 | 2.8% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 19.816 | 6.8% | Yes |
-| 4 | ti | TimSort with Allocated Workspace | 23.951 | 29.1% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 24.137 | 30.1% | No |
-| 6 | wi | WikiSort Fully In-Place | 25.338 | 36.6% | Yes |
-| 7 | fb | ForSort Basic Fully In-Place | 29.855 | 61.0% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 30.965 | 67.0% | Yes |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 32.441 | 74.9% | No |
-| 10 | is | Insertion Sort Fully In-Place | 37.755 | 103.6% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 18.443 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 19.147 | 3.8% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 19.628 | 6.4% | Yes |
+| 4 | fb | ForSort Basic Fully In-Place | 22.716 | 23.2% | Yes |
+| 5 | ti | TimSort with Allocated Workspace | 23.807 | 29.1% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 24.170 | 31.1% | No |
+| 7 | wi | WikiSort Fully In-Place | 26.390 | 43.1% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 30.942 | 67.8% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 32.641 | 77.0% | No |
+| 10 | is | Insertion Sort Fully In-Place | 37.969 | 105.9% | Yes |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 14.560 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 14.910 | 2.4% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 14.981 | 2.9% | Yes |
-| 4 | ti | TimSort with Allocated Workspace | 16.541 | 13.6% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 20.373 | 39.9% | No |
-| 6 | fb | ForSort Basic Fully In-Place | 20.450 | 40.5% | Yes |
-| 7 | wi | WikiSort Fully In-Place | 20.582 | 41.4% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 25.513 | 75.2% | Yes |
-| 9 | is | Insertion Sort Fully In-Place | 27.011 | 85.5% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 27.298 | 87.5% | No |
+| 1 | **fw** | ForSort With Allocated Workspace | 13.938 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 14.635 | 5.0% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 15.088 | 8.3% | Yes |
+| 4 | ti | TimSort with Allocated Workspace | 16.791 | 20.5% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 17.647 | 26.6% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 20.396 | 46.3% | No |
+| 7 | wi | WikiSort Fully In-Place | 20.908 | 50.0% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 25.539 | 83.2% | Yes |
+| 9 | is | Insertion Sort Fully In-Place | 27.018 | 93.8% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 27.682 | 98.6% | No |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 6.433 | 0.0% | Yes |
-| 2 | **fw** | ForSort With Allocated Workspace | 6.928 | 7.7% | Yes |
-| 3 | **fi** | ForSort Unstable Fully In-Place | 7.444 | 15.7% | No |
-| 4 | fs | ForSort Stable Fully In-Place | 7.662 | 19.1% | Yes |
-| 5 | fb | ForSort Basic Fully In-Place | 9.170 | 42.5% | Yes |
-| 6 | wi | WikiSort Fully In-Place | 12.954 | 101.4% | Yes |
-| 7 | gs | GrailSort Fully In-Place | 15.773 | 145.2% | Yes |
-| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 16.799 | 161.1% | No |
-| 9 | is | Insertion Sort Fully In-Place | 19.717 | 206.5% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 20.307 | 215.7% | No |
+| 1 | **ti** | TimSort with Allocated Workspace | 6.812 | 0.0% | Yes |
+| 2 | **fw** | ForSort With Allocated Workspace | 7.035 | 3.3% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 7.494 | 10.0% | No |
+| 4 | fs | ForSort Stable Fully In-Place | 7.516 | 10.3% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 9.391 | 37.9% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 12.984 | 90.6% | Yes |
+| 7 | gs | GrailSort Fully In-Place | 15.378 | 125.7% | Yes |
+| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 16.637 | 144.2% | No |
+| 9 | is | Insertion Sort Fully In-Place | 19.633 | 188.2% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 20.510 | 201.1% | No |
 
 #### Fully Ordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.779 | 0.0% | Yes |
-| 2 | **fb** | ForSort Basic Fully In-Place | 0.874 | 12.2% | Yes |
-| 3 | **is** | Insertion Sort Fully In-Place | 0.882 | 13.2% | Yes |
-| 4 | fw | ForSort With Allocated Workspace | 1.013 | 30.0% | Yes |
-| 5 | fi | ForSort Unstable Fully In-Place | 1.018 | 30.7% | No |
-| 6 | fs | ForSort Stable Fully In-Place | 1.165 | 49.6% | Yes |
-| 7 | wi | WikiSort Fully In-Place | 2.413 | 209.8% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 10.113 | 1198.2% | Yes |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 13.875 | 1681.1% | No |
-| 10 | nq | Bentley/McIlroy Quick Sort In-Place | 15.900 | 1941.1% | No |
+| 1 | **ti** | TimSort with Allocated Workspace | 0.781 | 0.0% | Yes |
+| 2 | **fw** | ForSort With Allocated Workspace | 0.858 | 9.9% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 0.863 | 10.5% | No |
+| 4 | fb | ForSort Basic Fully In-Place | 0.868 | 11.1% | Yes |
+| 5 | is | Insertion Sort Fully In-Place | 0.872 | 11.7% | Yes |
+| 6 | fs | ForSort Stable Fully In-Place | 0.969 | 24.1% | Yes |
+| 7 | wi | WikiSort Fully In-Place | 2.542 | 225.5% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 10.223 | 1209.0% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 14.053 | 1699.4% | No |
+| 10 | nq | Bentley/McIlroy Quick Sort In-Place | 16.007 | 1949.6% | No |
 
 #### Reverse Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 10.056 | 0.0% | Yes |
-| 2 | **wi** | WikiSort Fully In-Place | 11.335 | 12.7% | Yes |
-| 3 | **fw** | ForSort With Allocated Workspace | 14.312 | 42.3% | Yes |
-| 4 | fs | ForSort Stable Fully In-Place | 14.462 | 43.8% | Yes |
-| 5 | gs | GrailSort Fully In-Place | 15.023 | 49.4% | Yes |
-| 6 | fi | ForSort Unstable Fully In-Place | 15.276 | 51.9% | No |
-| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 21.834 | 117.1% | No |
-| 8 | fb | ForSort Basic Fully In-Place | 24.120 | 139.9% | Yes |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 37.197 | 269.9% | No |
-| 10 | is | Insertion Sort Fully In-Place | 2434.3 | 24107.3% | Yes |
+| 1 | **fb** | ForSort Basic Fully In-Place | 3.862 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 4.608 | 19.3% | Yes |
+| 3 | **ti** | TimSort with Allocated Workspace | 10.374 | 168.6% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 11.396 | 195.1% | Yes |
+| 5 | fw | ForSort With Allocated Workspace | 14.042 | 263.6% | Yes |
+| 6 | fi | ForSort Unstable Fully In-Place | 14.698 | 280.6% | No |
+| 7 | gs | GrailSort Fully In-Place | 14.876 | 285.2% | Yes |
+| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 22.214 | 475.2% | No |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 38.483 | 896.5% | No |
+| 10 | is | Insertion Sort Fully In-Place | 2403.4 | 62130.9% | Yes |
 
 #### Reverse Ordered Uniques
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.915 | 0.0% | Yes |
-| 2 | **fb** | ForSort Basic Fully In-Place | 1.041 | 13.8% | Yes |
-| 3 | **fs** | ForSort Stable Fully In-Place | 1.082 | 18.3% | Yes |
-| 4 | wi | WikiSort Fully In-Place | 5.033 | 450.1% | Yes |
-| 5 | gs | GrailSort Fully In-Place | 10.704 | 1069.8% | Yes |
-| 6 | fw | ForSort With Allocated Workspace | 13.559 | 1381.9% | Yes |
-| 7 | fi | ForSort Unstable Fully In-Place | 13.857 | 1414.4% | No |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 16.919 | 1749.1% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 21.707 | 2272.3% | No |
-| 10 | is | Insertion Sort Fully In-Place | 2356.1 | 257396.3% | Yes |
+| 1 | **ti** | TimSort with Allocated Workspace | 0.930 | 0.0% | Yes |
+| 2 | **fb** | ForSort Basic Fully In-Place | 1.013 | 8.9% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 1.101 | 18.4% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 5.017 | 439.5% | Yes |
+| 5 | gs | GrailSort Fully In-Place | 10.617 | 1041.6% | Yes |
+| 6 | fw | ForSort With Allocated Workspace | 12.876 | 1284.5% | Yes |
+| 7 | fi | ForSort Unstable Fully In-Place | 13.343 | 1334.7% | No |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 17.217 | 1751.3% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 21.643 | 2227.2% | No |
+| 10 | is | Insertion Sort Fully In-Place | 2432.2 | 261431.6% | Yes |
 
 ### 1000000 Items
 
@@ -741,121 +741,121 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 25.563 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 29.678 | 16.1% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 29.892 | 16.9% | Yes |
-| 4 | gs | GrailSort Fully In-Place | 63.430 | 148.1% | Yes |
-| 5 | wi | WikiSort Fully In-Place | 73.756 | 188.5% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 73.915 | 189.1% | No |
-| 7 | ti | TimSort with Allocated Workspace | 88.149 | 244.8% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 92.929 | 263.5% | No |
-| 9 | fb | ForSort Basic Fully In-Place | 105.49 | 312.7% | Yes |
-| 10 | is | Insertion Sort Fully In-Place | 13325.2 | 52027.0% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 26.034 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 29.729 | 14.2% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 30.142 | 15.8% | No |
+| 4 | gs | GrailSort Fully In-Place | 66.149 | 154.1% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 66.723 | 156.3% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 74.287 | 185.3% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 75.460 | 189.9% | No |
+| 8 | ti | TimSort with Allocated Workspace | 88.799 | 241.1% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 91.701 | 252.2% | No |
+| 10 | is | Insertion Sort Fully In-Place | 13204.3 | 50619.4% | Yes |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 26.357 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 27.527 | 4.4% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 28.737 | 9.0% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort In-Place | 44.802 | 70.0% | No |
-| 5 | wi | WikiSort Fully In-Place | 45.998 | 74.5% | Yes |
-| 6 | ti | TimSort with Allocated Workspace | 49.135 | 86.4% | Yes |
-| 7 | gs | GrailSort Fully In-Place | 50.730 | 92.5% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 57.422 | 117.9% | No |
-| 9 | fb | ForSort Basic Fully In-Place | 62.620 | 137.6% | Yes |
-| 10 | is | Insertion Sort Fully In-Place | 1255.5 | 4663.5% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 26.842 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 27.747 | 3.4% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 28.623 | 6.6% | Yes |
+| 4 | fb | ForSort Basic Fully In-Place | 44.140 | 64.4% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 45.769 | 70.5% | No |
+| 6 | wi | WikiSort Fully In-Place | 46.462 | 73.1% | Yes |
+| 7 | ti | TimSort with Allocated Workspace | 49.716 | 85.2% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 52.291 | 94.8% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 56.913 | 112.0% | No |
+| 10 | is | Insertion Sort Fully In-Place | 1235.1 | 4501.3% | Yes |
 
 #### 10 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 19.414 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 20.610 | 6.2% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 20.730 | 6.8% | Yes |
-| 4 | ti | TimSort with Allocated Workspace | 27.229 | 40.3% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 29.585 | 52.4% | No |
-| 6 | wi | WikiSort Fully In-Place | 30.790 | 58.6% | Yes |
-| 7 | fb | ForSort Basic Fully In-Place | 34.397 | 77.2% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 39.475 | 103.3% | Yes |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 40.056 | 106.3% | No |
-| 10 | is | Insertion Sort Fully In-Place | 190.29 | 880.2% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 19.800 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 20.588 | 4.0% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 21.396 | 8.1% | Yes |
+| 4 | fb | ForSort Basic Fully In-Place | 26.699 | 34.8% | Yes |
+| 5 | ti | TimSort with Allocated Workspace | 27.181 | 37.3% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 30.288 | 53.0% | No |
+| 7 | wi | WikiSort Fully In-Place | 31.772 | 60.5% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 39.438 | 99.2% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 39.573 | 99.9% | No |
+| 10 | is | Insertion Sort Fully In-Place | 189.93 | 859.2% | Yes |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 15.203 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 16.101 | 5.9% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 16.519 | 8.7% | Yes |
-| 4 | ti | TimSort with Allocated Workspace | 19.254 | 26.6% | Yes |
-| 5 | fb | ForSort Basic Fully In-Place | 24.102 | 58.5% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 25.045 | 64.7% | No |
-| 7 | wi | WikiSort Fully In-Place | 25.866 | 70.1% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 33.086 | 117.6% | No |
-| 9 | gs | GrailSort Fully In-Place | 34.272 | 125.4% | Yes |
-| 10 | is | Insertion Sort Fully In-Place | 70.275 | 362.2% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 15.296 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 16.130 | 5.5% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 16.207 | 6.0% | No |
+| 4 | ti | TimSort with Allocated Workspace | 19.857 | 29.8% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 19.910 | 30.2% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 25.078 | 64.0% | No |
+| 7 | wi | WikiSort Fully In-Place | 26.020 | 70.1% | Yes |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 33.858 | 121.4% | No |
+| 9 | gs | GrailSort Fully In-Place | 34.052 | 122.6% | Yes |
+| 10 | is | Insertion Sort Fully In-Place | 70.042 | 357.9% | Yes |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 8.197 | 0.0% | Yes |
-| 2 | **ti** | TimSort with Allocated Workspace | 8.430 | 2.8% | Yes |
-| 3 | **fi** | ForSort Unstable Fully In-Place | 8.474 | 3.4% | No |
-| 4 | fs | ForSort Stable Fully In-Place | 8.505 | 3.8% | Yes |
-| 5 | fb | ForSort Basic Fully In-Place | 11.539 | 40.8% | Yes |
-| 6 | wi | WikiSort Fully In-Place | 17.726 | 116.2% | Yes |
-| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 20.262 | 147.2% | No |
-| 8 | gs | GrailSort Fully In-Place | 24.292 | 196.4% | Yes |
-| 9 | is | Insertion Sort Fully In-Place | 25.683 | 213.3% | Yes |
-| 10 | gq | GLibc Quick Sort Fully In-Place | 26.187 | 219.5% | No |
+| 1 | **fw** | ForSort With Allocated Workspace | 8.153 | 0.0% | Yes |
+| 2 | **ti** | TimSort with Allocated Workspace | 8.545 | 4.8% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 8.655 | 6.2% | Yes |
+| 4 | fi | ForSort Unstable Fully In-Place | 8.716 | 6.9% | No |
+| 5 | fb | ForSort Basic Fully In-Place | 11.391 | 39.7% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 18.161 | 122.8% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 20.507 | 151.5% | No |
+| 8 | gs | GrailSort Fully In-Place | 24.112 | 195.7% | Yes |
+| 9 | is | Insertion Sort Fully In-Place | 25.455 | 212.2% | Yes |
+| 10 | gq | GLibc Quick Sort Fully In-Place | 26.404 | 223.9% | No |
 
 #### Fully Ordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.803 | 0.0% | Yes |
-| 2 | **fb** | ForSort Basic Fully In-Place | 0.834 | 3.9% | Yes |
-| 3 | **is** | Insertion Sort Fully In-Place | 0.836 | 4.1% | Yes |
-| 4 | fi | ForSort Unstable Fully In-Place | 1.070 | 33.3% | No |
-| 5 | fw | ForSort With Allocated Workspace | 1.148 | 43.0% | Yes |
-| 6 | fs | ForSort Stable Fully In-Place | 1.284 | 59.9% | Yes |
-| 7 | wi | WikiSort Fully In-Place | 2.558 | 218.6% | Yes |
-| 8 | gs | GrailSort Fully In-Place | 12.409 | 1445.3% | Yes |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 16.527 | 1958.2% | No |
-| 10 | nq | Bentley/McIlroy Quick Sort In-Place | 18.692 | 2227.8% | No |
+| 1 | **is** | Insertion Sort Fully In-Place | 0.830 | 0.0% | Yes |
+| 2 | **fb** | ForSort Basic Fully In-Place | 0.857 | 3.3% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 0.864 | 4.1% | No |
+| 4 | fw | ForSort With Allocated Workspace | 0.905 | 9.0% | Yes |
+| 5 | ti | TimSort with Allocated Workspace | 0.905 | 9.0% | Yes |
+| 6 | fs | ForSort Stable Fully In-Place | 1.020 | 22.9% | Yes |
+| 7 | wi | WikiSort Fully In-Place | 2.556 | 208.0% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 12.597 | 1417.7% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 17.413 | 1998.0% | No |
+| 10 | nq | Bentley/McIlroy Quick Sort In-Place | 18.654 | 2147.5% | No |
 
 #### Reverse Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 10.387 | 0.0% | Yes |
-| 2 | **wi** | WikiSort Fully In-Place | 12.197 | 17.4% | Yes |
-| 3 | **gs** | GrailSort Fully In-Place | 17.521 | 68.7% | Yes |
-| 4 | fs | ForSort Stable Fully In-Place | 18.486 | 78.0% | Yes |
-| 5 | fw | ForSort With Allocated Workspace | 18.687 | 79.9% | Yes |
-| 6 | fi | ForSort Unstable Fully In-Place | 19.629 | 89.0% | No |
-| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 25.920 | 149.5% | No |
-| 8 | fb | ForSort Basic Fully In-Place | 28.259 | 172.1% | Yes |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 37.408 | 260.1% | No |
-| 10 | is | Insertion Sort Fully In-Place | 31000.9 | 298358.4% | Yes |
+| 1 | **fb** | ForSort Basic Fully In-Place | 3.880 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 4.638 | 19.5% | Yes |
+| 3 | **ti** | TimSort with Allocated Workspace | 10.783 | 177.9% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 12.483 | 221.7% | Yes |
+| 5 | gs | GrailSort Fully In-Place | 17.068 | 339.9% | Yes |
+| 6 | fw | ForSort With Allocated Workspace | 18.370 | 373.5% | Yes |
+| 7 | fi | ForSort Unstable Fully In-Place | 18.901 | 387.1% | No |
+| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 26.376 | 579.8% | No |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 37.593 | 868.9% | No |
+| 10 | is | Insertion Sort Fully In-Place | 31225.9 | 804692.4% | Yes |
 
 #### Reverse Ordered Uniques
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.985 | 0.0% | Yes |
-| 2 | **fb** | ForSort Basic Fully In-Place | 1.072 | 8.8% | Yes |
-| 3 | **fs** | ForSort Stable Fully In-Place | 1.176 | 19.4% | Yes |
-| 4 | wi | WikiSort Fully In-Place | 5.995 | 508.6% | Yes |
-| 5 | gs | GrailSort Fully In-Place | 13.603 | 1281.0% | Yes |
-| 6 | fw | ForSort With Allocated Workspace | 18.062 | 1733.7% | Yes |
-| 7 | fi | ForSort Unstable Fully In-Place | 18.308 | 1758.7% | No |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 19.866 | 1916.9% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 26.443 | 2584.6% | No |
-| 10 | is | Insertion Sort Fully In-Place | 30667.4 | 3113339.2% | Yes |
+| 1 | **ti** | TimSort with Allocated Workspace | 1.030 | 0.0% | Yes |
+| 2 | **fb** | ForSort Basic Fully In-Place | 1.077 | 4.6% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 1.212 | 17.7% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 5.973 | 479.9% | Yes |
+| 5 | gs | GrailSort Fully In-Place | 13.242 | 1185.6% | Yes |
+| 6 | fw | ForSort With Allocated Workspace | 17.554 | 1604.3% | Yes |
+| 7 | fi | ForSort Unstable Fully In-Place | 18.087 | 1656.0% | No |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 19.770 | 1819.4% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 26.162 | 2440.0% | No |
+| 10 | is | Insertion Sort Fully In-Place | 31213.1 | 3030299.6% | Yes |
 
 ### 10000000 Items
 
@@ -863,113 +863,113 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 29.007 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 33.149 | 14.3% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 34.083 | 17.5% | Yes |
-| 4 | gs | GrailSort Fully In-Place | 75.376 | 159.9% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 86.332 | 197.6% | No |
-| 6 | wi | WikiSort Fully In-Place | 89.125 | 207.3% | Yes |
-| 7 | ti | TimSort with Allocated Workspace | 104.96 | 261.9% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 110.46 | 280.8% | No |
-| 9 | fb | ForSort Basic Fully In-Place | 124.58 | 329.5% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 29.048 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 33.502 | 15.3% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 34.348 | 18.2% | Yes |
+| 4 | gs | GrailSort Fully In-Place | 77.385 | 166.4% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 86.221 | 196.8% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 87.763 | 202.1% | No |
+| 7 | wi | WikiSort Fully In-Place | 91.485 | 214.9% | Yes |
+| 8 | ti | TimSort with Allocated Workspace | 104.66 | 260.3% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 109.74 | 277.8% | No |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 28.787 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 30.216 | 5.0% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 31.185 | 8.3% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort In-Place | 52.514 | 82.4% | No |
-| 5 | wi | WikiSort Fully In-Place | 55.754 | 93.7% | Yes |
-| 6 | ti | TimSort with Allocated Workspace | 58.794 | 104.2% | Yes |
-| 7 | gs | GrailSort Fully In-Place | 60.381 | 109.8% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 69.404 | 141.1% | No |
-| 9 | fb | ForSort Basic Fully In-Place | 72.494 | 151.8% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 28.213 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 29.672 | 5.2% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 31.673 | 12.3% | Yes |
+| 4 | fb | ForSort Basic Fully In-Place | 52.776 | 87.1% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 53.572 | 89.9% | No |
+| 6 | wi | WikiSort Fully In-Place | 56.127 | 98.9% | Yes |
+| 7 | ti | TimSort with Allocated Workspace | 58.523 | 107.4% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 61.010 | 116.2% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 69.370 | 145.9% | No |
 
 #### 10 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 21.241 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 22.242 | 4.7% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 22.797 | 7.3% | Yes |
-| 4 | ti | TimSort with Allocated Workspace | 30.722 | 44.6% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 34.811 | 63.9% | No |
-| 6 | wi | WikiSort Fully In-Place | 38.729 | 82.3% | Yes |
-| 7 | fb | ForSort Basic Fully In-Place | 40.316 | 89.8% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 47.670 | 124.4% | No |
-| 9 | gs | GrailSort Fully In-Place | 48.321 | 127.5% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 21.057 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 22.605 | 7.4% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 23.011 | 9.3% | No |
+| 4 | ti | TimSort with Allocated Workspace | 30.852 | 46.5% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 31.421 | 49.2% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 35.413 | 68.2% | No |
+| 7 | wi | WikiSort Fully In-Place | 40.152 | 90.7% | Yes |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 48.010 | 128.0% | No |
+| 9 | gs | GrailSort Fully In-Place | 49.257 | 133.9% | Yes |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 16.759 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 17.337 | 3.4% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 17.593 | 5.0% | Yes |
-| 4 | ti | TimSort with Allocated Workspace | 21.474 | 28.1% | Yes |
-| 5 | fb | ForSort Basic Fully In-Place | 27.915 | 66.6% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 29.581 | 76.5% | No |
-| 7 | wi | WikiSort Fully In-Place | 31.983 | 90.8% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 40.546 | 141.9% | No |
-| 9 | gs | GrailSort Fully In-Place | 43.034 | 156.8% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 16.468 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 17.418 | 5.8% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 17.679 | 7.4% | Yes |
+| 4 | ti | TimSort with Allocated Workspace | 22.151 | 34.5% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 23.511 | 42.8% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 29.830 | 81.1% | No |
+| 7 | wi | WikiSort Fully In-Place | 33.167 | 101.4% | Yes |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 41.128 | 149.7% | No |
+| 9 | gs | GrailSort Fully In-Place | 42.725 | 159.4% | Yes |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 9.061 | 0.0% | Yes |
-| 2 | **fw** | ForSort With Allocated Workspace | 9.319 | 2.8% | Yes |
-| 3 | **fi** | ForSort Unstable Fully In-Place | 9.486 | 4.7% | No |
-| 4 | fs | ForSort Stable Fully In-Place | 9.601 | 6.0% | Yes |
-| 5 | fb | ForSort Basic Fully In-Place | 13.271 | 46.5% | Yes |
-| 6 | wi | WikiSort Fully In-Place | 22.519 | 148.5% | Yes |
-| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 23.960 | 164.4% | No |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 32.300 | 256.5% | No |
-| 9 | gs | GrailSort Fully In-Place | 32.872 | 262.8% | Yes |
+| 1 | **ti** | TimSort with Allocated Workspace | 9.123 | 0.0% | Yes |
+| 2 | **fw** | ForSort With Allocated Workspace | 9.387 | 2.9% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 9.594 | 5.2% | Yes |
+| 4 | fi | ForSort Unstable Fully In-Place | 9.827 | 7.7% | No |
+| 5 | fb | ForSort Basic Fully In-Place | 12.616 | 38.3% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 22.738 | 149.2% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 23.608 | 158.8% | No |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 32.477 | 256.0% | No |
+| 9 | gs | GrailSort Fully In-Place | 32.870 | 260.3% | Yes |
 
 #### Fully Ordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.803 | 0.0% | Yes |
-| 2 | **fb** | ForSort Basic Fully In-Place | 0.806 | 0.4% | Yes |
-| 3 | **fw** | ForSort With Allocated Workspace | 0.896 | 11.6% | Yes |
-| 4 | fi | ForSort Unstable Fully In-Place | 0.902 | 12.3% | No |
-| 5 | fs | ForSort Stable Fully In-Place | 1.262 | 57.2% | Yes |
-| 6 | wi | WikiSort Fully In-Place | 2.005 | 149.7% | Yes |
-| 7 | gs | GrailSort Fully In-Place | 16.236 | 1921.9% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 19.960 | 2385.7% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 21.502 | 2577.7% | No |
+| 1 | **fb** | ForSort Basic Fully In-Place | 0.804 | 0.0% | Yes |
+| 2 | **ti** | TimSort with Allocated Workspace | 0.817 | 1.6% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 0.828 | 3.0% | Yes |
+| 4 | fi | ForSort Unstable Fully In-Place | 0.873 | 8.6% | No |
+| 5 | fw | ForSort With Allocated Workspace | 0.879 | 9.3% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 2.045 | 154.4% | Yes |
+| 7 | gs | GrailSort Fully In-Place | 16.105 | 1903.1% | Yes |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 20.494 | 2449.0% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 21.013 | 2513.6% | No |
 
 #### Reverse Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 12.322 | 0.0% | Yes |
-| 2 | **wi** | WikiSort Fully In-Place | 15.504 | 25.8% | Yes |
-| 3 | **gs** | GrailSort Fully In-Place | 20.103 | 63.1% | Yes |
-| 4 | fw | ForSort With Allocated Workspace | 22.613 | 83.5% | Yes |
-| 5 | fi | ForSort Unstable Fully In-Place | 24.238 | 96.7% | No |
-| 6 | fs | ForSort Stable Fully In-Place | 24.444 | 98.4% | Yes |
-| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 30.691 | 149.1% | No |
-| 8 | fb | ForSort Basic Fully In-Place | 32.767 | 165.9% | Yes |
-| 9 | gq | GLibc Quick Sort Fully In-Place | 43.196 | 250.6% | No |
+| 1 | **fb** | ForSort Basic Fully In-Place | 3.967 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 5.040 | 27.0% | Yes |
+| 3 | **ti** | TimSort with Allocated Workspace | 12.508 | 215.3% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 15.736 | 296.7% | Yes |
+| 5 | gs | GrailSort Fully In-Place | 19.754 | 398.0% | Yes |
+| 6 | fw | ForSort With Allocated Workspace | 22.690 | 472.0% | Yes |
+| 7 | fi | ForSort Unstable Fully In-Place | 24.328 | 513.3% | No |
+| 8 | nq | Bentley/McIlroy Quick Sort In-Place | 30.562 | 670.4% | No |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 42.882 | 981.0% | No |
 
 #### Reverse Ordered Uniques
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.951 | 0.0% | Yes |
-| 2 | **fb** | ForSort Basic Fully In-Place | 1.062 | 11.7% | Yes |
-| 3 | **fs** | ForSort Stable Fully In-Place | 1.213 | 27.5% | Yes |
-| 4 | wi | WikiSort Fully In-Place | 7.047 | 641.0% | Yes |
-| 5 | gs | GrailSort Fully In-Place | 16.296 | 1613.6% | Yes |
-| 6 | fw | ForSort With Allocated Workspace | 21.972 | 2210.4% | Yes |
-| 7 | fi | ForSort Unstable Fully In-Place | 23.894 | 2412.5% | No |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 24.920 | 2520.4% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 31.630 | 3226.0% | No |
+| 1 | **ti** | TimSort with Allocated Workspace | 0.975 | 0.0% | Yes |
+| 2 | **fb** | ForSort Basic Fully In-Place | 1.096 | 12.4% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 1.270 | 30.3% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 6.906 | 608.3% | Yes |
+| 5 | gs | GrailSort Fully In-Place | 15.678 | 1508.0% | Yes |
+| 6 | fw | ForSort With Allocated Workspace | 21.959 | 2152.2% | Yes |
+| 7 | fi | ForSort Unstable Fully In-Place | 23.531 | 2313.4% | No |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 25.100 | 2474.4% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 31.098 | 3089.5% | No |
 
 ### 100000000 Items
 
@@ -977,113 +977,113 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 36.316 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 39.335 | 8.3% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 42.307 | 16.5% | Yes |
-| 4 | gs | GrailSort Fully In-Place | 90.196 | 148.4% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 98.438 | 171.1% | No |
-| 6 | wi | WikiSort Fully In-Place | 104.92 | 188.9% | Yes |
-| 7 | ti | TimSort with Allocated Workspace | 120.74 | 232.5% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 127.09 | 250.0% | No |
-| 9 | fb | ForSort Basic Fully In-Place | 147.04 | 304.9% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 36.057 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 38.895 | 7.9% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 41.713 | 15.7% | Yes |
+| 4 | gs | GrailSort Fully In-Place | 91.972 | 155.1% | Yes |
+| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 100.08 | 177.6% | No |
+| 6 | wi | WikiSort Fully In-Place | 106.65 | 195.8% | Yes |
+| 7 | fb | ForSort Basic Fully In-Place | 107.08 | 197.0% | Yes |
+| 8 | ti | TimSort with Allocated Workspace | 121.17 | 236.1% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 126.32 | 250.3% | No |
 
 #### 25 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 34.307 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 34.592 | 0.8% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 36.421 | 6.2% | Yes |
-| 4 | nq | Bentley/McIlroy Quick Sort In-Place | 60.589 | 76.6% | No |
-| 5 | wi | WikiSort Fully In-Place | 64.624 | 88.4% | Yes |
-| 6 | ti | TimSort with Allocated Workspace | 67.324 | 96.2% | Yes |
-| 7 | gs | GrailSort Fully In-Place | 72.027 | 109.9% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 81.187 | 136.6% | No |
-| 9 | fb | ForSort Basic Fully In-Place | 83.668 | 143.9% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 33.764 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 33.879 | 0.3% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 35.437 | 5.0% | Yes |
+| 4 | nq | Bentley/McIlroy Quick Sort In-Place | 62.041 | 83.7% | No |
+| 5 | fb | ForSort Basic Fully In-Place | 64.186 | 90.1% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 67.054 | 98.6% | Yes |
+| 7 | ti | TimSort with Allocated Workspace | 67.205 | 99.0% | Yes |
+| 8 | gs | GrailSort Fully In-Place | 72.613 | 115.1% | Yes |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 81.218 | 140.5% | No |
 
 #### 10 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fw** | ForSort With Allocated Workspace | 25.569 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 25.609 | 0.2% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 26.656 | 4.3% | Yes |
-| 4 | ti | TimSort with Allocated Workspace | 35.490 | 38.8% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 40.307 | 57.6% | No |
-| 6 | wi | WikiSort Fully In-Place | 46.483 | 81.8% | Yes |
-| 7 | fb | ForSort Basic Fully In-Place | 46.928 | 83.5% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 57.400 | 124.5% | No |
-| 9 | gs | GrailSort Fully In-Place | 59.842 | 134.0% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 24.440 | 0.0% | Yes |
+| 2 | **fi** | ForSort Unstable Fully In-Place | 24.883 | 1.8% | No |
+| 3 | **fs** | ForSort Stable Fully In-Place | 25.408 | 4.0% | Yes |
+| 4 | ti | TimSort with Allocated Workspace | 35.891 | 46.9% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 37.978 | 55.4% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 40.334 | 65.0% | No |
+| 7 | wi | WikiSort Fully In-Place | 47.572 | 94.6% | Yes |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 57.707 | 136.1% | No |
+| 9 | gs | GrailSort Fully In-Place | 60.339 | 146.9% | Yes |
 
 #### 5 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **fi** | ForSort Unstable Fully In-Place | 20.276 | 0.0% | No |
-| 2 | **fw** | ForSort With Allocated Workspace | 20.535 | 1.3% | Yes |
-| 3 | **fs** | ForSort Stable Fully In-Place | 20.762 | 2.4% | Yes |
-| 4 | ti | TimSort with Allocated Workspace | 24.558 | 21.1% | Yes |
-| 5 | fb | ForSort Basic Fully In-Place | 32.537 | 60.5% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 34.280 | 69.1% | No |
-| 7 | wi | WikiSort Fully In-Place | 40.065 | 97.6% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 49.066 | 142.0% | No |
-| 9 | gs | GrailSort Fully In-Place | 54.319 | 167.9% | Yes |
+| 1 | **fw** | ForSort With Allocated Workspace | 18.834 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 19.565 | 3.9% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 19.591 | 4.0% | No |
+| 4 | ti | TimSort with Allocated Workspace | 24.532 | 30.3% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 27.693 | 47.0% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 34.459 | 83.0% | No |
+| 7 | wi | WikiSort Fully In-Place | 41.428 | 120.0% | Yes |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 49.466 | 162.6% | No |
+| 9 | gs | GrailSort Fully In-Place | 53.590 | 184.5% | Yes |
 
 #### 1 Percent Disordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 10.660 | 0.0% | Yes |
-| 2 | **fi** | ForSort Unstable Fully In-Place | 12.258 | 15.0% | No |
-| 3 | **fs** | ForSort Stable Fully In-Place | 12.655 | 18.7% | Yes |
-| 4 | fw | ForSort With Allocated Workspace | 12.877 | 20.8% | Yes |
-| 5 | fb | ForSort Basic Fully In-Place | 15.572 | 46.1% | Yes |
-| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 28.057 | 163.2% | No |
-| 7 | wi | WikiSort Fully In-Place | 29.706 | 178.7% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 39.397 | 269.6% | No |
-| 9 | gs | GrailSort Fully In-Place | 43.103 | 304.3% | Yes |
+| 1 | **ti** | TimSort with Allocated Workspace | 10.719 | 0.0% | Yes |
+| 2 | **fw** | ForSort With Allocated Workspace | 10.973 | 2.4% | Yes |
+| 3 | **fi** | ForSort Unstable Fully In-Place | 11.236 | 4.8% | No |
+| 4 | fs | ForSort Stable Fully In-Place | 11.486 | 7.2% | Yes |
+| 5 | fb | ForSort Basic Fully In-Place | 14.874 | 38.8% | Yes |
+| 6 | nq | Bentley/McIlroy Quick Sort In-Place | 27.495 | 156.5% | No |
+| 7 | wi | WikiSort Fully In-Place | 30.568 | 185.2% | Yes |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 39.783 | 271.1% | No |
+| 9 | gs | GrailSort Fully In-Place | 42.977 | 300.9% | Yes |
 
 #### Fully Ordered
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 0.779 | 0.0% | Yes |
-| 2 | **fb** | ForSort Basic Fully In-Place | 0.794 | 1.9% | Yes |
-| 3 | **fs** | ForSort Stable Fully In-Place | 1.190 | 52.8% | Yes |
-| 4 | fi | ForSort Unstable Fully In-Place | 1.431 | 83.7% | No |
-| 5 | fw | ForSort With Allocated Workspace | 1.935 | 148.4% | Yes |
-| 6 | wi | WikiSort Fully In-Place | 2.280 | 192.7% | Yes |
-| 7 | gs | GrailSort Fully In-Place | 22.032 | 2728.2% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 23.645 | 2935.3% | No |
-| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 25.844 | 3217.6% | No |
+| 1 | **fb** | ForSort Basic Fully In-Place | 0.791 | 0.0% | Yes |
+| 2 | **ti** | TimSort with Allocated Workspace | 0.791 | 0.0% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 0.806 | 1.9% | Yes |
+| 4 | fi | ForSort Unstable Fully In-Place | 0.920 | 16.3% | No |
+| 5 | fw | ForSort With Allocated Workspace | 0.945 | 19.5% | Yes |
+| 6 | wi | WikiSort Fully In-Place | 2.401 | 203.5% | Yes |
+| 7 | gs | GrailSort Fully In-Place | 22.063 | 2689.3% | Yes |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 24.308 | 2973.1% | No |
+| 9 | nq | Bentley/McIlroy Quick Sort In-Place | 24.515 | 2999.2% | No |
 
 #### Reverse Ordered Duplicates
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 16.200 | 0.0% | Yes |
-| 2 | **wi** | WikiSort Fully In-Place | 20.564 | 26.9% | Yes |
-| 3 | **gs** | GrailSort Fully In-Place | 27.204 | 67.9% | Yes |
-| 4 | fw | ForSort With Allocated Workspace | 30.781 | 90.0% | Yes |
-| 5 | nq | Bentley/McIlroy Quick Sort In-Place | 31.675 | 95.5% | No |
-| 6 | fi | ForSort Unstable Fully In-Place | 34.478 | 112.8% | No |
-| 7 | fs | ForSort Stable Fully In-Place | 35.912 | 121.7% | Yes |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 49.997 | 208.6% | No |
-| 9 | fb | ForSort Basic Fully In-Place | 53.605 | 230.9% | Yes |
+| 1 | **fb** | ForSort Basic Fully In-Place | 4.074 | 0.0% | Yes |
+| 2 | **fs** | ForSort Stable Fully In-Place | 6.182 | 51.7% | Yes |
+| 3 | **ti** | TimSort with Allocated Workspace | 16.397 | 302.5% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 21.152 | 419.2% | Yes |
+| 5 | gs | GrailSort Fully In-Place | 26.726 | 556.0% | Yes |
+| 6 | fw | ForSort With Allocated Workspace | 28.257 | 593.6% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 31.040 | 661.9% | No |
+| 8 | fi | ForSort Unstable Fully In-Place | 33.507 | 722.5% | No |
+| 9 | gq | GLibc Quick Sort Fully In-Place | 50.385 | 1136.7% | No |
 
 #### Reverse Ordered Uniques
 
 | Rank | Sort Type | Name | ns/item | vs Best (%) | Stable? |
 |------|-----------|------|---------|-------------|---------|
-| 1 | **ti** | TimSort with Allocated Workspace | 1.048 | 0.0% | Yes |
-| 2 | **fb** | ForSort Basic Fully In-Place | 1.238 | 18.1% | Yes |
-| 3 | **fs** | ForSort Stable Fully In-Place | 1.564 | 49.2% | Yes |
-| 4 | wi | WikiSort Fully In-Place | 12.590 | 1101.3% | Yes |
-| 5 | gs | GrailSort Fully In-Place | 22.748 | 2070.6% | Yes |
-| 6 | fw | ForSort With Allocated Workspace | 30.327 | 2793.8% | Yes |
-| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 30.852 | 2843.9% | No |
-| 8 | gq | GLibc Quick Sort Fully In-Place | 31.454 | 2901.3% | No |
-| 9 | fi | ForSort Unstable Fully In-Place | 33.934 | 3138.0% | No |
+| 1 | **ti** | TimSort with Allocated Workspace | 1.056 | 0.0% | Yes |
+| 2 | **fb** | ForSort Basic Fully In-Place | 1.237 | 17.1% | Yes |
+| 3 | **fs** | ForSort Stable Fully In-Place | 1.576 | 49.2% | Yes |
+| 4 | wi | WikiSort Fully In-Place | 12.612 | 1094.3% | Yes |
+| 5 | gs | GrailSort Fully In-Place | 22.880 | 2066.7% | Yes |
+| 6 | fw | ForSort With Allocated Workspace | 27.392 | 2493.9% | Yes |
+| 7 | nq | Bentley/McIlroy Quick Sort In-Place | 29.682 | 2710.8% | No |
+| 8 | gq | GLibc Quick Sort Fully In-Place | 31.903 | 2921.1% | No |
+| 9 | fi | ForSort Unstable Fully In-Place | 33.459 | 3068.5% | No |
 
 
 ## Detailed Results by Dataset Size
@@ -1094,121 +1094,121 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.000001561** | 670 | **15.613** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.000001805** | 704 | **18.049** | Yes | 2 |
-| wi | WikiSort Fully In-Place | **0.000002146** | 617 | **21.458** | Yes | 3 |
-| fs | ForSort Stable Fully In-Place | 0.000002302 | 868 | 23.018 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000002451 | 645 | 24.508 | Yes | 5 |
-| is | Insertion Sort Fully In-Place | 0.000002748 | 737 | 27.480 | Yes | 6 |
-| ti | TimSort with Allocated Workspace | 0.000002764 | 537 | 27.642 | Yes | 7 |
-| fb | ForSort Basic Fully In-Place | 0.000002956 | 917 | 29.557 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 0.000002964 | 737 | 29.642 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000003252 | 540 | 32.521 | Yes | 10 |
+| fb | ForSort Basic Fully In-Place | **0.000001541** | 758 | **15.409** | Yes | 1 |
+| fw | ForSort With Allocated Workspace | **0.000001942** | 691 | **19.417** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.000002150** | 857 | **21.498** | Yes | 3 |
+| fi | ForSort Unstable Fully In-Place | 0.000002154 | 721 | 21.540 | Yes | 4 |
+| wi | WikiSort Fully In-Place | 0.000002189 | 617 | 21.894 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000002539 | 645 | 25.394 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 0.000002758 | 537 | 27.581 | Yes | 7 |
+| is | Insertion Sort Fully In-Place | 0.000002764 | 737 | 27.644 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 0.000003055 | 737 | 30.553 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000003239 | 540 | 32.389 | Yes | 10 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.000001017** | 423 | **10.167** | Yes | 1 |
-| wi | WikiSort Fully In-Place | **0.000001096** | 483 | **10.962** | Yes | 2 |
-| fi | ForSort Unstable Fully In-Place | **0.000001114** | 441 | **11.137** | Yes | 3 |
-| is | Insertion Sort Fully In-Place | 0.000001203 | 579 | 12.031 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000001341 | 568 | 13.411 | Yes | 5 |
-| ti | TimSort with Allocated Workspace | 0.000001364 | 399 | 13.644 | Yes | 6 |
-| fs | ForSort Stable Fully In-Place | 0.000001488 | 554 | 14.877 | Yes | 7 |
-| fb | ForSort Basic Fully In-Place | 0.000001555 | 508 | 15.554 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 0.000001591 | 538 | 15.914 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000001815 | 421 | 18.149 | Yes | 10 |
+| wi | WikiSort Fully In-Place | **0.000001148** | 483 | **11.481** | Yes | 1 |
+| fb | ForSort Basic Fully In-Place | **0.000001181** | 502 | **11.809** | Yes | 2 |
+| is | Insertion Sort Fully In-Place | **0.000001197** | 579 | **11.966** | Yes | 3 |
+| fw | ForSort With Allocated Workspace | 0.000001203 | 408 | 12.030 | Yes | 4 |
+| fi | ForSort Unstable Fully In-Place | 0.000001260 | 424 | 12.600 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000001331 | 568 | 13.305 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 0.000001400 | 399 | 14.001 | Yes | 7 |
+| fs | ForSort Stable Fully In-Place | 0.000001426 | 548 | 14.260 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 0.000001644 | 538 | 16.443 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000001817 | 421 | 18.173 | Yes | 10 |
 
 #### 10 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| is | Insertion Sort Fully In-Place | **0.000000462** | 269 | **4.622** | Yes | 1 |
-| fw | ForSort With Allocated Workspace | **0.000000482** | 216 | **4.822** | Yes | 2 |
-| fi | ForSort Unstable Fully In-Place | **0.000000519** | 220 | **5.193** | Yes | 3 |
-| wi | WikiSort Fully In-Place | 0.000000538 | 307 | 5.382 | Yes | 4 |
-| fb | ForSort Basic Fully In-Place | 0.000000576 | 278 | 5.759 | Yes | 5 |
-| fs | ForSort Stable Fully In-Place | 0.000000675 | 307 | 6.746 | Yes | 6 |
-| ti | TimSort with Allocated Workspace | 0.000000685 | 302 | 6.848 | Yes | 7 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000000858 | 537 | 8.576 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 0.000000950 | 428 | 9.497 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000001019 | 341 | 10.187 | Yes | 10 |
+| is | Insertion Sort Fully In-Place | **0.000000468** | 269 | **4.684** | Yes | 1 |
+| fw | ForSort With Allocated Workspace | **0.000000471** | 206 | **4.709** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.000000481** | 207 | **4.809** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.000000549 | 307 | 5.495 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.000000571 | 282 | 5.707 | Yes | 5 |
+| fs | ForSort Stable Fully In-Place | 0.000000648 | 300 | 6.481 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 0.000000706 | 302 | 7.057 | Yes | 7 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000000852 | 537 | 8.525 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 0.000000966 | 428 | 9.662 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000001042 | 341 | 10.422 | Yes | 10 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| is | Insertion Sort Fully In-Place | **0.000000273** | 169 | **2.733** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.000000324** | 159 | **3.243** | Yes | 2 |
-| fw | ForSort With Allocated Workspace | **0.000000333** | 163 | **3.332** | Yes | 3 |
-| fb | ForSort Basic Fully In-Place | 0.000000341 | 217 | 3.413 | Yes | 4 |
-| wi | WikiSort Fully In-Place | 0.000000365 | 258 | 3.654 | Yes | 5 |
-| fs | ForSort Stable Fully In-Place | 0.000000421 | 241 | 4.210 | Yes | 6 |
-| ti | TimSort with Allocated Workspace | 0.000000480 | 248 | 4.798 | Yes | 7 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000000730 | 531 | 7.303 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 0.000000780 | 400 | 7.797 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000000809 | 325 | 8.091 | Yes | 10 |
+| is | Insertion Sort Fully In-Place | **0.000000266** | 169 | **2.660** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.000000296** | 154 | **2.960** | Yes | 2 |
+| fw | ForSort With Allocated Workspace | **0.000000305** | 158 | **3.047** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.000000352 | 224 | 3.518 | Yes | 4 |
+| wi | WikiSort Fully In-Place | 0.000000370 | 258 | 3.704 | Yes | 5 |
+| fs | ForSort Stable Fully In-Place | 0.000000404 | 237 | 4.043 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 0.000000514 | 248 | 5.137 | Yes | 7 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000000733 | 531 | 7.330 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 0.000000800 | 400 | 8.004 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000000834 | 325 | 8.336 | Yes | 10 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| is | Insertion Sort Fully In-Place | **0.000000138** | 111 | **1.379** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.000000210** | 127 | **2.103** | Yes | 2 |
-| fb | ForSort Basic Fully In-Place | **0.000000222** | 184 | **2.221** | Yes | 3 |
-| ti | TimSort with Allocated Workspace | 0.000000228 | 151 | 2.279 | Yes | 4 |
-| fw | ForSort With Allocated Workspace | 0.000000233 | 133 | 2.334 | Yes | 5 |
-| wi | WikiSort Fully In-Place | 0.000000250 | 233 | 2.499 | Yes | 6 |
-| fs | ForSort Stable Fully In-Place | 0.000000286 | 205 | 2.855 | Yes | 7 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000000631 | 523 | 6.305 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 0.000000655 | 386 | 6.549 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000000693 | 317 | 6.930 | Yes | 10 |
+| is | Insertion Sort Fully In-Place | **0.000000137** | 111 | **1.371** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.000000187** | 126 | **1.874** | Yes | 2 |
+| fw | ForSort With Allocated Workspace | **0.000000198** | 132 | **1.985** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.000000222 | 186 | 2.216 | Yes | 4 |
+| ti | TimSort with Allocated Workspace | 0.000000243 | 151 | 2.430 | Yes | 5 |
+| fs | ForSort Stable Fully In-Place | 0.000000254 | 201 | 2.537 | Yes | 6 |
+| wi | WikiSort Fully In-Place | 0.000000259 | 233 | 2.587 | Yes | 7 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000000631 | 523 | 6.313 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 0.000000673 | 386 | 6.729 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000000705 | 317 | 7.046 | Yes | 10 |
 
 #### Fully Ordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.000000095** | 99 | **0.951** | Yes | 1 |
-| is | Insertion Sort Fully In-Place | **0.000000108** | 99 | **1.084** | Yes | 2 |
-| fb | ForSort Basic Fully In-Place | **0.000000113** | 99 | **1.132** | Yes | 3 |
-| fs | ForSort Stable Fully In-Place | 0.000000128 | 99 | 1.283 | Yes | 4 |
-| fi | ForSort Unstable Fully In-Place | 0.000000182 | 121 | 1.823 | Yes | 5 |
-| fw | ForSort With Allocated Workspace | 0.000000209 | 128 | 2.089 | Yes | 6 |
-| wi | WikiSort Fully In-Place | 0.000000224 | 228 | 2.240 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.000000596 | 384 | 5.960 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000000605 | 520 | 6.048 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000000671 | 316 | 6.707 | Yes | 10 |
+| ti | TimSort with Allocated Workspace | **0.000000096** | 99 | **0.964** | Yes | 1 |
+| is | Insertion Sort Fully In-Place | **0.000000108** | 99 | **1.080** | Yes | 2 |
+| fb | ForSort Basic Fully In-Place | **0.000000110** | 99 | **1.104** | Yes | 3 |
+| fs | ForSort Stable Fully In-Place | 0.000000111 | 99 | 1.115 | Yes | 4 |
+| fi | ForSort Unstable Fully In-Place | 0.000000165 | 121 | 1.651 | Yes | 5 |
+| fw | ForSort With Allocated Workspace | 0.000000176 | 128 | 1.763 | Yes | 6 |
+| wi | WikiSort Fully In-Place | 0.000000230 | 228 | 2.301 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.000000605 | 384 | 6.053 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000000617 | 520 | 6.171 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000000678 | 316 | 6.781 | Yes | 10 |
 
 #### Reverse Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| wi | WikiSort Fully In-Place | **0.000000729** | 365 | **7.287** | Yes | 1 |
-| fw | ForSort With Allocated Workspace | **0.000000736** | 431 | **7.361** | Yes | 2 |
-| fi | ForSort Unstable Fully In-Place | **0.000000904** | 492 | **9.041** | Yes | 3 |
-| ti | TimSort with Allocated Workspace | 0.000000941 | 419 | 9.405 | Yes | 4 |
-| is | Insertion Sort Fully In-Place | 0.000001043 | 780 | 10.434 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000001165 | 780 | 11.645 | No | 6 |
-| gs | GrailSort Fully In-Place | 0.000001500 | 520 | 15.004 | Yes | 7 |
-| fs | ForSort Stable Fully In-Place | 0.000001513 | 683 | 15.127 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 0.000001748 | 786 | 17.477 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000002021 | 369 | 20.211 | Yes | 10 |
+| fb | ForSort Basic Fully In-Place | **0.000000477** | 190 | **4.769** | Yes | 1 |
+| wi | WikiSort Fully In-Place | **0.000000717** | 365 | **7.166** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.000000874** | 340 | **8.745** | Yes | 3 |
+| ti | TimSort with Allocated Workspace | 0.000000984 | 419 | 9.843 | Yes | 4 |
+| is | Insertion Sort Fully In-Place | 0.000001039 | 780 | 10.394 | Yes | 5 |
+| fw | ForSort With Allocated Workspace | 0.000001080 | 615 | 10.804 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000001177 | 780 | 11.770 | No | 7 |
+| fi | ForSort Unstable Fully In-Place | 0.000001183 | 641 | 11.825 | No | 8 |
+| gs | GrailSort Fully In-Place | 0.000001470 | 520 | 14.704 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000002050 | 369 | 20.504 | Yes | 10 |
 
 #### Reverse Ordered Uniques
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.000000107** | 99 | **1.070** | Yes | 1 |
-| fb | ForSort Basic Fully In-Place | **0.000000118** | 99 | **1.179** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.000000126** | 99 | **1.265** | Yes | 3 |
-| wi | WikiSort Fully In-Place | 0.000000300 | 271 | 2.997 | Yes | 4 |
-| fw | ForSort With Allocated Workspace | 0.000000598 | 421 | 5.984 | Yes | 5 |
-| gs | GrailSort Fully In-Place | 0.000000625 | 400 | 6.245 | Yes | 6 |
-| fi | ForSort Unstable Fully In-Place | 0.000000719 | 498 | 7.191 | Yes | 7 |
-| is | Insertion Sort Fully In-Place | 0.000000900 | 782 | 9.000 | Yes | 8 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000000945 | 356 | 9.447 | Yes | 9 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000001150 | 953 | 11.498 | Yes | 10 |
+| ti | TimSort with Allocated Workspace | **0.000000110** | 99 | **1.095** | Yes | 1 |
+| fb | ForSort Basic Fully In-Place | **0.000000118** | 99 | **1.184** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.000000128** | 99 | **1.285** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.000000303 | 271 | 3.028 | Yes | 4 |
+| gs | GrailSort Fully In-Place | 0.000000646 | 400 | 6.456 | Yes | 5 |
+| fw | ForSort With Allocated Workspace | 0.000000759 | 621 | 7.587 | Yes | 6 |
+| fi | ForSort Unstable Fully In-Place | 0.000000851 | 658 | 8.509 | Yes | 7 |
+| is | Insertion Sort Fully In-Place | 0.000000886 | 782 | 8.855 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000000961 | 356 | 9.613 | Yes | 9 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000001138 | 953 | 11.382 | Yes | 10 |
 
 ### 1000 Items
 
@@ -1216,121 +1216,121 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.000016575** | 9575 | **16.575** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.000020640** | 10218 | **20.640** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.000023668** | 10464 | **23.668** | Yes | 3 |
-| wi | WikiSort Fully In-Place | 0.000032976 | 9510 | 32.976 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000037101 | 10085 | 37.101 | Yes | 5 |
-| gs | GrailSort Fully In-Place | 0.000038028 | 10506 | 38.028 | Yes | 6 |
-| ti | TimSort with Allocated Workspace | 0.000043668 | 8680 | 43.668 | Yes | 7 |
-| fb | ForSort Basic Fully In-Place | 0.000048210 | 15120 | 48.210 | Yes | 8 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000048706 | 8703 | 48.706 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.000049297 | 10912 | 49.297 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.000017205** | 9624 | **17.205** | Yes | 1 |
+| fb | ForSort Basic Fully In-Place | **0.000020705** | 10939 | **20.705** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.000020726** | 10249 | **20.726** | Yes | 3 |
+| fs | ForSort Stable Fully In-Place | 0.000023534 | 10447 | 23.534 | Yes | 4 |
+| wi | WikiSort Fully In-Place | 0.000032195 | 9510 | 32.195 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000037787 | 10085 | 37.787 | Yes | 6 |
+| gs | GrailSort Fully In-Place | 0.000038399 | 10506 | 38.399 | Yes | 7 |
+| ti | TimSort with Allocated Workspace | 0.000043660 | 8680 | 43.660 | Yes | 8 |
+| is | Insertion Sort Fully In-Place | 0.000048386 | 10912 | 48.386 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000048791 | 8703 | 48.791 | Yes | 10 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.000016994** | 7392 | **16.994** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.000018878** | 7689 | **18.878** | Yes | 2 |
-| wi | WikiSort Fully In-Place | **0.000019080** | 8748 | **19.080** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000020806 | 9187 | 20.806 | Yes | 4 |
-| fs | ForSort Stable Fully In-Place | 0.000021537 | 8173 | 21.537 | Yes | 5 |
-| ti | TimSort with Allocated Workspace | 0.000025020 | 7036 | 25.020 | Yes | 6 |
-| gs | GrailSort Fully In-Place | 0.000025690 | 9002 | 25.690 | Yes | 7 |
-| is | Insertion Sort Fully In-Place | 0.000026692 | 10649 | 26.692 | Yes | 8 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000029871 | 7947 | 29.871 | Yes | 9 |
-| fb | ForSort Basic Fully In-Place | 0.000030995 | 9141 | 30.995 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.000017121** | 7393 | **17.121** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.000018969** | 7675 | **18.969** | Yes | 2 |
+| wi | WikiSort Fully In-Place | **0.000019062** | 8748 | **19.062** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.000020238 | 8616 | 20.238 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000021299 | 9187 | 21.299 | Yes | 5 |
+| fs | ForSort Stable Fully In-Place | 0.000022224 | 8187 | 22.224 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 0.000024814 | 7036 | 24.814 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.000026450 | 9002 | 26.450 | Yes | 8 |
+| is | Insertion Sort Fully In-Place | 0.000026802 | 10649 | 26.802 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000030187 | 7947 | 30.187 | Yes | 10 |
 
 #### 10 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.000010869** | 4437 | **10.869** | Yes | 1 |
-| wi | WikiSort Fully In-Place | **0.000011522** | 7000 | **11.522** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.000012534** | 5039 | **12.534** | Yes | 3 |
-| fi | ForSort Unstable Fully In-Place | 0.000012764 | 4835 | 12.764 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000013101 | 8522 | 13.101 | Yes | 5 |
-| ti | TimSort with Allocated Workspace | 0.000013102 | 4668 | 13.102 | Yes | 6 |
-| is | Insertion Sort Fully In-Place | 0.000014772 | 9777 | 14.772 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.000015115 | 6633 | 15.115 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 0.000015406 | 5767 | 15.406 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000018931 | 6438 | 18.931 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.000010587** | 4425 | **10.587** | Yes | 1 |
+| wi | WikiSort Fully In-Place | **0.000011688** | 7000 | **11.688** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.000012286** | 4766 | **12.286** | Yes | 3 |
+| fs | ForSort Stable Fully In-Place | 0.000012302 | 5044 | 12.302 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.000012401 | 5488 | 12.401 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000013104 | 8522 | 13.104 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 0.000013391 | 4668 | 13.391 | Yes | 7 |
+| is | Insertion Sort Fully In-Place | 0.000014419 | 9778 | 14.419 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 0.000015360 | 6633 | 15.360 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000019448 | 6438 | 19.448 | Yes | 10 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.000006500** | 2843 | **6.500** | Yes | 1 |
-| wi | WikiSort Fully In-Place | **0.000007597** | 5001 | **7.597** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.000007610** | 3431 | **7.610** | Yes | 3 |
-| fi | ForSort Unstable Fully In-Place | 0.000007656 | 3137 | 7.656 | Yes | 4 |
-| ti | TimSort with Allocated Workspace | 0.000008428 | 3567 | 8.428 | Yes | 5 |
-| is | Insertion Sort Fully In-Place | 0.000008508 | 6333 | 8.508 | Yes | 6 |
-| fb | ForSort Basic Fully In-Place | 0.000009057 | 4094 | 9.057 | Yes | 7 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000011054 | 8358 | 11.054 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 0.000011298 | 5504 | 11.298 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000014076 | 5560 | 14.076 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.000006221** | 2827 | **6.221** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **0.000007359** | 3442 | **7.359** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.000007381** | 3090 | **7.381** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.000007618 | 5001 | 7.618 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.000007808 | 3818 | 7.808 | Yes | 5 |
+| is | Insertion Sort Fully In-Place | 0.000008433 | 6333 | 8.433 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 0.000008731 | 3567 | 8.731 | Yes | 7 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000011045 | 8358 | 11.045 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 0.000011582 | 5504 | 11.582 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000014743 | 5560 | 14.743 | Yes | 10 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| is | Insertion Sort Fully In-Place | **0.000002021** | 1620 | **2.021** | Yes | 1 |
-| fw | ForSort With Allocated Workspace | **0.000002033** | 1255 | **2.033** | Yes | 2 |
-| fi | ForSort Unstable Fully In-Place | **0.000002291** | 1344 | **2.291** | Yes | 3 |
-| fb | ForSort Basic Fully In-Place | 0.000002946 | 2203 | 2.946 | Yes | 4 |
-| fs | ForSort Stable Fully In-Place | 0.000003204 | 2189 | 3.204 | Yes | 5 |
-| wi | WikiSort Fully In-Place | 0.000003320 | 2798 | 3.320 | Yes | 6 |
-| ti | TimSort with Allocated Workspace | 0.000003599 | 2045 | 3.599 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.000008503 | 4877 | 8.503 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000009497 | 8249 | 9.497 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000009920 | 4983 | 9.920 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.000001838** | 1252 | **1.838** | Yes | 1 |
+| is | Insertion Sort Fully In-Place | **0.000001998** | 1620 | **1.998** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.000002193** | 1328 | **2.193** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.000002837 | 2209 | 2.837 | Yes | 4 |
+| fs | ForSort Stable Fully In-Place | 0.000003173 | 2202 | 3.173 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.000003416 | 2798 | 3.416 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 0.000003707 | 2045 | 3.707 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.000008409 | 4877 | 8.409 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000009566 | 8249 | 9.566 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000010224 | 4983 | 10.224 | Yes | 10 |
 
 #### Fully Ordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.000000813** | 999 | **0.813** | Yes | 1 |
-| is | Insertion Sort Fully In-Place | **0.000000983** | 999 | **0.983** | Yes | 2 |
-| fb | ForSort Basic Fully In-Place | **0.000000993** | 999 | **0.993** | Yes | 3 |
-| fi | ForSort Unstable Fully In-Place | 0.000001174 | 1052 | 1.174 | Yes | 4 |
-| fs | ForSort Stable Fully In-Place | 0.000001185 | 999 | 1.185 | Yes | 5 |
-| fw | ForSort With Allocated Workspace | 0.000001222 | 1028 | 1.222 | Yes | 6 |
-| wi | WikiSort Fully In-Place | 0.000002542 | 2530 | 2.542 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.000007649 | 4790 | 7.649 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000008913 | 8191 | 8.913 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000009300 | 4932 | 9.300 | Yes | 10 |
+| ti | TimSort with Allocated Workspace | **0.000000814** | 999 | **0.814** | Yes | 1 |
+| is | Insertion Sort Fully In-Place | **0.000000981** | 999 | **0.981** | Yes | 2 |
+| fb | ForSort Basic Fully In-Place | **0.000000994** | 999 | **0.994** | Yes | 3 |
+| fs | ForSort Stable Fully In-Place | 0.000001001 | 999 | 1.001 | Yes | 4 |
+| fw | ForSort With Allocated Workspace | 0.000001018 | 1028 | 1.018 | Yes | 5 |
+| fi | ForSort Unstable Fully In-Place | 0.000001096 | 1046 | 1.096 | Yes | 6 |
+| wi | WikiSort Fully In-Place | 0.000002582 | 2530 | 2.582 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.000007663 | 4790 | 7.663 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000008965 | 8191 | 8.965 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000009862 | 4932 | 9.862 | Yes | 10 |
 
 #### Reverse Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| wi | WikiSort Fully In-Place | **0.000007754** | 4601 | **7.754** | Yes | 1 |
-| fw | ForSort With Allocated Workspace | **0.000008221** | 6564 | **8.221** | Yes | 2 |
-| fi | ForSort Unstable Fully In-Place | **0.000009452** | 6498 | **9.452** | No | 3 |
-| ti | TimSort with Allocated Workspace | 0.000009705 | 4456 | 9.705 | Yes | 4 |
-| fs | ForSort Stable Fully In-Place | 0.000010693 | 5887 | 10.693 | Yes | 5 |
-| gs | GrailSort Fully In-Place | 0.000013550 | 5699 | 13.550 | Yes | 6 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000016412 | 12038 | 16.412 | No | 7 |
-| fb | ForSort Basic Fully In-Place | 0.000019834 | 8563 | 19.834 | Yes | 8 |
-| is | Insertion Sort Fully In-Place | 0.000022584 | 10978 | 22.584 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000025192 | 5237 | 25.192 | Yes | 10 |
+| fb | ForSort Basic Fully In-Place | **0.000004128** | 1725 | **4.128** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **0.000005593** | 2430 | **5.593** | Yes | 2 |
+| wi | WikiSort Fully In-Place | **0.000007823** | 4601 | **7.823** | Yes | 3 |
+| fw | ForSort With Allocated Workspace | 0.000007989 | 6108 | 7.989 | Yes | 4 |
+| fi | ForSort Unstable Fully In-Place | 0.000009324 | 6149 | 9.324 | No | 5 |
+| ti | TimSort with Allocated Workspace | 0.000010088 | 4456 | 10.088 | Yes | 6 |
+| gs | GrailSort Fully In-Place | 0.000013343 | 5699 | 13.343 | Yes | 7 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000016564 | 12038 | 16.564 | No | 8 |
+| is | Insertion Sort Fully In-Place | 0.000022737 | 10978 | 22.737 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000025349 | 5237 | 25.349 | Yes | 10 |
 
 #### Reverse Ordered Uniques
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.000000948** | 999 | **0.948** | Yes | 1 |
-| fb | ForSort Basic Fully In-Place | **0.000001012** | 999 | **1.012** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.000001050** | 999 | **1.050** | Yes | 3 |
-| wi | WikiSort Fully In-Place | 0.000003660 | 3287 | 3.660 | Yes | 4 |
-| fi | ForSort Unstable Fully In-Place | 0.000007478 | 6407 | 7.478 | Yes | 5 |
-| gs | GrailSort Fully In-Place | 0.000007651 | 5112 | 7.651 | Yes | 6 |
-| fw | ForSort With Allocated Workspace | 0.000007762 | 6614 | 7.762 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000011702 | 5044 | 11.702 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000017069 | 14222 | 17.069 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.000022736 | 10980 | 22.736 | Yes | 10 |
+| ti | TimSort with Allocated Workspace | **0.000000963** | 999 | **0.963** | Yes | 1 |
+| fb | ForSort Basic Fully In-Place | **0.000001015** | 999 | **1.015** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.000001083** | 999 | **1.083** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.000003504 | 3287 | 3.504 | Yes | 4 |
+| fw | ForSort With Allocated Workspace | 0.000007046 | 6144 | 7.046 | Yes | 5 |
+| fi | ForSort Unstable Fully In-Place | 0.000007324 | 6024 | 7.324 | Yes | 6 |
+| gs | GrailSort Fully In-Place | 0.000007999 | 5112 | 7.999 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000011837 | 5044 | 11.837 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000017187 | 14222 | 17.187 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 0.000022005 | 10980 | 22.005 | Yes | 10 |
 
 ### 10000 Items
 
@@ -1338,121 +1338,121 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.000184732** | 126138 | **18.473** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.000228002** | 133078 | **22.800** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.000238487** | 133577 | **23.849** | Yes | 3 |
-| gs | GrailSort Fully In-Place | 0.000471228 | 138632 | 47.123 | Yes | 4 |
-| wi | WikiSort Fully In-Place | 0.000502229 | 143339 | 50.223 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000503748 | 137018 | 50.375 | Yes | 6 |
-| ti | TimSort with Allocated Workspace | 0.000594982 | 120354 | 59.498 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000647567 | 120414 | 64.757 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 0.000692454 | 208536 | 69.245 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.001167832 | 143513 | 116.78 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.000185814** | 126140 | **18.581** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.000226144** | 133154 | **22.614** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.000238895** | 133510 | **23.889** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.000275495 | 142005 | 27.549 | Yes | 4 |
+| gs | GrailSort Fully In-Place | 0.000473360 | 138632 | 47.336 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.000491191 | 143339 | 49.119 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000503599 | 137019 | 50.360 | Yes | 7 |
+| ti | TimSort with Allocated Workspace | 0.000596587 | 120354 | 59.659 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000650822 | 120414 | 65.082 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 0.001163107 | 143513 | 116.31 | Yes | 10 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.000209379** | 100880 | **20.938** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.000225630** | 104341 | **22.563** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.000243154** | 105422 | **24.315** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000288776 | 127117 | 28.878 | Yes | 4 |
-| wi | WikiSort Fully In-Place | 0.000301537 | 131330 | 30.154 | Yes | 5 |
-| gs | GrailSort Fully In-Place | 0.000336106 | 126396 | 33.611 | Yes | 6 |
-| ti | TimSort with Allocated Workspace | 0.000353687 | 93923 | 35.369 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000398985 | 115308 | 39.898 | Yes | 8 |
-| is | Insertion Sort Fully In-Place | 0.000409553 | 143045 | 40.955 | Yes | 9 |
-| fb | ForSort Basic Fully In-Place | 0.000429852 | 124779 | 42.985 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.000202168** | 101172 | **20.217** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.000221353** | 104700 | **22.135** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.000239131** | 105253 | **23.913** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.000268544 | 113471 | 26.854 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000296510 | 127116 | 29.651 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.000311270 | 131330 | 31.127 | Yes | 6 |
+| gs | GrailSort Fully In-Place | 0.000352778 | 126396 | 35.278 | Yes | 7 |
+| ti | TimSort with Allocated Workspace | 0.000353796 | 93923 | 35.380 | Yes | 8 |
+| is | Insertion Sort Fully In-Place | 0.000400637 | 143045 | 40.064 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000403826 | 115308 | 40.383 | Yes | 10 |
 
 #### 10 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.000154798** | 65568 | **15.480** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.000169671** | 69597 | **16.967** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.000174189** | 67720 | **17.419** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000185990 | 119571 | 18.599 | Yes | 4 |
-| wi | WikiSort Fully In-Place | 0.000191683 | 110231 | 19.168 | Yes | 5 |
-| ti | TimSort with Allocated Workspace | 0.000196060 | 56011 | 19.606 | Yes | 6 |
-| gs | GrailSort Fully In-Place | 0.000233140 | 106235 | 23.314 | Yes | 7 |
-| fb | ForSort Basic Fully In-Place | 0.000233310 | 79245 | 23.331 | Yes | 8 |
-| is | Insertion Sort Fully In-Place | 0.000236598 | 142148 | 23.660 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000271657 | 102552 | 27.166 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.000152995** | 65766 | **15.299** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.000171234** | 69897 | **17.123** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.000172229** | 67696 | **17.223** | Yes | 3 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000190977 | 119571 | 19.098 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.000192125 | 76351 | 19.213 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.000194499 | 110232 | 19.450 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 0.000196423 | 56011 | 19.642 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.000236810 | 106235 | 23.681 | Yes | 8 |
+| is | Insertion Sort Fully In-Place | 0.000238048 | 142148 | 23.805 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000272749 | 102552 | 27.275 | Yes | 10 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.000116110** | 46485 | **11.611** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.000128151** | 50064 | **12.815** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.000129829** | 50987 | **12.983** | Yes | 3 |
-| ti | TimSort with Allocated Workspace | 0.000132246 | 41460 | 13.225 | Yes | 4 |
-| wi | WikiSort Fully In-Place | 0.000150894 | 95325 | 15.089 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000153815 | 116696 | 15.381 | Yes | 6 |
-| fb | ForSort Basic Fully In-Place | 0.000158050 | 60799 | 15.805 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.000182857 | 90191 | 18.286 | Yes | 8 |
-| is | Insertion Sort Fully In-Place | 0.000197883 | 141273 | 19.788 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000221306 | 92080 | 22.131 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.000116140** | 46516 | **11.614** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **0.000129344** | 50997 | **12.934** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.000131820** | 50225 | **13.182** | Yes | 3 |
+| ti | TimSort with Allocated Workspace | 0.000132081 | 41460 | 13.208 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.000140035 | 59159 | 14.004 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.000158139 | 95325 | 15.814 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000158315 | 116697 | 15.832 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.000183949 | 90192 | 18.395 | Yes | 8 |
+| is | Insertion Sort Fully In-Place | 0.000191146 | 141272 | 19.115 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000223286 | 92080 | 22.329 | Yes | 10 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.000042263** | 20651 | **4.226** | Yes | 1 |
-| ti | TimSort with Allocated Workspace | **0.000044785** | 20074 | **4.479** | Yes | 2 |
-| fi | ForSort Unstable Fully In-Place | **0.000047232** | 22039 | **4.723** | Yes | 3 |
-| fs | ForSort Stable Fully In-Place | 0.000049977 | 24641 | 4.998 | Yes | 4 |
-| fb | ForSort Basic Fully In-Place | 0.000058310 | 32462 | 5.831 | Yes | 5 |
-| wi | WikiSort Fully In-Place | 0.000066399 | 45936 | 6.640 | Yes | 6 |
-| is | Insertion Sort Fully In-Place | 0.000075351 | 63430 | 7.535 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.000112531 | 61179 | 11.253 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000124453 | 112922 | 12.445 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000140945 | 69193 | 14.094 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.000041545** | 20651 | **4.155** | Yes | 1 |
+| ti | TimSort with Allocated Workspace | **0.000045029** | 20074 | **4.503** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.000047372** | 22018 | **4.737** | Yes | 3 |
+| fs | ForSort Stable Fully In-Place | 0.000050335 | 24683 | 5.033 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.000053956 | 31438 | 5.396 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.000066714 | 45936 | 6.671 | Yes | 6 |
+| is | Insertion Sort Fully In-Place | 0.000072970 | 63429 | 7.297 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.000113269 | 61179 | 11.327 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000125194 | 112922 | 12.519 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000146185 | 69193 | 14.618 | Yes | 10 |
 
 #### Fully Ordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.000007818** | 9999 | **0.782** | Yes | 1 |
-| fw | ForSort With Allocated Workspace | **0.000008849** | 10049 | **0.885** | Yes | 2 |
-| fi | ForSort Unstable Fully In-Place | **0.000009200** | 10091 | **0.920** | Yes | 3 |
-| fb | ForSort Basic Fully In-Place | 0.000009703 | 9999 | 0.970 | Yes | 4 |
-| is | Insertion Sort Fully In-Place | 0.000009762 | 9999 | 0.976 | Yes | 5 |
-| fs | ForSort Stable Fully In-Place | 0.000011680 | 9999 | 1.168 | Yes | 6 |
-| wi | WikiSort Fully In-Place | 0.000025313 | 23662 | 2.531 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.000092817 | 53332 | 9.282 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000116140 | 111538 | 11.614 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000117578 | 64608 | 11.758 | Yes | 10 |
+| ti | TimSort with Allocated Workspace | **0.000007841** | 9999 | **0.784** | Yes | 1 |
+| fw | ForSort With Allocated Workspace | **0.000009110** | 10049 | **0.911** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.000009202** | 10091 | **0.920** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.000009620 | 9999 | 0.962 | Yes | 4 |
+| is | Insertion Sort Fully In-Place | 0.000009673 | 9999 | 0.967 | Yes | 5 |
+| fs | ForSort Stable Fully In-Place | 0.000010013 | 9999 | 1.001 | Yes | 6 |
+| wi | WikiSort Fully In-Place | 0.000026287 | 23662 | 2.629 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.000090827 | 53332 | 9.083 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000117300 | 111538 | 11.730 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000120098 | 64608 | 12.010 | Yes | 10 |
 
 #### Reverse Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| wi | WikiSort Fully In-Place | **0.000098089** | 44655 | **9.809** | Yes | 1 |
-| ti | TimSort with Allocated Workspace | **0.000098927** | 39935 | **9.893** | Yes | 2 |
-| fw | ForSort With Allocated Workspace | **0.000112718** | 97315 | **11.272** | Yes | 3 |
-| fi | ForSort Unstable Fully In-Place | 0.000120985 | 93306 | 12.099 | No | 4 |
-| fs | ForSort Stable Fully In-Place | 0.000121003 | 82495 | 12.100 | Yes | 5 |
-| gs | GrailSort Fully In-Place | 0.000142565 | 60796 | 14.256 | Yes | 6 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000212180 | 166725 | 21.218 | No | 7 |
-| fb | ForSort Basic Fully In-Place | 0.000216825 | 86921 | 21.683 | Yes | 8 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000324509 | 70411 | 32.451 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.002127730 | 143610 | 212.77 | Yes | 10 |
+| fb | ForSort Basic Fully In-Place | **0.000041212** | 17103 | **4.121** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **0.000048632** | 21002 | **4.863** | Yes | 2 |
+| ti | TimSort with Allocated Workspace | **0.000098285** | 39935 | **9.828** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.000099485 | 44654 | 9.948 | Yes | 4 |
+| fw | ForSort With Allocated Workspace | 0.000118232 | 97256 | 11.823 | Yes | 5 |
+| fi | ForSort Unstable Fully In-Place | 0.000120979 | 92693 | 12.098 | No | 6 |
+| gs | GrailSort Fully In-Place | 0.000141958 | 60796 | 14.196 | Yes | 7 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000213860 | 166725 | 21.386 | No | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000326890 | 70411 | 32.689 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 0.002135916 | 143610 | 213.59 | Yes | 10 |
 
 #### Reverse Ordered Uniques
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.000009116** | 9999 | **0.912** | Yes | 1 |
-| fb | ForSort Basic Fully In-Place | **0.000010175** | 9999 | **1.018** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.000010520** | 9999 | **1.052** | Yes | 3 |
-| wi | WikiSort Fully In-Place | 0.000044231 | 25008 | 4.423 | Yes | 4 |
-| gs | GrailSort Fully In-Place | 0.000094116 | 57076 | 9.412 | Yes | 5 |
-| fw | ForSort With Allocated Workspace | 0.000104114 | 98010 | 10.411 | Yes | 6 |
-| fi | ForSort Unstable Fully In-Place | 0.000105167 | 93366 | 10.517 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.000144721 | 69008 | 14.472 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.000224697 | 192779 | 22.470 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.002108454 | 143612 | 210.84 | Yes | 10 |
+| ti | TimSort with Allocated Workspace | **0.000009099** | 9999 | **0.910** | Yes | 1 |
+| fb | ForSort Basic Fully In-Place | **0.000010190** | 9999 | **1.019** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.000010523** | 9999 | **1.052** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.000044503 | 25008 | 4.450 | Yes | 4 |
+| gs | GrailSort Fully In-Place | 0.000095188 | 57076 | 9.519 | Yes | 5 |
+| fi | ForSort Unstable Fully In-Place | 0.000105015 | 92504 | 10.501 | Yes | 6 |
+| fw | ForSort With Allocated Workspace | 0.000105332 | 97942 | 10.533 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 0.000148650 | 69008 | 14.865 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.000227759 | 192779 | 22.776 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 0.002159449 | 143612 | 215.94 | Yes | 10 |
 
 ### 100000 Items
 
@@ -1460,121 +1460,121 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.002281095** | 1621733 | **22.811** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.002602984** | 1649584 | **26.030** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.002724750** | 1701935 | **27.248** | Yes | 3 |
-| gs | GrailSort Fully In-Place | 0.005408850 | 1692292 | 54.088 | Yes | 4 |
-| wi | WikiSort Fully In-Place | 0.006025556 | 1828537 | 60.256 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.006214264 | 1731596 | 62.143 | No | 6 |
-| ti | TimSort with Allocated Workspace | 0.007320635 | 1531065 | 73.206 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.007733061 | 1536077 | 77.331 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 0.008678928 | 2643459 | 86.789 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.096283957 | 1768782 | 962.84 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.002389888** | 1621926 | **23.899** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.002686885** | 1649884 | **26.869** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.002749454** | 1698640 | **27.495** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.004793294 | 2000354 | 47.933 | Yes | 4 |
+| gs | GrailSort Fully In-Place | 0.005631395 | 1692280 | 56.314 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.006169310 | 1828537 | 61.693 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.006280815 | 1731630 | 62.808 | No | 7 |
+| ti | TimSort with Allocated Workspace | 0.007435058 | 1531064 | 74.351 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.007702100 | 1536078 | 77.021 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 0.096357541 | 1768782 | 963.58 | Yes | 10 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.002390729** | 1237287 | **23.907** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.002529869** | 1269667 | **25.299** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.002659371** | 1267523 | **26.594** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.003668341 | 1622424 | 36.683 | No | 4 |
-| wi | WikiSort Fully In-Place | 0.003862920 | 1718044 | 38.629 | Yes | 5 |
-| gs | GrailSort Fully In-Place | 0.004257676 | 1631676 | 42.577 | Yes | 6 |
-| ti | TimSort with Allocated Workspace | 0.004274893 | 1094151 | 42.749 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.004908656 | 1507288 | 49.087 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 0.005416929 | 1537142 | 54.169 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.012861317 | 1768030 | 128.61 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.002404386** | 1247036 | **24.044** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.002504763** | 1276432 | **25.048** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.002641992** | 1281015 | **26.420** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.003430706 | 1312292 | 34.307 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.003734523 | 1622405 | 37.345 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.003875722 | 1718048 | 38.757 | Yes | 6 |
+| gs | GrailSort Fully In-Place | 0.004261359 | 1631684 | 42.614 | Yes | 7 |
+| ti | TimSort with Allocated Workspace | 0.004333656 | 1094158 | 43.337 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.004793453 | 1507290 | 47.935 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 0.012434260 | 1768031 | 124.34 | Yes | 10 |
 
 #### 10 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.001854617** | 793760 | **18.546** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.001906719** | 837048 | **19.067** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.001981589** | 807849 | **19.816** | Yes | 3 |
-| ti | TimSort with Allocated Workspace | 0.002395071 | 678065 | 23.951 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.002413734 | 1538407 | 24.137 | Yes | 5 |
-| wi | WikiSort Fully In-Place | 0.002533847 | 1482326 | 25.338 | Yes | 6 |
-| fb | ForSort Basic Fully In-Place | 0.002985461 | 949090 | 29.855 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.003096513 | 1432845 | 30.965 | Yes | 8 |
-| gq | GLibc Quick Sort Fully In-Place | 0.003244107 | 1388145 | 32.441 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.003775514 | 1766493 | 37.755 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.001844278** | 816089 | **18.443** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.001914730** | 853681 | **19.147** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.001962834** | 840955 | **19.628** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.002271650 | 868865 | 22.716 | Yes | 4 |
+| ti | TimSort with Allocated Workspace | 0.002380653 | 678060 | 23.807 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.002416980 | 1538407 | 24.170 | No | 6 |
+| wi | WikiSort Fully In-Place | 0.002639015 | 1482335 | 26.390 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.003094211 | 1432847 | 30.942 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.003264106 | 1388145 | 32.641 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 0.003796913 | 1766493 | 37.969 | Yes | 10 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.001456028** | 611646 | **14.560** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.001491039** | 643549 | **14.910** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.001498145** | 599749 | **14.981** | Yes | 3 |
-| ti | TimSort with Allocated Workspace | 0.001654082 | 521668 | 16.541 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.002037270 | 1517046 | 20.373 | Yes | 5 |
-| fb | ForSort Basic Fully In-Place | 0.002045026 | 735014 | 20.450 | Yes | 6 |
-| wi | WikiSort Fully In-Place | 0.002058153 | 1317922 | 20.582 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.002551281 | 1279980 | 25.513 | Yes | 8 |
-| is | Insertion Sort Fully In-Place | 0.002701131 | 1764005 | 27.011 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.002729814 | 1297186 | 27.298 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.001393827** | 623290 | **13.938** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.001463485** | 649194 | **14.635** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.001508815** | 611274 | **15.088** | Yes | 3 |
+| ti | TimSort with Allocated Workspace | 0.001679082 | 521667 | 16.791 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.001764650 | 687748 | 17.647 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.002039588 | 1517047 | 20.396 | No | 6 |
+| wi | WikiSort Fully In-Place | 0.002090824 | 1317909 | 20.908 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.002553914 | 1279991 | 25.539 | Yes | 8 |
+| is | Insertion Sort Fully In-Place | 0.002701773 | 1764005 | 27.018 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.002768173 | 1297186 | 27.682 | Yes | 10 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.000643322** | 255910 | **6.433** | Yes | 1 |
-| fw | ForSort With Allocated Workspace | **0.000692841** | 295454 | **6.928** | Yes | 2 |
-| fi | ForSort Unstable Fully In-Place | **0.000744375** | 311125 | **7.444** | Yes | 3 |
-| fs | ForSort Stable Fully In-Place | 0.000766189 | 321290 | 7.662 | Yes | 4 |
-| fb | ForSort Basic Fully In-Place | 0.000917027 | 434202 | 9.170 | Yes | 5 |
-| wi | WikiSort Fully In-Place | 0.001295391 | 949667 | 12.954 | Yes | 6 |
-| gs | GrailSort Fully In-Place | 0.001577292 | 912819 | 15.773 | Yes | 7 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.001679862 | 1515703 | 16.799 | Yes | 8 |
-| is | Insertion Sort Fully In-Place | 0.001971731 | 1746872 | 19.717 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.002030687 | 1052827 | 20.307 | Yes | 10 |
+| ti | TimSort with Allocated Workspace | **0.000681220** | 255902 | **6.812** | Yes | 1 |
+| fw | ForSort With Allocated Workspace | **0.000703469** | 295443 | **7.035** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.000749367** | 310076 | **7.494** | Yes | 3 |
+| fs | ForSort Stable Fully In-Place | 0.000751638 | 318736 | 7.516 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.000939099 | 417555 | 9.391 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.001298396 | 949669 | 12.984 | Yes | 6 |
+| gs | GrailSort Fully In-Place | 0.001537758 | 912808 | 15.378 | Yes | 7 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.001663708 | 1515705 | 16.637 | No | 8 |
+| is | Insertion Sort Fully In-Place | 0.001963286 | 1746872 | 19.633 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.002051013 | 1052825 | 20.510 | Yes | 10 |
 
 #### Fully Ordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.000077874** | 99999 | **0.779** | Yes | 1 |
-| fb | ForSort Basic Fully In-Place | **0.000087399** | 99999 | **0.874** | Yes | 2 |
-| is | Insertion Sort Fully In-Place | **0.000088174** | 99999 | **0.882** | Yes | 3 |
-| fw | ForSort With Allocated Workspace | 0.000101333 | 100078 | 1.013 | Yes | 4 |
-| fi | ForSort Unstable Fully In-Place | 0.000101832 | 100167 | 1.018 | Yes | 5 |
-| fs | ForSort Stable Fully In-Place | 0.000116495 | 99999 | 1.165 | Yes | 6 |
-| wi | WikiSort Fully In-Place | 0.000241260 | 240530 | 2.413 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.001011284 | 608786 | 10.113 | Yes | 8 |
-| gq | GLibc Quick Sort Fully In-Place | 0.001387507 | 815024 | 13.875 | Yes | 9 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.001590004 | 1524581 | 15.900 | Yes | 10 |
+| ti | TimSort with Allocated Workspace | **0.000078126** | 99999 | **0.781** | Yes | 1 |
+| fw | ForSort With Allocated Workspace | **0.000085764** | 100078 | **0.858** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.000086297** | 100167 | **0.863** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.000086776 | 99999 | 0.868 | Yes | 4 |
+| is | Insertion Sort Fully In-Place | 0.000087198 | 99999 | 0.872 | Yes | 5 |
+| fs | ForSort Stable Fully In-Place | 0.000096920 | 99999 | 0.969 | Yes | 6 |
+| wi | WikiSort Fully In-Place | 0.000254156 | 240530 | 2.542 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.001022331 | 608786 | 10.223 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.001405347 | 815024 | 14.053 | Yes | 9 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.001600748 | 1524581 | 16.007 | No | 10 |
 
 #### Reverse Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.001005551** | 423410 | **10.056** | Yes | 1 |
-| wi | WikiSort Fully In-Place | **0.001133534** | 566125 | **11.335** | Yes | 2 |
-| fw | ForSort With Allocated Workspace | **0.001431246** | 1228340 | **14.312** | Yes | 3 |
-| fs | ForSort Stable Fully In-Place | 0.001446214 | 1049641 | 14.462 | Yes | 4 |
-| gs | GrailSort Fully In-Place | 0.001502343 | 653665 | 15.023 | Yes | 5 |
-| fi | ForSort Unstable Fully In-Place | 0.001527594 | 1195726 | 15.276 | No | 6 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.002183387 | 1775189 | 21.834 | No | 7 |
-| fb | ForSort Basic Fully In-Place | 0.002412023 | 874227 | 24.120 | Yes | 8 |
-| gq | GLibc Quick Sort Fully In-Place | 0.003719726 | 866158 | 37.197 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.243428885 | 1768916 | 2434.3 | Yes | 10 |
+| fb | ForSort Basic Fully In-Place | **0.000386249** | 169660 | **3.862** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **0.000460805** | 200907 | **4.608** | Yes | 2 |
+| ti | TimSort with Allocated Workspace | **0.001037429** | 423410 | **10.374** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.001139587 | 566132 | 11.396 | Yes | 4 |
+| fw | ForSort With Allocated Workspace | 0.001404233 | 1187434 | 14.042 | Yes | 5 |
+| fi | ForSort Unstable Fully In-Place | 0.001469765 | 1150379 | 14.698 | No | 6 |
+| gs | GrailSort Fully In-Place | 0.001487620 | 653664 | 14.876 | Yes | 7 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.002221434 | 1775189 | 22.214 | No | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.003848344 | 866158 | 38.483 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 0.240335715 | 1768916 | 2403.4 | Yes | 10 |
 
 #### Reverse Ordered Uniques
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.000091482** | 99999 | **0.915** | Yes | 1 |
-| fb | ForSort Basic Fully In-Place | **0.000104143** | 99999 | **1.041** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.000108159** | 99999 | **1.082** | Yes | 3 |
-| wi | WikiSort Fully In-Place | 0.000503258 | 284046 | 5.033 | Yes | 4 |
-| gs | GrailSort Fully In-Place | 0.001070400 | 627299 | 10.704 | Yes | 5 |
-| fw | ForSort With Allocated Workspace | 0.001355869 | 1235508 | 13.559 | Yes | 6 |
-| fi | ForSort Unstable Fully In-Place | 0.001385749 | 1201428 | 13.857 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.001691890 | 853904 | 16.919 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.002170656 | 1935567 | 21.707 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.235609063 | 1768918 | 2356.1 | Yes | 10 |
+| ti | TimSort with Allocated Workspace | **0.000092990** | 99999 | **0.930** | Yes | 1 |
+| fb | ForSort Basic Fully In-Place | **0.000101299** | 99999 | **1.013** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.000110115** | 99999 | **1.101** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.000501731 | 284046 | 5.017 | Yes | 4 |
+| gs | GrailSort Fully In-Place | 0.001061705 | 627299 | 10.617 | Yes | 5 |
+| fw | ForSort With Allocated Workspace | 0.001287626 | 1194581 | 12.876 | Yes | 6 |
+| fi | ForSort Unstable Fully In-Place | 0.001334283 | 1155465 | 13.343 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 0.001721651 | 853904 | 17.217 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.002164324 | 1935567 | 21.643 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 0.243224393 | 1768918 | 2432.2 | Yes | 10 |
 
 ### 1000000 Items
 
@@ -1582,121 +1582,121 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.025563153** | 19344396 | **25.563** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.029678094** | 20006051 | **29.678** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **0.029892494** | 20144081 | **29.892** | Yes | 3 |
-| gs | GrailSort Fully In-Place | 0.063429849 | 20161685 | 63.430 | Yes | 4 |
-| wi | WikiSort Fully In-Place | 0.073756366 | 22370582 | 73.756 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.073914736 | 20932120 | 73.915 | No | 6 |
-| ti | TimSort with Allocated Workspace | 0.088149370 | 18299251 | 88.149 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.092929283 | 18672458 | 92.929 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 0.105493738 | 31933366 | 105.49 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 13.325227264 | 20951223 | 13325.2 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.026034348** | 19344602 | **26.034** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **0.029728541** | 20092064 | **29.729** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.030141718** | 20006387 | **30.142** | No | 3 |
+| gs | GrailSort Fully In-Place | 0.066149265 | 20161623 | 66.149 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.066723049 | 25429122 | 66.723 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.074287096 | 22370558 | 74.287 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.075460025 | 20932586 | 75.460 | No | 7 |
+| ti | TimSort with Allocated Workspace | 0.088799387 | 18299237 | 88.799 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.091701030 | 18672460 | 91.701 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 13.204283035 | 20951223 | 13204.3 | Yes | 10 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.026356530** | 14556327 | **26.357** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.027526674** | 15101830 | **27.527** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **0.028736667** | 14974493 | **28.737** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.044801601 | 19732057 | 44.802 | No | 4 |
-| wi | WikiSort Fully In-Place | 0.045998147 | 21147276 | 45.998 | Yes | 5 |
-| ti | TimSort with Allocated Workspace | 0.049134788 | 12452195 | 49.135 | Yes | 6 |
-| gs | GrailSort Fully In-Place | 0.050729917 | 19798089 | 50.730 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.057422286 | 18496846 | 57.422 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 0.062620374 | 17998911 | 62.620 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 1.255528082 | 20950078 | 1255.5 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.026841698** | 14575947 | **26.842** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.027746784** | 15101355 | **27.747** | No | 2 |
+| fs | ForSort Stable Fully In-Place | **0.028623316** | 15181000 | **28.623** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.044139662 | 15180808 | 44.140 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.045769062 | 19732474 | 45.769 | No | 5 |
+| wi | WikiSort Fully In-Place | 0.046462266 | 21147341 | 46.462 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 0.049716109 | 12452195 | 49.716 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.052290930 | 19798003 | 52.291 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.056912743 | 18496933 | 56.913 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 1.235080628 | 20950078 | 1235.1 | Yes | 10 |
 
 #### 10 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.019414366** | 9379522 | **19.414** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.020610436** | 10065937 | **20.610** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **0.020729617** | 9542124 | **20.730** | Yes | 3 |
-| ti | TimSort with Allocated Workspace | 0.027228698 | 7732374 | 27.229 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.029585085 | 18776212 | 29.585 | No | 5 |
-| wi | WikiSort Fully In-Place | 0.030789803 | 18761675 | 30.790 | Yes | 6 |
-| fb | ForSort Basic Fully In-Place | 0.034397349 | 10738012 | 34.397 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.039474850 | 18049573 | 39.475 | Yes | 8 |
-| gq | GLibc Quick Sort Fully In-Place | 0.040055755 | 17422431 | 40.056 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.190288154 | 20947569 | 190.29 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.019800446** | 9648651 | **19.800** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.020588497** | 10159324 | **20.588** | No | 2 |
+| fs | ForSort Stable Fully In-Place | **0.021395706** | 9262313 | **21.396** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.026699119 | 9463215 | 26.699 | Yes | 4 |
+| ti | TimSort with Allocated Workspace | 0.027181105 | 7732374 | 27.181 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.030287921 | 18776179 | 30.288 | No | 6 |
+| wi | WikiSort Fully In-Place | 0.031771736 | 18761861 | 31.772 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.039437581 | 18049573 | 39.438 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.039573011 | 17422103 | 39.573 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 0.189928496 | 20947569 | 189.93 | Yes | 10 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.015202988** | 7222235 | **15.203** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.016101182** | 7722200 | **16.101** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **0.016518678** | 7267373 | **16.519** | Yes | 3 |
-| ti | TimSort with Allocated Workspace | 0.019253688 | 6046022 | 19.254 | Yes | 4 |
-| fb | ForSort Basic Fully In-Place | 0.024101767 | 8208316 | 24.102 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.025044561 | 18501998 | 25.045 | No | 6 |
-| wi | WikiSort Fully In-Place | 0.025866075 | 17097566 | 25.866 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.033086320 | 16566898 | 33.086 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 0.034272278 | 16619326 | 34.272 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 0.070275181 | 20943886 | 70.275 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.015296173** | 7608556 | **15.296** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **0.016130185** | 7020803 | **16.130** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.016206852** | 7910690 | **16.207** | No | 3 |
+| ti | TimSort with Allocated Workspace | 0.019856594 | 6046161 | 19.857 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.019910114 | 7387538 | 19.910 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.025077519 | 18501987 | 25.078 | No | 6 |
+| wi | WikiSort Fully In-Place | 0.026020333 | 17097655 | 26.020 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 0.033857543 | 16566656 | 33.858 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 0.034051570 | 16619214 | 34.052 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 0.070041666 | 20943884 | 70.042 | Yes | 10 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.008196654** | 3358592 | **8.197** | Yes | 1 |
-| ti | TimSort with Allocated Workspace | **0.008430490** | 3178814 | **8.430** | Yes | 2 |
-| fi | ForSort Unstable Fully In-Place | **0.008473999** | 3575369 | **8.474** | No | 3 |
-| fs | ForSort Stable Fully In-Place | 0.008505181 | 3657664 | 8.505 | Yes | 4 |
-| fb | ForSort Basic Fully In-Place | 0.011538599 | 4900541 | 11.539 | Yes | 5 |
-| wi | WikiSort Fully In-Place | 0.017725739 | 13259432 | 17.726 | Yes | 6 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.020262027 | 18249004 | 20.262 | No | 7 |
-| gs | GrailSort Fully In-Place | 0.024291887 | 13140271 | 24.292 | Yes | 8 |
-| is | Insertion Sort Fully In-Place | 0.025682968 | 20920992 | 25.683 | Yes | 9 |
-| gq | GLibc Quick Sort Fully In-Place | 0.026186502 | 14446138 | 26.187 | Yes | 10 |
+| fw | ForSort With Allocated Workspace | **0.008152672** | 3460456 | **8.153** | Yes | 1 |
+| ti | TimSort with Allocated Workspace | **0.008545307** | 3178814 | **8.545** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.008655185** | 3867672 | **8.655** | Yes | 3 |
+| fi | ForSort Unstable Fully In-Place | 0.008715725 | 3635135 | 8.716 | No | 4 |
+| fb | ForSort Basic Fully In-Place | 0.011390808 | 4613596 | 11.391 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.018160773 | 13259182 | 18.161 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.020507446 | 18249037 | 20.507 | No | 7 |
+| gs | GrailSort Fully In-Place | 0.024112236 | 13140257 | 24.112 | Yes | 8 |
+| is | Insertion Sort Fully In-Place | 0.025455334 | 20920991 | 25.455 | Yes | 9 |
+| gq | GLibc Quick Sort Fully In-Place | 0.026404419 | 14446085 | 26.404 | Yes | 10 |
 
 #### Fully Ordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.000803306** | 999999 | **0.803** | Yes | 1 |
-| fb | ForSort Basic Fully In-Place | **0.000834043** | 999999 | **0.834** | Yes | 2 |
-| is | Insertion Sort Fully In-Place | **0.000835616** | 999999 | **0.836** | Yes | 3 |
-| fi | ForSort Unstable Fully In-Place | 0.001070040 | 1000212 | 1.070 | Yes | 4 |
-| fw | ForSort With Allocated Workspace | 0.001148349 | 1000058 | 1.148 | Yes | 5 |
-| fs | ForSort Stable Fully In-Place | 0.001284420 | 999999 | 1.284 | Yes | 6 |
-| wi | WikiSort Fully In-Place | 0.002557739 | 2595342 | 2.558 | Yes | 7 |
-| gs | GrailSort Fully In-Place | 0.012408641 | 7019424 | 12.409 | Yes | 8 |
-| gq | GLibc Quick Sort Fully In-Place | 0.016527376 | 9884992 | 16.527 | Yes | 9 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.018692242 | 18196494 | 18.692 | No | 10 |
+| is | Insertion Sort Fully In-Place | **0.000830094** | 999999 | **0.830** | Yes | 1 |
+| fb | ForSort Basic Fully In-Place | **0.000857155** | 999999 | **0.857** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.000863774** | 1000212 | **0.864** | Yes | 3 |
+| fw | ForSort With Allocated Workspace | 0.000905147 | 1000058 | 0.905 | Yes | 4 |
+| ti | TimSort with Allocated Workspace | 0.000904822 | 999999 | 0.905 | Yes | 5 |
+| fs | ForSort Stable Fully In-Place | 0.001020150 | 999999 | 1.020 | Yes | 6 |
+| wi | WikiSort Fully In-Place | 0.002556397 | 2595342 | 2.556 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.012597206 | 7019424 | 12.597 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.017412649 | 9884992 | 17.413 | Yes | 9 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.018654200 | 18196494 | 18.654 | No | 10 |
 
 #### Reverse Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.010386553** | 4402872 | **10.387** | Yes | 1 |
-| wi | WikiSort Fully In-Place | **0.012196917** | 6204289 | **12.197** | Yes | 2 |
-| gs | GrailSort Fully In-Place | **0.017520835** | 7770828 | **17.521** | Yes | 3 |
-| fs | ForSort Stable Fully In-Place | 0.018486441 | 13911676 | 18.486 | Yes | 4 |
-| fw | ForSort With Allocated Workspace | 0.018686625 | 16348396 | 18.687 | Yes | 5 |
-| fi | ForSort Unstable Fully In-Place | 0.019629364 | 15717566 | 19.629 | No | 6 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.025919865 | 21892882 | 25.920 | No | 7 |
-| fb | ForSort Basic Fully In-Place | 0.028258799 | 8712694 | 28.259 | Yes | 8 |
-| gq | GLibc Quick Sort Fully In-Place | 0.037408016 | 10249901 | 37.408 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 31.000875152 | 20951405 | 31000.9 | Yes | 10 |
+| fb | ForSort Basic Fully In-Place | **0.003880046** | 1709616 | **3.880** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **0.004637530** | 1986400 | **4.638** | Yes | 2 |
+| ti | TimSort with Allocated Workspace | **0.010783073** | 4402874 | **10.783** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.012483388 | 6200229 | 12.483 | Yes | 4 |
+| gs | GrailSort Fully In-Place | 0.017067746 | 7770815 | 17.068 | Yes | 5 |
+| fw | ForSort With Allocated Workspace | 0.018370325 | 15856960 | 18.370 | Yes | 6 |
+| fi | ForSort Unstable Fully In-Place | 0.018900693 | 15380257 | 18.901 | No | 7 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.026375958 | 21892903 | 26.376 | No | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.037593149 | 10249901 | 37.593 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 31.225945966 | 20951405 | 31225.9 | Yes | 10 |
 
 #### Reverse Ordered Uniques
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.000985393** | 999999 | **0.985** | Yes | 1 |
-| fb | ForSort Basic Fully In-Place | **0.001072194** | 999999 | **1.072** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.001176052** | 999999 | **1.176** | Yes | 3 |
-| wi | WikiSort Fully In-Place | 0.005995378 | 3273489 | 5.995 | Yes | 4 |
-| gs | GrailSort Fully In-Place | 0.013602954 | 7551070 | 13.603 | Yes | 5 |
-| fw | ForSort With Allocated Workspace | 0.018061636 | 16420327 | 18.062 | Yes | 6 |
-| fi | ForSort Unstable Fully In-Place | 0.018308192 | 15784214 | 18.308 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.019865576 | 10066432 | 19.866 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.026443119 | 24025703 | 26.443 | Yes | 9 |
-| is | Insertion Sort Fully In-Place | 30.667375719 | 20951408 | 30667.4 | Yes | 10 |
+| ti | TimSort with Allocated Workspace | **0.001030165** | 999999 | **1.030** | Yes | 1 |
+| fb | ForSort Basic Fully In-Place | **0.001076720** | 999999 | **1.077** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.001212079** | 999999 | **1.212** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.005973408 | 3273489 | 5.973 | Yes | 4 |
+| gs | GrailSort Fully In-Place | 0.013242438 | 7551070 | 13.242 | Yes | 5 |
+| fw | ForSort With Allocated Workspace | 0.017553509 | 15928877 | 17.554 | Yes | 6 |
+| fi | ForSort Unstable Fully In-Place | 0.018087216 | 15445001 | 18.087 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 0.019769546 | 10066432 | 19.770 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.026162352 | 24025703 | 26.162 | Yes | 9 |
+| is | Insertion Sort Fully In-Place | 31.213116224 | 20951408 | 31213.1 | Yes | 10 |
 
 ### 10000000 Items
 
@@ -1704,113 +1704,113 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.290067023** | 225429485 | **29.007** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.331487670** | 232322602 | **33.149** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **0.340826735** | 235553171 | **34.083** | Yes | 3 |
-| gs | GrailSort Fully In-Place | 0.753762400 | 236971730 | 75.376 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.863320599 | 244978728 | 86.332 | No | 5 |
-| wi | WikiSort Fully In-Place | 0.891250983 | 266857618 | 89.125 | Yes | 6 |
-| ti | TimSort with Allocated Workspace | 1.049622382 | 213811193 | 104.96 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 1.104598763 | 220067062 | 110.46 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 1.245795867 | 373601936 | 124.58 | Yes | 9 |
+| fw | ForSort With Allocated Workspace | **0.290479169** | 225429485 | **29.048** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.335019794** | 232323479 | **33.502** | No | 2 |
+| fs | ForSort Stable Fully In-Place | **0.343476779** | 234998906 | **34.348** | Yes | 3 |
+| gs | GrailSort Fully In-Place | 0.773850909 | 236971730 | 77.385 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.862206199 | 308208229 | 86.221 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.877634193 | 244978728 | 87.763 | No | 6 |
+| wi | WikiSort Fully In-Place | 0.914850904 | 266856218 | 91.485 | Yes | 7 |
+| ti | TimSort with Allocated Workspace | 1.046568561 | 213811193 | 104.66 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 1.097432109 | 220067062 | 109.74 | Yes | 9 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.287872836** | 166172477 | **28.787** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.302164817** | 174390819 | **30.216** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **0.311849024** | 171184488 | **31.185** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.525142417 | 232362806 | 52.514 | No | 4 |
-| wi | WikiSort Fully In-Place | 0.557541613 | 249321112 | 55.754 | Yes | 5 |
-| ti | TimSort with Allocated Workspace | 0.587939801 | 139281719 | 58.794 | Yes | 6 |
-| gs | GrailSort Fully In-Place | 0.603807102 | 232117264 | 60.381 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.694043745 | 218005542 | 69.404 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 0.724935985 | 205438284 | 72.494 | Yes | 9 |
+| fw | ForSort With Allocated Workspace | **0.282130943** | 166697520 | **28.213** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.296719095** | 174344599 | **29.672** | No | 2 |
+| fs | ForSort Stable Fully In-Place | **0.316728183** | 174188725 | **31.673** | Yes | 3 |
+| fb | ForSort Basic Fully In-Place | 0.527762952 | 175792156 | 52.776 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.535718642 | 232362806 | 53.572 | No | 5 |
+| wi | WikiSort Fully In-Place | 0.561265633 | 249321112 | 56.127 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 0.585231470 | 139281719 | 58.523 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 0.610097697 | 232117264 | 61.010 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.693701773 | 218005542 | 69.370 | Yes | 9 |
 
 #### 10 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.212413773** | 108135098 | **21.241** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.222421592** | 115602839 | **22.242** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **0.227971276** | 111447909 | **22.797** | Yes | 3 |
-| ti | TimSort with Allocated Workspace | 0.307216273 | 80920121 | 30.722 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.348111956 | 221653993 | 34.811 | No | 5 |
-| wi | WikiSort Fully In-Place | 0.387293604 | 222869681 | 38.729 | Yes | 6 |
-| fb | ForSort Basic Fully In-Place | 0.403156517 | 118996129 | 40.316 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.476701311 | 208077387 | 47.670 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 0.483212567 | 215559595 | 48.321 | Yes | 9 |
+| fw | ForSort With Allocated Workspace | **0.210565659** | 105396310 | **21.057** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **0.226047408** | 108872034 | **22.605** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **0.230107999** | 113101586 | **23.011** | No | 3 |
+| ti | TimSort with Allocated Workspace | 0.308517295 | 80920121 | 30.852 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.314209734 | 104585698 | 31.421 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.354128011 | 221662116 | 35.413 | No | 6 |
+| wi | WikiSort Fully In-Place | 0.401519878 | 222873675 | 40.152 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 0.480102234 | 208077387 | 48.010 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 0.492574260 | 215559595 | 49.257 | Yes | 9 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **0.167586333** | 83611057 | **16.759** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **0.173372070** | 88487239 | **17.337** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **0.175933368** | 86686382 | **17.593** | Yes | 3 |
-| ti | TimSort with Allocated Workspace | 0.214739905 | 59835512 | 21.474 | Yes | 4 |
-| fb | ForSort Basic Fully In-Place | 0.279149281 | 89626849 | 27.915 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.295812668 | 218615245 | 29.581 | No | 6 |
-| wi | WikiSort Fully In-Place | 0.319831009 | 204455453 | 31.983 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.405461390 | 199428468 | 40.546 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 0.430336964 | 201540433 | 43.034 | Yes | 9 |
+| fw | ForSort With Allocated Workspace | **0.164683718** | 81555558 | **16.468** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **0.174182440** | 86735698 | **17.418** | No | 2 |
+| fs | ForSort Stable Fully In-Place | **0.176792819** | 84362366 | **17.679** | Yes | 3 |
+| ti | TimSort with Allocated Workspace | 0.221508894 | 59834548 | 22.151 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 0.235110133 | 79683462 | 23.511 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.298296117 | 218613601 | 29.830 | No | 6 |
+| wi | WikiSort Fully In-Place | 0.331667640 | 204449500 | 33.167 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 0.411283830 | 199428468 | 41.128 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 0.427246994 | 201540433 | 42.725 | Yes | 9 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.090612244** | 29069889 | **9.061** | Yes | 1 |
-| fw | ForSort With Allocated Workspace | **0.093193560** | 42835886 | **9.319** | Yes | 2 |
-| fi | ForSort Unstable Fully In-Place | **0.094863231** | 44720976 | **9.486** | No | 3 |
-| fs | ForSort Stable Fully In-Place | 0.096006101 | 45660414 | 9.601 | Yes | 4 |
-| fb | ForSort Basic Fully In-Place | 0.132708780 | 52344963 | 13.271 | Yes | 5 |
-| wi | WikiSort Fully In-Place | 0.225192807 | 161738605 | 22.519 | Yes | 6 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.239598594 | 215103159 | 23.960 | No | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.323004477 | 178584358 | 32.300 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 0.328723861 | 166960984 | 32.872 | Yes | 9 |
+| ti | TimSort with Allocated Workspace | **0.091225486** | 29070075 | **9.123** | Yes | 1 |
+| fw | ForSort With Allocated Workspace | **0.093867897** | 45040920 | **9.387** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.095937248** | 45889657 | **9.594** | Yes | 3 |
+| fi | ForSort Unstable Fully In-Place | 0.098267152 | 47285288 | 9.827 | No | 4 |
+| fb | ForSort Basic Fully In-Place | 0.126158328 | 48005733 | 12.616 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.227376638 | 161735505 | 22.738 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.236079736 | 215104626 | 23.608 | No | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 0.324770732 | 178584358 | 32.477 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 0.328703588 | 166960984 | 32.870 | Yes | 9 |
 
 #### Fully Ordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.008034472** | 9999999 | **0.803** | Yes | 1 |
-| fb | ForSort Basic Fully In-Place | **0.008058137** | 9999999 | **0.806** | Yes | 2 |
-| fw | ForSort With Allocated Workspace | **0.008964851** | 10000089 | **0.896** | Yes | 3 |
-| fi | ForSort Unstable Fully In-Place | 0.009021113 | 10000304 | 0.902 | Yes | 4 |
-| fs | ForSort Stable Fully In-Place | 0.012619661 | 9999999 | 1.262 | Yes | 5 |
-| wi | WikiSort Fully In-Place | 0.020047988 | 20122539 | 2.005 | Yes | 6 |
-| gs | GrailSort Fully In-Place | 0.162356036 | 79190466 | 16.236 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.199596402 | 114434624 | 19.960 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.215015078 | 211563145 | 21.502 | No | 9 |
+| fb | ForSort Basic Fully In-Place | **0.008044872** | 9999999 | **0.804** | Yes | 1 |
+| ti | TimSort with Allocated Workspace | **0.008165247** | 9999999 | **0.817** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.008278058** | 9999999 | **0.828** | Yes | 3 |
+| fi | ForSort Unstable Fully In-Place | 0.008726703 | 10000304 | 0.873 | Yes | 4 |
+| fw | ForSort With Allocated Workspace | 0.008787108 | 10000089 | 0.879 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.020450543 | 20122539 | 2.045 | Yes | 6 |
+| gs | GrailSort Fully In-Place | 0.161050119 | 79190468 | 16.105 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 0.204936880 | 114434624 | 20.494 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.210129474 | 211563145 | 21.013 | No | 9 |
 
 #### Reverse Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.123222952** | 39878319 | **12.322** | Yes | 1 |
-| wi | WikiSort Fully In-Place | **0.155040951** | 68476895 | **15.504** | Yes | 2 |
-| gs | GrailSort Fully In-Place | **0.201028005** | 84028632 | **20.103** | Yes | 3 |
-| fw | ForSort With Allocated Workspace | 0.226128624 | 197266474 | 22.613 | Yes | 4 |
-| fi | ForSort Unstable Fully In-Place | 0.242377857 | 190716448 | 24.238 | No | 5 |
-| fs | ForSort Stable Fully In-Place | 0.244442209 | 177389048 | 24.444 | Yes | 6 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.306911024 | 264938294 | 30.691 | No | 7 |
-| fb | ForSort Basic Fully In-Place | 0.327668670 | 87261366 | 32.767 | Yes | 8 |
-| gq | GLibc Quick Sort Fully In-Place | 0.431957531 | 120242932 | 43.196 | Yes | 9 |
+| fb | ForSort Basic Fully In-Place | **0.039666660** | 17014230 | **3.967** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **0.050395309** | 19769718 | **5.040** | Yes | 2 |
+| ti | TimSort with Allocated Workspace | **0.125082324** | 39878287 | **12.508** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.157356439 | 68406097 | 15.736 | Yes | 4 |
+| gs | GrailSort Fully In-Place | 0.197536698 | 84028632 | 19.754 | Yes | 5 |
+| fw | ForSort With Allocated Workspace | 0.226901139 | 197266414 | 22.690 | Yes | 6 |
+| fi | ForSort Unstable Fully In-Place | 0.243283227 | 190082762 | 24.328 | No | 7 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.305622835 | 264938294 | 30.562 | No | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 0.428817140 | 120242956 | 42.882 | Yes | 9 |
 
 #### Reverse Ordered Uniques
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.009505338** | 9999999 | **0.951** | Yes | 1 |
-| fb | ForSort Basic Fully In-Place | **0.010624341** | 9999999 | **1.062** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.012126155** | 9999999 | **1.213** | Yes | 3 |
-| wi | WikiSort Fully In-Place | 0.070474969 | 21498750 | 7.047 | Yes | 4 |
-| gs | GrailSort Fully In-Place | 0.162960232 | 81979307 | 16.296 | Yes | 5 |
-| fw | ForSort With Allocated Workspace | 0.219719515 | 197985849 | 21.972 | Yes | 6 |
-| fi | ForSort Unstable Fully In-Place | 0.238939968 | 191369358 | 23.894 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 0.249201867 | 118788160 | 24.920 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 0.316297538 | 290683459 | 31.630 | Yes | 9 |
+| ti | TimSort with Allocated Workspace | **0.009753010** | 9999999 | **0.975** | Yes | 1 |
+| fb | ForSort Basic Fully In-Place | **0.010955323** | 9999999 | **1.096** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.012702662** | 9999999 | **1.270** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 0.069058311 | 21498750 | 6.906 | Yes | 4 |
+| gs | GrailSort Fully In-Place | 0.156780620 | 81979307 | 15.678 | Yes | 5 |
+| fw | ForSort With Allocated Workspace | 0.219586394 | 197985781 | 21.959 | Yes | 6 |
+| fi | ForSort Unstable Fully In-Place | 0.235313287 | 190740147 | 23.531 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 0.251002940 | 118788160 | 25.100 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 0.310981583 | 290683459 | 31.098 | Yes | 9 |
 
 ### 100000000 Items
 
@@ -1818,113 +1818,113 @@ Averages across all test variants (excluding reverse-ordered scenarios which are
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **3.631627976** | 2621033638 | **36.316** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **3.933451892** | 2635149973 | **39.335** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **4.230746486** | 2743966108 | **42.307** | Yes | 3 |
-| gs | GrailSort Fully In-Place | 9.019552970 | 2655115103 | 90.196 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 9.843841393 | 2813381791 | 98.438 | No | 5 |
-| wi | WikiSort Fully In-Place | 10.492428646 | 3064030624 | 104.92 | Yes | 6 |
-| ti | TimSort with Allocated Workspace | 12.073936125 | 2435414127 | 120.74 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 12.709472568 | 2532645582 | 127.09 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 14.704274868 | 4275252865 | 147.04 | Yes | 9 |
+| fw | ForSort With Allocated Workspace | **3.605732237** | 2621034100 | **36.057** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **3.889485654** | 2635151729 | **38.895** | No | 2 |
+| fs | ForSort Stable Fully In-Place | **4.171311801** | 2737947081 | **41.713** | Yes | 3 |
+| gs | GrailSort Fully In-Place | 9.197150139 | 2655115103 | 91.972 | Yes | 4 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 10.008404968 | 2813381791 | 100.08 | No | 5 |
+| wi | WikiSort Fully In-Place | 10.665340264 | 3064030624 | 106.65 | Yes | 6 |
+| fb | ForSort Basic Fully In-Place | 10.707555170 | 3620014278 | 107.08 | Yes | 7 |
+| ti | TimSort with Allocated Workspace | 12.117331195 | 2435414127 | 121.17 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 12.632347379 | 2532645582 | 126.32 | Yes | 9 |
 
 #### 25 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **3.430666901** | 1862546846 | **34.307** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **3.459198890** | 1935889163 | **34.592** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **3.642055074** | 1923143086 | **36.421** | Yes | 3 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 6.058883946 | 2673756547 | 60.589 | No | 4 |
-| wi | WikiSort Fully In-Place | 6.462432725 | 2854539037 | 64.624 | Yes | 5 |
-| ti | TimSort with Allocated Workspace | 6.732373081 | 1534823448 | 67.324 | Yes | 6 |
-| gs | GrailSort Fully In-Place | 7.202731996 | 2634706912 | 72.027 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 8.118661626 | 2514386491 | 81.187 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 8.366754864 | 2304610106 | 83.668 | Yes | 9 |
+| fw | ForSort With Allocated Workspace | **3.376444243** | 1871465958 | **33.764** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **3.387947963** | 1937567270 | **33.879** | No | 2 |
+| fs | ForSort Stable Fully In-Place | **3.543709572** | 1927251602 | **35.437** | Yes | 3 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 6.204097085 | 2673756547 | 62.041 | No | 4 |
+| fb | ForSort Basic Fully In-Place | 6.418575853 | 2004115856 | 64.186 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 6.705431699 | 2854539037 | 67.054 | Yes | 6 |
+| ti | TimSort with Allocated Workspace | 6.720483434 | 1534823448 | 67.205 | Yes | 7 |
+| gs | GrailSort Fully In-Place | 7.261347125 | 2634706912 | 72.613 | Yes | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 8.121808151 | 2514386491 | 81.218 | Yes | 9 |
 
 #### 10 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fw | ForSort With Allocated Workspace | **2.556932185** | 1190172561 | **25.569** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **2.560897266** | 1271687406 | **25.609** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **2.665630130** | 1225562532 | **26.656** | Yes | 3 |
-| ti | TimSort with Allocated Workspace | 3.549045135 | 885227488 | 35.490 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 4.030723093 | 2556059938 | 40.307 | No | 5 |
-| wi | WikiSort Fully In-Place | 4.648267903 | 2589557822 | 46.483 | Yes | 6 |
-| fb | ForSort Basic Fully In-Place | 4.692767711 | 1303210370 | 46.928 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 5.739973044 | 2425069297 | 57.400 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 5.984210983 | 2496323648 | 59.842 | Yes | 9 |
+| fw | ForSort With Allocated Workspace | **2.444036473** | 1213398569 | **24.440** | Yes | 1 |
+| fi | ForSort Unstable Fully In-Place | **2.488270752** | 1283084089 | **24.883** | No | 2 |
+| fs | ForSort Stable Fully In-Place | **2.540750679** | 1257811933 | **25.408** | Yes | 3 |
+| ti | TimSort with Allocated Workspace | 3.589106048 | 885227488 | 35.891 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 3.797842749 | 1153725779 | 37.978 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 4.033374946 | 2556059938 | 40.334 | No | 6 |
+| wi | WikiSort Fully In-Place | 4.757169675 | 2589557822 | 47.572 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 5.770685025 | 2425069297 | 57.707 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 6.033910965 | 2496323648 | 60.339 | Yes | 9 |
 
 #### 5 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| fi | ForSort Unstable Fully In-Place | **2.027578957** | 982330734 | **20.276** | No | 1 |
-| fw | ForSort With Allocated Workspace | **2.053517676** | 925917312 | **20.535** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **2.076190190** | 974524636 | **20.762** | Yes | 3 |
-| ti | TimSort with Allocated Workspace | 2.455842347 | 659572049 | 24.558 | Yes | 4 |
-| fb | ForSort Basic Fully In-Place | 3.253694343 | 967973077 | 32.537 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 3.428036930 | 2520784966 | 34.280 | No | 6 |
-| wi | WikiSort Fully In-Place | 4.006508981 | 2411074399 | 40.065 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 4.906647696 | 2341700849 | 49.066 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 5.431933373 | 2358423063 | 54.319 | Yes | 9 |
+| fw | ForSort With Allocated Workspace | **1.883391082** | 957207476 | **18.834** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **1.956459486** | 983967700 | **19.565** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **1.959127578** | 1004983491 | **19.591** | No | 3 |
+| ti | TimSort with Allocated Workspace | 2.453186459 | 659572049 | 24.532 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 2.769314916 | 862929332 | 27.693 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 3.445866061 | 2520784966 | 34.459 | No | 6 |
+| wi | WikiSort Fully In-Place | 4.142768048 | 2411074399 | 41.428 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 4.946636317 | 2341700849 | 49.466 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 5.358993491 | 2358423063 | 53.590 | Yes | 9 |
 
 #### 1 Percent Disordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **1.066018853** | 324496683 | **10.660** | Yes | 1 |
-| fi | ForSort Unstable Fully In-Place | **1.225825884** | 549880575 | **12.258** | No | 2 |
-| fs | ForSort Stable Fully In-Place | **1.265544466** | 547263352 | **12.655** | Yes | 3 |
-| fw | ForSort With Allocated Workspace | 1.287719936 | 515995154 | 12.877 | Yes | 4 |
-| fb | ForSort Basic Fully In-Place | 1.557156544 | 550858695 | 15.572 | Yes | 5 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 2.805740082 | 2503094341 | 28.057 | No | 6 |
-| wi | WikiSort Fully In-Place | 2.970568501 | 1989970645 | 29.706 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 3.939681435 | 2138241987 | 39.397 | Yes | 8 |
-| gs | GrailSort Fully In-Place | 4.310270590 | 2022641308 | 43.103 | Yes | 9 |
+| ti | TimSort with Allocated Workspace | **1.071936776** | 324496683 | **10.719** | Yes | 1 |
+| fw | ForSort With Allocated Workspace | **1.097294163** | 525105042 | **10.973** | Yes | 2 |
+| fi | ForSort Unstable Fully In-Place | **1.123627969** | 551510519 | **11.236** | No | 3 |
+| fs | ForSort Stable Fully In-Place | 1.148648449 | 600146281 | 11.486 | Yes | 4 |
+| fb | ForSort Basic Fully In-Place | 1.487449018 | 501386868 | 14.874 | Yes | 5 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 2.749516485 | 2503094341 | 27.495 | No | 6 |
+| wi | WikiSort Fully In-Place | 3.056804117 | 1989970645 | 30.568 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 3.978263478 | 2138241987 | 39.783 | Yes | 8 |
+| gs | GrailSort Fully In-Place | 4.297721591 | 2022641308 | 42.977 | Yes | 9 |
 
 #### Fully Ordered
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.077920992** | 99999999 | **0.779** | Yes | 1 |
-| fb | ForSort Basic Fully In-Place | **0.079436309** | 99999999 | **0.794** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.118980518** | 99999999 | **1.190** | Yes | 3 |
-| fi | ForSort Unstable Fully In-Place | 0.143129325 | 100000429 | 1.431 | Yes | 4 |
-| fw | ForSort With Allocated Workspace | 0.193546060 | 100000101 | 1.935 | Yes | 5 |
-| wi | WikiSort Fully In-Place | 0.227993083 | 223276977 | 2.280 | Yes | 6 |
-| gs | GrailSort Fully In-Place | 2.203237033 | 840205773 | 22.032 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 2.364520825 | 1314447104 | 23.645 | Yes | 8 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 2.584375772 | 2523415216 | 25.844 | No | 9 |
+| fb | ForSort Basic Fully In-Place | **0.079138106** | 99999999 | **0.791** | Yes | 1 |
+| ti | TimSort with Allocated Workspace | **0.079063973** | 99999999 | **0.791** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.080636935** | 99999999 | **0.806** | Yes | 3 |
+| fi | ForSort Unstable Fully In-Place | 0.092002377 | 100000429 | 0.920 | Yes | 4 |
+| fw | ForSort With Allocated Workspace | 0.094495209 | 100000101 | 0.945 | Yes | 5 |
+| wi | WikiSort Fully In-Place | 0.240113323 | 223276977 | 2.401 | Yes | 6 |
+| gs | GrailSort Fully In-Place | 2.206300501 | 840205773 | 22.063 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 2.430828293 | 1314447104 | 24.308 | Yes | 8 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 2.451536093 | 2523415216 | 24.515 | No | 9 |
 
 #### Reverse Ordered Duplicates
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **1.620018979** | 418701728 | **16.200** | Yes | 1 |
-| wi | WikiSort Fully In-Place | **2.056417704** | 736637378 | **20.564** | Yes | 2 |
-| gs | GrailSort Fully In-Place | **2.720371769** | 916679743 | **27.204** | Yes | 3 |
-| fw | ForSort With Allocated Workspace | 3.078092344 | 2232941532 | 30.781 | Yes | 4 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 3.167525679 | 2805397135 | 31.675 | No | 5 |
-| fi | ForSort Unstable Fully In-Place | 3.447778443 | 2171401168 | 34.478 | No | 6 |
-| fs | ForSort Stable Fully In-Place | 3.591152225 | 2027889676 | 35.912 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 4.999685311 | 1363129466 | 49.997 | Yes | 8 |
-| fb | ForSort Basic Fully In-Place | 5.360527615 | 871236038 | 53.605 | Yes | 9 |
+| fb | ForSort Basic Fully In-Place | **0.407378604** | 164457475 | **4.074** | Yes | 1 |
+| fs | ForSort Stable Fully In-Place | **0.618193754** | 188352069 | **6.182** | Yes | 2 |
+| ti | TimSort with Allocated Workspace | **1.639693318** | 418701728 | **16.397** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 2.115178687 | 736637378 | 21.152 | Yes | 4 |
+| gs | GrailSort Fully In-Place | 2.672634209 | 916679743 | 26.726 | Yes | 5 |
+| fw | ForSort With Allocated Workspace | 2.825718234 | 2190998624 | 28.257 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 3.104010767 | 2805397135 | 31.040 | No | 7 |
+| fi | ForSort Unstable Fully In-Place | 3.350743782 | 2136653781 | 33.507 | No | 8 |
+| gq | GLibc Quick Sort Fully In-Place | 5.038515170 | 1363129466 | 50.385 | Yes | 9 |
 
 #### Reverse Ordered Uniques
 
 | Sort Type | Name | Time (s) | Comparisons | ns/item | Stable? | Rank |
 |-----------|------|----------|-------------|---------|---------|------|
-| ti | TimSort with Allocated Workspace | **0.104849460** | 99999999 | **1.048** | Yes | 1 |
-| fb | ForSort Basic Fully In-Place | **0.123838466** | 99999999 | **1.238** | Yes | 2 |
-| fs | ForSort Stable Fully In-Place | **0.156446791** | 99999999 | **1.564** | Yes | 3 |
-| wi | WikiSort Fully In-Place | 1.259024800 | 266513829 | 12.590 | Yes | 4 |
-| gs | GrailSort Fully In-Place | 2.274759396 | 896694624 | 22.748 | Yes | 5 |
-| fw | ForSort With Allocated Workspace | 3.032656767 | 2240136721 | 30.327 | Yes | 6 |
-| nq | Bentley/McIlroy Quick Sort In-Place | 3.085241214 | 2921036489 | 30.852 | Yes | 7 |
-| gq | GLibc Quick Sort Fully In-Place | 3.145355958 | 1351335168 | 31.454 | Yes | 8 |
-| fi | ForSort Unstable Fully In-Place | 3.393423958 | 2176935091 | 33.934 | Yes | 9 |
+| ti | TimSort with Allocated Workspace | **0.105585892** | 99999999 | **1.056** | Yes | 1 |
+| fb | ForSort Basic Fully In-Place | **0.123722492** | 99999999 | **1.237** | Yes | 2 |
+| fs | ForSort Stable Fully In-Place | **0.157553721** | 99999999 | **1.576** | Yes | 3 |
+| wi | WikiSort Fully In-Place | 1.261178475 | 266513829 | 12.612 | Yes | 4 |
+| gs | GrailSort Fully In-Place | 2.288013988 | 896694624 | 22.880 | Yes | 5 |
+| fw | ForSort With Allocated Workspace | 2.739209551 | 2198193794 | 27.392 | Yes | 6 |
+| nq | Bentley/McIlroy Quick Sort In-Place | 2.968237980 | 2921036489 | 29.682 | Yes | 7 |
+| gq | GLibc Quick Sort Fully In-Place | 3.190322483 | 1351335168 | 31.903 | Yes | 8 |
+| fi | ForSort Unstable Fully In-Place | 3.345919897 | 2143324548 | 33.459 | Yes | 9 |
 
 
 ## Stability Verification
