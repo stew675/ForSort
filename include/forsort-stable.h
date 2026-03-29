@@ -44,7 +44,7 @@
 #define MAX_DUPS 27
 
 // Uncomment to turn on debugging output for the uniques extraction and merging system
-// #define       DEBUG_UNIQUE_PROCESSING
+//#define       DEBUG_UNIQUE_PROCESSING
 
 // A structure to manage the state of the stable sort algorithm
 struct NAME(stable_state) {
@@ -406,7 +406,7 @@ NAME(stable_sort)(VAR * const pa, const size_t n, COMMON_PARAMS)
 
 	// Quickly handle various reversed or near sorted input corner-cases
 	// The 0.965 here is emperically derived
-	if (work_reversals >= (size_t)(nw * 0.965)) {
+	if (work_reversals >= (size_t)(nw * 0.97)) {
 #ifdef	DEBUG_UNIQUE_PROCESSING
 		printf("stable_sort() - Input appears to be mostly or fully reversed\n");
 #endif
