@@ -44,7 +44,7 @@
 #define MAX_DUPS 27
 
 // Uncomment to turn on debugging output for the uniques extraction and merging system
-//#define       DEBUG_UNIQUE_PROCESSING
+// #define       DEBUG_UNIQUE_PROCESSING
 
 // A structure to manage the state of the stable sort algorithm
 struct NAME(stable_state) {

@@ -344,35 +344,28 @@ NAME(process_ascending)(VAR *restrict curr, VAR *restrict pe, COMMON_PARAMS)
 			return pe;
 
 		if (IS_LT(curr, prev))
-			return curr;
+			return prev;
 	}
 } // process_ascending
 
 
-// Because basic sort is so heavily reliant upon insertion sort, and because
-// insertion sort's worst case is reversed input, this is the one time that
-// Forsort explicitly does something to handle reversed inputs
 static size_t
-NAME(dereverse)(VAR * const pa, const size_t n, COMMON_PARAMS)
+NAME(dereverse)(VAR *restrict curr, const size_t n, COMMON_PARAMS)
 {
-	VAR	*pe = pa + (n * ES), *curr = pa, *start;
+	VAR	*restrict pe = curr + (n * ES);
 	size_t	reversals = 0, loops = 0;
 
 	if (n < 2)
 		return 0;
-
-	// I learned a lesson here.  Break out tight loops into their own
-	// functions and let the C compiler optimize it.  This allows the
-	// compiler to work around CPU UOP cache alignment issues better.
-	while (curr != pe) {
+	for (VAR *restrict start; curr < pe;) {
 		loops++;
-		curr = CALL(process_ascending)(curr, pe, COMMON_ARGS);
-		if (curr == pe)
+		start = CALL(process_ascending)(curr, pe, COMMON_ARGS);
+		curr = start + ES;
+		if (curr >= pe)
 			break;
-		start = curr - ES;
 		curr = CALL(process_descending)(curr, pe, COMMON_ARGS);
-		reversals += NITEM(curr - start);
 		CALL(reverse_block)(start, curr, es);
+		reversals += NITEM(curr - start);
 	}
 	return reversals - loops + 1;
 } // dereverse
