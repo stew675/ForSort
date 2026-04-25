@@ -379,6 +379,54 @@ NAME(process_descending)(VAR *restrict curr, VAR *restrict pe, COMMON_PARAMS)
 
 
 static VAR *
+NAME(process_ascending_batched)(VAR *restrict curr, VAR *restrict pe, COMMON_PARAMS)
+{
+#define MAX_BATCH_SIZE 8
+	ASSERT(curr <= pe);
+
+	size_t	batch_size = 0, max_batch_size = ES * MAX_BATCH_SIZE;
+	VAR *restrict prev;
+
+	for (;;) {
+		prev = curr;
+
+		if (batch_size >= MAX_BATCH_SIZE) {
+			if ((curr + max_batch_size) < pe) {
+				VAR *restrict scan = curr;
+				int disordered = 0;
+
+				disordered += IS_LT(scan + ES, scan); scan += ES;
+				disordered += IS_LT(scan + ES, scan); scan += ES;
+				disordered += IS_LT(scan + ES, scan); scan += ES;
+				disordered += IS_LT(scan + ES, scan); scan += ES;
+				disordered += IS_LT(scan + ES, scan); scan += ES;
+				disordered += IS_LT(scan + ES, scan); scan += ES;
+				disordered += IS_LT(scan + ES, scan); scan += ES;
+				disordered += IS_LT(scan + ES, scan); scan += ES;
+
+				if (disordered == 0) {
+					curr = scan;
+					continue;
+				}
+			}
+			batch_size = 0;
+		}
+
+		curr += ES;
+
+		if (curr >= pe)
+			return pe;
+
+		if (IS_LT(curr, prev))
+			return prev;
+
+		batch_size++;
+	}
+#undef MAX_MATCH_SIZE
+}
+
+
+static VAR *
 NAME(process_ascending)(VAR *restrict curr, VAR *restrict pe, COMMON_PARAMS)
 {
 	ASSERT(curr <= pe);
@@ -405,7 +453,11 @@ NAME(dereverse)(VAR *restrict curr, const size_t n, COMMON_PARAMS)
 		return 0;
 	for (VAR *restrict start; curr < pe;) {
 		loops++;
+#if 1
+		start = CALL(process_ascending_batched)(curr, pe, COMMON_ARGS);
+#else
 		start = CALL(process_ascending)(curr, pe, COMMON_ARGS);
+#endif
 		curr = start + ES;
 		if (curr >= pe)
 			break;
