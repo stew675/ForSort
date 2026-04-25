@@ -431,7 +431,7 @@ NAME(process_ascending_batched)(VAR *restrict curr, VAR *restrict pe, COMMON_PAR
 		curr = next;
 		batch_size++;
 	}
-#undef MAX_MATCH_SIZE
+#undef MAX_BATCH_SIZE
 }
 
 
