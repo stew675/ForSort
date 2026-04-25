@@ -381,45 +381,54 @@ NAME(process_descending)(VAR *restrict curr, VAR *restrict pe, COMMON_PARAMS)
 static VAR *
 NAME(process_ascending_batched)(VAR *restrict curr, VAR *restrict pe, COMMON_PARAMS)
 {
-#define MAX_BATCH_SIZE 8
+#define MAX_BATCH_SIZE 12
+
 	ASSERT(curr <= pe);
 
 	size_t	batch_size = 0, max_batch_size = ES * MAX_BATCH_SIZE;
-	VAR *restrict prev;
+	size_t	disorder = 0;
 
 	for (;;) {
-		prev = curr;
-
 		if (batch_size >= MAX_BATCH_SIZE) {
-			if ((curr + max_batch_size) < pe) {
-				VAR *restrict scan = curr;
-				int disordered = 0;
+			VAR *restrict scan = curr;
 
-				disordered += IS_LT(scan + ES, scan); scan += ES;
-				disordered += IS_LT(scan + ES, scan); scan += ES;
-				disordered += IS_LT(scan + ES, scan); scan += ES;
-				disordered += IS_LT(scan + ES, scan); scan += ES;
-				disordered += IS_LT(scan + ES, scan); scan += ES;
-				disordered += IS_LT(scan + ES, scan); scan += ES;
-				disordered += IS_LT(scan + ES, scan); scan += ES;
-				disordered += IS_LT(scan + ES, scan); scan += ES;
+			while ((scan + max_batch_size) < pe) {
+				disorder += IS_LT(scan + ES, scan); scan += ES;
+				disorder += IS_LT(scan + ES, scan); scan += ES;
 
-				if (disordered == 0) {
-					curr = scan;
-					continue;
-				}
+				disorder += IS_LT(scan + ES, scan); scan += ES;
+				disorder += IS_LT(scan + ES, scan); scan += ES;
+
+				disorder += IS_LT(scan + ES, scan); scan += ES;
+				disorder += IS_LT(scan + ES, scan); scan += ES;
+
+				disorder += IS_LT(scan + ES, scan); scan += ES;
+				disorder += IS_LT(scan + ES, scan); scan += ES;
+
+				disorder += IS_LT(scan + ES, scan); scan += ES;
+				disorder += IS_LT(scan + ES, scan); scan += ES;
+
+				disorder += IS_LT(scan + ES, scan); scan += ES;
+				disorder += IS_LT(scan + ES, scan); scan += ES;
+
+				if (disorder)
+					break;
+
+				curr = scan;
 			}
+
 			batch_size = 0;
 		}
 
-		curr += ES;
+		VAR *restrict next = curr + ES;
 
-		if (curr >= pe)
+		if (next >= pe)
 			return pe;
 
-		if (IS_LT(curr, prev))
-			return prev;
+		if (IS_LT(next, curr))
+			return curr;
 
+		curr = next;
 		batch_size++;
 	}
 #undef MAX_MATCH_SIZE
