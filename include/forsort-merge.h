@@ -411,6 +411,7 @@ NAME(merge_using_workspace)(VAR *a, size_t na, VAR *b, size_t nb,
 {
 	ASSERT(na > 0);
 	ASSERT(nb > 0);
+	ASSERT(na <= nw);
 
 	// Check if we need to do anything at all!
 	if (!IS_LT(b, b - ES))
@@ -763,8 +764,8 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	if (na)
 		CALL(sort_using_workspace)(pa, na, ws, nw, COMMON_ARGS);
 
-	// Top-down split-merge pb until nb fits within nw
-	if (nb > nw) {
+	// Top-down split-merge pb until nb fits within 2 * nw
+	if (nb > (nw + nw)) {
 		step = nb >> 1;
 
 		VAR	*pt = pb + step * ES;
@@ -779,7 +780,7 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 		return;
 	}
 
-	// From here on, nb <= nw
+	// From here on, nb <= nw * 2
 
 	// First sort everything in pb into MS sized chunks
 	for (VAR *pt = pb, *pe = pb + nb * ES; pt < pe; pt += (MS * ES))
@@ -792,14 +793,14 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	do {
 		size_t	step2 = step << 1, step4 = step << 2;
 
-		if (step4 > nb)
+		if ((step4 > nw) || (step4 > nb))
 			break;
 
 		for (size_t pos = 0; pos < nb; pos += step4) {
 			VAR	*p1 = pb + pos * ES;
 			VAR	*p2 = p1 + step * ES;
 			VAR	*p3 = p1 + step2 * ES;
-			VAR	*p4 = p3 + step * ES;
+			VAR	*p4 = p2 + step2 * ES;
 			size_t	d = 0;
 
 			int jc2 = !IS_LT(p2, p2 - ES);		// Check if we can just copy only
@@ -829,8 +830,9 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 		step = step4;
 	} while (1);
 
-	if (step < nb) {
-		for (size_t pos = 0; pos < nb; pos += (step << 1)) {
+	for (size_t step2; step < nb; step = step2) {
+		step2 = step + step;
+		for (size_t pos = 0; pos < nb; pos += step2) {
 			VAR	*p1 = pb + pos * ES;
 			VAR	*p2 = p1 + step * ES;
 
