@@ -562,19 +562,24 @@ NAME(merge_workspace_constrained)(VAR *pa, size_t na, VAR *pb, size_t nb,
 } // merge_workspace_constrained
 
 
+// Restriction - ws cannot overlap with either p1 or p2
 static size_t
 NAME(bimerge_two_to_target)(VAR *restrict p1, VAR *restrict p2, size_t np,
                             VAR *restrict ws, int just_copy, COMMON_PARAMS)
 {
 	if (just_copy) {
-		for (p2 += np * ES; p1 != p2; p1 += ES, ws += ES)
+		VAR *restrict pe;
+
+		for (pe = p1 + np * ES; p1 != pe; p1 += ES, ws += ES)
 			SWAP(ws, p1);
+		for (pe = p2 + np * ES; p2 != pe; p2 += ES, ws += ES)
+			SWAP(ws, p2);
 		return 0;
 	}
 
 	VAR	*restrict wp = ws, *restrict we = ws + (np + np - 1) * ES;
-	VAR	*restrict t1 = p1, *restrict t2 = p2 - ES;
-	VAR	*restrict t3 = p2, *restrict t4 = t2 + (np * ES);
+	VAR	*restrict t1 = p1, *restrict t2 = t1 + (np - 1) * ES;
+	VAR	*restrict t3 = p2, *restrict t4 = t3 + (np - 1) * ES;
 	size_t	disorder = np + np;
 	int	res;
 
@@ -643,6 +648,7 @@ NAME(merge_two_to_target)(VAR *p1, size_t n1, VAR *p2, size_t n2, VAR *pd, size_
 {
 	ASSERT(n1 > 0);
 	ASSERT(n2 > 0);
+	ASSERT((n1 + n2) <= nd);
 
 	size_t	disorder = 0;
 	VAR	*p1e = p1 + n1 * ES, *p2e = p2 + n2 * ES;
@@ -747,7 +753,7 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 	ASSERT(nw > 0);
 
 	// Determine the maximum merge step size we can use in this call
-	for (step = MS; (step << 1) <= n; step <<= 1);
+	for (step = MS << 2; (step << 1) <= n; step <<= 1);
 
 	// Split input into two.  That which we can merge as an
 	// even multiple sized chunk (pb), and the remainder (pa)
@@ -773,27 +779,34 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 		return;
 	}
 
+	// From here on, nb <= nw
+
 	// First sort everything in pb into MS sized chunks
-	for (VAR *pt = pb, *pe = pa + n * ES; pt < pe; pt += (MS * ES))
+	for (VAR *pt = pb, *pe = pb + nb * ES; pt < pe; pt += (MS * ES))
 		CALL(sort_five)(pt, COMMON_ARGS);
 
 	// Now bottom-up merge-sort pb
 
 	// Handle merge sizes where we're able to use the available work-space to merge four steps
-	for (step = MS; ((step << 2) <= nb) && ((step << 2) <= nw); step <<= 2) {
-		for (size_t pos = 0; pos < nb; pos += (step << 2)) {
-			size_t	step2 = step << 1, step4 = step << 2, d = 0;
+	step = MS;
+	do {
+		size_t	step2 = step << 1, step4 = step << 2;
 
+		if (step4 > nb)
+			break;
+
+		for (size_t pos = 0; pos < nb; pos += step4) {
 			VAR	*p1 = pb + pos * ES;
 			VAR	*p2 = p1 + step * ES;
 			VAR	*p3 = p1 + step2 * ES;
 			VAR	*p4 = p3 + step * ES;
+			size_t	d = 0;
 
 			int jc2 = !IS_LT(p2, p2 - ES);		// Check if we can just copy only
 			int jc4 = !IS_LT(p4, p4 - ES);		// Check if we can just copy only
 
-			if (jc2 && jc4)
-				if (!IS_LT(p3, p3 - ES))	// Check if we need to do anything at all!
+			if (jc2 && jc4)				// Check if can skip entirely!
+				if (!IS_LT(p3, p3 - ES))
 					continue;
 
 			VAR *pw1 = ws, *pw2 = ws + (step2 * ES);
@@ -812,56 +825,24 @@ NAME(sort_using_workspace)(VAR *pa, size_t n, VAR * const ws,
 			disorder += d;
 			num += step4;
 		}
-	}
 
-	// Handle merge sizes where we're able to use the available work-space to merge two steps
-	int do_bimerge = ((disorder * 5) > (num * 4));
-	for ( ; ((step << 2) <= nb) && ((step << 1) <= nw); step <<= 2) {
-		for (size_t pos = 0; pos < nb; pos += (step << 2)) {
-			VAR	*p1 = pb + pos * ES;
-			VAR	*p2 = p1 + step * ES;
-			VAR	*p3 = p2 + step * ES;
-			VAR	*p4 = p3 + step * ES;
+		step = step4;
+	} while (1);
 
-			CALL(merge_workspace_constrained)(p3, step, p4, step, ws, nw, COMMON_ARGS);
-			int jc2 = !IS_LT(p2, p2 - ES);
-			if (do_bimerge) {
-				CALL(bimerge_two_to_target)(p1, p2, step, ws, jc2, COMMON_ARGS);
-			} else {
-				CALL(merge_two_to_target)(p1, step, p2, step, ws, step << 1, jc2, COMMON_ARGS);
-			}
-			p2 = ws + (step + step - 1) * ES;
-			int jc3 = !IS_LT(p3, p2);
-			CALL(merge_two_to_target)(ws, step << 1, p3, step << 1, p1, step << 2, jc3, COMMON_ARGS);
-		}
-	}
-
-	// Handle merge sizes where the available work-space cannot fully hold two steps
-	// Doing a 4-way merge here improves CPU cache locality for a small speed boost
-	for ( ; (step << 2) <= nb; step <<= 2) {
-		for (size_t pos = 0; pos < nb; pos += (step << 2)) {
-			VAR	*p1 = pb + pos * ES;
-			VAR	*p2 = p1 + step * ES;
-			VAR	*p3 = p2 + step * ES;
-			VAR	*p4 = p3 + step * ES;
-
-			CALL(merge_workspace_constrained)(p1, step, p2, step, ws, nw, COMMON_ARGS);
-			CALL(merge_workspace_constrained)(p3, step, p4, step, ws, nw, COMMON_ARGS);
-			CALL(merge_workspace_constrained)(p1, step << 1, p3, step << 1, ws, nw, COMMON_ARGS);
-		}
-	}
-
-	// Handle final 2-step merge if applicable
 	if (step < nb) {
-		VAR	*pt = pb + step * ES;
+		for (size_t pos = 0; pos < nb; pos += (step << 1)) {
+			VAR	*p1 = pb + pos * ES;
+			VAR	*p2 = p1 + step * ES;
 
-		CALL(merge_workspace_constrained)(pb, step, pt, step, ws, nw, COMMON_ARGS);
+			CALL(merge_using_workspace)(p1, step, p2, step, ws, nw, COMMON_ARGS);
+		}
 	}
 
 	// Use the constrained workspace algorithm to merge pa and pb together
 	if (na)
 		CALL(merge_workspace_constrained)(pa, na, pb, nb, ws, nw, COMMON_ARGS);
 } // sort_using_workspace
+
 
 // Base merge-sort algorithm - I'm all 'bout that speed baby!
 // It logically follows that if this is given unique items to sort
