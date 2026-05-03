@@ -2199,19 +2199,26 @@
         const scrubberEl = document.getElementById('progress-scrubber');
 
         window.addEventListener('mousemove', (e) => {
-            if (!visualState.timeline.length || visualState.isPlaying && !isDragging) return;
+            if (!isDragging || !visualState.timeline.length) return;
 
             const rect = progressBar.getBoundingClientRect();
             const hoverX = e.clientX - rect.left;
             const percentage = Math.max(0, Math.min(1, hoverX / rect.width));
             scrubberEl.style.left = `${percentage * 100}%`;
 
-            if (isDragging) {
-                const targetStep = Math.floor(percentage * (visualState.timeline.length - 1));
-                visualState.currentStep = targetStep;
-                renderVisualization(targetStep);
-                updateControls();
-            }
+            const targetStep = Math.floor(percentage * (visualState.timeline.length - 1));
+            visualState.currentStep = targetStep;
+            renderVisualization(targetStep);
+            updateControls();
+        });
+
+        progressBar.addEventListener('mousemove', (e) => {
+            if (!visualState.timeline.length || isDragging || visualState.isPlaying) return;
+
+            const rect = e.currentTarget.getBoundingClientRect();
+            const hoverX = e.clientX - rect.left;
+            const percentage = Math.max(0, Math.min(1, hoverX / rect.width));
+            scrubberEl.style.left = `${percentage * 100}%`;
         });
 
         progressBar.addEventListener('mousedown', (e) => {
