@@ -169,13 +169,16 @@
             color: #ffd700;
         }
 
-        .phase-indicator {
+       .phase-indicator, .operation-indicator {
             background: #3a3a3a;
             padding: 12px;
             border-radius: 4px;
             font-weight: 600;
             color: #4a90e2;
         }
+
+        .operation-indicator { min-width: 140px; }
+        #stat-operation { text-transform: uppercase; letter-spacing: 0.5px; }
 
         .legend {
             background: #2a2a2a;
@@ -328,6 +331,10 @@
                     <div class="stat-label">Current Phase</div>
                     <div id="stat-phase">Ready</div>
                 </div>
+                <div class="stat-item operation-indicator">
+                    <div class="stat-label">Operation</div>
+                    <div id="stat-operation" style="color: #87ceeb; font-size: 14px;">—</div>
+                </div>
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
@@ -403,8 +410,13 @@
             regions: {},
             animationFrame: null,
             lastFrameTime: 0,
-            audioEnabled: true
+            audioEnabled: true,
+            snapshots: {},      // Cached array states at intervals
+            maxValue: 1,        // Pre-computed for rendering
+            dirtyIndices: new Set()  // Indices needing redraw
         };
+
+        const SNAPSHOT_INTERVAL = 100;  // Snapshot every N steps
 
         // Audio context for sound effects
         let audioContext = null;
@@ -473,6 +485,17 @@
         let currentPhase = 'Initializing';
         let regionTracking = {};
 
+        function applyEventToArray(event, arr) {
+            if (event.type === 'swap' && event.indices.length === 2) {
+                const [idx1, idx2] = event.indices;
+                const temp = arr[idx1];
+                arr[idx1] = arr[idx2];
+                arr[idx2] = temp;
+            } else if (event.type === 'set') {
+                arr[event.index] = event.value;
+            }
+        }
+
         function recordEvent(type, data) {
             timeline.push({
                 type,
@@ -483,6 +506,10 @@
                 regions: JSON.parse(JSON.stringify(regionTracking)),
                 ...data
             });
+
+            if (timeline.length % SNAPSHOT_INTERVAL === 0 && array) {
+                visualState.snapshots[timeline.length] = new Int32Array(array);
+            }
         }
 
         function setPhase(phase) {
@@ -512,12 +539,15 @@
             const temp = array[i];
             array[i] = array[j];
             array[j] = temp;
+            visualState.dirtyIndices.add(i);
+            visualState.dirtyIndices.add(j);
             recordEvent('swap', { indices: [i, j], values: [array[i], array[j]] });
         }
 
         function ARRAY_SET(i, value) {
             if (array[i] === value) return;
             array[i] = value;
+            visualState.dirtyIndices.add(i);
             recordEvent('set', { index: i, value: value });
         }
 
@@ -1708,20 +1738,22 @@
         }
 
         function reconstructArrayAtStep(step) {
-            // Start with the original shuffled array
-            const reconstructed = new Int32Array(visualState.initialArray);
+            const keys = Object.keys(visualState.snapshots).map(Number).sort((a, b) => a - b);
 
-            // Replay all modifications up to this step
-            for (let i = 0; i <= step; i++) {
-                const event = visualState.timeline[i];
-                if (event.type === 'swap') {
-                    const [idx1, idx2] = event.indices;
-                    const temp = reconstructed[idx1];
-                    reconstructed[idx1] = reconstructed[idx2];
-                    reconstructed[idx2] = temp;
-                } else if (event.type === 'set') {
-                    reconstructed[event.index] = event.value;
-                }
+            let baseSnapshot = null;
+            let baseIndex = 0;
+
+            for (const k of keys) {
+                if (k <= step) {
+                    baseSnapshot = visualState.snapshots[k];
+                    baseIndex = k;
+                } else break;
+            }
+
+            const reconstructed = new Int32Array(baseSnapshot || visualState.initialArray);
+
+            for (let i = baseIndex; i <= step && i < timeline.length; i++) {
+                applyEventToArray(visualState.timeline[i], reconstructed);
             }
 
             return reconstructed;
@@ -1738,8 +1770,8 @@
 
             const width = canvas.width;
             const height = canvas.height;
-            const barWidth = width / visualState.size;
-            const maxValue = Math.max(...currentArray);
+            let barWidth = width / visualState.size;
+            const maxValue = visualState.maxValue || 1;
 
             ctx.clearRect(0, 0, width, height);
 
@@ -1761,40 +1793,93 @@
                 }
             }
 
+            const showTextLabels = visualState.size <= 512 && barWidth >= 12;
+
             // Draw bars
             for (let i = 0; i < visualState.size; i++) {
                 const value = currentArray[i];
-                const barHeight = (value / maxValue) * (height - 40);
-                const x = i * barWidth;
-                const y = height - barHeight;
+                const x = Math.floor(i * barWidth);
+                
+                if (showTextLabels) {
+                    let color = getRegionColor(i, event.regions);
 
-                // Get region color
-                let color = getRegionColor(i, event.regions);
+                    if (event.type === 'compare' && event.indices.includes(i)) {
+                        color = '#87ceeb';
+                    } else if (event.type === 'swap' && event.indices.includes(i)) {
+                        color = '#ff4444';
+                    }
 
-                // Flash colors for comparisons and swaps
-                if (event.type === 'compare' && event.indices.includes(i)) {
-                    color = '#87ceeb'; // Pale blue for comparison
-                } else if (event.type === 'swap' && event.indices.includes(i)) {
-                    color = '#ff4444'; // Red for swap
-                } else if (inVerificationPhase) {
-                    // In verification phase, show green for all verified sorted elements
-                    if (i === 0 || currentArray[i] >= currentArray[i-1]) {
-                        color = '#00ff00'; // Green for verified sorted
-                    } else {
-                        color = '#ff0000'; // Red for out of order
+                    ctx.fillStyle = color;
+                    const fontSize = Math.min(11, barWidth - 2);
+                    ctx.font = `${fontSize}px monospace`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(value.toString(), x + barWidth / 2, height / 2 + (i % 2 === 0 ? 4 : -4));
+                } else {
+                    const barHeight = (value / maxValue) * (height - 40);
+                    const y = height - barHeight;
+
+                    let color = getRegionColor(i, event.regions);
+
+                    if (event.type === 'compare' && event.indices.includes(i)) {
+                        color = '#87ceeb';
+                    } else if (event.type === 'swap' && event.indices.includes(i)) {
+                        color = '#ff4444';
+                    } else if (inVerificationPhase) {
+                        if (i === 0 || currentArray[i] >= currentArray[i-1]) {
+                            color = '#00ff00';
+                        } else {
+                            color = '#ff0000';
+                        }
+                    }
+
+                    ctx.fillStyle = color;
+                    const drawWidth = Math.max(barWidth - 1, 1);
+                    if (drawWidth >= 1) {
+                        ctx.fillRect(x, y, drawWidth, barHeight);
                     }
                 }
+            }
 
-                ctx.fillStyle = color;
-                ctx.fillRect(x, y, Math.max(barWidth - 1, 1), barHeight);
+            // Draw comparison/swap indicators above bars when using text mode
+            if (showTextLabels && event.type === 'compare' && event.indices) {
+                const [idx1, idx2] = event.indices;
+                ctx.fillStyle = '#87ceeb';
+                ctx.font = 'bold 10px sans-serif';
+                for (const idx of [idx1, idx2]) {
+                    const x = Math.floor(idx * barWidth + barWidth / 2);
+                    ctx.beginPath();
+                    ctx.arc(x, height - 15, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            } else if (showTextLabels && event.type === 'swap' && event.indices) {
+                const [idx1, idx2] = event.indices;
+                ctx.strokeStyle = '#ff4444';
+                ctx.lineWidth = 2;
+                for (const idx of [idx1, idx2]) {
+                    const x = Math.floor(idx * barWidth + barWidth / 2);
+                    ctx.beginPath();
+                    ctx.arc(x, height - 15, 5, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
             }
 
             // Update stats
+            const operationNames = {
+                'initial': 'Ready',
+                'compare': 'Comparing',
+                'swap': 'Swapping elements',
+                'set': 'Setting value',
+                'rotate_small': 'Block rotation (small)',
+                'region': event.regionName ? `Region: ${event.regionName}` : '',
+                'phase': ''
+            };
+            
             document.getElementById('stat-size').textContent = visualState.size;
             document.getElementById('stat-comparisons').textContent = event.comparisons.toLocaleString();
             document.getElementById('stat-swaps').textContent = event.swaps.toLocaleString();
             document.getElementById('stat-step').textContent = `${step} / ${visualState.timeline.length - 1}`;
             document.getElementById('stat-phase').textContent = event.phase;
+            document.getElementById('stat-operation').textContent = operationNames[event.type] || '';
 
             const progress = (step / (visualState.timeline.length - 1)) * 100;
             document.getElementById('progress-fill').style.width = `${progress}%`;
@@ -1870,6 +1955,8 @@
             timeline = [];
             regionTracking = {};
             currentPhase = 'Initializing';
+            visualState.snapshots = {};
+            visualState.dirtyIndices.clear();
 
             // Generate and sort
             generateData(size, withDuplicates);
@@ -1877,6 +1964,15 @@
             // Store initial state for visualization
             visualState.initialArray = new Int32Array(array);
             visualState.size = size;
+
+            let maxVal = array[0];
+            for (let i = 1; i < array.length; i++) {
+                if (array[i] > maxVal) maxVal = array[i];
+            }
+            visualState.maxValue = maxVal || 1;
+
+            // Create initial snapshot at step 0
+            visualState.snapshots[0] = new Int32Array(array);
 
             // Record initial state
             recordEvent('initial', { array: new Int32Array(array) });
