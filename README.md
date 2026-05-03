@@ -181,3 +181,4 @@ For comprehensive benchmark results and analysis, see **[RESULTS.md](RESULTS.md)
 5. **[Performance Rankings](RESULTS.md#performance-rankings)** - Detailed rankings at each dataset size and variant
 6. **[Detailed Results by Dataset Size](RESULTS.md#detailed-results-by-dataset-size)** - Full breakdown including reverse-ordered scenarios
 7. **[Stability Verification](RESULTS.md#stability-verification)** - Stability testing results
+
