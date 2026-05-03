@@ -231,10 +231,26 @@
             background: #3a3a3a;
             border-radius: 3px;
             margin-top: 10px;
-            overflow: hidden;
+            overflow: visible;
+            cursor: pointer;
+            position: relative;
         }
 
-        .progress-fill {
+        .progress-scrubber {
+            display: none;
+            position: absolute;
+            top: -8px;
+            width: 4px;
+            height: 22px;
+            background: #fff;
+            border-radius: 2px;
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+
+        .progress-bar:hover .progress-scrubber {
+            display: block;
+        }
             height: 100%;
             background: linear-gradient(90deg, #4a90e2, #ffd700);
             transition: width 0.1s linear;
@@ -337,6 +353,7 @@
                 </div>
             </div>
             <div class="progress-bar">
+                <div class="progress-scrubber" id="progress-scrubber"></div>
                 <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
             </div>
         </div>
@@ -1883,6 +1900,11 @@
 
             const progress = (step / (visualState.timeline.length - 1)) * 100;
             document.getElementById('progress-fill').style.width = `${progress}%`;
+
+            // Update scrubber position
+            const totalSteps = visualState.timeline.length - 1 || 1;
+            const stepPercent = (step / totalSteps) * 100;
+            document.getElementById('progress-scrubber').style.left = `${stepPercent}%`;
         }
 
         // ===================================================================
@@ -2043,6 +2065,84 @@
             if (visualState.audioEnabled && !audioContext) {
                 initAudio();
             }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            const hasData = visualState.timeline.length > 0;
+            
+            switch(e.code) {
+                case 'Space':
+                    e.preventDefault();
+                    if (!hasData) return;
+                    initAudio();
+                    if (visualState.isPlaying) {
+                        document.getElementById('pause-btn').click();
+                    } else {
+                        document.getElementById('play-btn').click();
+                    }
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    if (!hasData || visualState.currentStep > 0) {
+                        document.getElementById('step-back-btn').click();
+                    }
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    if (hasData && !visualState.isPlaying && 
+                        visualState.currentStep < visualState.timeline.length - 1) {
+                        document.getElementById('step-forward-btn').click();
+                    }
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    if (!hasData || visualState.currentStep > 0) {
+                        while (visualState.currentStep > 0) {
+                            visualState.currentStep--;
+                        }
+                        renderVisualization(0);
+                        updateControls();
+                    }
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    if (hasData && !visualState.isPlaying &&
+                        visualState.currentStep < visualState.timeline.length - 1) {
+                        while (visualState.currentStep < visualState.timeline.length - 1) {
+                            visualState.currentStep++;
+                        }
+                        renderVisualization(visualState.currentStep);
+                        updateControls();
+                    }
+                    break;
+            }
+        });
+
+        // Timeline scrubbing on progress bar click
+        const progressBar = document.getElementById('progress-fill').parentElement;
+
+        progressBar.addEventListener('mousemove', (e) => {
+            if (!visualState.timeline.length || visualState.isPlaying) return;
+            
+            const rect = e.currentTarget.getBoundingClientRect();
+            const hoverX = e.clientX - rect.left;
+            const percentage = Math.max(0, Math.min(1, hoverX / rect.width));
+            document.getElementById('progress-scrubber').style.left = `${percentage * 100}%`;
+        });
+
+        progressBar.addEventListener('click', (e) => {
+            const hasData = visualState.timeline.length > 0;
+            if (!hasData || visualState.isPlaying) return;
+
+            const rect = e.currentTarget.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const percentage = Math.max(0, Math.min(1, clickX / rect.width));
+            const targetStep = Math.floor(percentage * (visualState.timeline.length - 1));
+
+            visualState.currentStep = targetStep;
+            renderVisualization(targetStep);
+            updateControls();
         });
 
         // Initial render
