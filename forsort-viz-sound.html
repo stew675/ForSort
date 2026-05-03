@@ -248,9 +248,11 @@
             pointer-events: none;
         }
 
-        .progress-bar:hover .progress-scrubber {
+       .progress-bar:hover .progress-scrubber {
             display: block;
         }
+
+        .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #4a90e2, #ffd700);
             transition: width 0.1s linear;
@@ -428,9 +430,12 @@
             animationFrame: null,
             lastFrameTime: 0,
             audioEnabled: true,
-            snapshots: {},      // Cached array states at intervals
-            maxValue: 1,        // Pre-computed for rendering
-            dirtyIndices: new Set()  // Indices needing redraw
+            snapshots: {},              // Cached array states at intervals
+            snapshotKeys: [],           // Sorted numeric keys of snapshots (cached)
+            maxValue: 1,                // Pre-computed for rendering
+            dirtyIndices: new Set(),    // Indices needing redraw
+            reconstructBuffer: null,    // Reusable Int32Array to avoid per-frame allocation
+            lastRenderedStep: -1        // Track step jumps to invalidate dirty cache
         };
 
         const SNAPSHOT_INTERVAL = 100;  // Snapshot every N steps
@@ -1755,7 +1760,8 @@
         }
 
         function reconstructArrayAtStep(step) {
-            const keys = Object.keys(visualState.snapshots).map(Number).sort((a, b) => a - b);
+            const keys = visualState.snapshotKeys;  // Pre-sorted, no re-sorting needed
+            const buffer = visualState.reconstructBuffer;
 
             let baseSnapshot = null;
             let baseIndex = 0;
@@ -1767,13 +1773,15 @@
                 } else break;
             }
 
-            const reconstructed = new Int32Array(baseSnapshot || visualState.initialArray);
+            // Copy from nearest snapshot into reusable buffer instead of allocating new array
+            const source = baseSnapshot || visualState.initialArray;
+            buffer.set(source);
 
             for (let i = baseIndex; i <= step && i < timeline.length; i++) {
-                applyEventToArray(visualState.timeline[i], reconstructed);
+                applyEventToArray(visualState.timeline[i], buffer);
             }
 
-            return reconstructed;
+            return buffer;
         }
 
         function renderVisualization(step) {
@@ -1784,6 +1792,12 @@
 
             // Reconstruct array state at this step
             const currentArray = reconstructArrayAtStep(step);
+
+            // Invalidate dirty cache on non-sequential jumps (fast playback or scrubbing)
+            if (visualState.lastRenderedStep >= 0 && Math.abs(step - visualState.lastRenderedStep) > 1) {
+                visualState.dirtyIndices.clear();
+            }
+            visualState.lastRenderedStep = step;
 
             const width = canvas.width;
             const height = canvas.height;
@@ -1812,8 +1826,14 @@
 
             const showTextLabels = visualState.size <= 512 && barWidth >= 12;
 
+            // Draw bars using dirty index tracking for incremental updates when beneficial
+            const useDirtyTracking = visualState.dirtyIndices.size > 0 && 
+                                     visualState.dirtyIndices.size < (visualState.size * 0.2);
+
             // Draw bars
             for (let i = 0; i < visualState.size; i++) {
+                if (useDirtyTracking && !visualState.dirtyIndices.has(i)) continue;
+                
                 const value = currentArray[i];
                 const x = Math.floor(i * barWidth);
                 
@@ -1855,6 +1875,10 @@
                         ctx.fillRect(x, y, drawWidth, barHeight);
                     }
                 }
+            }
+
+            if (useDirtyTracking) {
+                visualState.dirtyIndices.clear();
             }
 
             // Draw comparison/swap indicators above bars when using text mode
@@ -2006,8 +2030,10 @@
                 basicSort(0, size);
             }
 
-            // Store timeline
+            // Store timeline and build cached snapshot keys (sorted ascending)
             visualState.timeline = timeline;
+            visualState.snapshotKeys = Object.keys(visualState.snapshots).map(Number).sort((a, b) => a - b);
+            visualState.reconstructBuffer = new Int32Array(size);  // Reusable buffer for reconstruction
             visualState.currentStep = 0;
             visualState.isPlaying = false;
 

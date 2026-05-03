@@ -1,0 +1,48 @@
+Goal
+
+Analyze and improve visualization implementation of ForSort algorithm visualizer; implement performance optimizations and UX enhancements.
+
+Constraints & Preferences
+- User prioritized "Performance + Visual" improvements over full 4-phase plan
+- Exit plan mode to proceed with implementation immediately after planning
+
+Progress
+
+Done
+- Snapshot caching system (every 100 steps) for O(n²) → O(snapshot_interval × n) reconstruction
+- Dirty index tracking in SWAP/ARRAY_SET functions
+- Pre-computed maxValue using loop instead of Math.max(...array)
+- Operation type indicator showing current action (Comparing/Swapping/Rotating/etc.)
+- Bar width handling with text labels for arrays ≤512 elements when space permits
+- Fixed bar rendering bug causing all bars to appear same height at 1024/2048 sizes
+- Keyboard shortcuts (Space=play/pause, Arrow keys=step, Home/End=jump)
+- Timeline scrubbing via clickable progress bar with hover scrubber indicator
+- Fixed CSS bug: added missing `.progress-fill` selector making progress bar visible
+- Implemented dirty index rendering optimization: skips drawing unchanged bars when <20% of array is modified per step; auto-invalidates on non-sequential jumps (fast playback/scrubbing)
+- Optimized reconstructArrayAtStep(): pre-sorted snapshot keys cached once after sort, reusable Int32Array buffer eliminates per-frame allocation
+- Committed as ee695d6: "visualizer: Add snapshot caching and performance optimizations"
+
+In Progress
+- None
+
+Blocked
+- None
+
+Key Decisions
+- SNAPSHOT_INTERVAL = 100 balances memory usage vs reconstruction speed
+- Replaced Math.max spread with loop to avoid V8's ~100k argument limit on large arrays
+- Removed fixed-height fallback rendering that was masking actual value differences in narrow bars
+- Dirty index threshold set at 20% of array size: only activates incremental redraw when fewer than 20% of indices are dirty
+- Snapshot keys sorted once after sort completes and cached — avoids O(S log S) re-sort on every frame (S = number of snapshots, typically ~10k+)
+
+Next Steps
+1. Fix Home/End keyboard handlers: direct assignment instead of wasteful while-loops (P4)
+2. Add drag-to-scrub on progress bar (currently click-only, needs mousedown/mousemove/mouseup) (P5)
+
+Critical Context
+- Original bottleneck: reconstructArrayAtStep() re-played entire timeline on every render frame
+- Visual bug at 1024+ elements caused by Math.max(...array) failing silently and fixed-height rendering branch
+- Canvas dimensions: 1760×400px, bar height formula uses (value / maxValue) * (height - 40)
+
+Relevant Files
+- /home/stew675/ForSort/forsort-viz-sound.html: Main visualizer file being improved; now at ~2178 lines
