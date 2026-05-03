@@ -20,7 +20,8 @@ Done
 - Fixed CSS bug: added missing `.progress-fill` selector making progress bar visible
 - Implemented dirty index rendering optimization: skips drawing unchanged bars when <20% of array is modified per step; auto-invalidates on non-sequential jumps (fast playback/scrubbing)
 - Optimized reconstructArrayAtStep(): pre-sorted snapshot keys cached once after sort, reusable Int32Array buffer eliminates per-frame allocation
-- Committed as ee695d6: "visualizer: Add snapshot caching and performance optimizations"
+- Fixed Home/End keyboard handlers: direct assignment instead of wasteful while-loops; both now pause playback on jump for consistency
+- Added drag-to-scrub on progress bar with mousedown/mousemove/mouseup; scrubber stays visible during drag, user-select disabled to prevent text selection
 
 In Progress
 - None
@@ -36,8 +37,7 @@ Key Decisions
 - Snapshot keys sorted once after sort completes and cached — avoids O(S log S) re-sort on every frame (S = number of snapshots, typically ~10k+)
 
 Next Steps
-1. Fix Home/End keyboard handlers: direct assignment instead of wasteful while-loops (P4)
-2. Add drag-to-scrub on progress bar (currently click-only, needs mousedown/mousemove/mouseup) (P5)
+- No immediate items; consider P6 (OffscreenCanvas or batched canvas operations for 2048+ element rendering) if performance warrants it at larger sizes
 
 Critical Context
 - Original bottleneck: reconstructArrayAtStep() re-played entire timeline on every render frame
@@ -45,4 +45,4 @@ Critical Context
 - Canvas dimensions: 1760×400px, bar height formula uses (value / maxValue) * (height - 40)
 
 Relevant Files
-- /home/stew675/ForSort/forsort-viz-sound.html: Main visualizer file being improved; now at ~2178 lines
+- /home/stew675/ForSort/forsort-viz-sound.html: Main visualizer file being improved; now at ~2198 lines

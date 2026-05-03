@@ -234,6 +234,8 @@
             overflow: visible;
             cursor: pointer;
             position: relative;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .progress-scrubber {
@@ -2123,21 +2125,18 @@
                     break;
                 case 'Home':
                     e.preventDefault();
-                    if (!hasData || visualState.currentStep > 0) {
-                        while (visualState.currentStep > 0) {
-                            visualState.currentStep--;
-                        }
+                    if (hasData && visualState.currentStep > 0) {
+                        visualState.isPlaying = false;
+                        visualState.currentStep = 0;
                         renderVisualization(0);
                         updateControls();
                     }
                     break;
                 case 'End':
                     e.preventDefault();
-                    if (hasData && !visualState.isPlaying &&
-                        visualState.currentStep < visualState.timeline.length - 1) {
-                        while (visualState.currentStep < visualState.timeline.length - 1) {
-                            visualState.currentStep++;
-                        }
+                    if (hasData && visualState.currentStep < visualState.timeline.length - 1) {
+                        visualState.isPlaying = false;
+                        visualState.currentStep = visualState.timeline.length - 1;
                         renderVisualization(visualState.currentStep);
                         updateControls();
                     }
@@ -2149,17 +2148,29 @@
         const progressBar = document.getElementById('progress-fill').parentElement;
 
         progressBar.addEventListener('mousemove', (e) => {
-            if (!visualState.timeline.length || visualState.isPlaying) return;
-            
+            if (!visualState.timeline.length || visualState.isPlaying && !isDragging) return;
+
             const rect = e.currentTarget.getBoundingClientRect();
             const hoverX = e.clientX - rect.left;
             const percentage = Math.max(0, Math.min(1, hoverX / rect.width));
             document.getElementById('progress-scrubber').style.left = `${percentage * 100}%`;
+
+            if (isDragging) {
+                const targetStep = Math.floor(percentage * (visualState.timeline.length - 1));
+                visualState.currentStep = targetStep;
+                renderVisualization(targetStep);
+                updateControls();
+            }
         });
 
-        progressBar.addEventListener('click', (e) => {
+        let isDragging = false;
+
+        progressBar.addEventListener('mousedown', (e) => {
             const hasData = visualState.timeline.length > 0;
             if (!hasData || visualState.isPlaying) return;
+
+            isDragging = true;
+            document.getElementById('progress-scrubber').style.display = 'block';
 
             const rect = e.currentTarget.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
@@ -2169,6 +2180,13 @@
             visualState.currentStep = targetStep;
             renderVisualization(targetStep);
             updateControls();
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                document.getElementById('progress-scrubber').style.display = '';
+            }
         });
 
         // Initial render
