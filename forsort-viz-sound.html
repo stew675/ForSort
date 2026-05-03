@@ -227,9 +227,9 @@
 
         .progress-bar {
             width: 100%;
-            height: 6px;
+            height: 8px;
             background: #3a3a3a;
-            border-radius: 3px;
+            border-radius: 4px;
             margin-top: 10px;
             overflow: visible;
             cursor: pointer;
@@ -239,19 +239,34 @@
         }
 
         .progress-scrubber {
-            display: none;
+            display: block;
             position: absolute;
-            top: -8px;
-            width: 4px;
-            height: 22px;
-            background: #fff;
-            border-radius: 2px;
-            transform: translateX(-50%);
+            top: 50%;
+            width: 18px;
+            height: 24px;
+            background: #ffd700;
+            border-radius: 4px;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            box-shadow: 0 0 6px rgba(255, 215, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+            transition: background 0.1s;
+        }
+
+        .progress-scrubber::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 4px;
+            width: 6px;
+            height: 15px;
+            border-left: 2px solid rgba(0,0,0,0.3);
+            border-right: 2px solid rgba(0,0,0,0.3);
             pointer-events: none;
         }
 
-       .progress-bar:hover .progress-scrubber {
-            display: block;
+        .progress-scrubber.dragging {
+            background: #ffaa00;
+            cursor: grabbing;
         }
 
         .progress-fill {
@@ -2197,13 +2212,14 @@
         });
 
         let isDragging = false;
+        const scrubberEl = document.getElementById('progress-scrubber');
 
         progressBar.addEventListener('mousedown', (e) => {
             const hasData = visualState.timeline.length > 0;
             if (!hasData || visualState.isPlaying) return;
 
             isDragging = true;
-            document.getElementById('progress-scrubber').style.display = 'block';
+            scrubberEl.classList.add('dragging');
 
             const rect = e.currentTarget.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
@@ -2218,7 +2234,7 @@
         window.addEventListener('mouseup', () => {
             if (isDragging) {
                 isDragging = false;
-                document.getElementById('progress-scrubber').style.display = '';
+                scrubberEl.classList.remove('dragging');
             }
         });
 
