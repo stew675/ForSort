@@ -23,6 +23,7 @@ Done
 - Fixed Home/End keyboard handlers: direct assignment instead of wasteful while-loops; both pause playback on jump for consistency
 - Added drag-to-scrub on progress bar with mousedown/mousemove/mouseup; scrubber stays visible during drag, user-select disabled to prevent text selection
 - Batched canvas rendering by color group: replaces per-bar fillRect calls with grouped beginPath/rect/fill batches (threshold 8 rects), dramatically reducing draw call overhead at 2048+ elements
+- Fixed forsort_stable() phase pollution bug: basicSort() left currentPhase as 'Complete' on return, causing all subsequent merge events in Phase 2 loop to render with verification colors (#00ff00 green); fixed by save/restore pattern
 
 In Progress
 - None
@@ -37,9 +38,10 @@ Key Decisions
 - Dirty index threshold set at 20% of array size: only activates incremental redraw when fewer than 20% of indices are dirty
 - Snapshot keys sorted once after sort completes and cached — avoids O(S log S) re-sort on every frame (S = number of snapshots, typically ~10k+)
 - Batch threshold set at 8 rects per color group: below this, direct fillRect is faster than path overhead; above it, beginPath/rect/fill batching wins
+- basicSort() save/restore pattern prevents global state pollution across all call sites (Phase 1 initial sort, Phase 2 loop merges, Phase 3 conditional sort)
 
 Next Steps
-- All planned items complete. Monitor for any regressions or new performance bottlenecks at extreme sizes (10k+ elements)
+- All planned items complete. Monitor for any regressions or new visual bugs at extreme sizes (10k+ elements)
 
 Critical Context
 - Original bottleneck: reconstructArrayAtStep() re-played entire timeline on every render frame
@@ -47,4 +49,5 @@ Critical Context
 - Canvas dimensions: 1760×400px, bar height formula uses (value / maxValue) * (height - 40)
 
 Relevant Files
-- /home/stew675/ForSort/forsort-viz-sound.html: Main visualizer file being improved; now at ~2227 lines
+- /home/stew675/ForSort/forsort-viz-sound.html: Main visualizer file being improved; now at ~2231 lines
+- /home/stew675/ForSort/SUMMARY.md: Work plan tracking document updated after each checkpoint commit
