@@ -391,6 +391,7 @@
                     <label style="margin-left: 20px;">Data Type:</label>
                     <select id="data-type">
                         <option value="unique">All Unique Values</option>
+                        <option value="few-dupes">~2 Duplicates/Value</option>
                         <option value="duplicates">~30 Duplicates/Value</option>
                     </select>
 
@@ -1728,12 +1729,11 @@
         // DATA GENERATION
         // ===================================================================
 
-        function generateData(size, withDuplicates) {
+        function generateData(size, dupesPerValue) {
             array = new Int32Array(size);
 
-            if (withDuplicates) {
-                // ~30 duplicates per value
-                const uniqueCount = Math.floor(size / 30);
+            if (dupesPerValue > 0) {
+                const uniqueCount = Math.floor(size / dupesPerValue);
                 const values = [];
                 for (let i = 0; i < uniqueCount; i++) {
                     values.push(i + 1); // Start from 1 instead of 0
@@ -2043,7 +2043,8 @@
             const size = parseInt(document.getElementById('size-select').value);
             const dataType = document.getElementById('data-type').value;
             const algorithm = document.getElementById('algorithm-select').value;
-            const withDuplicates = dataType === 'duplicates';
+            const dupesMap = { unique: 0, 'few-dupes': 2, duplicates: 30 };
+            const dupesPerValue = dupesMap[dataType] || 0;
 
             // Reset state
             comparisons = 0;
@@ -2055,7 +2056,7 @@
             visualState.dirtyIndices.clear();
 
             // Generate and sort
-            generateData(size, withDuplicates);
+            generateData(size, dupesPerValue);
 
             // Store initial state for visualization
             visualState.initialArray = new Int32Array(array);
