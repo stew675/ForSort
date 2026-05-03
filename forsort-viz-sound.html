@@ -1384,12 +1384,14 @@
         }
 
         function basicSort(pa, n) {
+            const savedPhase = currentPhase;
+
             setPhase(`Basic Sort [${pa}..${pa+n})`);
             setRegion('basic_sort', pa, pa + n, 'sorting');
             basicTopDownSort(pa, n);
             clearRegion('basic_sort');
 
-            // Verification pass
+            // Verification pass (internal to this sort chunk)
             setPhase('Verification');
             for (let i = pa; i < pa + n; i++) {
                 if (i === pa || array[i] >= array[i-1]) {
@@ -1399,7 +1401,7 @@
                 }
             }
 
-            setPhase('Complete');
+            currentPhase = savedPhase;
         }
 
         // ===================================================================
