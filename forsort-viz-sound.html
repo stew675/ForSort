@@ -1829,52 +1829,83 @@
             const showTextLabels = visualState.size <= 512 && barWidth >= 12;
 
             // Draw bars using dirty index tracking for incremental updates when beneficial
+            // Pre-compute compare/swap highlight indices for fast lookup
+            const compareSet = new Set();
+            const swapSet = new Set();
+            if (event.type === 'compare' && event.indices) {
+                compareSet.add(event.indices[0]);
+                compareSet.add(event.indices[1]);
+            } else if (event.type === 'swap' && event.indices) {
+                swapSet.add(event.indices[0]);
+                swapSet.add(event.indices[1]);
+            }
+
             const useDirtyTracking = visualState.dirtyIndices.size > 0 && 
                                      visualState.dirtyIndices.size < (visualState.size * 0.2);
 
-            // Draw bars
-            for (let i = 0; i < visualState.size; i++) {
-                if (useDirtyTracking && !visualState.dirtyIndices.has(i)) continue;
-                
-                const value = currentArray[i];
-                const x = Math.floor(i * barWidth);
-                
-                if (showTextLabels) {
-                    let color = getRegionColor(i, event.regions);
+            if (showTextLabels) {
+                // Text mode: draw individual cells with value labels
+                for (let i = 0; i < visualState.size; i++) {
+                    if (useDirtyTracking && !visualState.dirtyIndices.has(i)) continue;
 
-                    if (event.type === 'compare' && event.indices.includes(i)) {
-                        color = '#87ceeb';
-                    } else if (event.type === 'swap' && event.indices.includes(i)) {
-                        color = '#ff4444';
-                    }
+                    const value = currentArray[i];
+                    const x = Math.floor(i * barWidth);
+
+                    let color = getRegionColor(i, event.regions);
+                    if (compareSet.has(i)) color = '#87ceeb';
+                    else if (swapSet.has(i)) color = '#ff4444';
 
                     ctx.fillStyle = color;
                     const fontSize = Math.min(11, barWidth - 2);
                     ctx.font = `${fontSize}px monospace`;
                     ctx.textAlign = 'center';
                     ctx.fillText(value.toString(), x + barWidth / 2, height / 2 + (i % 2 === 0 ? 4 : -4));
-                } else {
-                    const barHeight = (value / maxValue) * (height - 40);
-                    const y = height - barHeight;
+                }
+            } else {
+                // Bar mode: batch by color to minimize fillStyle changes and draw calls
+                const batches = {};
+                const drawWidth = Math.max(barWidth - 1, 1);
+
+                for (let i = 0; i < visualState.size; i++) {
+                    if (useDirtyTracking && !visualState.dirtyIndices.has(i)) continue;
 
                     let color = getRegionColor(i, event.regions);
-
-                    if (event.type === 'compare' && event.indices.includes(i)) {
-                        color = '#87ceeb';
-                    } else if (event.type === 'swap' && event.indices.includes(i)) {
-                        color = '#ff4444';
-                    } else if (inVerificationPhase) {
-                        if (i === 0 || currentArray[i] >= currentArray[i-1]) {
-                            color = '#00ff00';
-                        } else {
-                            color = '#ff0000';
-                        }
+                    if (compareSet.has(i)) color = '#87ceeb';
+                    else if (swapSet.has(i)) color = '#ff4444';
+                    else if (inVerificationPhase) {
+                        color = (i === 0 || currentArray[i] >= currentArray[i-1]) ? '#00ff00' : '#ff0000';
                     }
 
+                    const barHeight = (currentArray[i] / maxValue) * (height - 40);
+                    if (barHeight < 1 && drawWidth < 2) continue;
+
+                    const x = Math.floor(i * barWidth);
+                    const y = height - barHeight;
+
+                    if (!batches[color]) batches[color] = [];
+                    batches[color].push(x, y, drawWidth, barHeight);
+                }
+
+                // Render each color batch with a single fillStyle + multiple rect calls
+                for (const color in batches) {
                     ctx.fillStyle = color;
-                    const drawWidth = Math.max(barWidth - 1, 1);
-                    if (drawWidth >= 1) {
-                        ctx.fillRect(x, y, drawWidth, barHeight);
+                    const rects = batches[color];
+                    if (rects.length <= 8) {
+                        // Few rects: direct fillRect is faster than path overhead
+                        let idx = 0;
+                        while (idx < rects.length) {
+                            ctx.fillRect(rects[idx], rects[idx+1], rects[idx+2], rects[idx+3]);
+                            idx += 4;
+                        }
+                    } else {
+                        // Many rects: batch into a single path for GPU efficiency
+                        ctx.beginPath();
+                        let idx = 0;
+                        while (idx < rects.length) {
+                            ctx.rect(rects[idx], rects[idx+1], rects[idx+2], rects[idx+3]);
+                            idx += 4;
+                        }
+                        ctx.fill();
                     }
                 }
             }
