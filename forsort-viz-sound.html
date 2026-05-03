@@ -2195,13 +2195,16 @@
         // Timeline scrubbing on progress bar click
         const progressBar = document.getElementById('progress-fill').parentElement;
 
-        progressBar.addEventListener('mousemove', (e) => {
+        let isDragging = false;
+        const scrubberEl = document.getElementById('progress-scrubber');
+
+        window.addEventListener('mousemove', (e) => {
             if (!visualState.timeline.length || visualState.isPlaying && !isDragging) return;
 
-            const rect = e.currentTarget.getBoundingClientRect();
+            const rect = progressBar.getBoundingClientRect();
             const hoverX = e.clientX - rect.left;
             const percentage = Math.max(0, Math.min(1, hoverX / rect.width));
-            document.getElementById('progress-scrubber').style.left = `${percentage * 100}%`;
+            scrubberEl.style.left = `${percentage * 100}%`;
 
             if (isDragging) {
                 const targetStep = Math.floor(percentage * (visualState.timeline.length - 1));
@@ -2210,9 +2213,6 @@
                 updateControls();
             }
         });
-
-        let isDragging = false;
-        const scrubberEl = document.getElementById('progress-scrubber');
 
         progressBar.addEventListener('mousedown', (e) => {
             const hasData = visualState.timeline.length > 0;
