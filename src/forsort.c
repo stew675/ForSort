@@ -97,7 +97,7 @@
 // with which to call merge_sort_in_place() to speed up the merging of small
 // blocks.  This is completely optional and if stack-space is constrained
 // then this can be safely set to 0 to disable this feature entirely.
-#define	BASIC_BUF_SIZE		2048
+#define	BASIC_BUF_SIZE		4096
 
 // BASIC_SKEW defines the split ratio when doing top-down division of the array
 // While rotate_merge_in_place() will merge any two sorted arrays together in

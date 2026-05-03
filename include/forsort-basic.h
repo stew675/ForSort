@@ -385,51 +385,48 @@ NAME(process_ascending_batched)(VAR *restrict curr, VAR *restrict pe, COMMON_PAR
 
 	ASSERT(curr <= pe);
 
-	size_t	batch_size = 0, max_batch_size = ES * MAX_BATCH_SIZE;
+	size_t	max_batch_size = ES * MAX_BATCH_SIZE;
 	size_t	disorder = 0;
 
 	for (;;) {
-		if (batch_size >= MAX_BATCH_SIZE) {
-			VAR *restrict scan = curr;
+		for (size_t i = MAX_BATCH_SIZE; i; i--) {
+			VAR *restrict	next = curr + ES;
 
-			while ((scan + max_batch_size) < pe) {
-				disorder += IS_LT(scan + ES, scan); scan += ES;
-				disorder += IS_LT(scan + ES, scan); scan += ES;
+			if (next >= pe)
+				return pe;
 
-				disorder += IS_LT(scan + ES, scan); scan += ES;
-				disorder += IS_LT(scan + ES, scan); scan += ES;
+			if (IS_LT(next, curr))
+				return curr;
 
-				disorder += IS_LT(scan + ES, scan); scan += ES;
-				disorder += IS_LT(scan + ES, scan); scan += ES;
-
-				disorder += IS_LT(scan + ES, scan); scan += ES;
-				disorder += IS_LT(scan + ES, scan); scan += ES;
-
-				disorder += IS_LT(scan + ES, scan); scan += ES;
-				disorder += IS_LT(scan + ES, scan); scan += ES;
-
-				disorder += IS_LT(scan + ES, scan); scan += ES;
-				disorder += IS_LT(scan + ES, scan); scan += ES;
-
-				if (disorder)
-					break;
-
-				curr = scan;
-			}
-
-			batch_size = 0;
+			curr = next;
 		}
 
-		VAR *restrict next = curr + ES;
+		while((curr + max_batch_size) < pe) {
+			VAR *restrict scan = curr;
 
-		if (next >= pe)
-			return pe;
+			disorder += IS_LT(scan + ES, scan); scan += ES;
+			disorder += IS_LT(scan + ES, scan); scan += ES;
 
-		if (IS_LT(next, curr))
-			return curr;
+			disorder += IS_LT(scan + ES, scan); scan += ES;
+			disorder += IS_LT(scan + ES, scan); scan += ES;
 
-		curr = next;
-		batch_size++;
+			disorder += IS_LT(scan + ES, scan); scan += ES;
+			disorder += IS_LT(scan + ES, scan); scan += ES;
+
+			disorder += IS_LT(scan + ES, scan); scan += ES;
+			disorder += IS_LT(scan + ES, scan); scan += ES;
+
+			disorder += IS_LT(scan + ES, scan); scan += ES;
+			disorder += IS_LT(scan + ES, scan); scan += ES;
+
+			disorder += IS_LT(scan + ES, scan); scan += ES;
+			disorder += IS_LT(scan + ES, scan); scan += ES;
+
+			if (disorder)
+				break;
+
+			curr = scan;
+		}
 	}
 #undef MAX_BATCH_SIZE
 }
