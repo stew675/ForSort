@@ -383,51 +383,52 @@ NAME(process_ascending_batched)(VAR *restrict curr, VAR *restrict pe, COMMON_PAR
 {
 #define MAX_BATCH_SIZE 12
 
-	ASSERT(curr <= pe);
-
+	VAR *restrict next = curr + ES;
 	size_t	max_batch_size = ES * MAX_BATCH_SIZE;
 	size_t	disorder = 0;
 
-	for (;;) {
-		for (size_t i = MAX_BATCH_SIZE; i; i--) {
-			VAR *restrict	next = curr + ES;
+	while (next < pe) {
+		size_t num = NITEM(pe - next);
 
-			if (next >= pe)
-				return pe;
+		num = (num > MAX_BATCH_SIZE) ? MAX_BATCH_SIZE : num;
 
+		while (num--) {
 			if (IS_LT(next, curr))
 				return curr;
 
 			curr = next;
+			next += ES;
 		}
 
 		while((curr + max_batch_size) < pe) {
-			VAR *restrict scan = curr;
+			disorder += IS_LT(next, curr);
+			disorder += IS_LT(next + ES, next); next += ES;
 
-			disorder += IS_LT(scan + ES, scan); scan += ES;
-			disorder += IS_LT(scan + ES, scan); scan += ES;
+			disorder += IS_LT(next + ES, next); next += ES;
+			disorder += IS_LT(next + ES, next); next += ES;
 
-			disorder += IS_LT(scan + ES, scan); scan += ES;
-			disorder += IS_LT(scan + ES, scan); scan += ES;
+			disorder += IS_LT(next + ES, next); next += ES;
+			disorder += IS_LT(next + ES, next); next += ES;
 
-			disorder += IS_LT(scan + ES, scan); scan += ES;
-			disorder += IS_LT(scan + ES, scan); scan += ES;
+			disorder += IS_LT(next + ES, next); next += ES;
+			disorder += IS_LT(next + ES, next); next += ES;
 
-			disorder += IS_LT(scan + ES, scan); scan += ES;
-			disorder += IS_LT(scan + ES, scan); scan += ES;
+			disorder += IS_LT(next + ES, next); next += ES;
+			disorder += IS_LT(next + ES, next); next += ES;
 
-			disorder += IS_LT(scan + ES, scan); scan += ES;
-			disorder += IS_LT(scan + ES, scan); scan += ES;
+			disorder += IS_LT(next + ES, next); next += ES;
+			disorder += IS_LT(next + ES, next); next += ES;
 
-			disorder += IS_LT(scan + ES, scan); scan += ES;
-			disorder += IS_LT(scan + ES, scan); scan += ES;
-
-			if (disorder)
+			if (disorder) {
+				next = curr + ES;
 				break;
+			}
 
-			curr = scan;
+			curr = next;
+			next += ES;
 		}
 	}
+	return curr;
 #undef MAX_BATCH_SIZE
 }
 
